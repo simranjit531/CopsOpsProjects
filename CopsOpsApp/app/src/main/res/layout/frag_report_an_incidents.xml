@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/image_background_white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/RLprofileimage"
+            android:layout_marginTop="15dp"
+            android:gravity="center_horizontal"
+            android:text="Report an incident"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_28sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/RLprofileimage"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:text="Report an incident"
+            android:textColor="@color/aluminiumcolor"
+            android:textSize="@dimen/textsize_18sp" />
+
+
+        <RelativeLayout
+            android:id="@+id/Rlpoliceincident"
+            android:layout_width="280dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/background_reportincidents"
+            android:layout_gravity="center_horizontal">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/IVpolicelogo"
+                android:layout_marginTop="20dp"
+                android:layout_above="@+id/Tvpolicetext"
+                android:text="POLICE"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textsize_18sp" />
+
+            <TextView
+                android:id="@+id/Tvpolicetext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/IVpolicelogo"
+                android:layout_marginTop="10dp"
+                android:text="Police Incident"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textsize_14sp" />
+
+            <ImageView
+                android:id="@+id/IVpolicelogo"
+                android:layout_marginLeft="10dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/img_police"/>
+
+        </RelativeLayout>
+
+
+
+        <RelativeLayout
+            android:id="@+id/Rlmedicalfiremanincident"
+            android:layout_width="280dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/background_reportincidents"
+            android:layout_gravity="center_horizontal">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/IVmedicallogo"
+                android:layout_marginTop="20dp"
+                android:layout_above="@+id/Tvmedicaltext"
+                android:text="Medical / Fireman"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textsize_18sp" />
+
+            <TextView
+                android:id="@+id/Tvmedicaltext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/IVmedicallogo"
+                android:layout_marginTop="10dp"
+                android:text="Medical and fireman incident"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textsize_14sp" />
+
+            <ImageView
+                android:id="@+id/IVmedicallogo"
+                android:layout_marginLeft="10dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/img_medical"/>
+
+        </RelativeLayout>
+
+
+
+        <RelativeLayout
+            android:id="@+id/Rlcityincident"
+            android:layout_width="280dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/background_reportincidents"
+            android:layout_gravity="center_horizontal">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/IVcitylogo"
+                android:layout_marginTop="20dp"
+                android:layout_above="@+id/Tvcitytext"
+                android:text="City"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textsize_18sp" />
+
+            <TextView
+                android:id="@+id/Tvcitytext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/IVcitylogo"
+                android:layout_marginTop="10dp"
+                android:text="City Incident"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textsize_16sp" />
+
+            <ImageView
+                android:id="@+id/IVcitylogo"
+                android:layout_marginLeft="10dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/img_city"/>
+
+        </RelativeLayout>
+
+
+
+
+    </LinearLayout>
+
+</ScrollView>

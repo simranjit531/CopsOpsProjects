@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/image_background_white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/RLprofileimage"
+            android:layout_marginTop="15dp"
+            android:gravity="center_horizontal"
+            android:text="Fireman / Ambulance"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_28sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/RLprofileimage"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:text="Fireman and ambulance incident"
+            android:textColor="@color/aluminiumcolor"
+            android:textSize="@dimen/textsize_18sp" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="40dp">
+
+            <LinearLayout
+                android:id="@+id/llviolence"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:orientation="vertical"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/background_white">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:src="@mipmap/img_heart_attack"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Heart attack and malaise"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_horizontal"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/lltheft"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:orientation="vertical"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/background_white">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:src="@mipmap/img_fire"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Fire and scorch"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_horizontal"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="20dp">
+
+            <LinearLayout
+                android:id="@+id/llburglary"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:orientation="vertical"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/background_white">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:src="@mipmap/img_hemorragies"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="hemorrhage,wound"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_horizontal"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/llsexualviolence"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:orientation="vertical"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/background_white">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:src="@mipmap/img_accident_fireman"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Accident"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_horizontal"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="40dp">
+
+            <LinearLayout
+                android:id="@+id/llbodyincident"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:orientation="vertical"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/background_white">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:src="@mipmap/img_airway"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="airway obstruction"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_horizontal"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/llothers"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:orientation="vertical"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/background_white">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:src="@mipmap/img_other"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Other"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_horizontal"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+
+</ScrollView>

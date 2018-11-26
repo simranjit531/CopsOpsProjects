@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">CopsOpsApp</string>
+    <string name="GPS_is_settings">GPS is settings.</string>
+    <string name="GPS_is_not_enabled">GPS is not enabled. Do you want to go to settings menu?</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Settings">Settings</string>
+    <string name="no_internet">No internet Access, Check your internet connection.</string>
+
+
+</resources>

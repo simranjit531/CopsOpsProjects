@@ -1,0 +1,50 @@
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:minHeight="?attr/actionBarSize"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:id="@+id/Rltoolbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+    <ImageView
+        android:id="@+id/IVback"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:src="@mipmap/img_left"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/IVlogout"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:src="@mipmap/img_logout"
+        android:visibility="visible" />
+
+
+    <TextView
+        android:id="@+id/TVtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/IVback"
+        android:text=""
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize_20sp" />
+
+</RelativeLayout>
+
+</android.support.v7.widget.Toolbar>
+
+
