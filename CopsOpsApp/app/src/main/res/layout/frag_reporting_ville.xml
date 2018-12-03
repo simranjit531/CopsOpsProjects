@@ -51,8 +51,9 @@
                 android:background="@drawable/background_white">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
                     android:src="@mipmap/img_tag"/>
 
@@ -77,8 +78,9 @@
                 android:background="@drawable/background_white">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
                     android:src="@mipmap/img_dirtyplace"/>
 
@@ -113,8 +115,9 @@
                 android:background="@drawable/background_white">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
                     android:src="@mipmap/img_debris"/>
 
@@ -139,8 +142,9 @@
                 android:background="@drawable/background_white">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
                     android:src="@mipmap/img_light"/>
 
@@ -177,8 +181,9 @@
                 android:background="@drawable/background_white">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dp"
                     android:src="@mipmap/img_urban_furniture"/>
 
@@ -203,8 +208,9 @@
                 android:background="@drawable/background_white">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
                     android:src="@mipmap/img_other_reporting_ville"/>
 

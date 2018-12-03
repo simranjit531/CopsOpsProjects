@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="1.0">
-        
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"></FrameLayout>
@@ -41,22 +41,23 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginBottom="20dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="60dp"
-            android:background="@mipmap/btn_background_shade">
+            android:background="@mipmap/btn_blue_background">
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="40dp"
-                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
                 android:text="Object"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textsize_18sp"
+                android:textSize="@dimen/textsize_16sp"
                 android:textStyle="bold" />
 
 
@@ -81,9 +82,9 @@
             android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLines="10"
+            android:paddingBottom="5dp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:paddingBottom="5dp"
             android:paddingTop="5dp"
             android:scrollbars="vertical"
             android:textColor="@color/black"
@@ -93,50 +94,32 @@
 
 
         <LinearLayout
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="40dp"
             android:gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="visible">
 
 
-            <LinearLayout
-                android:id="@+id/llcamera"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:id="@+id/IVcamera"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_gravity="center_horizontal"
-                android:background="@mipmap/img_icon_background"
+                android:layout_marginRight="10dp"
+                android:background="@mipmap/img_round_camera"
+                android:gravity="center_horizontal"></ImageView>
+
+            <ImageView
+                android:id="@+id/IVvideo"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@mipmap/img_round_video"
                 android:gravity="center_horizontal"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="4dp"
-                    android:src="@mipmap/img_camera" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llvideo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:background="@mipmap/img_icon_background"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="4dp"
-                    android:src="@mipmap/img_video_report" />
-
-            </LinearLayout>
+                android:orientation="horizontal"></ImageView>
 
 
         </LinearLayout>
@@ -145,23 +128,23 @@
         <RelativeLayout
             android:id="@+id/Rlnext"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginBottom="40dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="40dp"
-            android:background="@mipmap/btn_background_shade">
+            android:background="@mipmap/btn_blue_background">
 
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
                 android:text="Next"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textsize_18sp"
+                android:textSize="@dimen/textsize_16sp"
                 android:textStyle="bold" />
 
 

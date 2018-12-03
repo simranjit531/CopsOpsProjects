@@ -21,7 +21,7 @@
                 android:layout_height="160dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
-                android:background="@mipmap/img_profileimg_background_new"
+                android:background="@mipmap/img_profileimg_background"
                 android:orientation="vertical"
                 android:visibility="visible">
 
@@ -162,30 +162,30 @@
             <RelativeLayout
                 android:id="@+id/RLnavigation"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:layout_below="@+id/RLavaiable"
-                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="20dp"
-                android:background="@mipmap/btn_skyblue_shade">
+                android:background="@mipmap/btn_skyblue_background">
 
                 <ImageView
                     android:id="@+id/IVnavigationicon"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="30dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="22dp"
                     android:src="@mipmap/img_navigation" />
 
                 <TextView
                     android:id="@+id/TVnavigation"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="20dp"
+                    android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/IVnavigationicon"
+                    android:gravity="center_vertical"
                     android:text="Navigation"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textsize_16sp" />
@@ -197,28 +197,28 @@
             <RelativeLayout
                 android:id="@+id/RLreportanincident"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:layout_below="@+id/RLnavigation"
-                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:background="@mipmap/btn_skyblue_shade">
+                android:background="@mipmap/btn_skyblue_background"
+                android:visibility="visible">
 
                 <ImageView
                     android:id="@+id/IVposition"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="30dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="22dp"
                     android:src="@mipmap/img_positionintervention" />
 
                 <TextView
                     android:id="@+id/TVreportanincidents"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="20dp"
+                    android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/IVposition"
                     android:gravity="center_vertical"
                     android:text="Position of Interventions"
@@ -231,29 +231,31 @@
             <RelativeLayout
                 android:id="@+id/RLpositionofincidents"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="60dp"
                 android:layout_below="@+id/RLreportanincident"
                 android:layout_marginBottom="40dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:background="@mipmap/btn_background_shade">
+                android:background="@mipmap/btn_blue_background"
+                android:visibility="visible">
 
                 <ImageView
                     android:id="@+id/IVpositionofincidents"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="30dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="22dp"
                     android:src="@mipmap/img_postionincidents" />
 
                 <TextView
                     android:id="@+id/TVpositionofincidents"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="20dp"
+                    android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/IVpositionofincidents"
+                    android:gravity="center_vertical"
                     android:text="Position of incident"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textsize_16sp" />
@@ -272,8 +274,8 @@
 
                 <LinearLayout
                     android:id="@+id/llintervention"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="180dp"
+                    android:layout_height="60dp"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="5dp"

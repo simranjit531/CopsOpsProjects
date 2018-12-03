@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <RelativeLayout
+                android:id="@+id/RLprofileimage"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:background="@mipmap/img_blue_gradient_background"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/IVqrcode"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:src="@mipmap/img_qrcode" />
+
+
+            </RelativeLayout>
+
+
+            <TextView
+                android:id="@+id/TVname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/RLprofileimage"
+                android:layout_marginTop="21dp"
+                android:gravity="center_horizontal"
+                android:text="Avert Clayton"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textsize_24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/TVprofiledescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/TVname"
+                android:layout_margin="5dp"
+                android:gravity="center_horizontal"
+                android:text="| sentinel"
+                android:textColor="@color/sky_blue"
+                android:textSize="@dimen/textsize_18sp"
+                android:textStyle="bold" />
+
+
+            <RelativeLayout
+                android:id="@+id/RLprogressbartext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/TVprofiledescription"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/TVprogressbarnumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="15dp"
+                    android:gravity="center_horizontal"
+                    android:text="06/10"
+                    android:textColor="@color/aluminiumcolor"
+                    android:textSize="@dimen/textsize_12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/TVprogressbarreports"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center_horizontal"
+                    android:text="06 Signalements"
+                    android:textColor="@color/aluminiumcolor"
+                    android:textSize="@dimen/textsize_12sp"
+                    android:textStyle="bold" />
+
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/TVprogressbarnumber">
+
+                    <ProgressBar
+                        android:id="@+id/progressBar1"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="12dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="10dp"
+                        android:max="10"
+                        android:progress="6"
+                        android:progressDrawable="@drawable/custom_progressbar" />
+
+
+                    <TextView
+                        android:id="@+id/TVprogresspercentage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="60dp"
+                        android:layout_marginTop="10dp"
+                        android:text="40%"
+                        android:textColor="@color/white"
+                        android:textSize="8sp" />
+
+
+                </FrameLayout>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/RLvehicle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/RLprofile"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp">
+
+                <ImageView
+                    android:id="@+id/IVvechile"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:src="@mipmap/img_public_vechile" />
+
+                <TextView
+                    android:id="@+id/TVvechile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/IVvechile"
+                    android:text="Vehicle"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textsize_18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/TVvechile"
+                    android:layout_marginLeft="13dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_toRightOf="@+id/IVvechile"
+                    android:text="Information about your vechile"
+                    android:textColor="@color/aluminiumcolor"
+                    android:textSize="@dimen/textsize_12sp" />
+
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/RLprofile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/RLprogressbartext"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="15dp">
+
+                <ImageView
+                    android:id="@+id/IVprofile"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:src="@mipmap/img_public_profile" />
+
+                <TextView
+                    android:id="@+id/TVprofile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/IVprofile"
+                    android:text="Profile"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textsize_18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/TVprofile"
+                    android:layout_marginLeft="13dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_toRightOf="@+id/IVprofile"
+                    android:text="Information about your profile"
+                    android:textColor="@color/aluminiumcolor"
+                    android:textSize="@dimen/textsize_12sp" />
+
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/RLqrcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/RLvehicle"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp">
+
+                <ImageView
+                    android:id="@+id/IVqrcodeicon"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:src="@mipmap/img_public_qrcode" />
+
+                <TextView
+                    android:id="@+id/TVqrcode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/IVqrcodeicon"
+                    android:text="QR code"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textsize_18sp" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/TVqrcode"
+                    android:layout_marginLeft="13dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_toRightOf="@+id/IVqrcodeicon"
+                    android:text="QR code saved"
+                    android:textColor="@color/aluminiumcolor"
+                    android:textSize="@dimen/textsize_12sp" />
+
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/RLmedical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/RLqrcode"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp">
+
+                <ImageView
+                    android:id="@+id/IVmedical"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:src="@mipmap/img_public_medical" />
+
+                <TextView
+                    android:id="@+id/TVmedical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/IVmedical"
+                    android:text="Medical file"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textsize_18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/TVmedical"
+                    android:layout_marginLeft="13dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_toRightOf="@+id/IVmedical"
+                    android:text="Your Medical Condition"
+                    android:textColor="@color/aluminiumcolor"
+                    android:textSize="@dimen/textsize_12sp" />
+
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/RLfaq"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/RLmedical"
+                android:layout_marginBottom="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp">
+
+                <ImageView
+                    android:id="@+id/IVfaq"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:src="@mipmap/img_public_faq" />
+
+                <TextView
+                    android:id="@+id/TVfaq"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/IVfaq"
+                    android:text="FAQ"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textsize_20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/TVfaq"
+                    android:layout_marginLeft="13dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_toRightOf="@+id/IVfaq"
+                    android:text="Frequently asked questions"
+                    android:textColor="@color/aluminiumcolor"
+                    android:textSize="@dimen/textsize_14sp" />
+
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</ScrollView>

@@ -26,6 +26,7 @@ import com.copsopsapp.fragment.Frag_Authenticate_Code;
 import com.copsopsapp.fragment.Frag_Call_Number;
 import com.copsopsapp.fragment.Frag_Details_of_Reporting;
 import com.copsopsapp.fragment.Frag_Fireman_ambulance;
+import com.copsopsapp.fragment.Frag_GPS_Public;
 import com.copsopsapp.fragment.Frag_Handrain;
 import com.copsopsapp.fragment.Frag_Home;
 import com.copsopsapp.fragment.Frag_Home_Citoyen;
@@ -33,12 +34,14 @@ import com.copsopsapp.fragment.Frag_Home_Operator;
 import com.copsopsapp.fragment.Frag_ID_of_Reporting;
 import com.copsopsapp.fragment.Frag_Login;
 import com.copsopsapp.fragment.Frag_Operator_Profile;
+import com.copsopsapp.fragment.Frag_Public_Profile_Shown;
 import com.copsopsapp.fragment.Frag_Public_Subscription;
 import com.copsopsapp.fragment.Frag_Report_an_Incidents;
 import com.copsopsapp.fragment.Frag_Reporting_Police;
 import com.copsopsapp.fragment.Frag_Reporting_Ville;
 import com.copsopsapp.fragment.Frag_Reset_Password;
 import com.copsopsapp.fragment.Frag_Signature;
+import com.copsopsapp.utils.AppSession;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public ImageView IVback,IVlogout;
     public RelativeLayout Rltoolbar;
     public Toolbar toolbar;
+    private AppSession msession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,7 +184,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case 17:
+                fragment = new Frag_GPS_Public();
+                fragment.setArguments(bundle);
+                break;
 
+            case 18:
+                fragment = new Frag_Public_Profile_Shown();
+                fragment.setArguments(bundle);
                 break;
 
 
@@ -295,6 +305,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         IVback.setOnClickListener(this);
         IVlogout.setOnClickListener(this);
+
+        msession=AppSession.getInstance(MainActivity.this);
     }
 
 
@@ -310,8 +322,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.IVlogout:
-
-
+                msession.setlogin("false");
+                clearBackStack();
+                displayScreen(0,null);
 
                 break;
 

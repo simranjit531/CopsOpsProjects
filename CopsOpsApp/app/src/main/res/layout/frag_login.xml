@@ -9,25 +9,33 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:background="@mipmap/img_blue_gradient_background"
             android:orientation="vertical">
 
-            <ImageView
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
-                android:src="@mipmap/img_copsopslogo_white" />
+                android:layout_height="match_parent"
+                android:layout_margin="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="    COP-OPS"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_20sp" />
 
-        </LinearLayout>
+
+        </RelativeLayout>
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
             android:src="@mipmap/img_login_icon" />
@@ -93,13 +101,13 @@ exciting and enjoyable way "
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_marginTop="20dp"
-            android:inputType="textEmailAddress"
-            android:imeOptions="actionNext"
             android:background="@mipmap/img_edittext_background"
-            android:textColorHint="@color/aluminiumcolor"
+            android:hint="Login"
+            android:imeOptions="actionNext"
+            android:inputType="textEmailAddress"
             android:paddingLeft="20dp"
             android:textColor="@color/black"
-            android:hint="Login"/>
+            android:textColorHint="@color/aluminiumcolor" />
 
         <EditText
             android:id="@+id/ETpassword"
@@ -108,49 +116,46 @@ exciting and enjoyable way "
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_marginTop="20dp"
-            android:inputType="textPassword"
-            android:imeOptions="actionDone"
             android:background="@mipmap/img_edittext_background"
-            android:textColorHint="@color/aluminiumcolor"
+            android:hint="Password"
+            android:imeOptions="actionDone"
+            android:inputType="textPassword"
             android:paddingLeft="20dp"
             android:textColor="@color/black"
-            android:hint="Password"/>
+            android:textColorHint="@color/aluminiumcolor" />
 
 
         <RelativeLayout
             android:id="@+id/RLlogin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
+            android:layout_marginBottom="20dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginBottom="20dp"
             android:layout_marginTop="20dp"
-            android:background="@mipmap/btn_background_shade">
+            android:background="@mipmap/btn_blue_background">
 
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginTop="22dp"
-                android:layout_toLeftOf="@+id/TVlogin"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
-                android:src="@mipmap/img_lock"/>
+                android:layout_toLeftOf="@+id/TVlogin"
+                android:src="@mipmap/img_lock" />
 
             <TextView
                 android:id="@+id/TVlogin"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_vertical"
                 android:text="Log In"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textsize_18sp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"/>
-
+                android:textSize="@dimen/textsize_16sp" />
 
 
         </RelativeLayout>
-
-
-
 
 
         <TextView
@@ -170,13 +175,11 @@ exciting and enjoyable way "
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:gravity="center_horizontal"
+            android:layout_marginBottom="30dp"
             android:text="Not Registered ? "
             android:textColor="@color/black"
             android:textSize="@dimen/textsize_14sp"
             android:textStyle="normal" />
-
-
-
 
 
     </LinearLayout>

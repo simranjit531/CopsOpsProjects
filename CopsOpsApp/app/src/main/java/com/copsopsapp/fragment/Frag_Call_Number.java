@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.copsopsapp.R;
 import com.copsopsapp.activity.MainActivity;
@@ -19,7 +20,7 @@ import com.copsopsapp.activity.MainActivity;
 
 public class Frag_Call_Number extends Fragment implements View.OnClickListener {
 
-    private ImageView IVnothanks,IVcall;
+    private TextView TVnothanks,TVcall;
 
 
     @Nullable
@@ -32,10 +33,10 @@ public class Frag_Call_Number extends Fragment implements View.OnClickListener {
         ((MainActivity)getActivity()).toolbar.setVisibility(View.GONE);
         ((MainActivity)getActivity()).IVlogout.setVisibility(View.GONE);
 
-        IVnothanks=(ImageView)view.findViewById(R.id.IVnothanks);
-        IVcall=(ImageView)view.findViewById(R.id.IVcall);
-        IVcall.setOnClickListener(this);
-        IVnothanks.setOnClickListener(this);
+        TVcall=(TextView)view.findViewById(R.id.TVcall);
+        TVnothanks=(TextView)view.findViewById(R.id.TVnothanks);
+        TVnothanks.setOnClickListener(this);
+        TVcall.setOnClickListener(this);
 
         return view;
     }
@@ -45,11 +46,11 @@ public class Frag_Call_Number extends Fragment implements View.OnClickListener {
 
         switch (v.getId()){
 
-            case R.id.IVnothanks:
+            case R.id.TVnothanks:
                 ((MainActivity)getActivity()).popBackStack();
                 break;
 
-            case R.id.IVcall:
+            case R.id.TVcall:
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setData(Uri.parse("tel:123456789"));
                 startActivity(callIntent);

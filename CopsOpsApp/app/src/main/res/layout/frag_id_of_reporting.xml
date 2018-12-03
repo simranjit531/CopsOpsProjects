@@ -9,26 +9,31 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@drawable/background_gradient_blue_simple"
+            android:background="@mipmap/img_blue_gradient_background"
             android:orientation="vertical">
 
-            <ImageView
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
-                android:src="@mipmap/img_idreprtingtext" />
+                android:layout_height="match_parent"
+                android:layout_margin="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="   Remember to save it"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_20sp" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="40dp"
             android:layout_marginTop="40dp"
@@ -44,14 +49,14 @@
             android:gravity="center_vertical|center_horizontal"
             android:text="Reference"
             android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="@dimen/textsize_22sp" />
+            android:textSize="@dimen/textsize_22sp"
+            android:textStyle="bold" />
 
         <RelativeLayout
             android:id="@+id/RLreferencenumber"
-            android:layout_width="120dp"
+            android:layout_width="140dp"
+            android:layout_height="75dp"
             android:layout_gravity="center_horizontal"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
@@ -79,19 +84,19 @@
         <RelativeLayout
             android:id="@+id/RLfinish"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginBottom="60dp"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_marginTop="20dp"
-            android:background="@mipmap/btn_background_shade">
+            android:background="@mipmap/btn_blue_background">
 
             <ImageView
                 android:layout_width="18dp"
                 android:layout_height="18dp"
+                android:layout_centerVertical="true"
                 android:layout_marginBottom="4dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="22dp"
                 android:layout_toLeftOf="@+id/TVfinish"
                 android:src="@mipmap/img_envoyer" />
 
@@ -101,7 +106,7 @@
                 android:layout_height="match_parent"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="4dp"
-                android:layout_marginTop="22dp"
+                android:gravity="center_vertical"
                 android:text="Finish"
                 android:textColor="@color/white"
                 android:textSize="@dimen/textsize_16sp" />

@@ -40,17 +40,17 @@
                 android:layout_height="160dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
-                android:background="@mipmap/img_profileimg_background_new"
+                android:background="@mipmap/img_profileimg_background"
                 android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/IVprofilephoto"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="85dp"
+                    android:layout_height="85dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="center_horizontal|center_vertical"
-                    android:layout_marginTop="45dp"
+                    android:layout_marginTop="40dp"
                     android:src="@mipmap/img_profile_photo" />
 
 
@@ -65,20 +65,20 @@
                 android:background="@mipmap/img_blue_gradient_background"
                 android:orientation="vertical">
 
+
                 <ImageView
                     android:id="@+id/IVgreenmam"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignTop="@+id/IVgreenwoman"
-                    android:layout_marginLeft="13dp"
-                    android:layout_marginStart="13dp"
-                    android:src="@mipmap/img_green_dot" />
+                    android:layout_marginLeft="25dp"
+                    android:src="@mipmap/img_white_dot" />
 
                 <ImageView
                     android:layout_width="80dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="22dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@+id/IVgreenmam"
@@ -93,21 +93,20 @@
 
                 <ImageView
                     android:id="@+id/IVgreenwoman"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="25dp"
                     android:layout_toLeftOf="@+id/IVwoman"
-                    android:src="@mipmap/img_green_dot" />
+                    android:src="@mipmap/img_white_dot" />
 
                 <ImageView
                     android:id="@+id/IVwoman"
                     android:layout_width="80dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="22dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="25dp"
                     android:src="@mipmap/img_woman" />
 
 

@@ -9,11 +9,27 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ImageView
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:src="@mipmap/img_whoweare" />
+            android:background="@mipmap/img_blue_gradient_background">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_horizontal|center_vertical"
+                android:text=" Who are you?"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_20sp" />
+
+
+        </RelativeLayout>
+
 
         <TextView
             android:layout_width="match_parent"
@@ -32,15 +48,15 @@ in the force of order. "
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
             android:layout_marginBottom="2dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
             android:text="Citizen"
             android:textColor="@color/black"
             android:textSize="@dimen/textsize_18sp"
             android:textStyle="bold" />
-        
-        
+
+
         <LinearLayout
             android:id="@+id/llcitizenhome"
             android:layout_width="match_parent"
@@ -50,22 +66,28 @@ in the force of order. "
             android:layout_marginTop="5dp"
             android:background="@drawable/background_skyblue"
             android:orientation="vertical">
-            
-            
+
+
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="125dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:src="@mipmap/img_citizen"/>
+                android:src="@mipmap/img_citizen" />
 
-            <ImageView
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
                 android:layout_marginBottom="20dp"
-                android:src="@mipmap/img_citizen_text"/>
+                android:layout_marginTop="10dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:text=" CITIZEN"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_20sp"
+                android:textStyle="bold" />
 
-            
+
         </LinearLayout>
 
         <TextView
@@ -82,35 +104,38 @@ must be validated"
             android:textStyle="bold" />
 
 
-
         <LinearLayout
             android:id="@+id/llcopshome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="40dp"
             android:background="@drawable/background_darkblue"
             android:orientation="vertical">
 
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="125dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:src="@mipmap/img_cops"/>
+                android:src="@mipmap/img_cops" />
 
-            <ImageView
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
                 android:layout_marginBottom="20dp"
-                android:src="@mipmap/img_cops_text"/>
-
-
+                android:layout_marginTop="10dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:text=" COPS"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_20sp"
+                android:textStyle="bold" />
+s
         </LinearLayout>
-
 
 
     </LinearLayout>

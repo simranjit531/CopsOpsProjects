@@ -15,23 +15,21 @@
             android:layout_height="wrap_content">
 
 
-
             <RelativeLayout
                 android:id="@+id/RLprofileimage"
                 android:layout_width="160dp"
                 android:layout_height="160dp"
-                android:layout_marginTop="5dp"
                 android:layout_centerHorizontal="true"
-                android:background="@mipmap/img_profileimg_background_new"
+                android:layout_marginTop="5dp"
+                android:background="@mipmap/img_profileimg_background"
                 android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/IVprofilephoto"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginTop="40dp"
-                    android:layout_alignParentTop="true"
+                    android:layout_width="85dp"
+                    android:layout_height="85dp"
                     android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
                     android:layout_gravity="center_horizontal|center_vertical"
                     android:src="@mipmap/img_profile_photo" />
 
@@ -56,14 +54,14 @@
             <TextView
                 android:id="@+id/TVprofiledescription"
                 android:layout_width="match_parent"
-                android:layout_margin="5dp"
-                android:layout_below="@id/TVname"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/TVname"
+                android:layout_margin="5dp"
                 android:gravity="center_horizontal"
-                android:textSize="@dimen/textsize_18sp"
-                android:textStyle="bold"
+                android:text="| sentinel"
                 android:textColor="@color/sky_blue"
-                android:text="| sentinel"/>
+                android:textSize="@dimen/textsize_18sp"
+                android:textStyle="bold" />
 
 
             <RelativeLayout
@@ -72,15 +70,15 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/TVprofiledescription"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="20dp">
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp">
 
                 <TextView
                     android:id="@+id/TVprogressbarnumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                   android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="10dp"
                     android:gravity="center_horizontal"
                     android:text="06/10"
                     android:textColor="@color/aluminiumcolor"
@@ -106,34 +104,30 @@
                     android:layout_below="@+id/TVprogressbarnumber">
 
 
-
                     <ProgressBar
                         android:id="@+id/progressBar1"
                         style="?android:attr/progressBarStyleHorizontal"
-                        android:progressDrawable="@drawable/custom_progressbar"
                         android:layout_width="match_parent"
-                        android:layout_marginTop="10dp"
+                        android:layout_height="14dp"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
+                        android:layout_marginTop="10dp"
                         android:max="10"
                         android:progress="6"
-                        android:layout_height="14dp" />
+                        android:progressDrawable="@drawable/custom_progressbar" />
 
                     <TextView
                         android:id="@+id/TVprogresspercentage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
                         android:layout_marginLeft="60dp"
+                        android:layout_marginTop="10dp"
                         android:text="40%"
-                        android:textSize="10sp"
-                        android:textColor="@color/white"/>
+                        android:textColor="@color/white"
+                        android:textSize="10sp" />
 
 
                 </FrameLayout>
-
-
-
 
 
             </RelativeLayout>
@@ -142,31 +136,31 @@
             <RelativeLayout
                 android:id="@+id/RLnavigation"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:layout_below="@+id/RLprogressbartext"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="50dp"
-                android:background="@mipmap/btn_skyblue_shade">
+                android:background="@mipmap/btn_skyblue_background">
 
                 <ImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                   android:layout_marginTop="22dp"
-                    android:layout_toLeftOf="@+id/TVnavigation"
+                    android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    android:src="@mipmap/img_navigation"/>
+                    android:layout_toLeftOf="@+id/TVnavigation"
+                    android:src="@mipmap/img_navigation" />
 
                 <TextView
                     android:id="@+id/TVnavigation"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
                     android:text="Navigation"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/textsize_16sp"
-                    android:layout_centerHorizontal="true"
-                   android:layout_marginTop="22dp"/>
-
+                    android:textSize="@dimen/textsize_16sp" />
 
 
             </RelativeLayout>
@@ -174,30 +168,31 @@
             <RelativeLayout
                 android:id="@+id/RLreportanincident"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:layout_below="@+id/RLnavigation"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:background="@mipmap/btn_background_shade">
+                android:layout_marginTop="5dp"
+                android:background="@mipmap/btn_blue_background">
 
                 <ImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:layout_marginTop="22dp"
-                    android:layout_toLeftOf="@+id/TVreportanincidents"
+                    android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    android:src="@mipmap/img_reportanincident"/>
+                    android:layout_toLeftOf="@+id/TVreportanincidents"
+                    android:src="@mipmap/img_reportanincident" />
 
                 <TextView
                     android:id="@+id/TVreportanincidents"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
                     android:text="Report an incident"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/textsize_16sp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="20dp"/>
-
+                    android:textSize="@dimen/textsize_16sp" />
 
 
             </RelativeLayout>
@@ -205,37 +200,34 @@
             <RelativeLayout
                 android:id="@+id/RLhandrail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:layout_below="@+id/RLreportanincident"
                 android:layout_marginBottom="40dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:background="@mipmap/btn_background_shade">
+                android:layout_marginTop="5dp"
+                android:background="@mipmap/btn_blue_background">
 
                 <ImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:layout_marginTop="22dp"
-                    android:layout_toLeftOf="@+id/TVhandrail"
+                    android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    android:src="@mipmap/img_handrail"/>
+                    android:layout_toLeftOf="@+id/TVhandrail"
+                    android:src="@mipmap/img_handrail" />
 
                 <TextView
                     android:id="@+id/TVhandrail"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center_vertical"
                     android:text="Handrail"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/textsize_16sp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="20dp"/>
-
+                    android:textSize="@dimen/textsize_16sp" />
 
 
             </RelativeLayout>
-
-
-
 
 
         </RelativeLayout>

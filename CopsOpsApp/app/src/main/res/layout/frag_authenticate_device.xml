@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -20,14 +20,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="30dp"
-                android:gravity="center_horizontal"
+                android:layout_centerVertical="true"
+                android:gravity="center_horizontal|center_vertical"
                 android:text="Authenticate the device"
                 android:textColor="@color/white"
                 android:textSize="@dimen/textsize_20sp"
                 android:textStyle="normal" />
 
 
-        </LinearLayout>
+        </RelativeLayout>
 
 
         <TextView
@@ -155,22 +156,23 @@ the code sent to +xxxxxxxx45"
         <RelativeLayout
             android:id="@+id/RLSend"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginBottom="40dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="60dp"
-            android:background="@mipmap/btn_background_shade">
+            android:background="@mipmap/btn_blue_background">
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
+               android:layout_centerVertical="true"
+                android:gravity="center_vertical|center_horizontal"
                 android:text="Send code"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textsize_18sp"
+                android:textSize="@dimen/textsize_16sp"
                 android:textStyle="bold" />
 
 

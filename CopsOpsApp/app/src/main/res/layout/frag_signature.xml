@@ -16,20 +16,31 @@
             android:background="@drawable/background_gradient_blue_simple"
             android:orientation="vertical">
 
-            <ImageView
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:src="@mipmap/img_signatre_text" />
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="15dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="    Signature"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_20sp" />
 
-            <ImageView
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="10dp"
-                android:src="@mipmap/img_signature_text_details" />
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="      The signature is obligatory"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_14sp"
+                android:layout_marginBottom="15dp"/>
+
 
         </LinearLayout>
 
@@ -47,42 +58,37 @@
         </LinearLayout>
 
 
-
-
-
         <RelativeLayout
             android:id="@+id/RLnext"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginBottom="40dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_marginTop="40dp"
             android:background="@mipmap/btn_blue_background">
 
             <ImageView
-                android:layout_width="25dp"
-                android:layout_height="match_parent"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_centerVertical="true"
                 android:layout_marginBottom="4dp"
-                android:layout_toLeftOf="@+id/TVnext"
                 android:layout_marginRight="10dp"
-                android:src="@mipmap/img_next"/>
+                android:layout_toLeftOf="@+id/TVnext"
+                android:src="@mipmap/img_next" />
 
 
             <TextView
                 android:id="@+id/TVnext"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="4dp"
-                android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:gravity="center_vertical"
                 android:text="Next"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textsize_18sp"
-                android:textStyle="bold" />
+                android:textSize="@dimen/textsize_16sp" />
 
 
         </RelativeLayout>

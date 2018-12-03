@@ -51,8 +51,9 @@
                 android:background="@drawable/background_white">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
                     android:src="@mipmap/img_violence"/>
 
@@ -77,8 +78,9 @@
                 android:background="@drawable/background_white">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
                     android:src="@mipmap/img_thief"/>
 
@@ -113,8 +115,9 @@
                 android:background="@drawable/background_white">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
                     android:src="@mipmap/img_burglary"/>
 
@@ -139,8 +142,9 @@
                 android:background="@drawable/background_white">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
                     android:src="@mipmap/img_sexual_violence"/>
 
@@ -177,8 +181,9 @@
                 android:background="@drawable/background_white">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dp"
                     android:src="@mipmap/img_accident"/>
 
@@ -203,8 +208,9 @@
                 android:background="@drawable/background_white">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
                     android:src="@mipmap/img_other"/>
 
