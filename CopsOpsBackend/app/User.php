@@ -1,0 +1,33 @@
+<?php
+
+namespace App;
+
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class User extends Authenticatable implements \Illuminate\Contracts\Auth\Authenticatable
+{
+    use Notifiable;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $table = 'ref_user';
+
+    protected $fillable = [
+        'user_id', 'ref_user_type_id', 'user_password', 'first_name', 'last_name', 'date_of_birth', 'place_of_birth',
+        'gender',  'phone_number', 'email_id', 'id_card1', 'id_card2', 'business_card1', 'business_card2', 'profile_image', 'latitude', 'longitude', 'otp'
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'user_password', 'remember_token',
+    ];
+}

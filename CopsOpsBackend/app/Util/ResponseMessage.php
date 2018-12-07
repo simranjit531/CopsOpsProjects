@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Util;
+
+class ResponseMessage
+{
+    const _STATUS_DATA_NOT_FOUND = 9999;
+
+    const _STATUS_REGISTRATION_SUCCESS = 1000;
+    const _STATUS_REGISTRATION_FAILURE = 1001;
+
+    const _STATUS_IMAGE_UPLOAD_SUCCESS = 2000;
+    const _STATUS_IMAGE_UPLOAD_FAILURE = 2001;
+
+    const _STATUS_INVALID_CREDENTIALS = 3000;
+
+    const _STATUS_LOGIN_SUCCESS = 4000;
+
+    const _STATUS_PASSWORD_RESET_SUCCESS = 5000;
+    const _STATUS_PASSWORD_RESET_FAILURE = 5001;
+    const _STATUS_EMAIL_NOT_FOUND = 5002;
+    const _STATUS_OTP_VERIFIED_SUCCESS = 5003;
+    const _STATUS_OTP_VERIFIED_FAILURE = 5004;
+    const _STATUS_USER_NOT_FOUND = 5005;
+    const _INVALID_USER_TYPE =5006;
+
+    const _STATUS_INCIDENT_ADD_SUCCESS = 6000;
+    const _STATUS_INCIDENT_ADD_FAILURE = 6001;
+    const _STATUS_HANDRAIL_ADD_SUCCESS = 6002;
+    const _STATUS_HANDRAIL_ADD_FAILURE = 6003;
+    const _STATUS_IMAGE_VIDEO_REQUIRED = 6004;
+    const _STATUS_SIGNATURE_REQUIRED = 6005;
+
+    public static $response = [
+        '9999' => 'Invalid request, data not found, please check again',
+
+        '1000' => 'Registration Successfull',
+        '1001' => 'Unable to register, Please try again later !!!',
+
+        '2000' => 'Image uploaded successfully',
+        '2001' => 'Something went wrong, unable to upload image, please try again later',
+
+        '3000' => 'Invalid Credentials',
+
+        '4000' => 'Login Successful',
+
+        '5000' => 'Password has been sent to your email successfully',
+        '5001' => 'Unable to send password, please try again later',
+        '5002' => 'No user exists with provided email address !!!',
+        '5003' => 'OTP verified successfully !!!',
+        '5004' => 'Invalid OTP, please try again later',
+        '5005' => 'No user exists in our DB',
+        '5006' => 'Invalid User Type',
+
+        '6000' => 'New incident added to the system successfully',
+        '6001' => 'OOPS !!! Unable to add incident to the system, please try again later',
+        '6002' => 'New handrail added to the system successfully',
+        '6003' => 'OOPS !!! Unable to add handrail to the system, please try again later',
+        '6004' => 'Image or video is required',
+        '6005' => 'Signature required',
+    ];
+
+    public static function statusResponses($responseKey)
+    {
+        return static::$response[$responseKey];
+    }
+}
