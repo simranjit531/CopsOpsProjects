@@ -1,4 +1,4 @@
-package com.copsopsapp.fragment;
+package com.copsopsapp.fragment.common;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,23 +15,23 @@ import com.copsopsapp.activity.MainActivity;
  * Created by Lenovo on 21-11-2018.
  */
 
-public class Frag_Handrain extends Fragment  implements View.OnClickListener{
+public class Frag_Details_of_Reporting extends Fragment implements View.OnClickListener{
 
-    private RelativeLayout Rlnext;
+    private RelativeLayout RLenvoyer;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.frag_handrail,container,false);
+        View view=inflater.inflate(R.layout.frag_detail_of_reporting,container,false);
 
         ((MainActivity)getActivity()).Rltoolbar.setVisibility(View.VISIBLE);
         ((MainActivity)getActivity()).toolbar.setVisibility(View.VISIBLE);
         ((MainActivity)getActivity()).IVback.setVisibility(View.VISIBLE);
         ((MainActivity)getActivity()).IVlogout.setVisibility(View.GONE);
 
-        Rlnext=(RelativeLayout)view.findViewById(R.id.Rlnext);
-        Rlnext.setOnClickListener(this);
+        RLenvoyer=(RelativeLayout)view.findViewById(R.id.RLenvoyer);
+        RLenvoyer.setOnClickListener(this);
 
         return view;
     }
@@ -40,12 +40,10 @@ public class Frag_Handrain extends Fragment  implements View.OnClickListener{
     public void onClick(View v) {
 
         switch (v.getId()){
-            case R.id.Rlnext:
-                ((MainActivity)getActivity()).displayScreen(16,null);
+
+            case R.id.RLenvoyer:
+                ((MainActivity)getActivity()).displayScreen(12,null);
                 break;
-
-
-
         }
 
 

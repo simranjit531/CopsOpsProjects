@@ -1,4 +1,4 @@
-package com.copsopsapp.fragment;
+package com.copsopsapp.fragment.common;
 
 import android.content.Intent;
 import android.net.Uri;

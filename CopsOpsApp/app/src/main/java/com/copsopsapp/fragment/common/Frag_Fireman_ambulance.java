@@ -1,4 +1,4 @@
-package com.copsopsapp.fragment;
+package com.copsopsapp.fragment.common;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,18 +14,18 @@ import com.copsopsapp.activity.MainActivity;
  * Created by Lenovo on 21-11-2018.
  */
 
-public class Frag_Home_Operator extends Fragment {
+public class Frag_Fireman_ambulance extends Fragment {
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.frag_home_operator,container,false);
+        View view=inflater.inflate(R.layout.frag_fireman_ambulance,container,false);
 
         ((MainActivity)getActivity()).Rltoolbar.setVisibility(View.VISIBLE);
         ((MainActivity)getActivity()).toolbar.setVisibility(View.VISIBLE);
-        ((MainActivity)getActivity()).IVback.setVisibility(View.GONE);
-        ((MainActivity)getActivity()).IVlogout.setVisibility(View.VISIBLE);
+        ((MainActivity)getActivity()).IVback.setVisibility(View.VISIBLE);
+        ((MainActivity)getActivity()).IVlogout.setVisibility(View.GONE);
 
         return view;
     }

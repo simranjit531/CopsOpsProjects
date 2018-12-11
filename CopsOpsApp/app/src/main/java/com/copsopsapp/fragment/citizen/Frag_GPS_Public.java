@@ -1,5 +1,6 @@
-package com.copsopsapp.fragment;
+package com.copsopsapp.fragment.citizen;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,14 +26,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 /**
  * Created by Lenovo on 27-11-2018.
  */
 
-public class Frag_GPS_Operator extends Fragment implements View.OnClickListener, OnMapReadyCallback {
+public class Frag_GPS_Public extends Fragment implements View.OnClickListener, OnMapReadyCallback {
 
     private EditText ETwherewegoing;
     private GoogleMap mMap;
@@ -41,8 +44,8 @@ public class Frag_GPS_Operator extends Fragment implements View.OnClickListener,
     private GPSTracker gps;
     private int distance = 500;
     private LinearLayout llsearch_layout;
-    private ImageView IVimagesgps, IVdrawer, IVdropmenu, IVheaderpolice, IVheadercity, IVheadermedical,IVoperatorheadergpsmap,IVoperatorheadergpschat,IVoperatorheadergpsmenu;
-    private TextView Tvheadertitle, Tvheaderpolice, Tvheadercity, Tvheadermedical,Tvoperatortools;
+    private ImageView IVimagesgps, IVdrawer, IVdropmenu, IVheaderpolice, IVheadercity, IVheadermedical;
+    private TextView Tvheadertitle, Tvheaderpolice, Tvheadercity, Tvheadermedical;
     private int idrop = 0, ipolice = 0, imedical = 0, icity = 0;
     private RelativeLayout RLcontentbackground, RLheader, RLpoliceicons, RLcityicons, RLmedicalicons;
 
@@ -50,7 +53,7 @@ public class Frag_GPS_Operator extends Fragment implements View.OnClickListener,
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_gps_operator, container, false);
+        View view = inflater.inflate(R.layout.frag_gps, container, false);
 
 
         mSession = AppSession.getInstance(getActivity());
@@ -82,15 +85,11 @@ public class Frag_GPS_Operator extends Fragment implements View.OnClickListener,
         IVheaderpolice = (ImageView) view.findViewById(R.id.IVheaderpolice);
         IVheadercity = (ImageView) view.findViewById(R.id.IVheadercity);
         IVheadermedical = (ImageView) view.findViewById(R.id.IVheadermedical);
-        IVoperatorheadergpsmap = (ImageView) view.findViewById(R.id.IVoperatorheadergpsmap);
-        IVoperatorheadergpschat = (ImageView) view.findViewById(R.id.IVoperatorheadergpschat);
-        IVoperatorheadergpsmenu = (ImageView) view.findViewById(R.id.IVoperatorheadergpsmenu);
 
         Tvheadertitle = (TextView) view.findViewById(R.id.Tvheadertitle);
         Tvheaderpolice = (TextView) view.findViewById(R.id.Tvheaderpolice);
         Tvheadercity = (TextView) view.findViewById(R.id.Tvheadercity);
         Tvheadermedical = (TextView) view.findViewById(R.id.Tvheadermedical);
-        Tvoperatortools= (TextView) view.findViewById(R.id.Tvoperatortools);
 
         RLcontentbackground = (RelativeLayout) view.findViewById(R.id.RLcontentbackground);
         RLheader = (RelativeLayout) view.findViewById(R.id.RLheader);
@@ -131,8 +130,9 @@ public class Frag_GPS_Operator extends Fragment implements View.OnClickListener,
 
             case R.id.ETwherewegoing:
                 llsearch_layout.setVisibility(View.VISIBLE);
+                RLheader.setBackgroundResource(0);
                 IVdropmenu.setImageResource(R.mipmap.img_menudropdown);
-                IVdrawer.setVisibility(View.INVISIBLE);
+                IVdrawer.setVisibility(View.VISIBLE);
                 Tvheadertitle.setVisibility(View.GONE);
                 IVheadermedical.setVisibility(View.GONE);
                 IVheadercity.setVisibility(View.GONE);
@@ -253,6 +253,10 @@ public class Frag_GPS_Operator extends Fragment implements View.OnClickListener,
                     ipolice = 0;
                 }
 
+                break;
+
+            case R.id.IVdrawer:
+                ((MainActivity)getActivity()).popBackStack();
                 break;
 
         }

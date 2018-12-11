@@ -1,9 +1,7 @@
-package com.copsopsapp.fragment;
+package com.copsopsapp.fragment.operatorpart;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,31 +21,38 @@ import com.copsopsapp.activity.MainActivity;
  * Created by Lenovo on 21-11-2018.
  */
 
-public class Frag_Home_Citoyen extends Fragment implements View.OnClickListener {
+public class Frag_Home_Operator extends Fragment implements View.OnClickListener {
 
-    private RelativeLayout RLreportanincident, RLhandrail, RLnavigation;
+    private RelativeLayout RLpostiionofintervention, RLreportsnofincidents, RLnavigation;
+    private LinearLayout llintervention;
+    private RelativeLayout rlchat;
     private TextView TVname;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_home_citoyen, container, false);
+        View view = inflater.inflate(R.layout.frag_home_operator_new, container, false);
 
         ((MainActivity) getActivity()).Rltoolbar.setVisibility(View.VISIBLE);
         ((MainActivity) getActivity()).IVback.setVisibility(View.GONE);
         ((MainActivity) getActivity()).toolbar.setVisibility(View.VISIBLE);
         ((MainActivity) getActivity()).IVlogout.setVisibility(View.VISIBLE);
 
-        RLreportanincident = (RelativeLayout) view.findViewById(R.id.RLreportanincident);
-        RLhandrail = (RelativeLayout) view.findViewById(R.id.RLhandrail);
+        RLpostiionofintervention = (RelativeLayout) view.findViewById(R.id.RLpostiionofintervention);
+        RLreportsnofincidents = (RelativeLayout) view.findViewById(R.id.RLreportanincident);
         RLnavigation = (RelativeLayout) view.findViewById(R.id.RLnavigation);
+
+        llintervention = (LinearLayout) view.findViewById(R.id.llintervention);
+        rlchat = (RelativeLayout) view.findViewById(R.id.rlchat);
 
         TVname = (TextView) view.findViewById(R.id.TVname);
 
-        RLhandrail.setOnClickListener(this);
-        RLreportanincident.setOnClickListener(this);
+        RLpostiionofintervention.setOnClickListener(this);
+        RLreportsnofincidents.setOnClickListener(this);
         RLnavigation.setOnClickListener(this);
+        llintervention.setOnClickListener(this);
+        rlchat.setOnClickListener(this);
         TVname.setOnClickListener(this);
 
         return view;
@@ -58,25 +63,20 @@ public class Frag_Home_Citoyen extends Fragment implements View.OnClickListener 
 
         switch (v.getId()) {
 
-            case R.id.RLreportanincident:
-
-                ((MainActivity) getActivity()).displayScreen(13, null);
-
-                break;
-
-            case R.id.RLhandrail:
-
-                ((MainActivity) getActivity()).displayScreen(11, null);
-
-                break;
-
             case R.id.RLnavigation:
                 opendialogcustomdialog();
                 break;
 
             case R.id.TVname:
-                ((MainActivity) getActivity()).displayScreen(18, null);
+                //   ((MainActivity) getActivity()).displayScreen(18, null);
+                break;
 
+            case R.id.RLreportanincident:
+                ((MainActivity) getActivity()).displayScreen(13, null);
+                break;
+
+            case R.id.RLpostiionofintervention:
+                ((MainActivity) getActivity()).displayScreen(21, null);
                 break;
 
 
@@ -101,7 +101,7 @@ public class Frag_Home_Citoyen extends Fragment implements View.OnClickListener 
             @Override
             public void onClick(View v) {
                 dialog1.dismiss();
-                ((MainActivity) getActivity()).displayScreen(17, null);
+                ((MainActivity) getActivity()).displayScreen(19, null);
 
             }
         });
@@ -115,6 +115,4 @@ public class Frag_Home_Citoyen extends Fragment implements View.OnClickListener 
 
         dialog1.show();
     }
-
-
 }

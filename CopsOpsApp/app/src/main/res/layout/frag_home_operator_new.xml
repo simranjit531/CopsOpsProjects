@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
 
             <RelativeLayout
@@ -23,7 +22,7 @@
                 android:layout_marginTop="5dp"
                 android:background="@mipmap/img_profileimg_background"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <ImageView
                     android:id="@+id/IVprofilephoto"
@@ -48,7 +47,7 @@
                 android:layout_below="@+id/RLprofileimage"
                 android:layout_marginTop="21dp"
                 android:gravity="center_horizontal"
-                android:text="Avert Clayton"
+                android:text="Caboche Michel"
                 android:textColor="@color/black"
                 android:textSize="@dimen/textsize_22sp"
                 android:textStyle="bold" />
@@ -194,7 +193,7 @@
                 android:layout_below="@+id/RLavaiable"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="18dp"
                 android:background="@mipmap/btn_skyblue_background">
 
                 <ImageView
@@ -257,11 +256,11 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/RLpositionofincidents"
+                android:id="@+id/RLreportanincident"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_below="@+id/RLpostiionofintervention"
-                android:layout_marginBottom="40dp"
+                android:layout_marginBottom="60dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:background="@mipmap/btn_blue_background"
@@ -294,21 +293,17 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_below="@+id/RLpositionofincidents"
-                android:layout_marginTop="30dp">
-
+                android:layout_height="101dp"
+                android:layout_below="@+id/RLreportanincident"
+                android:background="@mipmap/img_chat_background">
 
                 <LinearLayout
                     android:id="@+id/llintervention"
-                    android:layout_width="180dp"
+                    android:layout_width="155dp"
                     android:layout_height="60dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
                     android:layout_marginBottom="5dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_toLeftOf="@+id/llchat"
+                    android:layout_marginTop="40dp"
+                    android:layout_toLeftOf="@+id/viewline"
                     android:background="@mipmap/img_group_operatorscreen"
                     android:orientation="vertical">
 
@@ -318,45 +313,58 @@
                         android:layout_gravity="right|center_vertical"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="20dp"
-                        android:layout_marginTop="10dp"
-                        android:gravity="right|center_vertical"
+                        android:layout_marginTop="5dp"
+                        android:gravity="right"
+                        android:paddingTop="8dp"
                         android:text="Assigned intervention"
                         android:textColor="@color/white"
-                        android:textStyle="bold" />
+                        android:textSize="@dimen/textsize_14sp" />
 
 
                 </LinearLayout>
 
+                <View
+                    android:id="@+id/viewline"
+                    android:layout_width="28dp"
+                    android:layout_height="match_parent"
+                    android:layout_toLeftOf="@+id/rlchat" />
 
-                <LinearLayout
-                    android:id="@+id/llchat"
-                    android:layout_width="120dp"
-                    android:layout_height="105dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginBottom="-25dp"
-                    android:layout_marginRight="-20dp"
-                    android:background="@mipmap/img_chatbackground_operator"
-                    android:orientation="vertical">
+                <RelativeLayout
+                    android:id="@+id/rlchat"
+                    android:layout_width="95dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true">
+
+                    <ImageView
+                        android:id="@+id/IVchat"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="35dp"
+                        android:layout_marginTop="30dp"
+                        android:src="@mipmap/img_chat_icon" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_below="@+id/IVchat"
                         android:layout_gravity="center_vertical|center_horizontal"
-                        android:gravity="center_vertical|center_horizontal"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="5dp"
                         android:text="Messaging"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/textsize_16sp"
-                        android:textStyle="bold" />
+                        android:textSize="@dimen/textsize_14sp" />
 
-                </LinearLayout>
-
+                </RelativeLayout>
 
             </RelativeLayout>
 
-
         </RelativeLayout>
 
+    </ScrollView>
 
-    </LinearLayout>
 
-</ScrollView>
+
+
+</RelativeLayout>
+

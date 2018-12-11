@@ -1,6 +1,5 @@
-package com.copsopsapp.fragment;
+package com.copsopsapp.fragment.operatorpart;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,16 +25,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 /**
  * Created by Lenovo on 27-11-2018.
  */
 
-public class Frag_GPS_Public extends Fragment implements View.OnClickListener, OnMapReadyCallback {
+public class Frag_GPS_Operator extends Fragment implements View.OnClickListener, OnMapReadyCallback {
 
     private EditText ETwherewegoing;
     private GoogleMap mMap;
@@ -44,8 +41,8 @@ public class Frag_GPS_Public extends Fragment implements View.OnClickListener, O
     private GPSTracker gps;
     private int distance = 500;
     private LinearLayout llsearch_layout;
-    private ImageView IVimagesgps, IVdrawer, IVdropmenu, IVheaderpolice, IVheadercity, IVheadermedical;
-    private TextView Tvheadertitle, Tvheaderpolice, Tvheadercity, Tvheadermedical;
+    private ImageView IVimagesgps, IVdrawer, IVdropmenu, IVheaderpolice, IVheadercity, IVheadermedical,IVoperatorheadergpsmap,IVoperatorheadergpschat,IVoperatorheadergpsmenu;
+    private TextView Tvheadertitle, Tvheaderpolice, Tvheadercity, Tvheadermedical,Tvoperatortools;
     private int idrop = 0, ipolice = 0, imedical = 0, icity = 0;
     private RelativeLayout RLcontentbackground, RLheader, RLpoliceicons, RLcityicons, RLmedicalicons;
 
@@ -53,7 +50,7 @@ public class Frag_GPS_Public extends Fragment implements View.OnClickListener, O
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_gps, container, false);
+        View view = inflater.inflate(R.layout.frag_gps_operator, container, false);
 
 
         mSession = AppSession.getInstance(getActivity());
@@ -85,11 +82,15 @@ public class Frag_GPS_Public extends Fragment implements View.OnClickListener, O
         IVheaderpolice = (ImageView) view.findViewById(R.id.IVheaderpolice);
         IVheadercity = (ImageView) view.findViewById(R.id.IVheadercity);
         IVheadermedical = (ImageView) view.findViewById(R.id.IVheadermedical);
+        IVoperatorheadergpsmap = (ImageView) view.findViewById(R.id.IVoperatorheadergpsmap);
+        IVoperatorheadergpschat = (ImageView) view.findViewById(R.id.IVoperatorheadergpschat);
+        IVoperatorheadergpsmenu = (ImageView) view.findViewById(R.id.IVoperatorheadergpsmenu);
 
         Tvheadertitle = (TextView) view.findViewById(R.id.Tvheadertitle);
         Tvheaderpolice = (TextView) view.findViewById(R.id.Tvheaderpolice);
         Tvheadercity = (TextView) view.findViewById(R.id.Tvheadercity);
         Tvheadermedical = (TextView) view.findViewById(R.id.Tvheadermedical);
+        Tvoperatortools= (TextView) view.findViewById(R.id.Tvoperatortools);
 
         RLcontentbackground = (RelativeLayout) view.findViewById(R.id.RLcontentbackground);
         RLheader = (RelativeLayout) view.findViewById(R.id.RLheader);
@@ -119,6 +120,10 @@ public class Frag_GPS_Public extends Fragment implements View.OnClickListener, O
         RLpoliceicons.setVisibility(View.GONE);
         RLmedicalicons.setVisibility(View.GONE);
         RLcityicons.setVisibility(View.GONE);
+        IVoperatorheadergpsmap.setVisibility(View.GONE);
+        IVoperatorheadergpschat.setVisibility(View.GONE);
+        IVoperatorheadergpsmenu.setVisibility(View.GONE);
+        Tvoperatortools.setVisibility(View.GONE);
 
         return view;
     }
@@ -130,8 +135,8 @@ public class Frag_GPS_Public extends Fragment implements View.OnClickListener, O
 
             case R.id.ETwherewegoing:
                 llsearch_layout.setVisibility(View.VISIBLE);
-                IVdropmenu.setImageResource(R.mipmap.img_menudropdown);
                 IVdrawer.setVisibility(View.VISIBLE);
+                IVdropmenu.setImageResource(R.mipmap.img_menudropdown);
                 Tvheadertitle.setVisibility(View.GONE);
                 IVheadermedical.setVisibility(View.GONE);
                 IVheadercity.setVisibility(View.GONE);
@@ -145,6 +150,11 @@ public class Frag_GPS_Public extends Fragment implements View.OnClickListener, O
                 IVheaderpolice.setImageResource(R.mipmap.img_police_header);
                 IVheadermedical.setImageResource(R.mipmap.img_medical_header);
                 IVheadercity.setImageResource(R.mipmap.img_city_header);
+                RLheader.setBackgroundResource(0);
+                IVoperatorheadergpschat.setVisibility(View.GONE);
+                IVoperatorheadergpsmenu.setVisibility(View.GONE);
+                IVoperatorheadergpsmap.setVisibility(View.GONE);
+                Tvoperatortools.setVisibility(View.GONE);
                 idrop = 0;
                 break;
 
@@ -164,6 +174,10 @@ public class Frag_GPS_Public extends Fragment implements View.OnClickListener, O
                     IVheaderpolice.setImageResource(R.mipmap.img_police_header);
                     IVheadermedical.setImageResource(R.mipmap.img_medical_header);
                     IVheadercity.setImageResource(R.mipmap.img_city_header);
+                    IVoperatorheadergpschat.setVisibility(View.GONE);
+                    IVoperatorheadergpsmenu.setVisibility(View.GONE);
+                    IVoperatorheadergpsmap.setVisibility(View.GONE);
+                    Tvoperatortools.setVisibility(View.GONE);
                     idrop = 1;
                 } else {
                     RLheader.setBackgroundResource(0);
@@ -182,6 +196,10 @@ public class Frag_GPS_Public extends Fragment implements View.OnClickListener, O
                     IVheaderpolice.setImageResource(R.mipmap.img_police_header);
                     IVheadermedical.setImageResource(R.mipmap.img_medical_header);
                     IVheadercity.setImageResource(R.mipmap.img_city_header);
+                    IVoperatorheadergpschat.setVisibility(View.GONE);
+                    IVoperatorheadergpsmenu.setVisibility(View.GONE);
+                    IVoperatorheadergpsmap.setVisibility(View.GONE);
+                    Tvoperatortools.setVisibility(View.GONE);
                     idrop = 0;
                 }
                 break;
@@ -191,12 +209,16 @@ public class Frag_GPS_Public extends Fragment implements View.OnClickListener, O
                 imedical = 0;
                 if (icity == 0) {
                     IVheadercity.setImageResource(R.mipmap.img_city_header_highlighter);
-                    RLheader.setBackgroundResource(R.mipmap.img_full_header);
+                    RLheader.setBackgroundResource(R.mipmap.img_gps_operator_fullbackground);
                     IVheaderpolice.setImageResource(R.mipmap.img_police_header);
                     IVheadermedical.setImageResource(R.mipmap.img_medical_header);
                     RLpoliceicons.setVisibility(View.GONE);
                     RLmedicalicons.setVisibility(View.GONE);
                     RLcityicons.setVisibility(View.VISIBLE);
+                    IVoperatorheadergpschat.setVisibility(View.VISIBLE);
+                    IVoperatorheadergpsmenu.setVisibility(View.VISIBLE);
+                    IVoperatorheadergpsmap.setVisibility(View.VISIBLE);
+                    Tvoperatortools.setVisibility(View.VISIBLE);
                     icity = 1;
                 } else {
                     IVheadercity.setImageResource(R.mipmap.img_city_header);
@@ -204,6 +226,10 @@ public class Frag_GPS_Public extends Fragment implements View.OnClickListener, O
                     RLpoliceicons.setVisibility(View.GONE);
                     RLmedicalicons.setVisibility(View.GONE);
                     RLcityicons.setVisibility(View.GONE);
+                    IVoperatorheadergpschat.setVisibility(View.GONE);
+                    IVoperatorheadergpsmenu.setVisibility(View.GONE);
+                    IVoperatorheadergpsmap.setVisibility(View.GONE);
+                    Tvoperatortools.setVisibility(View.GONE);
                     icity = 0;
                 }
                 break;
@@ -213,12 +239,16 @@ public class Frag_GPS_Public extends Fragment implements View.OnClickListener, O
                 icity = 0;
                 if (imedical == 0) {
                     IVheadermedical.setImageResource(R.mipmap.img_medical_header_highlighter);
-                    RLheader.setBackgroundResource(R.mipmap.img_full_header);
+                    RLheader.setBackgroundResource(R.mipmap.img_gps_operator_fullbackground);
                     IVheaderpolice.setImageResource(R.mipmap.img_police_header);
                     IVheadercity.setImageResource(R.mipmap.img_city_header);
                     RLpoliceicons.setVisibility(View.GONE);
                     RLmedicalicons.setVisibility(View.VISIBLE);
                     RLcityicons.setVisibility(View.GONE);
+                    IVoperatorheadergpschat.setVisibility(View.VISIBLE);
+                    IVoperatorheadergpsmenu.setVisibility(View.VISIBLE);
+                    IVoperatorheadergpsmap.setVisibility(View.VISIBLE);
+                    Tvoperatortools.setVisibility(View.VISIBLE);
                     imedical = 1;
                 } else {
                     IVheadermedical.setImageResource(R.mipmap.img_medical_header);
@@ -226,6 +256,10 @@ public class Frag_GPS_Public extends Fragment implements View.OnClickListener, O
                     RLpoliceicons.setVisibility(View.GONE);
                     RLmedicalicons.setVisibility(View.GONE);
                     RLcityicons.setVisibility(View.GONE);
+                    IVoperatorheadergpschat.setVisibility(View.GONE);
+                    IVoperatorheadergpsmenu.setVisibility(View.GONE);
+                    IVoperatorheadergpsmap.setVisibility(View.GONE);
+                    Tvoperatortools.setVisibility(View.GONE);
                     imedical = 0;
                 }
 
@@ -236,12 +270,16 @@ public class Frag_GPS_Public extends Fragment implements View.OnClickListener, O
                 imedical = 0;
                 if (ipolice == 0) {
                     IVheaderpolice.setImageResource(R.mipmap.img_police_header_highlighter);
-                    RLheader.setBackgroundResource(R.mipmap.img_full_header);
+                    RLheader.setBackgroundResource(R.mipmap.img_gps_operator_fullbackground);
                     IVheadermedical.setImageResource(R.mipmap.img_medical_header);
                     IVheadercity.setImageResource(R.mipmap.img_city_header);
                     RLpoliceicons.setVisibility(View.VISIBLE);
                     RLmedicalicons.setVisibility(View.GONE);
                     RLcityicons.setVisibility(View.GONE);
+                    IVoperatorheadergpschat.setVisibility(View.VISIBLE);
+                    IVoperatorheadergpsmenu.setVisibility(View.VISIBLE);
+                    IVoperatorheadergpsmap.setVisibility(View.VISIBLE);
+                    Tvoperatortools.setVisibility(View.VISIBLE);
                     ipolice = 1;
                 } else {
                     IVheaderpolice.setImageResource(R.mipmap.img_police_header);
@@ -249,6 +287,10 @@ public class Frag_GPS_Public extends Fragment implements View.OnClickListener, O
                     RLpoliceicons.setVisibility(View.GONE);
                     RLmedicalicons.setVisibility(View.GONE);
                     RLcityicons.setVisibility(View.GONE);
+                    IVoperatorheadergpschat.setVisibility(View.GONE);
+                    IVoperatorheadergpsmenu.setVisibility(View.GONE);
+                    IVoperatorheadergpsmap.setVisibility(View.GONE);
+                    Tvoperatortools.setVisibility(View.GONE);
                     ipolice = 0;
                 }
 

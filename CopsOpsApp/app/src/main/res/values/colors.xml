@@ -21,6 +21,7 @@
     <color name="termcolor">#252525</color>
     <color name="dodgerblue">#1e90ff</color>
     <color name="sea_color">#73D7CB</color>
+    <color name="light_gray">#F5F5F5</color>
     <color name="dark_sea_color">#52CEBE</color>
     <color name="sky_blue">#57b7ff</color>
     <color name="dark_blue">#013171</color>

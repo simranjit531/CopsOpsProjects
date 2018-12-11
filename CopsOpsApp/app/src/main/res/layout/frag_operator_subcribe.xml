@@ -51,7 +51,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="center_horizontal|center_vertical"
                     android:layout_marginTop="40dp"
-                    android:src="@mipmap/img_profile_photo" />
+                    android:src="@mipmap/img_operator_person" />
 
 
             </RelativeLayout>

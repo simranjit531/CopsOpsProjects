@@ -22,32 +22,36 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.copsopsapp.R;
-import com.copsopsapp.fragment.Frag_Authenticate_Code;
-import com.copsopsapp.fragment.Frag_Call_Number;
-import com.copsopsapp.fragment.Frag_Details_of_Reporting;
-import com.copsopsapp.fragment.Frag_Fireman_ambulance;
-import com.copsopsapp.fragment.Frag_GPS_Public;
-import com.copsopsapp.fragment.Frag_Handrain;
-import com.copsopsapp.fragment.Frag_Home;
-import com.copsopsapp.fragment.Frag_Home_Citoyen;
-import com.copsopsapp.fragment.Frag_Home_Operator;
-import com.copsopsapp.fragment.Frag_ID_of_Reporting;
-import com.copsopsapp.fragment.Frag_Login;
-import com.copsopsapp.fragment.Frag_Operator_Profile;
-import com.copsopsapp.fragment.Frag_Public_Profile_Shown;
-import com.copsopsapp.fragment.Frag_Public_Subscription;
-import com.copsopsapp.fragment.Frag_Report_an_Incidents;
-import com.copsopsapp.fragment.Frag_Reporting_Police;
-import com.copsopsapp.fragment.Frag_Reporting_Ville;
-import com.copsopsapp.fragment.Frag_Reset_Password;
-import com.copsopsapp.fragment.Frag_Signature;
+import com.copsopsapp.fragment.common.Frag_Authenticate_Code;
+import com.copsopsapp.fragment.common.Frag_Call_Number;
+import com.copsopsapp.fragment.common.Frag_Details_of_Reporting;
+import com.copsopsapp.fragment.common.Frag_Fireman_ambulance;
+import com.copsopsapp.fragment.operatorpart.Frag_Assigning_an_Interventions;
+import com.copsopsapp.fragment.operatorpart.Frag_GPS_Operator;
+import com.copsopsapp.fragment.citizen.Frag_GPS_Public;
+import com.copsopsapp.fragment.common.Frag_Handrain;
+import com.copsopsapp.fragment.common.Frag_Home;
+import com.copsopsapp.fragment.citizen.Frag_Home_Citoyen;
+import com.copsopsapp.fragment.operatorpart.Frag_Home_Operator;
+import com.copsopsapp.fragment.common.Frag_ID_of_Reporting;
+import com.copsopsapp.fragment.common.Frag_Login;
+import com.copsopsapp.fragment.operatorpart.Frag_Operator_Profile;
+import com.copsopsapp.fragment.citizen.Frag_Public_Profile_Shown;
+import com.copsopsapp.fragment.citizen.Frag_Public_Subscription;
+import com.copsopsapp.fragment.common.Frag_Report_an_Incidents;
+import com.copsopsapp.fragment.common.Frag_Reporting_Police;
+import com.copsopsapp.fragment.common.Frag_Reporting_Ville;
+import com.copsopsapp.fragment.common.Frag_Reset_Password;
+import com.copsopsapp.fragment.common.Frag_Signature;
+import com.copsopsapp.fragment.operatorpart.Frag_Position_of_Incidents;
+import com.copsopsapp.fragment.operatorpart.Frag_Table_of_Assignments;
 import com.copsopsapp.utils.AppSession;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
 
     public TextView TVtitle;
-    public ImageView IVback,IVlogout;
+    public ImageView IVback, IVlogout;
     public RelativeLayout Rltoolbar;
     public Toolbar toolbar;
     private AppSession msession;
@@ -80,8 +84,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             displayScreen(0, null);
 
         }
-
-
 
 
     }
@@ -148,30 +150,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 fragment.setArguments(bundle);
                 break;
 
-
             case 11:
                 fragment = new Frag_Handrain();
                 fragment.setArguments(bundle);
                 break;
-
 
             case 12:
                 fragment = new Frag_ID_of_Reporting();
                 fragment.setArguments(bundle);
                 break;
 
-
             case 13:
                 fragment = new Frag_Report_an_Incidents();
                 fragment.setArguments(bundle);
                 break;
 
-
             case 14:
                 fragment = new Frag_Reporting_Police();
                 fragment.setArguments(bundle);
                 break;
-
 
             case 15:
                 fragment = new Frag_Reporting_Ville();
@@ -193,6 +190,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 fragment.setArguments(bundle);
                 break;
 
+            case 19:
+                fragment = new Frag_GPS_Operator();
+                fragment.setArguments(bundle);
+                break;
+
+            case 20:
+                fragment = new Frag_Table_of_Assignments();
+                fragment.setArguments(bundle);
+                break;
+
+            case 21:
+                fragment = new Frag_Position_of_Incidents();
+                fragment.setArguments(bundle);
+                break;
+
+            case 22:
+                fragment = new Frag_Assigning_an_Interventions();
+                fragment.setArguments(bundle);
+                break;
 
             default:
                 break;
@@ -306,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         IVback.setOnClickListener(this);
         IVlogout.setOnClickListener(this);
 
-        msession=AppSession.getInstance(MainActivity.this);
+        msession = AppSession.getInstance(MainActivity.this);
     }
 
 
@@ -324,10 +340,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.IVlogout:
                 msession.setlogin("false");
                 clearBackStack();
-                displayScreen(0,null);
+                displayScreen(0, null);
 
                 break;
-
 
 
         }
