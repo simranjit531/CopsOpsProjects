@@ -10,7 +10,7 @@ class IncidentDetail extends Model
 
     protected $fillable = [
         'ref_incident_category_id', 'ref_incident_subcategory_id', 'incident_description', 'other_description',
-        'reference', 'qr_code', 'updated_on', 'created_by', 'is_deleted'
+        'reference', 'qr_code', 'latitude', 'longitude', 'address', 'city', 'updated_on', 'created_by', 'is_deleted'
     ];
 
     /**

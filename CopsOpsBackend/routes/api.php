@@ -29,10 +29,14 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/login', 'API\ApiController@login');
     Route::post('/password/reset', 'API\ApiController@reset_password');
 
+
     Route::post('/upload/image', 'API\ApiController@upload_image');
     Route::post('/test/test', 'API\ApiController@parseJSON');
-	
-	Route::post('/profileupdate', 'API\ApiController@profileupdate');
+
+    Route::post('/incident/list', 'API\ApiController@get_incident_list');
+    Route::post('/incident/city/list', 'API\ApiController@get_incident_by_city');
+
+    Route::post('/copincident/list', 'API\ApiController@get_cops_incident_list');
 });
 
 //Route::middleware('auth:api')->get('/user', function (Request $request) {

@@ -7,6 +7,7 @@
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="description" content="@yield('description')">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
    <link  href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
   <!-- Font Awesome -->
   {{ Html::style('css/plugins/font-awesome/css/font-awesome.min.css') }}
@@ -27,7 +28,7 @@
   <!-- Google Font: Source Sans Pro -->
   {{ Html::style('css/custom.css') }}
    @yield('before-styles')
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -105,7 +106,7 @@
           </li>
             
              <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{{ url('/chat') }}" class="nav-link">
               <i class="nav-icon fa fa-comments-o"></i>
               <p>{{ trans('pages.discussion') }}</p> <!--Discussion-->
             </a>

@@ -24,6 +24,11 @@ return [
 			'enternameoperator' => 'Enter le nom dum operateur',
 			'enternamecitizen' => 'Enter le nom dum citoyen',
 			'assignanintervention' => 'Assigner une intervention',
+			'operator' => 'operateur',
+			'object' => 'objet',
+			'descriptionoftheintervention' => 'description de intervention',
+			'address' => 'Adresse',
+			'assign' => 'Assigner',
 			'tables' =>[
 			'firstname' => 'Nom',
 			'lastname' => 'prenom',
@@ -31,9 +36,18 @@ return [
 			'grade' => 'Grade',
 			'birthdate' => 'Date de naissance',
 			'numberofreports' => 'Nombre de signalement',
+			'number' => 'Numero', 
 			],
+			'intervention' => 'Intervention',
+			'attributed' => 'Attribuee',
+			'totelinterventionfenced' => 'Totel intervention cloturee',
+			
 			
        ],
+	   'archive' =>[
+		'reportlog' => 'Journal des signalements',
+		'currenthand' => 'Main Courante',
+		],
     'copops' => 'COP OPS',
 	'fromParis' => 'de Paris',
 	'administrator' => 'Administrateur',

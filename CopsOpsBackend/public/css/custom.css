@@ -1,6 +1,29 @@
+*{
+    margin:0px;
+    padding:0px;
+}
+body{
+    font-family: 'Open Sans', sans-serif;
+    font-size: 15px;
+}
+ul,li{
+    list-style: none;
+    margin:0px;
+    padding:0px;
+}
+a,a:hover,a:focus,input:focus,button:focus{
+    border:none;
+    text-decoration: none;
+    outline:none;
+}
+h1,h2,h3,h4,h5,h6{
+    margin:0px;
+    padding:0px;
+}
 .clearfix{
 	clear:both;
 }
+/*-- MAIN PAGE CSS START --*/
 .top-part{
     background:#2b5a8f;
 }
@@ -258,6 +281,11 @@ li.language-drop select{
 .user-management{
     padding:0px 29px;
 }
+
+.archivecenter{
+    padding:0px 29px;
+}
+
 .outil-section{
     background:#ffffff;
     box-shadow:0px 2px 5px #ccc;
@@ -423,4 +451,420 @@ h2.outlin-heading{
 
 
 /*-- USER MANAGEMENT PAGE CSS END --*/
+
+/*-- USER MANAGEMENT M7 SCREEN CSS START --*/
+.m7{
+    padding:0 20px;
+}
+
+.user-mgm-m7{
+    background:#ffffff;
+    border:1px solid #ccc;
+    border-radius: 3px;
+    box-shadow: 0px 0px 5px #ccc;
+    padding:20px 10px;
+}
+.user-mgm-m7 h6{
+    font-size: 14px;
+    color: #000000;
+    text-align: center;
+    margin: 0;
+	font-weight:600;
+}
+.user-mgm-m7 .left-part figure{
+    margin:0px;
+}
+.user-mgm-m7 .left-part img{
+    margin:20px auto 0 auto;
+    display: table;
+}
+.user-mgm-m7 .left-part h2{
+    font-size: 11px;
+    text-align: center;
+    color: green;
+    margin: 0;
+}
+.user-mgm-m7 .left-part h2 span{
+    display: block;
+    color: #000000;
+}
+.user-mgm-m7 .right-part ul{
+   margin: 20px 0 0 0;
+    padding: 0px;
+    float: left;
+    width: 100%;
+}
+.user-mgm-m7 .right-part ul li{
+    float: left;
+    margin: 0px 0 4px 0;
+    width: 50%;
+    font-size: 12px;
+    color: #000000;
+}
+.user-mgm-m7 .right-part ul li span{
+    display: block;
+}
+.inention-div{
+    width:80%;
+    margin:0 auto;
+    display: table;
+    background: #e7e7e7;
+    padding:10px;
+}
+.inention-div h2{
+    margin: 0 auto;
+    text-align: center;
+    font-size: 12px;
+    color: #000000;
+    display: table;
+	font-weight:600;
+}
+.inention-div span{
+    font-size: 12px;
+    color: #000000;
+    float: right;
+    margin: -7px -20px 0 0;
+}
+.zoom-div .zoom-left h2{
+    font-size: 14px;
+    color: #000;
+    margin:0px;
+}
+.zoom-div .zoom-left a{
+    background:#ccc;
+    padding:10px 38px;
+    float: left;
+    margin:20px 20px 0 0;
+    color: #000000;
+}
+.accordion .card-header:after {
+    font-family: 'FontAwesome';  
+    content: "\f056";
+    float: right; 
+}
+.accordion .card-header.collapsed:after {
+    /* symbol for "collapsed" panels */
+    content: "\f055"; 
+}
+
+/*-- USER MANAGEMENT M7 SCREEN CSS END --*/
+
+/*-- USER MANAGEMENT M8 SCREEN CSS START --*/
+
+.caree-form{
+    background:#ffffff;
+    border-radius:3px;
+    border:1px solid #ccc;
+    min-height: 500px;
+}
+.caree-left-form{
+    padding-top:30px;
+    padding-bottom:30px;
+    border-right:2px solid #ccc;
+}
+.caree-left-form:last-child{
+    border-right:none;
+}
+.caree-left-form h2{
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #0b2e80;
+    text-align: center;
+    margin: 0 auto 20px auto;
+    display: table;
+    border-bottom:1px solid #0b2e80;
+}
+.caree-left-form label{
+    margin-bottom: 5px;
+}
+.caree-left-form .form-control{
+    box-shadow: 0px 0px 4px #ccc;
+}
+.caree-left-form a.new-add i{
+    font-size: 14px;
+    color: #949494;
+    float: left;
+    margin: 4px 6px 0 0;
+}
+.caree-left-form a.new-add{
+    font-size:14px;
+    color: #949494;
+    float: left;
+    margin: 0 0 0 15px;
+    text-decoration: none;
+    font-weight: bold;
+}
+button[type="submit"].submit-btn{
+    background: #0b2e80;
+    padding: 5px 100px;
+    margin: 30px auto 0 auto;
+    display: table;
+    color: #ffffff;
+    font-size: 14px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 0px 2px 4px #0b2e80;
+}
+
+ul.list-heading{
+    margin: 0px 0 10px 0;
+    padding:0px;
+    float: left;
+    width: 100%;
+}
+ul.list-heading li{
+    float: left;
+    font-size: 14px;
+    color: #000000;
+    margin: 0 0;
+    width:50%;
+}
+.caree-left-form h3{
+    color: #ffffff;
+    font-size: 14px;
+    background:#0b2e80;
+    padding:10px 20px;
+    width:100%;
+    float:left;
+    margin: 0;
+}
+ul.inner-listing{
+    margin:0px;
+    padding:0px;
+}
+ul.inner-listing li{
+    float:left;
+    width:100%;
+    margin:0px;
+    list-style: none;
+    padding: 10px 17px;
+    position: relative;
+}
+ul.inner-listing li::after{
+    position: absolute;
+    content:'';
+    right:13px;
+    top:17px;
+    width:0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid #666;
+}
+ul.inner-listing li:nth-child(2n+1){
+    background: #dedede;
+}
+ul.inner-listing li span{
+    margin: 0 16% 0 0;
+    float: right;
+}
+
+
+/*-- USER MANAGEMENT M8 SCREEN CSS END --*/
+
+
+/*-- USER MANAGEMENT M9 SCREEN CSS START --*/
+
+.m9-screen{
+    position: relative;
+    padding:30px;
+}
+.m9-screen::before{
+    position: absolute;
+    content:'';
+    left:15px;
+    top:15px;
+    color: #000;
+    font-size: 14px;
+    background:url(../images/before-left-arrow.png) no-repeat center center;
+    width:10px;
+    height: 10px;
+}
+.m9-screen h6{
+    font-size: 14px;
+    text-align: center;
+    color: #000000;
+}
+.m9-screen h4{
+    font-size: 16px;
+    color: #000000;
+    text-align: center;
+    margin: 20px 0 20px 0;
+}
+.m9-screen h4 span{
+    font-size: 12px;
+    text-align: center;
+    color: #000000;
+    margin:0 0 0px 0;
+    display: block;
+}
+.m9-screen ul{
+    margin:0px;
+    padding:0px;
+}
+.m9-screen ul li{
+    float:left;
+    width:100%;
+    margin:0px 0 20px 0;
+    padding:0px;
+    font-size: 14px;
+    color: #000000;
+    text-align: center;
+}
+.m9-screen ul li span{
+    display: block;
+    font-size: 11px;
+}
+
+/*-- USER MANAGEMENT M9 SCREEN CSS END --*/
+
+/*-- USER MANAGEMENT M10 SCREEN CSS START --*/
+
+.userm-10 h6{
+    font-size: 12px;
+    text-align: left;
+    color: #a2a2a2;
+    margin:0 0 5px 0;
+}
+.userm-10 table tr td i{
+    margin:4px auto;
+    display: table;
+}
+.two-btn{
+    width:50%;
+    margin:0 auto;
+    display: table;
+}
+.two-btn a.refuser-btn{
+    background: #f00;
+    border-radius: 3px;
+    padding: 6px 29px;
+    color: #ffffff;
+    margin: 0px;
+    float: left;
+    text-decoration: none;
+}
+.two-btn a.validate-btn{
+    background: #1f9b12;
+    border-radius: 3px;
+    padding: 6px 29px;
+    color: #ffffff;
+    margin: 0px;
+    float: right;
+    text-decoration: none;
+}
+
+/*-- USER MANAGEMENT M10 SCREEN CSS END --*/
+
+
+/*-- USER MANAGEMENT M11 SCREEN CSS START --*/
+
+.comment-box{
+    width:100%;
+    background:rgba(255,255,255,0.8);
+    min-height: 100px;
+    padding:20px 10px;
+    margin:-50px 0 0 0;
+    box-shadow: 0px 0px 4px #ccc;
+    position: relative;
+    z-index: 1;
+    float: left;
+}
+.comment-box h6{
+    font-size: 12px;
+    color: #000000;
+    text-align: center;
+    margin: 0 0 20px 0;
+}
+.comment-box textarea{
+    min-height: 150px;
+    resize: none;
+}
+.comment-box a.comment-refuse-btn{
+    background: #a2a2a2;
+    border-radius: 3px;
+    padding: 6px 29px;
+    color: #ffffff;
+    margin: 16px auto 0 auto;
+    text-decoration: none;
+    display: table;
+}
+.image-clear{
+    width:400px;
+    height: 400px;
+    margin:80px auto;
+    display: table;
+    border:1px solid #ccc;
+}
+a.comment-validate-btn{
+    background: #1f9b12;
+    border-radius: 3px;
+    padding: 6px 29px;
+    color: #ffffff;
+    margin: 20px auto;
+    display: table;
+    text-decoration: none;
+}
+/*-- USER MANAGEMENT M11 SCREEN CSS START --*/
+
+/*-- ARCHIVE CENER PAGE CSS START --*/
+.archive-center-left h2{
+    font-size: 14px;
+    color: #ccc;
+    text-align: left !important;
+    margin: 0;
+    border-bottom: none;
+}
+.main-archive textarea, .main-archive .form-control{
+    width:80%;
+    margin:0 auto;
+    display: table;
+} 
+.main-archive .form-control.refrence-input{
+    width:30%;
+    margin:0 auto;
+    display: table;
+}
+
+/*-- ARCHIVE CENTER SCREENN 16 CSS START --*/
+.archive-center-16 h2{
+    font-size: 14px;
+    text-align: left;
+    color: #a2a2a2;
+}
+.archive-center-16 .left-form{
+    border-right:1px solid #ccc;
+}
+.archive-center-16 .left-form .form-control{
+    font-size: 14px;
+}
+button[type="button"].actual-btn{
+    background:#ffffff;
+    box-shadow:0px 3px 4px #ccc;
+    font-size: 12px;
+    color: #000000;
+    text-align: center;
+    padding:5px 15px;
+    margin:0 auto;
+    display: table;
+    border:none;
+}
+.main-archive .caree-left-form h4{
+    background:#0b2e80;
+    width:100%;
+    float: left;
+    padding: 13px 0;
+}
+.main-archive .caree-left-form h4 span{
+    width:33%;
+    float: left;
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.user-mgm-m7.rightPart h6{
+	position:relative;
+}
 

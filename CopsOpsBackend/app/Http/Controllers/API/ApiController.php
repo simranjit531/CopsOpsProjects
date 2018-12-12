@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\City;
 use App\Handrail;
 use App\HandrailAttachment;
 use App\IncidentAttachment;
@@ -9,6 +10,7 @@ use App\IncidentCategory;
 use App\IncidentDetail;
 use App\IncidentSubcategory;
 use App\User;
+use App\UserDeviceMapping;
 use App\Util\ResponseMessage;
 use Carbon\Carbon;
 use http\Env\Response;
@@ -18,6 +20,8 @@ use Illuminate\Support\Facades\Validator;
 use Mail;
 use QrCode;
 use Illuminate\Database\QueryException;
+use App\CopUserHandrailMapping;
+use App\CopUserIncidentMapping;
 
 class ApiController extends Controller
 {
@@ -55,6 +59,12 @@ class ApiController extends Controller
         $result = $this->validate_request($payload, $rules);
         if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
 
+        /* Validation for keys in payload request */
+//        $result = has_keys(array('gender', 'first_name', 'last_name', 'date_of_birth', 'phone_number',
+//            'email_id', 'user_password', 'ref_user_type_id'), $payload);
+//        if(!empty($result)) return $this->sendResponseMessage(array('status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)), 200);
+
+
         /* Validation passed now store user */
 
         # Generate random otp
@@ -70,6 +80,7 @@ class ApiController extends Controller
             'phone_number'=> isset($payload['phone_number']) ? $payload['phone_number'] : '',
             'email_id'=> isset($payload['email_id']) ? $payload['email_id'] : '',
             'user_password'=> $payload['user_password'],
+            'approved'=> $payload['ref_user_type_id'] == "Cops" ? 0 : 1,
             'otp'=> $otp
         );
 
@@ -113,6 +124,22 @@ class ApiController extends Controller
 
             if($user)
             {
+                /*
+                 * Add code here to map user id with device id
+                 */
+                $data = array(
+                    'ref_user_id'=>$user->id,
+                    'device_id'=>$payload['device_id'],
+                    'created_on'=>Carbon::now()
+                );
+                try{
+                    UserDeviceMapping::create($data);
+                }catch (QueryException $e){
+                    return $this->sendResponseMessage([
+                        'status' => false,
+                        'message'=> $e->getMessage()], 200);
+                }
+
                 $data = array(
                     'email' => $user->email_id,
                     'name' => $user->first_name.' '.$user->last_name,
@@ -135,7 +162,12 @@ class ApiController extends Controller
                     'otp' => $otp,
                     'verified'=>0,
                     'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_REGISTRATION_SUCCESS),
-                    'profile_url' => empty($user->profile_image) ? '' : asset('uploads/profile').'/'.$user->profile_image
+                    'profile_url' => empty($user->profile_image) ? '' : asset('uploads/profile').'/'.$user->profile_image,
+                    'grade'=>$user->cops_grade,
+                    'level'=>1,
+                    'profile_percent'=>0,
+                    'total_reports'=>0,
+                    'completed_reports'=>0
                 ], 200);
             }
             else
@@ -178,6 +210,10 @@ class ApiController extends Controller
         else return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_OTP_VERIFIED_FAILURE)],200);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function login(Request $request)
     {
         $payload = $this->get_payload($request);
@@ -185,14 +221,13 @@ class ApiController extends Controller
         {
             return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
         }
-//        print_r($payload);
-//        if(!in_array(array('email_id', 'user_password', 'ref_user_type_id'), $payload)){
-//            echo "reaching here"; die;
-//            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
-//        }
-//die;
-        $email = $payload['email_id'];
-        $password = $payload['user_password'];
+
+        /* Validation for keys in payload request */
+//        $result = has_keys(array('email_id', 'user_password', 'ref_user_type_id'), $payload);
+//        if(!empty($result)) return $this->sendResponseMessage(array('status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)), 200);
+
+        $email = isset($payload['email_id']) ? $payload['email_id'] : '';
+        $password = isset($payload['user_password']) ? $payload['user_password'] : '';
         $type = $payload['ref_user_type_id'] == "Cops" ? static::_STAKEHOLDER_OPERATOR : static::_STAKEHOLDER_CITIZEN;
 
         $rules  = [
@@ -218,6 +253,11 @@ class ApiController extends Controller
             'otp' => $auth[0]->otp,
             'profile_url' => empty($auth[0]->profile_image) ? '' : asset('uploads/profile').'/'.$auth[0]->profile_image,
             'verified' => $auth[0]->verified,
+            'grade'=>$auth[0]->cops_grade,
+            'level'=>1,
+            'profile_percent'=>0,
+            'total_reports'=>0,
+            'completed_reports'=>0,
             'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_LOGIN_SUCCESS)), 200);
     }
 
@@ -301,6 +341,7 @@ class ApiController extends Controller
             unset($incidents[$k]->is_deleted);
             unset($incidents[$k]->created_at);
             unset($incidents[$k]->updated_at);
+            unset($incidents[$k]->updated_on);
         }
 
         return $this->sendResponseMessage(['flag'=>true, 'data'=> $incidents],200);
@@ -362,17 +403,24 @@ class ApiController extends Controller
             'ref_incident_subcategory_id'=>'required',
             'incident_description'=>'required',
             'other_description'=>'required',
+            'incident_lat'=>'required',
+            'incident_lng'=>'required',
             'created_by'=>'required'
         ];
+        $address_city = get_address_city($payload['incident_lat'], $payload['incident_lng']);
+        if(isset($address_city['status']) && $address_city['status'] == false) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+
+        $address = ""; $city = "";
+        if(isset($address_city['results'][0]['formatted_address'])) $address = $address_city['results'][0]['formatted_address'];
+        if(isset($address_city['results'][0]['address_components'][2]['long_name'])) $city = $address_city['results'][0]['address_components'][2]['long_name'];
 
         $result = $this->validate_request($payload, $rules);
         if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
 
-
         /* Validation for handrail image and handrail video, at least 1 of the 2 should be sent in request */
 
-        if($request->hasFile('incident_image') || $request->hasFile('incident_video'))
-        {
+//        if($request->hasFile('incident_image') || $request->hasFile('incident_video'))
+//        {
             $referenceNo = 10000;
             try{
                 $allIncidents = IncidentDetail::all();
@@ -392,6 +440,10 @@ class ApiController extends Controller
                 'reference'=>$referenceNo,
                 'qr_code'=>$referenceNo.'.png',
                 'updated_on'=>Carbon::now(),
+                'latitude' => $payload['incident_lat'],
+                'longitude' => $payload['incident_lng'],
+                'address' => $address,
+                'city' => $city,
                 'created_by'=>$payload['created_by']
             );
 
@@ -427,7 +479,7 @@ class ApiController extends Controller
             {
                 return $this->sendResponseMessage(['status'=>false, 'message'=>  $e->getMessage()],200);
             }
-        }
+//        }
 
         return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_IMAGE_VIDEO_REQUIRED)],200);
 
@@ -448,8 +500,11 @@ class ApiController extends Controller
         }
 
         $rules =[
+            'objects'=>'required',
             'description'=>'required',
-            'created_by'=>'required'
+            'created_by'=>'required',
+//            'handrail_lat'=>'required',
+//            'handrail_lng'=>'required',
         ];
 
         $result = $this->validate_request($payload, $rules);
@@ -466,8 +521,8 @@ class ApiController extends Controller
 
         /* Validation for handrail image and handrail video, at least 1 of the 2 should be sent in request */
 
-        if($request->hasFile('handrail_image') || $request->hasFile('handrail_video'))
-        {
+//        if($request->hasFile('handrail_image') || $request->hasFile('handrail_video'))
+//        {
             $referenceNo = 100000;
             try{
                 $allHandrails = Handrail::all();
@@ -480,6 +535,7 @@ class ApiController extends Controller
             QrCode::format('png')->size(250)->generate($referenceNo, public_path('uploads/qrcodes/'.$referenceNo.'.png'), 'image/png');
 
             $data = array(
+                'object'=>$payload['objects'],
                 'description'=>$payload['description'],
                 'reference'=>$referenceNo,
                 'signature'=>$sign,
@@ -519,10 +575,127 @@ class ApiController extends Controller
             catch (QueryException $e){
                 return $this->sendResponseMessage(['status'=>false, 'message'=>  $e->getMessage()],200);
             }
-        }
+//        }
 
         return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_IMAGE_VIDEO_REQUIRED)],200);
     }
+
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function get_incident_list(Request $request)
+    {
+        $payload = $this->get_payload($request);
+		
+        if(isset($payload['status']) && $payload['status'] == false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        }
+
+        $rules =[
+            'incident_lat'=>'required',
+            'incident_lng'=>'required',
+        ];
+
+        $result = $this->validate_request($payload, $rules);
+        if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
+        $lat = $payload['incident_lat'];
+        $lng = $payload['incident_lng'];
+
+        $query = "SELECT ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status, 
+                  cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.created_at, ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( latitude ) ) ) ) AS `distance`,
+                  cop_incident_details.city, cop_incident_details.address  
+                  FROM cop_incident_details 
+                  JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
+                  HAVING `distance` <= 5 ORDER BY distance ASC";
+        $rs = \DB::select($query);
+
+        # Get all non deleted cities
+        $cities = City::select('id', 'city_name')->where('is_deleted', 1)->get();
+
+        if(empty($rs)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        return $this->sendResponseMessage(['status'=>true, 'data'=> $rs, 'cities'=>$cities],200);
+    }
+
+
+    public function get_incident_by_city(Request $request)
+    {
+        $payload = $this->get_payload($request);
+	
+
+        if(isset($payload['status']) && $payload['status'] == false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        }
+
+        $rules =[
+            'city_id'=>'required'
+        ];
+        $result = $this->validate_request($payload, $rules);
+        if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
+
+        $cityId = $payload['city_id'];
+        # Get city name based on city id
+        try{
+            $cityData = City::findorfail($cityId);
+            $city = $cityData['city_name'];
+
+            $query = "SELECT ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status, 
+                  cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.created_at,
+                  cop_incident_details.city, cop_incident_details.address
+                  FROM cop_incident_details 
+                  JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
+                  WHERE cop_incident_details.city LIKE '%$city%'";
+
+            $rs = \DB::select($query);
+
+            if(empty($rs)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>true, 'data'=> $rs],200);
+
+        }catch (QueryException $e){
+            return $this->sendResponseMessage([
+                'status' => false,
+                'message'=> $e->getMessage()], 200);
+        }
+    }
+
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function get_cops_incident_list(Request $request)
+    {
+        $payload = $this->get_payload($request);
+
+        if(isset($payload['status']) && $payload['status'] == false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        }
+
+        $copId = $payload['user_id'];
+
+        $res = \DB::table('cop_user_incident_mapping')
+            ->select('ref_incident_subcategory.sub_category_name', 'cop_incident_details.id', 'cop_incident_details.status',
+                  'cop_incident_details.latitude', 'cop_incident_details.longitude', 'cop_incident_details.created_at',
+                  'cop_incident_details.city', 'cop_incident_details.address')
+            ->join('cop_incident_details', 'cop_incident_details.id', '=', 'cop_user_incident_mapping.cop_incident_details_id')
+            ->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
+            ->where(['ref_user_id'=>$copId])->get();
+
+        if($res->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        return $this->sendResponseMessage(['status'=>true, 'data'=> $res],200);
+    }
+
+
+
+
+
+
+
+
 
 
     /* Util function for payload processing
