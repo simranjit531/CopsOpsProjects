@@ -68,11 +68,12 @@ class ApiController extends Controller
 
         /* Validation passed now store user */
 
+        $userId = uniqid();
         # Generate random otp
         $otp = rand(100000, 999999);
         $data = array(
             'gender'=> isset($payload['gender']) ? $payload['gender'] : '',
-            'user_id' => uniqid(),
+            'user_id' => $userId,
             'ref_user_type_id'=> $payload['ref_user_type_id'] == "Cops" ? static::_STAKEHOLDER_OPERATOR : static::_STAKEHOLDER_CITIZEN,
             'first_name'=> isset($payload['first_name']) ? $payload['first_name'] : '',
             'last_name'=> isset($payload['last_name']) ? $payload['last_name'] : '',
@@ -82,7 +83,8 @@ class ApiController extends Controller
             'email_id'=> isset($payload['email_id']) ? $payload['email_id'] : '',
             'user_password'=> $payload['user_password'],
             'approved'=> $payload['ref_user_type_id'] == "Cops" ? 0 : 1,
-            'otp'=> $otp
+            'otp'=> $otp,
+            'profile_qrcode'=>$userId.'.png'
         );
 
         if($payload['ref_user_type_id'] == "Cops")
@@ -122,7 +124,7 @@ class ApiController extends Controller
         try
         {
             $user = User::create($data);
-
+            QrCode::format('png')->size(250)->generate($userId, public_path('uploads/profile/qrcodes/'.$userId.'.png'), 'image/png');
             if($user)
             {
                 /*
@@ -169,7 +171,8 @@ class ApiController extends Controller
                     'level'=>1,
                     'profile_percent'=>0,
                     'total_reports'=>0,
-                    'completed_reports'=>0
+                    'completed_reports'=>0,
+                    'profile_qrcode'=>asset('uploads/profile/qrcodes').'/'.$user->profile_qrcode,
                 ], 200);
             }
             else
@@ -261,6 +264,7 @@ class ApiController extends Controller
             'profile_percent'=>0,
             'total_reports'=>0,
             'completed_reports'=>0,
+            'profile_qrcode'=>asset('uploads/profile/qrcodes').'/'.$auth[0]->profile_qrcode,
             'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_LOGIN_SUCCESS)), 200);
     }
 
@@ -690,6 +694,16 @@ class ApiController extends Controller
             ->where(['ref_user_id'=>$copId])->get();
 
         if($res->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+
+        foreach ($res as $k => $v)
+        {
+            # Check if incident is already closed
+            $status = $v->status;
+            $closedIncident = CopUserIncidentClosed::where('cop_incident_details_id', $v->id)->get();
+
+            $res[$k]->status =  $closedIncident->isEmpty() ? $status :  $closedIncident[0]['ref_incident_status_id'];
+        }
+
         return $this->sendResponseMessage(['status'=>true, 'data'=> $res],200);
     }
 
