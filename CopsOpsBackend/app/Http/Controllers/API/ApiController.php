@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\City;
+use App\CopUserIncidentClosed;
 use App\Handrail;
 use App\HandrailAttachment;
 use App\IncidentAttachment;
@@ -164,6 +165,7 @@ class ApiController extends Controller
                     'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_REGISTRATION_SUCCESS),
                     'profile_url' => empty($user->profile_image) ? '' : asset('uploads/profile').'/'.$user->profile_image,
                     'grade'=>$user->cops_grade,
+                    'available'=>$user->available,
                     'level'=>1,
                     'profile_percent'=>0,
                     'total_reports'=>0,
@@ -254,6 +256,7 @@ class ApiController extends Controller
             'profile_url' => empty($auth[0]->profile_image) ? '' : asset('uploads/profile').'/'.$auth[0]->profile_image,
             'verified' => $auth[0]->verified,
             'grade'=>$auth[0]->cops_grade,
+            'available'=>$auth[0]->available,
             'level'=>1,
             'profile_percent'=>0,
             'total_reports'=>0,
@@ -678,15 +681,107 @@ class ApiController extends Controller
         $copId = $payload['user_id'];
 
         $res = \DB::table('cop_user_incident_mapping')
-            ->select('ref_incident_subcategory.sub_category_name', 'cop_incident_details.id', 'cop_incident_details.status',
+            ->select('ref_incident_subcategory.sub_category_name', 'cop_incident_details.id', 'cop_user_incident_mapping.status',
                   'cop_incident_details.latitude', 'cop_incident_details.longitude', 'cop_incident_details.created_at',
-                  'cop_incident_details.city', 'cop_incident_details.address')
+                  'cop_incident_details.city', 'cop_incident_details.address', 'cop_incident_details.incident_description',
+                  'cop_incident_details.other_description', 'cop_incident_details.reference')
             ->join('cop_incident_details', 'cop_incident_details.id', '=', 'cop_user_incident_mapping.cop_incident_details_id')
             ->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
             ->where(['ref_user_id'=>$copId])->get();
 
         if($res->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
         return $this->sendResponseMessage(['status'=>true, 'data'=> $res],200);
+    }
+
+
+    public function get_profile_attributes(Request $request)
+    {
+        $payload = $this->get_payload($request);
+
+        if(isset($payload['status']) && $payload['status'] == false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        }
+
+        $userId = $payload['user_id'];
+        try{
+            $user = User::where('id', $userId)->get();
+
+            if($user->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage([
+                'status'=>true,
+                'grade'=>$user[0]->cops_grade,
+                'available'=>$user[0]->available,
+                'level'=>1,
+                'profile_percent'=>0,
+                'total_reports'=>0,
+                'completed_reports'=>0,
+                'new_reports'=>0
+            ],200);
+
+        }catch (QueryException $e){
+            return $this->sendResponseMessage([
+                'status' => false,
+                'message'=> $e->getMessage()], 200);
+        }
+    }
+
+    public function set_available_status(Request $request)
+    {
+        $payload = $this->get_payload($request);
+
+        if(isset($payload['status']) && $payload['status'] == false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        }
+
+        $userId = $payload['user_id'];
+        $available = $payload['available'];
+
+        try{
+            $rs = User::where('id', $userId)->update(['available'=>$available]);
+            $responseKey = $available == 1 ? ResponseMessage::_STATUS_AVAILABILITY_SET_AVAILABLE : ResponseMessage::_STATUS_AVAILABILITY_SET_UNAVAILABLE;
+            if($rs) return $this->sendResponseMessage(['status'=>true, 'available'=>$available, 'message'=> ResponseMessage::statusResponses($responseKey)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INVALID_OPERATION)],200);
+
+        }catch (QueryException $e){
+            return $this->sendResponseMessage([
+                'status' => false,
+                'message'=> $e->getMessage()], 200);
+        }
+    }
+
+    public function close_registered_incident(Request $request)
+    {
+        $payload = $this->get_payload($request);
+
+        if(isset($payload['status']) && $payload['status'] == false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        }
+
+        $userId = $payload['user_id'];
+        $incidentId = $payload['incident_id'];
+        $comment = $payload['comment'];
+
+        $data = array(
+            'cop_incident_details_id' => $incidentId,
+            'comment'=> $comment,
+            'created_by'=> $userId,
+            'ref_incident_status_id'=> 3,
+        );
+        try{
+            $rs = CopUserIncidentClosed::create($data);
+
+            /* let's update the status of incident in incident details table also */
+            IncidentDetail::where('id', $incidentId)->update(['status'=>3]);
+
+            if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_REGISTERED_INCIDENT_CLOSED_SUCCESS)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_REGISTERED_INCIDENT_CLOSED_FAILURE)],200);
+        }catch (QueryException $e){
+
+        }
+
     }
 
 

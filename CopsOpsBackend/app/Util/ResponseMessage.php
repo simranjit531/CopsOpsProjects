@@ -23,6 +23,9 @@ class ResponseMessage
     const _STATUS_OTP_VERIFIED_FAILURE = 5004;
     const _STATUS_USER_NOT_FOUND = 5005;
     const _INVALID_USER_TYPE =5006;
+    const _STATUS_INVALID_OPERATION =5007;
+    const _STATUS_AVAILABILITY_SET_AVAILABLE = 5008;
+    const _STATUS_AVAILABILITY_SET_UNAVAILABLE = 5009;
 
     const _STATUS_INCIDENT_ADD_SUCCESS = 6000;
     const _STATUS_INCIDENT_ADD_FAILURE = 6001;
@@ -30,6 +33,8 @@ class ResponseMessage
     const _STATUS_HANDRAIL_ADD_FAILURE = 6003;
     const _STATUS_IMAGE_VIDEO_REQUIRED = 6004;
     const _STATUS_SIGNATURE_REQUIRED = 6005;
+    const _STATUS_REGISTERED_INCIDENT_CLOSED_SUCCESS = 6006;
+    const _STATUS_REGISTERED_INCIDENT_CLOSED_FAILURE = 6007;
 
     public static $response = [
         '9999' => 'Invalid request, data not found, please check again',
@@ -51,6 +56,9 @@ class ResponseMessage
         '5004' => 'Invalid OTP, please try again later',
         '5005' => 'No user exists in our DB',
         '5006' => 'Invalid User Type',
+        '5007' => "Invalid operation, please try again later",
+        '5008' => "Availability status set to available",
+        '5009' => "Availability status set to unavailable",
 
         '6000' => 'New incident added to the system successfully',
         '6001' => 'OOPS !!! Unable to add incident to the system, please try again later',
@@ -58,6 +66,8 @@ class ResponseMessage
         '6003' => 'OOPS !!! Unable to add handrail to the system, please try again later',
         '6004' => 'Image or video is required',
         '6005' => 'Signature required',
+        '6006' => 'Incident closed successfully',
+        '6007' => 'Something went wrong, unable to closed incident, please try again later'
     ];
 
     public static function statusResponses($responseKey)
