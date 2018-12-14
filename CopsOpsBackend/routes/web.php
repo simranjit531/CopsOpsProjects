@@ -31,3 +31,7 @@ Route::get('/currenthand', 'BackendController@currenthand');
 Route::get('/chat', 'BackendController@chat');
 
 Route::post('/viewuser','BackendController@viewUser');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Mail;
 use QrCode;
@@ -156,6 +157,8 @@ class ApiController extends Controller
                     $message->subject('User Activation code');
                 });
 
+                $attributes = $this->get_user_profile_attributes($user->id);
+
                 return $this->sendResponseMessage([
                     'status' => true,
                     'id' => $user->id,
@@ -169,9 +172,10 @@ class ApiController extends Controller
                     'grade'=>$user->cops_grade,
                     'available'=>$user->available,
                     'level'=>1,
-                    'profile_percent'=>0,
-                    'total_reports'=>0,
-                    'completed_reports'=>0,
+                    'profile_percent'=>$attributes['profile_percent'],
+                    'total_reports'=>$attributes['total_reports'],
+                    'completed_reports'=>$attributes['completed_reports'],
+                    'new_reports'=>$attributes['new_reports'],
                     'profile_qrcode'=>asset('uploads/profile/qrcodes').'/'.$user->profile_qrcode,
                 ], 200);
             }
@@ -249,6 +253,8 @@ class ApiController extends Controller
             'status'=>'false',
             'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_INVALID_CREDENTIALS)), 200);
 
+        $attributes = $this->get_user_profile_attributes($auth[0]->id);
+
         return $this->sendResponseMessage(array(
             'status'=>'true',
             'id' => $auth[0]->id,
@@ -261,9 +267,10 @@ class ApiController extends Controller
             'grade'=>$auth[0]->cops_grade,
             'available'=>$auth[0]->available,
             'level'=>1,
-            'profile_percent'=>0,
-            'total_reports'=>0,
-            'completed_reports'=>0,
+            'profile_percent'=>$attributes['profile_percent'],
+            'total_reports'=>$attributes['total_reports'],
+            'completed_reports'=>$attributes['completed_reports'],
+            'new_reports'=>$attributes['new_reports'],
             'profile_qrcode'=>asset('uploads/profile/qrcodes').'/'.$auth[0]->profile_qrcode,
             'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_LOGIN_SUCCESS)), 200);
     }
@@ -718,6 +725,8 @@ class ApiController extends Controller
         }
 
         $userId = $payload['user_id'];
+        $attributes = $this->get_user_profile_attributes($userId);
+
         try{
             $user = User::where('id', $userId)->get();
 
@@ -727,10 +736,10 @@ class ApiController extends Controller
                 'grade'=>$user[0]->cops_grade,
                 'available'=>$user[0]->available,
                 'level'=>1,
-                'profile_percent'=>0,
-                'total_reports'=>0,
-                'completed_reports'=>0,
-                'new_reports'=>0
+                'profile_percent'=>$attributes['profile_percent'],
+                'total_reports'=>$attributes['total_reports'],
+                'completed_reports'=>$attributes['completed_reports'],
+                'new_reports'=>$attributes['new_reports']
             ],200);
 
         }catch (QueryException $e){
@@ -801,11 +810,57 @@ class ApiController extends Controller
 
 
 
+    private function get_user_profile_attributes($userId)
+    {
+        $newIncidentArray = array();
 
+        /* Get user type based on user id*/
+        $userData = User::where('id', $userId)->get();
+        $userType = $userData[0]->ref_user_type_id;
+        $newReport = 0;
 
+        if($userType == 1)
+        {
+            $incidentData = CopUserIncidentMapping::select('cop_incident_details_id')->where(['ref_user_id'=>$userId])->get();
+            $closedIncidentData = CopUserIncidentClosed::where('created_by', $userId)->get();
+            $closedIncidentDataCount = count($closedIncidentData);
+            $pending = $closedIncidentDataCount % 4;
+            if($pending == 0 && $closedIncidentDataCount != 0) $pending = 4;
+            elseif ($pending == 0 && $closedIncidentDataCount == 0) $pending = 0;
+            
+            $newIncidentData = CopUserIncidentMapping::select('cop_incident_details_id')->where(['ref_user_id'=>$userId, 'status'=>1])->get();
+            if(!$newIncidentData->isEmpty()) $newIncidentData = $newIncidentData->toArray();
+            foreach ($newIncidentData as $d) $newIncidentArray[] = $d['cop_incident_details_id'];
 
+            $newIncidents = CopUserIncidentClosed::whereIn('cop_incident_details_id', $newIncidentArray)->get();
+            $newReport = count($newIncidentData)-count($newIncidents);
+        }
+        else {
+            $incidentData = IncidentDetail::where('created_by', $userId)->get();
+            $pending = count($incidentData) % 4;
 
+            $closedIncidentData = $incidentData;
+        }
 
+        /* Profile percentage calculations */
+        $incidentDataCount = count($incidentData);
+
+        switch ($pending){
+            case 0 : $percentage = 0; break;
+            case 1 : $percentage = 25; break;
+            case 2 : $percentage = 50; break;
+            case 3 : $percentage = 75; break;
+            case 4 : $percentage = 100; break;
+        }
+
+        return array(
+            'level'=>1,
+            'profile_percent'=>$percentage,
+            'total_reports'=>$incidentDataCount,
+            'completed_reports'=>count($closedIncidentData),
+            'new_reports'=> $newReport
+        );
+    }
 
     /* Util function for payload processing
      * @accepts encoded json string in request
