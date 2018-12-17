@@ -735,7 +735,8 @@ class ApiController extends Controller
                 'status'=>true,
                 'grade'=>$user[0]->cops_grade,
                 'available'=>$user[0]->available,
-                'level'=>1,
+                'level'=>$attributes['level'],
+                'report'=>$attributes['report'],
                 'profile_percent'=>$attributes['profile_percent'],
                 'total_reports'=>$attributes['total_reports'],
                 'completed_reports'=>$attributes['completed_reports'],
@@ -818,6 +819,7 @@ class ApiController extends Controller
         $userData = User::where('id', $userId)->get();
         $userType = $userData[0]->ref_user_type_id;
         $newReport = 0;
+        $quotient = 1;
 
         if($userType == 1)
         {
@@ -827,34 +829,43 @@ class ApiController extends Controller
             $pending = $closedIncidentDataCount % 4;
             if($pending == 0 && $closedIncidentDataCount != 0) $pending = 4;
             elseif ($pending == 0 && $closedIncidentDataCount == 0) $pending = 0;
-            
+
             $newIncidentData = CopUserIncidentMapping::select('cop_incident_details_id')->where(['ref_user_id'=>$userId, 'status'=>1])->get();
             if(!$newIncidentData->isEmpty()) $newIncidentData = $newIncidentData->toArray();
             foreach ($newIncidentData as $d) $newIncidentArray[] = $d['cop_incident_details_id'];
 
             $newIncidents = CopUserIncidentClosed::whereIn('cop_incident_details_id', $newIncidentArray)->get();
             $newReport = count($newIncidentData)-count($newIncidents);
+
+            $report = $pending.'/4';
+            $quotient = (int)(count($incidentData)/4);
         }
         else {
             $incidentData = IncidentDetail::where('created_by', $userId)->get();
             $pending = count($incidentData) % 4;
-
             $closedIncidentData = $incidentData;
+            $closedIncidentDataCount = count($closedIncidentData);
+
+            $report = $pending.'/4';
+
+            $quotient = (int)(count($incidentData)/4);
         }
 
         /* Profile percentage calculations */
         $incidentDataCount = count($incidentData);
 
         switch ($pending){
-            case 0 : $percentage = 0; break;
+            case 0 : $percentage = 100; break;
             case 1 : $percentage = 25; break;
             case 2 : $percentage = 50; break;
             case 3 : $percentage = 75; break;
             case 4 : $percentage = 100; break;
         }
 
+        if($closedIncidentDataCount == 0) $percentage = 0;
         return array(
-            'level'=>1,
+            'level'=>$quotient,
+            'report'=>$report,
             'profile_percent'=>$percentage,
             'total_reports'=>$incidentDataCount,
             'completed_reports'=>count($closedIncidentData),
