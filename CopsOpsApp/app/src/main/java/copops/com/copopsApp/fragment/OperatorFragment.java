@@ -121,6 +121,14 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
     double longitude;
     double latitude;
+
+    @BindView(R.id.viewnotavaiable)
+    View viewnotavaiable;
+
+    @BindView(R.id.viewavaiable)
+    View viewavaiable;
+
+
     public OperatorFragment() {
 
         // Required empty public constructor
@@ -197,17 +205,19 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.RLreportanincident:
-                mAppSession.saveData("handrail","dasd");
+                mAppSession.saveData("handrail", "dasd");
                 if (operatorShowAlInfo.getGrade().equalsIgnoreCase("Grade II")) {
-                    Utils.fragmentCall(new PositionOfInteervebtionsFragment(latitude,longitude), getFragmentManager());
-               }
+                    Utils.fragmentCall(new PositionOfInteervebtionsFragment(latitude, longitude), getFragmentManager());
+                }else {
+                    Utils.showAlert(getString(R.string.operator_grade_one_message), getActivity());
+                }
                 break;
 
             case R.id.RLpositionofincidents:
-                mAppSession.saveData("handrail","dasd");
+                mAppSession.saveData("handrail", "dasd");
 
                 Utils.fragmentCall(new IncidentFragment(mAppSession.getData("id")), getFragmentManager());
-                mAppSession.saveData("operatorScreenBack","1");
+                mAppSession.saveData("operatorScreenBack", "1");
                 break;
 
             case R.id.RLnavigation:
@@ -325,22 +335,29 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
                             TVprogressbarnumber.setText(operatorShowAlInfo.getReport());
                             TVprogressbarreports.setText(operatorShowAlInfo.getCompleted_reports() + " completed interventions");
-                            TVprogresspercentage.setText(operatorShowAlInfo.getProfile_percent()+"%");
+                            TVprogresspercentage.setText(operatorShowAlInfo.getProfile_percent() + "%");
 
                             progressBar1.setMax(100);
                             progressBar1.setProgress(Integer.valueOf(operatorShowAlInfo.getProfile_percent()));
 
                             if (operatorShowAlInfo.getAvailable().equalsIgnoreCase("0")) {
-                                Tvnotavaiable.setTextColor(getResources().getColor(R.color.black));
 
+                                Log.e("notavaiable==","getCopeStatus=="+operatorShowAlInfo.getAvailable());
+                                Tvnotavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
+                                viewnotavaiable.setVisibility(View.VISIBLE);
+                                viewavaiable.setVisibility(View.GONE);
+                                Tvavaiable.setTextColor(getResources().getColor(R.color.black));
 
                             } else {
 
-
+                                Log.e("avaiable==","getCopeStatus=="+operatorShowAlInfo.getAvailable());
                                 Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
                                 Tvnotavaiable.setTextColor(getResources().getColor(R.color.black));
 
-                               // Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
+                                viewnotavaiable.setVisibility(View.GONE);
+                                viewavaiable.setVisibility(View.VISIBLE);
+
+                                // Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
 
                             }
 
@@ -400,23 +417,37 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                                 if (commanStatusPojo.getAvailable().equalsIgnoreCase("0")) {
 
 
-                                    SpannableString spanString = new SpannableString("Not Avaiable");
+                            //        SpannableString spanString = new SpannableString("Not Avaiable");
 
-                                    spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
+                            //        spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
 
-                                    Tvnotavaiable.setText(spanString);
-                                   // Tvnotavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
-                                  //  Tvavaiable.setTextColor(getResources().getColor(R.color.black));
+                            //        Tvnotavaiable.setText(spanString);
+                                    // Tvnotavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
+                                    //  Tvavaiable.setTextColor(getResources().getColor(R.color.black));
+
+                                    Log.e("notavaiable==","getCopsAvailabilityStatus=="+operatorShowAlInfo.getAvailable());
+
+                                    Tvnotavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
+                                    viewnotavaiable.setVisibility(View.VISIBLE);
+                                    viewavaiable.setVisibility(View.GONE);
+                                    Tvavaiable.setTextColor(getResources().getColor(R.color.black));
 
                                     Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
 
 
                                 } else {
 
+
+                                    Log.e("avaiable==","getCopsAvailabilityStatus=="+operatorShowAlInfo.getAvailable());
                                     Tvnotavaiable.setTextColor(getResources().getColor(R.color.black));
+                                    viewnotavaiable.setVisibility(View.GONE);
+                                    viewavaiable.setVisibility(View.VISIBLE);
                                     Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
+
+                                 //   Tvnotavaiable.setTextColor(getResources().getColor(R.color.black));
+                                 //   Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
                                     Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
-                                    Tvnotavaiable.setText("Not Avaiable");
+                                  //  Tvnotavaiable.setText("Not Avaiable");
 
                                 }
 
@@ -441,8 +472,8 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                     Utils.showAlert(t.getMessage(), getActivity());
                 }
             });
-        }catch (Exception e){
-          e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -461,9 +492,9 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                     if (response.body() != null) {
                         AssignmentListPojo assignmentListPojo = response.body();
                         if (assignmentListPojo.getStatus().equals("false")) {
-                              Utils.showAlert(" No Assigned Intervention Found  so We can’t have access to the assigning an intervention", getActivity());
+                            Utils.showAlert(" No Assigned Intervention Found  so We can’t have access to the assigning an intervention", getActivity());
                         } else {
-                                Utils.fragmentCall(new AssignmentTableFragment(assignmentListPojo), getFragmentManager());
+                            Utils.fragmentCall(new AssignmentTableFragment(assignmentListPojo), getFragmentManager());
 
                         }
                         progressDialog.dismiss();
@@ -506,7 +537,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     }
 
 
-
     private boolean checkPermission() {
         boolean check = ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
@@ -540,8 +570,8 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         public void onLocationChanged(final Location location) {
             if (location != null) {
                 // mCurrentLocation = location;
-                latitude=location.getLatitude();
-                longitude=location.getLongitude();
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
                 //  initMapFragment();
             } else {
                 Toast.makeText(getActivity(), "Location is not available now", Toast.LENGTH_LONG).show();

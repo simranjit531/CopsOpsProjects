@@ -25,7 +25,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:layout_margin="30dp"
+            android:layout_margin="20dp"
             android:gravity="center_horizontal|center_vertical"
             android:text=" Position of the incident"
             android:textColor="@color/white"
@@ -64,14 +64,14 @@
         <RelativeLayout
             android:id="@+id/RLcontentbackground"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="150dp"
             android:background="@mipmap/img_call_background">
 
 
             <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="30dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_toLeftOf="@+id/Tvfiltertext"
                 android:layout_marginRight="15dp"
                 android:src="@mipmap/img_filter_positionofincidents"/>
@@ -81,11 +81,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Filter By cities"
-                android:textSize="@dimen/textsize_18sp"
+                android:textSize="@dimen/textsize_16sp"
                 android:textColor="@color/black"
                 android:layout_centerHorizontal="true"
                 android:textStyle="bold"
-                android:layout_marginTop="30dp"/>
+                android:layout_marginTop="10dp"/>
 
 
             <EditText
@@ -126,7 +126,7 @@
                 android:layout_below="@+id/cityList"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="5dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:background="@mipmap/btn_blue_background"
                 android:visibility="visible">
 
@@ -140,7 +140,7 @@
                     android:gravity="center_vertical"
                     android:text="Search"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/textsize_16sp" />
+                    android:textSize="@dimen/textsize_12sp" />
 
 
             </RelativeLayout>

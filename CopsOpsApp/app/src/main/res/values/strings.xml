@@ -27,6 +27,7 @@
     <string name="path">Please capture at least video or image</string>
     <string name="objecttext">Please enter the subject of the handrail reports</string>
     <string name="validation_signature">Please Create Your Signature.</string>
+    <string name="operator_grade_one_message">Grade 1 Operator have not authorise to see Incident. Contact to Back Office</string>
 
     <string name="con_password">Please enter confirm password</string>
     <string name="valid_email_errer">Not valid email</string>

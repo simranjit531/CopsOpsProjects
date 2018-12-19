@@ -235,10 +235,19 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         map = googleMap;
 
 
-        LatLng coordinate = new LatLng(latitude, longitude);
+        /*CameraUpdate center= CameraUpdateFactory.newLatLng(new LatLng(latitude,
+                longitude));
+        CameraUpdate zoom=CameraUpdateFactory.zoomTo(17);
+        map.moveCamera(center);
+        map.animateCamera(zoom);*/
+
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 15));
+
+      /*  LatLng coordinate = new LatLng(latitude, longitude);
         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 11);
         map.moveCamera(CameraUpdateFactory.newLatLng(coordinate));
-        map.animateCamera(yourLocation);
+        map.animateCamera(yourLocation);*/
+
         map.setMyLocationEnabled(true);
         map.getUiSettings().setMyLocationButtonEnabled(false);
         View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
