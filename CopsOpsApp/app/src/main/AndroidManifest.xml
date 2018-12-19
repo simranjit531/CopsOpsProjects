@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.copsopsapp">
-
+    xmlns:tools="http://schemas.android.com/tools"
+    package="copops.com.copopsApp">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -10,17 +10,40 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="ANDROID.PERMISSION.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:name=".utils.MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:roundIcon="@mipmap/logo_launcher"
         android:theme="@style/AppThemenoactionbar">
-
-        <activity android:name=".activity.SplashScreen"
+        <activity
+            android:name=".activity.DashboardActivity"
+            android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden">
             <intent-filter>
@@ -29,24 +52,52 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!--Developers should put application credentials here.To obtain them, please register the application
+         at https://developer.here.com/develop/mobile-sdks-->
+        <!--Developers should put application credentials here.To obtain them, please register the application
+         at https://developer.here.com/develop/mobile-sdks-->
+        <meta-data
+            android:name="com.here.android.maps.appid"
+            android:value="g5YLVfJUvZeH1Gn3W1XR" />
+        <meta-data
+            android:name="com.here.android.maps.apptoken"
+            android:value="lXixcfQJ6K9OWpE7-y5Myw" />
+        <meta-data
+            android:name="com.here.android.maps.license.key"
+            android:value="Y8pkYQrqhXIjdHzD7iIUfkBylcbei2U7PJgtgm7AwzN89w8BjxcscwVgSYwThVJrZcbXB3AmZG293T48zs73QxgiWcYZktbQB6Q98VUxFgyCWiCP9CzB6NGtsn/3FPvOzuDaOBaAlN/W9B/vNUnji5m1CVDzRGArvMVNZ73+HxzUgbfAohOqRnWuWQ3Od6etadoPmbGUB0QBrFwVQSwxYVdcDumBEGpayGTkPyncYxhKIqC9+webQJ3MHjSOiQ6PRksGFALy8+iM6i7+aSibKHJYrMa7qNHz9o6GOOHvTTqfwtWTxYPrjkNW/pGWvIcvMu6D9rz6tFGVJPZVg0HvHd2uDu228xpM8jR9e5xJUxSKuWDdTeqmpsTF0b3QMEreT8oT/V3tX26FAii1NZRaCCWGB5JSW0ks6Wc31iFI3XR0E+nNlSU11WNQl9nmUE3TAAJHuQFGjqk7oxV9kTbct1gJv5Jwa4dlcLOsuYoUyVvt4/PunriCG49EJQbpLCK2gJSPN/mLvfO5MHiMHtHdZvupRcPJ3R6ZjZgNY4WjQ5bJG2FEvV+22mydlNzp/L7Ge7TDW8lpPpJLb/9XDnCHiIDzDy9YIiZXN8oZ6cWfYSuh57o9+LI5YUzf9/WpOlGFjjLNlrYipyF++bp4Zpfvk7GBDlr2l/oBo9VrTMHSIJ8=" />
 
-        <activity android:name=".activity.MainActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+        <!--Developers should always provide custom values for each of {YOUR_LABEL_NAME} and {YOUR_INTENT_NAME}.
+        Do not reuse HERE SDK defaults.-->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBrxD_Azxlj-PY4MUR1RYzwIFuLFt0GnOM" />
 
         <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:name="INTENT_NAME"
+            android:value="{YOUR_INTENT_NAME}" />
+        <service
+            android:name="com.here.android.mpa.service.MapService"
+            android:label="{YOUR_LABEL_NAME}"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="{YOUR_INTENT_NAME}"></action>
+            </intent-filter>
+        </service>
+        <service android:name=".services.ForegroundService" />
 
 
-       <!-- <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDbDe9b_GuBiZQfOYg9hjJvRze50NqEiYs" />-->
+        <provider
+            android:name=".utils.GenericFileProvider"
+            android:authorities="copops.com.copopsApp.fragment"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC17s9oT8hpRpk9NP_IMatUIEN1bJ_ugnY" />
 
     </application>
+
 
 </manifest>

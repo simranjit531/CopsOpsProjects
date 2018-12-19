@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/image_background_white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1.0">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbarnew" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></FrameLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/RLprofileimage"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:gravity="center_horizontal"
+            android:text="Intervention Report"
+            android:textColor="@color/dark_blue"
+            android:textSize="@dimen/textsize_28sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/RLprofileimage"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:text="Carefully Complete the Report"
+            android:textColor="@color/blue_shade"
+            android:textSize="@dimen/textsize_18sp" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center_horizontal"
+            android:text="Date / hour / State"
+            android:textColor="@color/dodgerblue"
+            android:textSize="@dimen/textsize_18sp"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/edittext_background">
+
+            <TextView
+                android:id="@+id/Tvdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="25/08/2018"
+                android:textColor="@color/aluminiumcolor"
+                android:textSize="@dimen/textsize_14sp" />
+
+            <TextView
+                android:id="@+id/Tvtime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="12:13:40"
+                android:textColor="@color/aluminiumcolor"
+                android:textSize="@dimen/textsize_14sp" />
+
+            <TextView
+                android:id="@+id/Tvstate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="10dp"
+                android:text="Waiting"
+                android:textColor="@color/btntextcolort"
+                android:textSize="@dimen/textsize_14sp" />
+
+
+        </RelativeLayout>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center_horizontal"
+            android:text="Addess"
+            android:textColor="@color/dodgerblue"
+            android:textSize="@dimen/textsize_18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etAddressId"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/edittext_background"
+            android:clickable="false"
+            android:drawableRight="@mipmap/img_write"
+            android:focusable="false"
+            android:hint="36,rue desnos, la rochelle"
+            android:inputType="text"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"></EditText>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center_horizontal"
+            android:text="Object"
+            android:textColor="@color/dodgerblue"
+            android:textSize="@dimen/textsize_18sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/objectId"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/edittext_background"
+            android:hint="loresum, ipo"
+            android:inputType="text"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:visibility="gone"></EditText>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center_horizontal"
+            android:text="Description"
+            android:textColor="@color/dodgerblue"
+            android:textSize="@dimen/textsize_18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/descId"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/edittext_background"
+
+            android:drawableRight="@mipmap/img_write"
+            android:hint="36,rue desnos, la rochelle"
+            android:inputType="text"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"></EditText>
+
+
+        <TextView
+            android:id="@+id/TVreference"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="4dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="Reference"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_22sp"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:id="@+id/RLreferencenumber"
+            android:layout_width="140dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:background="@mipmap/btn_blue_background">
+
+
+            <TextView
+                android:id="@+id/TVreferencenumber"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="2dp"
+                android:gravity="center_vertical"
+                android:text="85685545"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_16sp" />
+
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/Rlintervenue"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="40dp"
+            android:background="@mipmap/btn_blue_background">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="20dp"
+                android:gravity="center_vertical"
+                android:text="Close the intervention"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_16sp"
+                android:textStyle="bold" />
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</ScrollView>

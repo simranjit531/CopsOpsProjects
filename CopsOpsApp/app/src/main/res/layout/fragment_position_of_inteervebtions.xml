@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbarnew"
+
+        />
+
+    <RelativeLayout
+        android:id="@+id/rlheader"
+        android:layout_below="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/img_blue_gradient_background">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="30dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text=" Position of the incident"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize_20sp" />
+
+
+    </RelativeLayout>
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rlbottom"
+        android:layout_below="@+id/rlheader" />
+
+
+    <ImageView
+        android:id="@+id/IVimagesgps"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_above="@+id/rlbottom"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="20dp"
+        android:visibility="visible"
+        android:src="@mipmap/img_gps_icon" />
+
+    <RelativeLayout
+        android:id="@+id/rlbottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+
+        <RelativeLayout
+            android:id="@+id/RLcontentbackground"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@mipmap/img_call_background">
+
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="30dp"
+                android:layout_toLeftOf="@+id/Tvfiltertext"
+                android:layout_marginRight="15dp"
+                android:src="@mipmap/img_filter_positionofincidents"/>
+
+            <TextView
+                android:id="@+id/Tvfiltertext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Filter By cities"
+                android:textSize="@dimen/textsize_18sp"
+                android:textColor="@color/black"
+                android:layout_centerHorizontal="true"
+                android:textStyle="bold"
+                android:layout_marginTop="30dp"/>
+
+
+            <EditText
+                android:id="@+id/EtcitySearchId"
+                android:layout_width="280dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@mipmap/img_edittext_search_background"
+                android:clickable="true"
+                android:focusable="true"
+              android:singleLine="true"
+                android:maxLength="50"
+                android:paddingLeft="40dp"
+                android:paddingRight="15dp"
+                android:hint="search"
+                android:imeOptions="actionDone"
+                android:textColor="@color/aluminiumcolor"
+                android:textSize="@dimen/textsize_12sp"
+                android:visibility="visible" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:id="@+id/cityList"
+                android:layout_marginLeft="30dp"
+                android:layout_below="@+id/EtcitySearchId"
+                android:layout_marginRight="30dp"
+                android:visibility="gone"
+                android:layout_height="100dp">
+
+            </android.support.v7.widget.RecyclerView>
+            <RelativeLayout
+                android:id="@+id/RLsearch"
+                android:layout_width="140dp"
+                android:layout_height="50dp"
+                android:layout_below="@+id/cityList"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="10dp"
+                android:background="@mipmap/btn_blue_background"
+                android:visibility="visible">
+
+
+                <TextView
+                    android:id="@+id/TVsearch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="4dp"
+                    android:gravity="center_vertical"
+                    android:text="Search"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textsize_16sp" />
+
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+</RelativeLayout>

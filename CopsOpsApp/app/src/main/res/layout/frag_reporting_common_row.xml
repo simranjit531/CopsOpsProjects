@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+            <LinearLayout
+                android:id="@+id/llviolence"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:orientation="vertical"
+              android:gravity="center"
+                android:background="@drawable/background_white">
+
+                <ImageView
+                    android:id="@+id/icident_cat_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+
+                    android:src="@mipmap/img_violence"/>
+
+                <TextView
+                    android:id="@+id/icident_cat_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Attack/Violence"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_horizontal"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
+
+            </LinearLayout>
+
+
+
+    </LinearLayout>

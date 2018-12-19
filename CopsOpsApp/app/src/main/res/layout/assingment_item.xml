@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:orientation="horizontal"
+    >
+    <TextView
+        android:id="@+id/dateTv"
+        android:layout_weight=".32"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:textSize="@dimen/textsize_14sp"
+        android:textColor="@color/black"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:gravity="center_horizontal|center_vertical"/>
+    <TextView
+        android:id="@+id/objectId"
+        android:layout_weight=".32"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:textSize="@dimen/textsize_14sp"
+        android:textColor="@color/black"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:gravity="center_horizontal|center_vertical"/>
+    <TextView
+        android:id="@+id/stateId"
+        android:layout_weight=".32"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:textSize="@dimen/textsize_14sp"
+        android:textColor="@color/black"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:gravity="center_horizontal|center_vertical"/>
+</LinearLayout>

@@ -24,6 +24,18 @@
         android:layout_marginTop="40dp"
         android:background="@mipmap/img_call_background">
 
+
+        <TextView
+            android:id="@+id/TVcalltext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center_horizontal"
+            android:textColor="@color/aluminiumcolor"
+            android:textSize="@dimen/textsize_14sp"/>
+
         <View
             android:id="@+id/viewline"
             android:layout_width="match_parent"

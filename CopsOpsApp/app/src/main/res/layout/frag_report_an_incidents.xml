@@ -1,186 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/image_background_white">
+    android:background="@mipmap/image_background_white"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbarnew" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="15dp"
+        android:gravity="center_horizontal"
+        android:text="@string/report_an_incident"
+        android:textColor="@color/black"
+        android:textSize="@dimen/textsize_28sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/RLprofileimage"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:text="@string/report_an_incident"
+        android:textColor="@color/aluminiumcolor"
+        android:textSize="@dimen/textsize_18sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/mRecyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_marginBottom="@dimen/textsize_40sp"
+        android:background="@android:color/transparent" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/RLprofileimage"
-            android:layout_marginTop="15dp"
-            android:gravity="center_horizontal"
-            android:text="Report an incident"
-            android:textColor="@color/black"
-            android:textSize="@dimen/textsize_28sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/RLprofileimage"
-            android:layout_marginTop="10dp"
-            android:gravity="center_horizontal"
-            android:text="Report an incident"
-            android:textColor="@color/aluminiumcolor"
-            android:textSize="@dimen/textsize_18sp" />
-
-
-        <RelativeLayout
-            android:id="@+id/Rlpoliceincident"
-            android:layout_width="280dp"
-            android:layout_height="140dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/background_reportincidents">
-
-
-            <TextView
-                android:id="@+id/Tvpolicetitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_toLeftOf="@+id/IVpolicelogo"
-                android:text="POLICE"
-                android:textColor="@color/black"
-                android:textSize="@dimen/textsize_18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/Tvpolicetext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/Tvpolicetitle"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_toLeftOf="@+id/IVpolicelogo"
-                android:text="Police Incident"
-                android:textColor="@color/black"
-                android:textSize="@dimen/textsize_14sp" />
-
-            <ImageView
-                android:id="@+id/IVpolicelogo"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="20dp"
-                android:src="@mipmap/img_police" />
-
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:id="@+id/Rlmedicalfiremanincident"
-            android:layout_width="280dp"
-            android:layout_height="140dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/background_reportincidents">
-
-
-            <TextView
-                android:id="@+id/Tvmedicaltitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:layout_toLeftOf="@+id/IVmedicallogo"
-                android:text="Medical / Fireman"
-                android:textColor="@color/black"
-                android:textSize="@dimen/textsize_18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/Tvmedicaltext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_below="@+id/Tvmedicaltitle"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_toLeftOf="@+id/IVmedicallogo"
-                android:text="Medical and fireman incident"
-                android:textColor="@color/black"
-                android:textSize="@dimen/textsize_14sp" />
-
-            <ImageView
-                android:id="@+id/IVmedicallogo"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="20dp"
-                android:src="@mipmap/img_medical" />
-
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:id="@+id/Rlcityincident"
-            android:layout_width="280dp"
-            android:layout_height="140dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="30dp"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/background_reportincidents">
-
-
-            <TextView
-                android:id="@+id/TVtitlecity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:layout_toLeftOf="@+id/IVcitylogo"
-                android:text="City"
-                android:textColor="@color/black"
-                android:textSize="@dimen/textsize_18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/Tvcitytext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/TVtitlecity"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_toLeftOf="@+id/IVcitylogo"
-                android:text="City Incident"
-                android:textColor="@color/black"
-                android:textSize="@dimen/textsize_16sp" />
-
-            <ImageView
-                android:id="@+id/IVcitylogo"
-                android:layout_width="65dp"
-                android:layout_height="65dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="20dp"
-                android:src="@mipmap/img_city" />
-
-        </RelativeLayout>
-
-
-    </LinearLayout>
-
-</ScrollView>
+</LinearLayout>

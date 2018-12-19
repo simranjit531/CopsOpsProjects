@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@mipmap/image_background_white">
+    <include
+         android:id="@+id/toolbar"
+         layout="@layout/toolbarnew" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/background_gradient_blue_simple"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="15dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="@string/signature"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_20sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="@string/signature_obligatory"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_14sp" />
+
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp">
+
+            <ImageView
+                android:id="@+id/mClear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="38dp"
+                android:background="@mipmap/cross_32" />
+
+            <LinearLayout
+                android:id="@+id/ETotherinfoincident"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_below="@+id/mClear"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:background="@drawable/signature_background"
+                android:orientation="vertical">
+
+                <com.github.gcacace.signaturepad.views.SignaturePad
+                    android:id="@+id/signature_pad"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/RLnext"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginBottom="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="40dp"
+            android:background="@mipmap/btn_blue_background">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="4dp"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/TVnext"
+                android:src="@mipmap/img_next" />
+
+
+            <TextView
+                android:id="@+id/TVnext"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:gravity="center_vertical"
+                android:text="@string/next"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_16sp" />
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</ScrollView>
+</LinearLayout>

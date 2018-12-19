@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@mipmap/image_background_white">
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbarnew" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@mipmap/img_blue_gradient_background"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="20dp"
+                android:src="@mipmap/img_bemoreprecise" />
+
+        </LinearLayout>
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="visible"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
+            android:src="@mipmap/img_qrcode"/>
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/reason"
+            android:textColor="@color/sky_blue"
+            android:textSize="@dimen/textsize_18sp"
+            android:textStyle="bold" />
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/edittext_background">
+
+
+            <!--<CheckBox-->
+                <!--android:id="@+id/CBtheft"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="20dp"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:paddingRight="10dp"-->
+                <!--android:button="@drawable/checkbox_selector"-->
+                <!--android:text="     Theft"-->
+                <!--android:textSize="@dimen/textsize_14sp"-->
+                <!--android:textColor="@color/aluminiumcolor" />-->
+
+            <CheckBox
+                android:id="@+id/CBburglary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:checked="true"
+                android:paddingRight="10dp"
+                android:clickable="false"
+                android:textCursorDrawable="@color/black"
+                android:button="@drawable/checkbox_selector"
+                android:text="     Burglary"
+                android:textSize="@dimen/textsize_14sp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/aluminiumcolor" />
+
+            <!--<CheckBox-->
+                <!--android:id="@+id/CBsexualviolence"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="20dp"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:paddingRight="10dp"-->
+                <!--android:layout_marginBottom="10dp"-->
+                <!--android:layout_below="@+id/CBburglary"-->
+                <!--android:button="@drawable/checkbox_selector"-->
+                <!--android:text="     Sexual violence"-->
+                <!--android:textSize="@dimen/textsize_14sp"-->
+                <!--android:textColor="@color/aluminiumcolor" />-->
+
+
+
+        </RelativeLayout>
+
+
+        <EditText
+            android:id="@+id/ETdescribetheincident"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:inputType="textMultiLine"
+            android:imeOptions="actionNext"
+
+            android:background="@drawable/edittext_background"
+            android:textColorHint="@color/aluminiumcolor"
+            android:textCursorDrawable="@color/black"
+            android:paddingLeft="10dp"
+            android:textSize="@dimen/textsize_16sp"
+            android:textColor="@color/black"
+            android:hint="Describe the incident"/>
+
+        <EditText
+            android:id="@+id/ETotherinfoincident"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:visibility="visible"
+            android:inputType="textMultiLine"
+            android:imeOptions="actionDone"
+            android:background="@drawable/edittext_background"
+            android:textColorHint="@color/aluminiumcolor"
+            android:paddingLeft="10dp"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_16sp"
+            android:hint="@string/other_hint"/>
+
+
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+
+            <LinearLayout
+                android:id="@+id/llcamera"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:background="@mipmap/img_round_camera"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <!--<ImageView-->
+                    <!--android:layout_width="25dp"-->
+                    <!--android:layout_height="25dp"-->
+                    <!--android:layout_marginBottom="4dp"-->
+                    <!--android:layout_gravity="center_vertical"-->
+                    <!--android:src="@mipmap/img_camera"/>-->
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llvideo"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:background="@mipmap/img_round_video"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <!--<ImageView-->
+                    <!--android:layout_width="25dp"-->
+                    <!--android:layout_height="25dp"-->
+                    <!--android:layout_marginBottom="4dp"-->
+                    <!--android:layout_gravity="center_vertical"-->
+                    <!--android:src="@mipmap/img_video_report"/>-->
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+        <RelativeLayout
+            android:id="@+id/RLenvoyer"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/textsize_60sp"
+            android:layout_marginBottom="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@mipmap/btn_blue_background">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginTop="22dp"
+                android:layout_toLeftOf="@+id/TVenvoyer"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/img_envoyer"/>
+
+            <TextView
+                android:id="@+id/TVenvoyer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/send_btn"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_16sp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="18dp"/>
+
+
+
+        </RelativeLayout>
+
+
+
+
+
+
+    </LinearLayout>
+    </ScrollView>
+</LinearLayout>

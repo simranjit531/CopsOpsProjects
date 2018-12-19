@@ -1,10 +1,143 @@
 <resources>
-    <string name="app_name">CopsOpsApp</string>
+    <string name="app_name">CopOps</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
     <string name="GPS_is_settings">GPS is settings.</string>
     <string name="GPS_is_not_enabled">GPS is not enabled. Do you want to go to settings menu?</string>
     <string name="Cancel">Cancel</string>
     <string name="Settings">Settings</string>
     <string name="no_internet">No internet Access, Check your internet connection.</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="last_name">Please enter last name</string>
+    <string name="first_name">Please enter first name</string>
+    <string name="dob">Please enter date of birth</string>
+    <string name="phone_number">Please enter phone number</string>
+    <string name="phone_number_10">Please enter phone number minimum 10 digit</string>
+    <string name="email">Please enter email</string>
+    <string name="Male_female">Please select man or woman</string>
+    <string name="des">Please add description</string>
+    <string name="other_des">Please add other description</string>
+    <string name="password">Please enter password</string>
+    <string name="path">Please capture at least video or image</string>
+    <string name="objecttext">Please enter the subject of the handrail reports</string>
+    <string name="validation_signature">Please Create Your Signature.</string>
+
+    <string name="con_password">Please enter confirm password</string>
+    <string name="valid_email_errer">Not valid email</string>
+    <string name="read_file">This app needs access to your file storage so that it can read photos.</string>
+    <string name="internet_conection">Please check your internet connectivity !!! .</string>
+    <string name="password_not_same">Password and Confirm password must be equal.</string>
+    <string name="citizen">Citizen</string>
+    <string name="cityName">Please Enter City Name</string>
+    <string name="no_find">No Record found</string>
+
+    <string name="validation_msg">The creation of the operator account
+must be validated</string>
+    <string name="home_app_msg">The public account is intended for use
+of the application.
+The Operator account is intended
+in the force of order. </string>
+
+    <!--  Loging Screen -->
+    <string name="security_msg">Security is the first freedom</string>
+    <string name="header_msg">Lorem ipsum dolor sit
+exciting and enjoyable way </string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="log_in_btn">Log In</string>
+    <string name="forgot_pass">Forgot your password ?</string>
+    <string name="not_registered">Not Registered ? </string>
+
+    <!-- Reset Password Screen-->
+    <string name="reset_pass_header">Reset Password</string>
+    <string name="email_msg">"An email will be sent to you
+     to change your password</string>
+    <string name="your_email_hint">Your Email</string>
+    <string name="send_btn">Send</string>
+
+
+    <!--  Registatin Screen -->
+    <string name="last_name_hint">Last Name</string>
+    <string name="first_name_hint">First Name</string>
+    <string name="dob_hint">dd / mm / yyyy</string>
+    <string name="phone_no_hint">Phone Number</string>
+    <string name="con_pass_hint">Confirm Password</string>
+    <string name="id_card">ID Card</string>
+    <string name="business_id_card">Business Card</string>
+    <string name="front_text">Recto</string>
+    <string name="back_text">Verso</string>
+    <string name="next_btn">Next</string>
+    <string name="handrail">Handrail</string>
+    <string name="object">Object</string>
+
+    <string name="aut_header">Authenticate the device</string>
+    <string name="send_code">Send code</string>
+    <string name="otp_msg">Please fill in below
+the code sent to </string>
+
+    <!--  Signature Screen -->
+    <string name="signature">Signature</string>
+    <string name="signature_obligatory">The signature is obligatory</string>
+
+    <!--  Custom Dialog Screen -->
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="information">Information</string>
+    <string name="exit_message">Are You Sure You Want to Exit ? </string>
+    <string name="logout_message">Are You Sure You Want to Logout ? </string>
+    <string name="loading_msg">Please Wait... </string>
+    <string name="compress_msg">Please Wait Your video is Processing... </string>
+
+    <!--  DashBoard Screen -->
+
+    <string name="sent">| sentinel</string>
+    <string name="report_comp">06/10</string>
+    <string name="progress_propert">06 Reports</string>
+    <string name="navigation">Navigation</string>
+    <string name="report_an_incident">Report an incident</string>
+    <string name="search">Search</string>
+
+    <string name="next">Next</string>
+    <!-- call screen -->
+    <string name="no_thanks">NO THANKS</string>
+    <string name="call">CALL</string>
+    <!-- Incident screen -->
+    <string name="reason">Reason</string>
+    <string name="other_hint">Other informations (Victims,place description.....</string>
+    <string name="reference">Reference</string>
+    <string name="finish">Finish</string>
+
+    <!-- Navigation screen -->
+
+    <string name="type_police">Type Police</string>
+    <string name="signaler_un_incident">Signaler un incident</string>
+    <string name="medical_fireman">Medical / Fireman</string>
+    <string name="type_city">Type City</string>
+    <string name="whereareyougoing">  where are you going</string>
+    <string name="citySearch">  City Search</string>
+    <string name="address_hint">36, desnos road, La Rochelle,France</string>
+    <string name="fill_dest">FILL IN THE DESTINATION</string>
+    <string name="other">Other</string>
+    <string name="body_accident">Body accident</string>
+    <string name="airway_obstruction">Airway obstruction</string>
+    <string name="lighting_out_of_order">Lighting out of order</string>
+    <string name="hemorrhage_wound">hemorrhage,wound</string>
+    <string name="dirty_place">Dirty Place (Street,Parc)</string>
+    <string name="tags_onapublicbuilding">Tags on a public building</string>
+    <string name="Fire_and_scorch">Fire and scorch</string>
+    <string name="Heart_attack_and_malaise">Heart attack and malaise</string>
+    <string name="Sexual_violence">Sexual violence</string>
+    <string name="Burglary">Burglary</string>
+    <string name="Theft">Theft</string>
+    <string name="Attack_violence">Attack / violence</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="destination_selection">Please Select Your Destination for Navigation.</string>
 
 </resources>

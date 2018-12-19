@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbarnew"
+            />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@mipmap/img_blue_gradient_background"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="    COP-OPS"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_20sp" />
+
+
+        </RelativeLayout>
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="5dp"-->
+            <!--android:background="@mipmap/img_blue_gradient_background"-->
+            <!--android:orientation="vertical">-->
+
+            <!--<ImageView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:layout_margin="20dp"-->
+                <!--android:src="@mipmap/img_copsopslogo_white" />-->
+
+        <!--</LinearLayout>-->
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:src="@mipmap/img_login_icon" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center_horizontal"
+            android:text="@string/security_msg"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_24sp"
+            android:textStyle="normal" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:gravity="center_horizontal"
+            android:text="@string/header_msg"
+            android:textColor="@color/aluminiumcolor"
+            android:textSize="@dimen/textsize_16sp"
+            android:textStyle="normal" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/IVcenterleft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/IVcenterdot"
+                android:src="@mipmap/img_dot_two" />
+
+            <ImageView
+                android:id="@+id/IVcenterdot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:src="@mipmap/img_dot_one" />
+
+            <ImageView
+                android:id="@+id/IVcenterright"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/IVcenterdot"
+                android:src="@mipmap/img_dot_two" />
+
+
+        </RelativeLayout>
+
+
+        <EditText
+            android:id="@+id/ETemail"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="20dp"
+            android:inputType="textEmailAddress"
+            android:imeOptions="actionNext"
+            android:textCursorDrawable="@color/black"
+            android:background="@mipmap/img_edittext_background"
+            android:textColorHint="@color/aluminiumcolor"
+            android:paddingLeft="20dp"
+            android:textColor="@color/black"
+            android:hint="@string/email_hint"/>
+
+        <EditText
+            android:id="@+id/ETpassword"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="20dp"
+            android:inputType="textPassword"
+            android:imeOptions="actionDone"
+            android:textCursorDrawable="@color/black"
+
+            android:background="@mipmap/img_edittext_background"
+            android:textColorHint="@color/aluminiumcolor"
+            android:paddingLeft="20dp"
+            android:textColor="@color/black"
+            android:hint="@string/password_hint"/>
+
+
+        <RelativeLayout
+            android:id="@+id/RLlogin"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/textsize_60sp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@mipmap/btn_blue_background">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="18dp"
+                android:layout_toLeftOf="@+id/TVlogin"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/img_lock"/>
+
+            <TextView
+                android:id="@+id/TVlogin"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/log_in_btn"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_18sp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="18dp"/>
+
+
+
+        </RelativeLayout>
+
+
+
+
+
+        <TextView
+            android:id="@+id/Tvforgot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:gravity="center_horizontal"
+            android:text="@string/forgot_pass"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_14sp"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/Tvregister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center_horizontal"
+            android:text="@string/not_registered"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_14sp"
+            android:textStyle="normal" />
+
+
+
+
+
+    </LinearLayout>
+
+</ScrollView>

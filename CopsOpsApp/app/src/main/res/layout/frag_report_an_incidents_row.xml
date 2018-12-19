@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/Rlpoliceincident"
+        android:layout_width="280dp"
+        android:layout_height="140dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/background_reportincidents">
+
+
+        <TextView
+            android:id="@+id/mType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toLeftOf="@+id/IVpolicelogo"
+            android:text="POLICE"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/mTypeDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/mType"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_toLeftOf="@+id/IVpolicelogo"
+            android:text="Police Incident"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_14sp" />
+
+        <ImageView
+            android:id="@+id/IVpolicelogo"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp"
+            android:src="@mipmap/img_police" />
+
+    </RelativeLayout>
+    </LinearLayout>

@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#f2f2f2</color>
     <color name="colorPrimaryDark">#f2f2f2</color>
-    <color name="colorAccent">#f2f2f2</color>
+    <color name="colorAccent">#000000</color>
     <color name="btntextcolort">#ff3b30</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
@@ -14,6 +14,7 @@
     <color name="smallgrey">#E8E8E8</color>
     <color name="aluminiumcolor">#868789</color>
     <color name="backgroundcolor">#111921</color>
+    <color name="light_gray">#F5F5F5</color>
     <color name="errormsgcolor">#3d383a</color>
     <color name="transparent">#00000000</color>
     <color name="linedrawcode">#3d383a</color>
@@ -21,7 +22,6 @@
     <color name="termcolor">#252525</color>
     <color name="dodgerblue">#1e90ff</color>
     <color name="sea_color">#73D7CB</color>
-    <color name="light_gray">#F5F5F5</color>
     <color name="dark_sea_color">#52CEBE</color>
     <color name="sky_blue">#57b7ff</color>
     <color name="dark_blue">#013171</color>
@@ -32,4 +32,5 @@
     <color name="nightrider">#313131</color>
     <color name="notificationbackground">#193B71</color>
     <color name="lightgraycolor">#E7E7E7</color>
+    <color name="qrcode_stroke">#132742</color>
 </resources>

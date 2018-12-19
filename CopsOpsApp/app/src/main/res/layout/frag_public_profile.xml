@@ -8,7 +8,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbarnew" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -120,12 +122,13 @@
 
                     <TextView
                         android:id="@+id/TVprogresspercentage"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="60dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
                         android:text="40%"
-                        android:textColor="@color/white"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
                         android:textSize="8sp" />
 
 
