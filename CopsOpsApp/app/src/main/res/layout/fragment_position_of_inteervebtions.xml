@@ -49,10 +49,10 @@
         android:layout_height="35dp"
         android:layout_above="@+id/rlbottom"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="10dp"
         android:layout_marginRight="20dp"
-        android:visibility="visible"
-        android:src="@mipmap/img_gps_icon" />
+        android:layout_marginBottom="80dp"
+        android:src="@mipmap/img_gps_icon"
+        android:visibility="visible" />
 
     <RelativeLayout
         android:id="@+id/rlbottom"

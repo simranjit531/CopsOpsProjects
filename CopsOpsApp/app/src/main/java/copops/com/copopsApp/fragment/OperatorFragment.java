@@ -123,7 +123,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     AppSession mAppSession;
     OperatorShowAlInfo operatorShowAlInfo;
 
-
+    AssignmentListPojo assignmentListPojo_close;
     double longitude;
     double latitude;
     public OperatorFragment() {
@@ -202,17 +202,17 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.RLreportanincident:
-                mAppSession.saveData("handrail","dasd");
+                mAppSession.saveData("handrail", "dasd");
                 if (operatorShowAlInfo.getGrade().equalsIgnoreCase("Grade II")) {
-                    Utils.fragmentCall(new PositionOfInteervebtionsFragment(latitude,longitude), getFragmentManager());
-               }
+                    Utils.fragmentCall(new PositionOfInteervebtionsFragment(latitude, longitude), getFragmentManager());
+                }
                 break;
 
             case R.id.RLpositionofincidents:
-                mAppSession.saveData("handrail","dasd");
+                mAppSession.saveData("handrail", "dasd");
 
                 Utils.fragmentCall(new IncidentFragment(mAppSession.getData("id")), getFragmentManager());
-                mAppSession.saveData("operatorScreenBack","1");
+                mAppSession.saveData("operatorScreenBack", "1");
                 break;
 
             case R.id.RLnavigation:
@@ -257,18 +257,37 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
 
             case R.id.llintervention:
-                if (Utils.checkConnection(getActivity())) {
-                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
 
-                    incdentSetPojo.setUser_id(mAppSession.getData("id"));
-                    incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
-                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                    RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                    getAssigmentList(mFile);
-                } else {
-                    Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+                if (operatorShowAlInfo.getNew_reports().equalsIgnoreCase("1")) {
+                    if (Utils.checkConnection(getActivity())) {
+                        IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+
+                        incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                        incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+                        Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                        RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                        getAssignIntervationData(mFile);
+                    } else {
+                        Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+                    }
+
+
+
+
+                }else {
+                    if (Utils.checkConnection(getActivity())) {
+                        IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+
+                        incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                        incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+                        Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                        RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                        getAssigmentList(mFile);
+                    } else {
+                        Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+                    }
+
                 }
-
                 break;
 
         }
@@ -568,4 +587,54 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
         }
     };
+
+
+
+
+
+    private void getAssignIntervationData(RequestBody Data) {
+        progressDialog.show();
+        Service acceptInterven = ApiUtils.getAPIService();
+        Call<AssignmentListPojo> acceptIntervenpCall = acceptInterven.assignedData(Data);
+        acceptIntervenpCall.enqueue(new Callback<AssignmentListPojo>() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onResponse(Call<AssignmentListPojo> call, Response<AssignmentListPojo> response)
+
+            {
+                try {
+                    if (response.body() != null) {
+                         assignmentListPojo_close = response.body();
+                        if (assignmentListPojo_close.getStatus().equals("false")) {
+                               Utils.showAlert(assignmentListPojo_close.getMessage(), getActivity());
+
+                        } else {
+
+
+                            Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close), getFragmentManager());
+
+
+
+                        }
+                        progressDialog.dismiss();
+
+                    } else {
+                        Utils.showAlert(response.message(), getActivity());
+                    }
+
+                } catch (Exception e) {
+                    progressDialog.dismiss();
+                    e.getMessage();
+                    Utils.showAlert(e.getMessage(), getActivity());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AssignmentListPojo> call, Throwable t) {
+                Log.d("TAG", "Error " + t.getMessage());
+                progressDialog.dismiss();
+                Utils.showAlert(t.getMessage(), getActivity());
+            }
+        });
+    }
 }

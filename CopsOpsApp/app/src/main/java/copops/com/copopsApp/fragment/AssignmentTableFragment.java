@@ -101,8 +101,8 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
     @Override
     public void clickPosition(int pos) {
 
-        if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("1")) {
+     //   if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("1")) {
             Utils.fragmentCall(new AssignedInterventionFragment(pos, assignmentListPojo), getFragmentManager());
-        }
+       // }
     }
 }

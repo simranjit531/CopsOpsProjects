@@ -69,7 +69,17 @@ public interface Service {
 
     @Multipart
     @POST("/api/auth/registered/incident/close")
-    Call<CommanStatusPojo> close(@Part("data") RequestBody data);
+    Call<IncedentAcceptResponse> close(@Part("data") RequestBody data, @Part MultipartBody.Part signature);
+
+
+    @Multipart
+    @POST("/api/auth/registered/incident/assigned")
+    Call<AssignmentListPojo> assignedData(@Part("data") RequestBody data);
+
+
+    @Multipart
+    @POST("/api/auth/registered/incident/intervent")
+    Call<CommanStatusPojo> acceptInterven(@Part("data") RequestBody data);
 
     @Multipart
     @POST("/api/auth/profile/attributes")
@@ -83,10 +93,10 @@ public interface Service {
 
     @Multipart
     @POST("/api/auth/register/incident")
-    Call<IncedentAcceptResponse> generateIncedent(@Part MultipartBody.Part incident_image,@Part MultipartBody.Part incident_video,@Part("data") RequestBody data);
+    Call<IncedentAcceptResponse> generateIncedent(@Part MultipartBody.Part incident_image, @Part MultipartBody.Part incident_video, @Part("data") RequestBody data);
 
     @Multipart
     @POST("/api/auth/register/handrail")
-    Call<IncedentAcceptResponse> generateHandrailSignature(@Part MultipartBody.Part signature,@Part MultipartBody.Part handrail_image,@Part MultipartBody.Part handrail_video,@Part("data") RequestBody data);
+    Call<IncedentAcceptResponse> generateHandrailSignature(@Part MultipartBody.Part signature, @Part MultipartBody.Part handrail_image, @Part MultipartBody.Part handrail_video, @Part("data") RequestBody data);
 
 }

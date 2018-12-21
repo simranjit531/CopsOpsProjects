@@ -2,8 +2,10 @@ package copops.com.copopsApp.fragment;
 
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +13,31 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.activity.DashboardActivity;
 import copops.com.copopsApp.pojo.AssignmentListPojo;
+import copops.com.copopsApp.pojo.CommanStatusPojo;
+import copops.com.copopsApp.pojo.IncdentSetPojo;
+import copops.com.copopsApp.services.ApiUtils;
+import copops.com.copopsApp.services.Service;
+import copops.com.copopsApp.utils.AppSession;
+import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.Utils;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 @SuppressLint("ValidFragment")
-public class AssignedInterventionFragment extends Fragment implements View.OnClickListener,Utils.clossPassInterFace {
+public class AssignedInterventionFragment extends Fragment implements View.OnClickListener, Utils.clossPassInterFace {
     int pos;
     AssignmentListPojo assignmentListPojo;
     Utils.clossPassInterFace mClossPassInterFace;
@@ -50,6 +65,10 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
     RelativeLayout Rlintervenue;
 
     String dateString;
+    ProgressDialog progressDialog;
+
+    AppSession mAppSession;
+    CommanStatusPojo commanStatusPojo;
 
     public AssignedInterventionFragment(int pos, AssignmentListPojo assignmentListPojo) {
         // Required empty public constructor
@@ -66,8 +85,10 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
         View view = inflater.inflate(R.layout.fragment_assigned_intervention, container, false);
 
         ButterKnife.bind(this, view);
-
-        mClossPassInterFace=this;
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("loading...");
+        mClossPassInterFace = this;
+        mAppSession = mAppSession.getInstance(getActivity());
 
         initView();
         return view;
@@ -88,9 +109,16 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
         Tvdate.setText(date);
         Tvtime.setText(time);
         if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("1")) {
+            Tvstate.setText("On-wait");
+            Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
+        }
+        if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("2")) {
             Tvstate.setText("Pending");
             Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
         } else {
+
+            Tvstate.setText("Finished");
+            Tvstate.setTextColor(getResources().getColor(R.color.black));
             //  Tvstate.setText("Pending");
             //  Tvstate.setTextColor(getResources().getColor(R.color.black));
         }
@@ -108,10 +136,26 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
 
 
             case R.id.Rlintervenue:
-                Utils.fragmentCall(new CloseIntervationReportFragment(dateString, assignmentListPojo.getData().get(pos).getAddress(), assignmentListPojo.getData().get(pos).getReference(), assignmentListPojo.getData().get(pos).getStatus(), assignmentListPojo.getData().get(pos).getId()), getFragmentManager());
+                //  Utils.fragmentCall(new CloseIntervationReportFragment(dateString, assignmentListPojo.getData().get(pos).getAddress(), assignmentListPojo.getData().get(pos).getReference(), assignmentListPojo.getData().get(pos).getStatus(), assignmentListPojo.getData().get(pos).getId()), getFragmentManager());
 
+                if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("1")) {
 
-                // Utils.opendialogcustomdialogClose(getActivity(),getActivity().getString(R.string.exit_message),mClossPassInterFace);
+                    if (Utils.checkConnection(getActivity())) {
+                        IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                        incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                        incdentSetPojo.setComment(descId.getText().toString().trim());
+                        incdentSetPojo.setIncident_id(assignmentListPojo.getData().get(pos).getId());
+                        incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+                        Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                        RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                        getAssignIntervation(mFile);
+                    } else {
+                        Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+                    }
+                } else {
+                   // Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+                }
+
 
                 break;
         }
@@ -119,7 +163,58 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
 
     @Override
     public void onClick() {
-        Utils.fragmentCall(new CloseIntervationReportFragment(dateString, assignmentListPojo.getData().get(pos).getAddress(), assignmentListPojo.getData().get(pos).getReference(), assignmentListPojo.getData().get(pos).getStatus(), assignmentListPojo.getData().get(pos).getId()), getFragmentManager());
+        //   Utils.fragmentCall(new CloseIntervationReportFragment(dateString, assignmentListPojo.getData().get(pos).getAddress(), assignmentListPojo.getData().get(pos).getReference(), assignmentListPojo.getData().get(pos).getStatus(), assignmentListPojo.getData().get(pos).getId()), getFragmentManager());
 
+        if (commanStatusPojo.getStatus().equalsIgnoreCase("true"))
+            Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
+        else if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStackImmediate();
+        }
+    }
+
+
+    private void getAssignIntervation(RequestBody Data) {
+        progressDialog.show();
+        Service acceptInterven = ApiUtils.getAPIService();
+        Call<CommanStatusPojo> acceptIntervenpCall = acceptInterven.acceptInterven(Data);
+        acceptIntervenpCall.enqueue(new Callback<CommanStatusPojo>() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onResponse(Call<CommanStatusPojo> call, Response<CommanStatusPojo> response)
+
+            {
+                try {
+                    if (response.body() != null) {
+                        commanStatusPojo = response.body();
+                        if (commanStatusPojo.getStatus().equals("false")) {
+                            //   Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
+                            Utils.opendialogcustomdialogClose(getActivity(), commanStatusPojo.getMessage(), mClossPassInterFace);
+                        } else {
+
+                            Utils.opendialogcustomdialogClose(getActivity(), commanStatusPojo.getMessage(), mClossPassInterFace);
+
+                            // Utils.showAlertAndClick(commanStatusPojo.getMessage(), getContext(), mResetPassInterFace);
+
+                        }
+                        progressDialog.dismiss();
+
+                    } else {
+                        Utils.showAlert(response.message(), getActivity());
+                    }
+
+                } catch (Exception e) {
+                    progressDialog.dismiss();
+                    e.getMessage();
+                    Utils.showAlert(e.getMessage(), getActivity());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CommanStatusPojo> call, Throwable t) {
+                Log.d("TAG", "Error " + t.getMessage());
+                progressDialog.dismiss();
+                Utils.showAlert(t.getMessage(), getActivity());
+            }
+        });
     }
 }

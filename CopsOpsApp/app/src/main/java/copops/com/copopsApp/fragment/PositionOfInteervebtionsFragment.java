@@ -279,20 +279,11 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.setMargins(0, 0, 30, 100);
 
-        map.getUiSettings().setMapToolbarEnabled(false);
-        //  map.getUiSettings().setZoomControlsEnabled( true );
+
+
 
        initSetCityList();
 
-//        MarkerOptions mp = new MarkerOptions();
-//
-//        mp.position(new LatLng(latitude,longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-//
-//      //  mp.title("my position");
-//
-//        googleMap.addMarker(mp);
-        //  googleMap.moveCamera(center);
-        //   googleMap.animateCamera(zoom);
 
     }
 
@@ -306,11 +297,10 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
             map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(allLocationAndCityPojo.getData().get(i).getLatitude()), Double.parseDouble(allLocationAndCityPojo.getData().get(i).getLongitude())))
                     .title(allLocationAndCityPojo.getData().get(i).getAddress() + "\n" + allLocationAndCityPojo.getData().get(i).getSub_category_name()).snippet(allLocationAndCityPojo.getData().get(i).getCreated_at()).icon(icon));
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(allLocationAndCityPojo.getData().get(i).getLatitude()), Double.parseDouble(allLocationAndCityPojo.getData().get(i).getLongitude())), 10));
-            //  p=i;
+
 
             latlong.add(allLocationAndCityPojo.getData().get(i).getLatitude() + "," + allLocationAndCityPojo.getData().get(i).getLongitude());
 
-            //  address=allLocationAndCityPojo.getData().get(i).getAddress();
         }
 
 
@@ -321,20 +311,10 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.setMargins(0, 0, 30, 100);
 
-        map.getUiSettings().setMapToolbarEnabled(false);
-
         map.setMyLocationEnabled(true);
 
 
-//        map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-//
-//            @Override
-//            public void onInfoWindowClick(Marker arg0) {
-//                // TODO Auto-generated method stub
-//         arg0.showInfoWindow();
-//
-//            }
-//        });
+
 
 
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -412,7 +392,6 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.setMargins(0, 0, 30, 100);
 
-        map.getUiSettings().setMapToolbarEnabled(false);
 
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -562,21 +541,6 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         switch (v.getId()) {
             case R.id.RLsearch:
 
-//                if (EtcitySearchId.getText().toString().equalsIgnoreCase("")) {
-//                    Utils.showAlert(getActivity().getString(R.string.cityName), getActivity());
-//                    cityList.setVisibility(View.GONE);
-//                } else if (!cityName.contains(EtcitySearchId.getText().toString())) {
-//                    Utils.showAlert(getActivity().getString(R.string.no_find), getActivity());
-//                    cityList.setVisibility(View.GONE);
-//                } else {
-                   // map.clear();
-//                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
-//                    incdentSetPojo.setCity_id(filtercityId.get(0));
-//                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-
-
-
-                 //   LatLng coordinate = new LatLng(latitude, longitude);
                     CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(toLatLng, 11);
                     map.moveCamera(CameraUpdateFactory.newLatLng(toLatLng));
                     map.animateCamera(yourLocation);
@@ -590,7 +554,7 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
                     rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
                     rlp.setMargins(0, 0, 30, 100);
 
-                    map.getUiSettings().setMapToolbarEnabled(false);
+
 
                 IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
                 incdentSetPojo.setIncident_lat(String.valueOf(toLatLng.latitude));

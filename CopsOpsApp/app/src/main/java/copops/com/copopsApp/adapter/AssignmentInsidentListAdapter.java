@@ -43,10 +43,10 @@ public class AssignmentInsidentListAdapter extends RecyclerView.Adapter<Assignme
         viewHolder.dateTv.setText(assignmentListPojo.getData().get(i).getCreated_at());
         viewHolder.objectId.setText(assignmentListPojo.getData().get(i).getSub_category_name());
 
-        if (assignmentListPojo.getData().get(i).getStatus().equalsIgnoreCase("0")) {
+        if (assignmentListPojo.getData().get(i).getStatus().equalsIgnoreCase("1")) {
             viewHolder.stateId.setText("On-wait");
             viewHolder.stateId.setTextColor(context.getResources().getColor(R.color.black));
-        } else if (assignmentListPojo.getData().get(i).getStatus().equalsIgnoreCase("1")) {
+        } else if (assignmentListPojo.getData().get(i).getStatus().equalsIgnoreCase("2")) {
             viewHolder.stateId.setText("Pending");
             viewHolder.stateId.setTextColor(context.getResources().getColor(R.color.btntextcolort));
         } else {

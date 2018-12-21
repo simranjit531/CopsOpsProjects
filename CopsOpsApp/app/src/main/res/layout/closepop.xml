@@ -6,6 +6,7 @@
     android:layout_margin="@dimen/textsize_20sp"
     android:orientation="vertical"
     android:gravity="center"
+    android:background="@mipmap/img_call_background"
     >
 
     <View
@@ -16,7 +17,6 @@
         android:layout_below="@+id/TVcustomtitletext"
         android:layout_centerHorizontal="true"
         android:background="@color/aluminiumcolor" />
-
     <TextView
         android:id="@+id/TVcustomdescriptiontext"
         android:layout_width="match_parent"
@@ -25,9 +25,22 @@
         android:gravity="center_horizontal"
         android:padding="@dimen/textsize_10sp"
         android:layout_below="@+id/mHeaderDivider"
-
+        android:textStyle="bold"
         android:text="@string/exit_message"
-        android:textColor="@color/aluminiumcolor"
+        android:textColor="@color/black"
+        android:textSize="@dimen/textsize_16sp" />
+    <TextView
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/textsize_10sp"
+        android:layout_below="@+id/mHeaderDivider"
+       android:textStyle="bold"
+        android:visibility="invisible"
+        android:text="@string/exit_message"
+        android:textColor="@color/black"
         android:textSize="@dimen/textsize_16sp" />
 
 

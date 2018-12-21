@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
+import copops.com.copopsApp.pojo.AssignmentListPojo;
 import copops.com.copopsApp.pojo.CommanStatusPojo;
 import copops.com.copopsApp.pojo.IncdentSetPojo;
 import copops.com.copopsApp.services.ApiUtils;
@@ -69,15 +70,19 @@ public class CloseIntervationReportFragment extends Fragment implements View.OnC
     AppSession mAppSession;
     String insidentId;
     Utils.resetPassInterFace mResetPassInterFace;
+    AssignmentListPojo assignmentListPojo_close;
+//    public CloseIntervationReportFragment(String dateString, String address, String reference, String status, String insidentId) {
+//        // Required empty public constructor
+//
+//        this.dateString = dateString;
+//        this.address = address;
+//        this.reference = reference;
+//        this.status = status;
+//        this.insidentId = insidentId;
+//    }
 
-    public CloseIntervationReportFragment(String dateString, String address, String reference, String status, String insidentId) {
-        // Required empty public constructor
-
-        this.dateString = dateString;
-        this.address = address;
-        this.reference = reference;
-        this.status = status;
-        this.insidentId = insidentId;
+    public CloseIntervationReportFragment(AssignmentListPojo assignmentListPojo_close){
+this.assignmentListPojo_close=assignmentListPojo_close;
     }
 
 
@@ -104,16 +109,17 @@ public class CloseIntervationReportFragment extends Fragment implements View.OnC
 
         closeIntervation.setOnClickListener(this);
         Rltoolbar.setOnClickListener(this);
-        etAddressId.setText(address);
+        etAddressId.setText(assignmentListPojo_close.getData().get(0).getAddress());
+        TVreferencenumber.setText(assignmentListPojo_close.getData().get(0).getReference());
 
-        TVreferencenumber.setText(reference);
+     //   TVreferencenumber.setText(reference);
         //dateString = dateString;
-        String[] parts = dateString.split(" ");
+        String[] parts = assignmentListPojo_close.getData().get(0).getCreated_at().split(" ");
         String date = parts[0]; // 004
         String time = parts[1]; // 034556
         Tvdate.setText(date);
         Tvtime.setText(time);
-        if (status.equalsIgnoreCase("1")) {
+        if (assignmentListPojo_close.getData().get(0).getStatus().equalsIgnoreCase("2")) {
             Tvstate.setText("Pending");
             Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
         }
@@ -132,21 +138,14 @@ public class CloseIntervationReportFragment extends Fragment implements View.OnC
 
             case R.id.Rlintervenue:
 
+
+
                 if ((descId.getText().toString().trim().equalsIgnoreCase(""))) {
                     Utils.showAlert(getActivity().getString(R.string.des), getActivity());
                 } else {
-                    if (Utils.checkConnection(getActivity())) {
-                        IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
-                        incdentSetPojo.setUser_id(mAppSession.getData("id"));
-                        incdentSetPojo.setComment(descId.getText().toString().trim());
-                        incdentSetPojo.setIncident_id(insidentId);
-                        incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
-                        Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                        RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                        getCopsCloseStatus(mFile);
-                    } else {
-                        Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
-                    }
+                    Utils.fragmentCall(new OperatorSignatureFragment(descId.getText().toString().trim(),assignmentListPojo_close.getData().get(0).getId()), getFragmentManager());
+
+
                 }
 
                 break;
@@ -155,51 +154,10 @@ public class CloseIntervationReportFragment extends Fragment implements View.OnC
     }
 
 
-    private void getCopsCloseStatus(RequestBody Data) {
-        progressDialog.show();
-        Service operator = ApiUtils.getAPIService();
-        Call<CommanStatusPojo> getallLatLong = operator.close(Data);
-        getallLatLong.enqueue(new Callback<CommanStatusPojo>() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onResponse(Call<CommanStatusPojo> call, Response<CommanStatusPojo> response)
 
-            {
-                try {
-                    if (response.body() != null) {
-                        CommanStatusPojo commanStatusPojo = response.body();
-                        if (commanStatusPojo.getStatus().equals("false")) {
-                            Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
-
-                        } else {
-
-                            Utils.showAlertAndClick(commanStatusPojo.getMessage(), getContext(), mResetPassInterFace);
-
-                        }
-                        progressDialog.dismiss();
-
-                    } else {
-                        Utils.showAlert(response.message(), getActivity());
-                    }
-
-                } catch (Exception e) {
-                    progressDialog.dismiss();
-                    e.getMessage();
-                    Utils.showAlert(e.getMessage(), getActivity());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CommanStatusPojo> call, Throwable t) {
-                Log.d("TAG", "Error " + t.getMessage());
-                progressDialog.dismiss();
-                Utils.showAlert(t.getMessage(), getActivity());
-            }
-        });
-    }
 
     @Override
     public void onClick(int id) {
-        Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
+      //  Utils.fragmentCall(new OperatorSignatureFragment(), getFragmentManager());
     }
 }
