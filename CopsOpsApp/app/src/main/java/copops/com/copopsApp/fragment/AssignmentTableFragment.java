@@ -69,12 +69,18 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
         Rltoolbar.setOnClickListener(this);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("loading...");
-
         AssignmentInsidentListAdapter mAdapter = new AssignmentInsidentListAdapter(getActivity(), assignmentListPojo, mIncedentInterface);
         lvtableofassignments.setHasFixedSize(true);
         lvtableofassignments.setLayoutManager(new LinearLayoutManager(getActivity()));
         lvtableofassignments.setItemAnimator(new DefaultItemAnimator());
+
+        if (assignmentListPojo.getStatus().equalsIgnoreCase("false")) {
+            Utils.showAlert(" No Assigned Intervention Found  so We can’t have access to the assigning an intervention", getActivity());
+
+        } else{
+
         lvtableofassignments.setAdapter(mAdapter);
+    }
 
 
 
@@ -101,8 +107,8 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
     @Override
     public void clickPosition(int pos) {
 
-     //   if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("1")) {
+        if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("1")) {
             Utils.fragmentCall(new AssignedInterventionFragment(pos, assignmentListPojo), getFragmentManager());
-       // }
+        }
     }
 }

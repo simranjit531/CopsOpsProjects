@@ -105,6 +105,13 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.IVlogout)
     ImageView IVlogout;
 
+
+    @BindView(R.id.viewlineId)
+   View viewlineId;
+
+    @BindView(R.id.viewline2)
+     View viewline2;
+
     @BindView(R.id.IVback)
     ImageView IVback;
 
@@ -354,19 +361,42 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             progressBar1.setMax(100);
                             progressBar1.setProgress(Integer.valueOf(operatorShowAlInfo.getProfile_percent()));
 
-                            if (operatorShowAlInfo.getAvailable().equalsIgnoreCase("0")) {
-                                Tvnotavaiable.setTextColor(getResources().getColor(R.color.black));
 
+                            if (operatorShowAlInfo.getAvailable().equalsIgnoreCase("0")) {
+                                Tvnotavaiable.setTextColor(getResources().getColor(R.color.sedocolor));
+                                Tvavaiable.setTextColor(getResources().getColor(R.color.black));
+                                viewline2.setBackgroundResource(R.color.sedocolor);
+                                viewlineId.setBackgroundResource(R.color.blue_shade);
+                                viewlineId.setVisibility(View.INVISIBLE);
+                                viewline2.setVisibility(View.VISIBLE);
 
                             } else {
-
-
                                 Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
                                 Tvnotavaiable.setTextColor(getResources().getColor(R.color.black));
-
-                               // Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
+                                viewlineId.setBackgroundResource(R.color.blue_shade);
+                                viewline2.setVisibility(View.INVISIBLE);
+                                viewlineId.setVisibility(View.VISIBLE);
+                                viewline2.setBackgroundResource(R.color.black);
+                                // Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
 
                             }
+
+//                            if (operatorShowAlInfo.getAvailable().equalsIgnoreCase("0")) {
+//                                Tvnotavaiable.setTextColor(getResources().getColor(R.color.sedocolor));
+//                                Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
+//                                viewline2.setBackgroundResource(R.color.sedocolor);
+//                                viewlineId.setBackgroundResource(R.color.blue_shade);
+//                                viewlineId.setVisibility(View.INVISIBLE);
+//
+//                            } else {
+//                                Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
+//                                Tvnotavaiable.setTextColor(getResources().getColor(R.color.black));
+//                                viewlineId.setBackgroundResource(R.color.blue_shade);
+//                                viewline2.setVisibility(View.INVISIBLE);
+//                                viewline2.setBackgroundResource(R.color.black);
+//                               // Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
+//
+//                            }
 
                             if (operatorShowAlInfo.getNew_reports().equalsIgnoreCase("0")) {
                                 countId.setVisibility(View.INVISIBLE);
@@ -422,27 +452,72 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             } else {
 
                                 if (commanStatusPojo.getAvailable().equalsIgnoreCase("0")) {
-
-
-                                    SpannableString spanString = new SpannableString("Not Avaiable");
-
-                                    spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
-
-                                    Tvnotavaiable.setText(spanString);
-                                   // Tvnotavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
-                                  //  Tvavaiable.setTextColor(getResources().getColor(R.color.black));
-
+                                    Tvnotavaiable.setTextColor(getResources().getColor(R.color.sedocolor));
+                                    Tvavaiable.setTextColor(getResources().getColor(R.color.black));
+                                    viewline2.setBackgroundResource(R.color.sedocolor);
+                                    viewlineId.setBackgroundResource(R.color.blue_shade);
+                                    viewlineId.setVisibility(View.INVISIBLE);
+                                    viewline2.setVisibility(View.VISIBLE);
                                     Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
-
-
                                 } else {
-
-                                    Tvnotavaiable.setTextColor(getResources().getColor(R.color.black));
                                     Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
+                                    Tvnotavaiable.setTextColor(getResources().getColor(R.color.black));
+                                    viewlineId.setBackgroundResource(R.color.blue_shade);
+                                    viewline2.setVisibility(View.INVISIBLE);
+                                    viewlineId.setVisibility(View.VISIBLE);
+                                    viewline2.setBackgroundResource(R.color.black);
+                                    // Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
                                     Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
-                                    Tvnotavaiable.setText("Not Avaiable");
-
                                 }
+//
+//                                if (operatorShowAlInfo.getAvailable().equalsIgnoreCase("0")) {
+//                                    Tvnotavaiable.setTextColor(getResources().getColor(R.color.sedocolor));
+//                                    Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
+//                                    viewline2.setBackgroundResource(R.color.sedocolor);
+//                                    viewlineId.setBackgroundResource(R.color.blue_shade);
+//                                    viewlineId.setVisibility(View.INVISIBLE);
+//
+//                                } else {
+//                                    Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
+//                                    Tvnotavaiable.setTextColor(getResources().getColor(R.color.black));
+//                                    viewlineId.setBackgroundResource(R.color.blue_shade);
+//                                    viewline2.setVisibility(View.INVISIBLE);
+//
+//                                    viewline2.setBackgroundResource(R.color.black);
+//                                    // Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
+//
+//                                }
+
+//                                if (commanStatusPojo.getAvailable().equalsIgnoreCase("0")) {
+//
+//
+//                                    SpannableString spanString = new SpannableString("Not Avaiable");
+//
+//                                    spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
+//
+//                                    Tvnotavaiable.setTextColor(getResources().getColor(R.color.sedocolor));
+//                                    Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
+//                                    viewline2.setBackgroundResource(R.color.sedocolor);
+//                                    viewlineId.setBackgroundResource(R.color.blue_shade);
+//                                   // Tvnotavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
+//                                  //  Tvavaiable.setTextColor(getResources().getColor(R.color.black));
+//
+//                                    Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
+//
+//
+//                                } else {
+//
+//                                    Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
+//                                    Tvnotavaiable.setTextColor(getResources().getColor(R.color.black));
+//                                    viewlineId.setBackgroundResource(R.color.blue_shade);
+//
+//                                    viewline2.setBackgroundResource(R.color.black);
+//
+//
+//                                    Tvnotavaiable.setText("Not Avaiable");
+//                                    Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
+//
+//                                }
 
                             }
                             progressDialog.dismiss();
@@ -485,7 +560,8 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                     if (response.body() != null) {
                         AssignmentListPojo assignmentListPojo = response.body();
                         if (assignmentListPojo.getStatus().equals("false")) {
-                              Utils.showAlert(" No Assigned Intervention Found  so We can’t have access to the assigning an intervention", getActivity());
+
+                            Utils.fragmentCall(new AssignmentTableFragment(assignmentListPojo), getFragmentManager());
                         } else {
                                 Utils.fragmentCall(new AssignmentTableFragment(assignmentListPojo), getFragmentManager());
 
@@ -593,48 +669,53 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
 
     private void getAssignIntervationData(RequestBody Data) {
-        progressDialog.show();
-        Service acceptInterven = ApiUtils.getAPIService();
-        Call<AssignmentListPojo> acceptIntervenpCall = acceptInterven.assignedData(Data);
-        acceptIntervenpCall.enqueue(new Callback<AssignmentListPojo>() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onResponse(Call<AssignmentListPojo> call, Response<AssignmentListPojo> response)
+        try {
 
-            {
-                try {
-                    if (response.body() != null) {
-                         assignmentListPojo_close = response.body();
-                        if (assignmentListPojo_close.getStatus().equals("false")) {
-                               Utils.showAlert(assignmentListPojo_close.getMessage(), getActivity());
+
+            progressDialog.show();
+            Service acceptInterven = ApiUtils.getAPIService();
+            Call<AssignmentListPojo> acceptIntervenpCall = acceptInterven.assignedData(Data);
+            acceptIntervenpCall.enqueue(new Callback<AssignmentListPojo>() {
+                @SuppressLint("ResourceAsColor")
+                @Override
+                public void onResponse(Call<AssignmentListPojo> call, Response<AssignmentListPojo> response)
+
+                {
+                    try {
+                        if (response.body() != null) {
+                            assignmentListPojo_close = response.body();
+                            if (assignmentListPojo_close.getStatus().equals("false")) {
+                                Utils.showAlert(assignmentListPojo_close.getMessage(), getActivity());
+
+                            } else {
+
+
+                                Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close), getFragmentManager());
+
+
+                            }
+                            progressDialog.dismiss();
 
                         } else {
-
-
-                            Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close), getFragmentManager());
-
-
-
+                            Utils.showAlert(response.message(), getActivity());
                         }
+
+                    } catch (Exception e) {
                         progressDialog.dismiss();
-
-                    } else {
-                        Utils.showAlert(response.message(), getActivity());
+                        e.getMessage();
+                        Utils.showAlert(e.getMessage(), getActivity());
                     }
-
-                } catch (Exception e) {
-                    progressDialog.dismiss();
-                    e.getMessage();
-                    Utils.showAlert(e.getMessage(), getActivity());
                 }
-            }
 
-            @Override
-            public void onFailure(Call<AssignmentListPojo> call, Throwable t) {
-                Log.d("TAG", "Error " + t.getMessage());
-                progressDialog.dismiss();
-                Utils.showAlert(t.getMessage(), getActivity());
-            }
-        });
+                @Override
+                public void onFailure(Call<AssignmentListPojo> call, Throwable t) {
+                    Log.d("TAG", "Error " + t.getMessage());
+                    progressDialog.dismiss();
+                    Utils.showAlert(t.getMessage(), getActivity());
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

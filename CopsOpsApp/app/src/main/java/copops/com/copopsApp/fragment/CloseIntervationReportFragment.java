@@ -106,23 +106,31 @@ this.assignmentListPojo_close=assignmentListPojo_close;
     }
 
     private void initView() {
+try {
 
-        closeIntervation.setOnClickListener(this);
-        Rltoolbar.setOnClickListener(this);
+
+    closeIntervation.setOnClickListener(this);
+    Rltoolbar.setOnClickListener(this);
+
+    if (assignmentListPojo_close.getData().get(0).getAddress() != null) {
         etAddressId.setText(assignmentListPojo_close.getData().get(0).getAddress());
-        TVreferencenumber.setText(assignmentListPojo_close.getData().get(0).getReference());
+    }
+    TVreferencenumber.setText(assignmentListPojo_close.getData().get(0).getReference());
 
-     //   TVreferencenumber.setText(reference);
-        //dateString = dateString;
-        String[] parts = assignmentListPojo_close.getData().get(0).getCreated_at().split(" ");
-        String date = parts[0]; // 004
-        String time = parts[1]; // 034556
-        Tvdate.setText(date);
-        Tvtime.setText(time);
-        if (assignmentListPojo_close.getData().get(0).getStatus().equalsIgnoreCase("2")) {
-            Tvstate.setText("Pending");
-            Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
-        }
+    //   TVreferencenumber.setText(reference);
+    //dateString = dateString;
+    String[] parts = assignmentListPojo_close.getData().get(0).getCreated_at().split(" ");
+    String date = parts[0]; // 004
+    String time = parts[1]; // 034556
+    Tvdate.setText(date);
+    Tvtime.setText(time);
+    if (assignmentListPojo_close.getData().get(0).getStatus().equalsIgnoreCase("2")) {
+        Tvstate.setText("Pending");
+        Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
+    }
+}catch (Exception e){
+    e.printStackTrace();
+}
     }
 
     @Override

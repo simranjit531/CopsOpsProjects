@@ -162,45 +162,50 @@ public class OperatorSignatureFragment extends Fragment implements View.OnClickL
 
 
     private void getCopsCloseStatus(RequestBody Data, MultipartBody.Part handrail_image_siginature) {
-        progressDialog.show();
-        Service operator = ApiUtils.getAPIService();
-        Call<IncedentAcceptResponse> getallLatLong = operator.close(Data,handrail_image_siginature);
-        getallLatLong.enqueue(new Callback<IncedentAcceptResponse>() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onResponse(Call<IncedentAcceptResponse> call, Response<IncedentAcceptResponse> response)
 
-            {
-                try {
-                    if (response.body() != null) {
-                        IncedentAcceptResponse incedentAcceptResponse= response.body();
-                        if (incedentAcceptResponse.getStatus().equals("false")) {
-                            Utils.showAlert(incedentAcceptResponse.getMessage(), getActivity());
+        try {
+            progressDialog.show();
+            Service operator = ApiUtils.getAPIService();
+            Call<IncedentAcceptResponse> getallLatLong = operator.close(Data, handrail_image_siginature);
+            getallLatLong.enqueue(new Callback<IncedentAcceptResponse>() {
+                @SuppressLint("ResourceAsColor")
+                @Override
+                public void onResponse(Call<IncedentAcceptResponse> call, Response<IncedentAcceptResponse> response)
+
+                {
+                    try {
+                        if (response.body() != null) {
+                            IncedentAcceptResponse incedentAcceptResponse = response.body();
+                            if (incedentAcceptResponse.getStatus().equals("false")) {
+                                Utils.showAlert(incedentAcceptResponse.getMessage(), getActivity());
+
+                            } else {
+
+                                Utils.fragmentCall(new ReportFinishFragment(incedentAcceptResponse), getFragmentManager());
+
+                            }
+                            progressDialog.dismiss();
 
                         } else {
-
-                            Utils.fragmentCall(new ReportFinishFragment(incedentAcceptResponse), getFragmentManager());
-
+                            Utils.showAlert(response.message(), getActivity());
                         }
+
+                    } catch (Exception e) {
                         progressDialog.dismiss();
-
-                    } else {
-                        Utils.showAlert(response.message(), getActivity());
+                        e.getMessage();
+                        Utils.showAlert(e.getMessage(), getActivity());
                     }
-
-                } catch (Exception e) {
-                    progressDialog.dismiss();
-                    e.getMessage();
-                    Utils.showAlert(e.getMessage(), getActivity());
                 }
-            }
 
-            @Override
-            public void onFailure(Call<IncedentAcceptResponse> call, Throwable t) {
-                Log.d("TAG", "Error " + t.getMessage());
-                progressDialog.dismiss();
-                Utils.showAlert(t.getMessage(), getActivity());
-            }
-        });
+                @Override
+                public void onFailure(Call<IncedentAcceptResponse> call, Throwable t) {
+                    Log.d("TAG", "Error " + t.getMessage());
+                    progressDialog.dismiss();
+                    Utils.showAlert(t.getMessage(), getActivity());
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

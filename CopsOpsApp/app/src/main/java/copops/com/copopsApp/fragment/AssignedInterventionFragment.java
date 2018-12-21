@@ -112,7 +112,7 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
             Tvstate.setText("On-wait");
             Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
         }
-        if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("2")) {
+        else if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("2")) {
             Tvstate.setText("Pending");
             Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
         } else {
