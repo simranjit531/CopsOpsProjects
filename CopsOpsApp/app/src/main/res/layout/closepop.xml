@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_gravity="center_vertical|center_horizontal"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/textsize_20sp"
+    android:orientation="vertical"
+    android:gravity="center"
+    >
+
+    <View
+        android:visibility="gone"
+        android:id="@+id/mHeaderDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/TVcustomtitletext"
+        android:layout_centerHorizontal="true"
+        android:background="@color/aluminiumcolor" />
+
+    <TextView
+        android:id="@+id/TVcustomdescriptiontext"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/textsize_10sp"
+        android:layout_below="@+id/mHeaderDivider"
+
+        android:text="@string/exit_message"
+        android:textColor="@color/aluminiumcolor"
+        android:textSize="@dimen/textsize_16sp" />
+
+
+    <View
+        android:id="@+id/viewline"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/mTvNo"
+        android:layout_marginBottom="0dp"
+        android:background="@color/aluminiumcolor" />
+
+
+    <TextView
+        android:id="@+id/mTvYes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="@dimen/textsize_10sp"
+        android:gravity="center"
+        android:textColor="@color/dodgerblue"
+        android:text="@string/close"
+        android:textSize="@dimen/textsize_18sp"/>
+
+
+
+
+
+
+
+</LinearLayout>

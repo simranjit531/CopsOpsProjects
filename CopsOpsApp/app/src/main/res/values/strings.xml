@@ -27,7 +27,6 @@
     <string name="path">Please capture at least video or image</string>
     <string name="objecttext">Please enter the subject of the handrail reports</string>
     <string name="validation_signature">Please Create Your Signature.</string>
-    <string name="operator_grade_one_message">Grade 1 Operator have not authorise to see Incident. Contact to Back Office</string>
 
     <string name="con_password">Please enter confirm password</string>
     <string name="valid_email_errer">Not valid email</string>
@@ -89,6 +88,7 @@ the code sent to </string>
     <!--  Custom Dialog Screen -->
     <string name="yes">YES</string>
     <string name="no">NO</string>
+    <string name="close">Close</string>
     <string name="information">Information</string>
     <string name="exit_message">Are You Sure You Want to Exit ? </string>
     <string name="logout_message">Are You Sure You Want to Logout ? </string>
@@ -102,7 +102,7 @@ the code sent to </string>
     <string name="progress_propert">06 Reports</string>
     <string name="navigation">Navigation</string>
     <string name="report_an_incident">Report an incident</string>
-    <string name="search">Search</string>
+    <string name="search"> Search</string>
 
     <string name="next">Next</string>
     <!-- call screen -->

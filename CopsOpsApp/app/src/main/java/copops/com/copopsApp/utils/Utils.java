@@ -73,6 +73,11 @@ public class Utils {
         public void onClick(int id);
     }
 
+    public interface clossPassInterFace {
+
+        public void onClick();
+    }
+
     public static void showAlert(String mgs, Context context) {
         new AlertDialog.Builder(context, R.style.AlertDialogTheme)
                 .setTitle("Information")
@@ -279,6 +284,44 @@ public class Utils {
                 dialog.dismiss();
             }
         });
+
+        dialog.show();
+    }
+
+
+    public static void opendialogcustomdialogClose(Context mContext, String text, final clossPassInterFace mClossPassInterFace) {
+
+        final Dialog dialog = new Dialog(mContext, R.style.DialogFragmentTheme);
+        dialog.setContentView(R.layout.closepop);
+        dialog.setCancelable(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        Window window = dialog.getWindow();
+        window.setGravity(Gravity.CENTER);
+
+        TextView TVallow = (TextView) dialog.findViewById(R.id.mTvYes);
+
+        TextView TVcustomdescriptiontext = (TextView) dialog.findViewById(R.id.TVcustomdescriptiontext);
+
+        TVcustomdescriptiontext.setText(text);
+
+        TVallow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+                mClossPassInterFace.onClick();
+
+              //  android.os.Process.killProcess(android.os.Process.myPid());
+             //   System.exit(1);
+            }
+        });
+
+//        TVrefuse.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.dismiss();
+//            }
+//        });
 
         dialog.show();
     }

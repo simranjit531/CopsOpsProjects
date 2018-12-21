@@ -7,6 +7,16 @@ public class AllLocationAndCityPojo {
 
     String status;
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    String message;
+
     public ArrayList<City> getCities() {
         return cities;
     }

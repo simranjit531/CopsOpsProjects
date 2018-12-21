@@ -15,6 +15,16 @@ public class CityWsieMapShowPojo {
 
     String status;
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    String message;
+
     public ArrayList<Data> getData() {
         return data;
     }

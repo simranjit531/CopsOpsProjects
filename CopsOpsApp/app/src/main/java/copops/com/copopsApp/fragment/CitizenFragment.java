@@ -55,6 +55,9 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.TVprogresspercentage)
     TextView TVprogresspercentage;
 
+    @BindView(R.id.TVprofiledescription)
+    TextView TVprofiledescription;
+
 
     @BindView(R.id.TVprogressbarnumber)
     TextView TVprogressbarnumber;
@@ -227,7 +230,7 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
 
                         } else {
 
-                           // TVprofiledescription.setText(operatorShowAlInfo.getGrade());
+                           TVprofiledescription.setText(operatorShowAlInfo.getLevel());
 
                             TVprogressbarnumber.setText(operatorShowAlInfo.getReport());
                             TVprogressbarreports.setText(operatorShowAlInfo.getTotal_reports()+" Reports");

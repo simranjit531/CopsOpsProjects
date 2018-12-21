@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -25,10 +26,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -104,8 +110,8 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
     SupportMapFragment mapFragment;
     ArrayList<String> filtercityId = new ArrayList<>();
     BitmapDescriptor icon;
-
-
+    LatLng toLatLng;
+    public SupportPlaceAutocompleteFragment places = null;
 
     public PositionOfInteervebtionsFragment(Double latitude, Double longitude ) {
 
@@ -126,9 +132,33 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         RLsearch.setOnClickListener(this);
         Rltoolbar.setOnClickListener(this);
         IVimagesgps.setOnClickListener(this);
+
+
+
+
+        places = (SupportPlaceAutocompleteFragment)getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment_2);
        // LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
+        ImageView searchIcon = (ImageView) ((LinearLayout) places.getView()).getChildAt(0);
+        searchIcon.setVisibility(View.GONE);
+       // places.setHint("  Search");
 
+
+        places.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                toLatLng = place.getLatLng();
+                //   Toast.makeText(getActivity(), place.getName() + "Lat Long" + place.getLatLng(), Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onError(Status status) {
+
+                Toast.makeText(getActivity(), status.toString(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
 
 //        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -159,52 +189,52 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         mapFragment.getMapAsync(this);
 
         mapView = mapFragment.getView();
-        EtcitySearchId.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                //   cityList.setVisibility(View.GONE);
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-                try {
-
-                    if (EtcitySearchId.getText().toString().equalsIgnoreCase("")) {
-                        cityList.setVisibility(View.GONE);
-                        //Utils.showAlert(getActivity().getString(R.string.no_find), getActivity());
-                    } else {
-                        //  if(cityName.contains(EtcitySearchId.getText().toString())){
-
-                        cityList.setVisibility(View.VISIBLE);
-                        filter(s.toString());
-                        Editable etext = EtcitySearchId.getText();
-                        int position = etext.length();
-                        Selection.setSelection(etext, position);
-
-
-                        // filter(s.toString());
-                        // Utils.showAlert(getActivity().getString(R.string.no_find), getActivity());
-//                       }else{
-//                           cityList.setVisibility(View.GONE);
-//                       }
-
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-        });
+//        EtcitySearchId.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//                // TODO Auto-generated method stub
+//            }
+//
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                //   cityList.setVisibility(View.GONE);
+//                // TODO Auto-generated method stub
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//                try {
+//
+//                    if (EtcitySearchId.getText().toString().equalsIgnoreCase("")) {
+//                        cityList.setVisibility(View.GONE);
+//                        //Utils.showAlert(getActivity().getString(R.string.no_find), getActivity());
+//                    } else {
+//                        //  if(cityName.contains(EtcitySearchId.getText().toString())){
+//
+//                        cityList.setVisibility(View.VISIBLE);
+//                        filter(s.toString());
+//                        Editable etext = EtcitySearchId.getText();
+//                        int position = etext.length();
+//                        Selection.setSelection(etext, position);
+//
+//
+//                        // filter(s.toString());
+//                        // Utils.showAlert(getActivity().getString(R.string.no_find), getActivity());
+////                       }else{
+////                           cityList.setVisibility(View.GONE);
+////                       }
+//
+//
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//
+//
+//            }
+//        });
         return view;
     }
 
@@ -235,19 +265,10 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         map = googleMap;
 
 
-        /*CameraUpdate center= CameraUpdateFactory.newLatLng(new LatLng(latitude,
-                longitude));
-        CameraUpdate zoom=CameraUpdateFactory.zoomTo(17);
-        map.moveCamera(center);
-        map.animateCamera(zoom);*/
-
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 15));
-
-      /*  LatLng coordinate = new LatLng(latitude, longitude);
+        LatLng coordinate = new LatLng(latitude, longitude);
         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 11);
         map.moveCamera(CameraUpdateFactory.newLatLng(coordinate));
-        map.animateCamera(yourLocation);*/
-
+        map.animateCamera(yourLocation);
         map.setMyLocationEnabled(true);
         map.getUiSettings().setMyLocationButtonEnabled(false);
         View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
@@ -261,7 +282,7 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         map.getUiSettings().setMapToolbarEnabled(false);
         //  map.getUiSettings().setZoomControlsEnabled( true );
 
-        initSetCityList();
+       initSetCityList();
 
 //        MarkerOptions mp = new MarkerOptions();
 //
@@ -496,7 +517,7 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
                         if (response.body() != null) {
                             allLocationAndCityPojo = response.body();
                             if (allLocationAndCityPojo.getStatus().equals("false")) {
-                                //  Utils.showAlert(registrationResponse.getMessage(), getActivity());
+                                 // Utils.showAlert(allLocationAndCityPojo.getMessage(), getActivity());
 
                             } else {
                                 getCurrentLocation();
@@ -535,29 +556,53 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         }
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.RLsearch:
 
-                if (EtcitySearchId.getText().toString().equalsIgnoreCase("")) {
-                    Utils.showAlert(getActivity().getString(R.string.cityName), getActivity());
-                    cityList.setVisibility(View.GONE);
-                } else if (!cityName.contains(EtcitySearchId.getText().toString())) {
-                    Utils.showAlert(getActivity().getString(R.string.no_find), getActivity());
-                    cityList.setVisibility(View.GONE);
-                } else {
-                    map.clear();
-                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
-                    incdentSetPojo.setCity_id(filtercityId.get(0));
-                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+//                if (EtcitySearchId.getText().toString().equalsIgnoreCase("")) {
+//                    Utils.showAlert(getActivity().getString(R.string.cityName), getActivity());
+//                    cityList.setVisibility(View.GONE);
+//                } else if (!cityName.contains(EtcitySearchId.getText().toString())) {
+//                    Utils.showAlert(getActivity().getString(R.string.no_find), getActivity());
+//                    cityList.setVisibility(View.GONE);
+//                } else {
+                   // map.clear();
+//                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+//                    incdentSetPojo.setCity_id(filtercityId.get(0));
+//                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+
+
+
+                 //   LatLng coordinate = new LatLng(latitude, longitude);
+                    CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(toLatLng, 11);
+                    map.moveCamera(CameraUpdateFactory.newLatLng(toLatLng));
+                    map.animateCamera(yourLocation);
+                    map.setMyLocationEnabled(true);
+                    map.getUiSettings().setMyLocationButtonEnabled(false);
+                    View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+
+                    RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+                    // position on right bottom
+                    rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+                    rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+                    rlp.setMargins(0, 0, 30, 100);
+
+                    map.getUiSettings().setMapToolbarEnabled(false);
+
+                IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                incdentSetPojo.setIncident_lat(String.valueOf(toLatLng.latitude));
+                incdentSetPojo.setIncident_lng(String.valueOf(toLatLng.longitude));
+
                     RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                     if (Utils.checkConnection(getActivity()))
-                        getCityWiseMap(mFile);
+                        getMapList(mFile);
                     else
                         Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
 
-                }
+              //  }
                 break;
 
             case R.id.Rltoolbar:
@@ -570,9 +615,9 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
             case R.id.IVimagesgps:
                 if(map.getMyLocation() != null) { // Check to ensure coordinates aren't null, probably a better way of doing this...
                     LatLng coordinate = new LatLng(latitude, longitude);
-                    CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 11);
+                    CameraUpdate yourLocation1 = CameraUpdateFactory.newLatLngZoom(coordinate, 11);
                     map.moveCamera(CameraUpdateFactory.newLatLng(coordinate));
-                    map.animateCamera(yourLocation);
+                    map.animateCamera(yourLocation1);
                 }
                 break;
         }
@@ -595,7 +640,7 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
                         if (response.body() != null) {
                             mCityWsieMapShowPojo1 = response.body();
                             if (mCityWsieMapShowPojo1.getStatus().equals("false")) {
-                                //  Utils.showAlert(registrationResponse.getMessage(), getActivity());
+                                  Utils.showAlert(mCityWsieMapShowPojo1.getMessage(), getActivity());
 
                             } else {
                                 getCurrentLocationCity();
@@ -653,7 +698,7 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
 //                map.getUiSettings().setMapToolbarEnabled(false);
 //              //  map.getUiSettings().setZoomControlsEnabled( true );
 //
-//                initSetCityList();
+              //  initSetCityList();
 //                //  initMapFragment();
 //            } else {
 //                Toast.makeText(getActivity(), "Location is not available now", Toast.LENGTH_LONG).show();
@@ -679,11 +724,11 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
 
 
     private boolean checkPermission() {
-        boolean check = ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        boolean check = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
         if (!check) {
             ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
             return false;
         }
         return true;

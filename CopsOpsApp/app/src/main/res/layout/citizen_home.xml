@@ -88,6 +88,7 @@
                     android:layout_marginLeft="10dp"
                     android:gravity="center_horizontal"
                     android:text="@string/report_comp"
+                    android:visibility="invisible"
                     android:textColor="@color/aluminiumcolor"
                     android:textSize="@dimen/textsize_14sp"
                     android:textStyle="bold" />

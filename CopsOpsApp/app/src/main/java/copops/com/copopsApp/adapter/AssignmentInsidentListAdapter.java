@@ -32,23 +32,25 @@ public class AssignmentInsidentListAdapter extends RecyclerView.Adapter<Assignme
 
 
     @Override
-    public AssignmentInsidentListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.assingment_item, viewGroup, false);
-        return new AssignmentInsidentListAdapter.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(AssignmentInsidentListAdapter.ViewHolder viewHolder,final int i) {
+    public void onBindViewHolder(ViewHolder viewHolder,final int i) {
 
         viewHolder.dateTv.setText(assignmentListPojo.getData().get(i).getCreated_at());
         viewHolder.objectId.setText(assignmentListPojo.getData().get(i).getSub_category_name());
 
         if (assignmentListPojo.getData().get(i).getStatus().equalsIgnoreCase("0")) {
             viewHolder.stateId.setText("On-wait");
+            viewHolder.stateId.setTextColor(context.getResources().getColor(R.color.black));
         } else if (assignmentListPojo.getData().get(i).getStatus().equalsIgnoreCase("1")) {
             viewHolder.stateId.setText("Pending");
             viewHolder.stateId.setTextColor(context.getResources().getColor(R.color.btntextcolort));
         } else {
+            viewHolder.stateId.setTextColor(context.getResources().getColor(R.color.black));
             viewHolder.stateId.setText("Finished");
         }
 

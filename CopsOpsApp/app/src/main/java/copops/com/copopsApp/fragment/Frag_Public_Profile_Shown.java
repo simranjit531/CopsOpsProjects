@@ -37,6 +37,11 @@ public class Frag_Public_Profile_Shown extends Fragment implements View.OnClickL
     @BindView(R.id.TVprogressbarreports)
     TextView TVprogressbarreports;
 
+    @BindView(R.id.TVprofiledescription)
+    TextView TVprofiledescription;
+    @BindView(R.id.grade)
+    TextView grade;
+
     @BindView(R.id.TVprogresspercentage)
     TextView TVprogresspercentage;
     @BindView(R.id.IVqrcode)
@@ -73,6 +78,16 @@ public class Frag_Public_Profile_Shown extends Fragment implements View.OnClickL
 
 
         TVprogressbarnumber.setText(operatorShowAlInfo.getReport());
+
+        if(mAppSession.getData("userType").equalsIgnoreCase("citizen")){
+            grade.setVisibility(View.GONE);
+        }else{
+            grade.setVisibility(View.VISIBLE);
+            grade.setText(operatorShowAlInfo.getGrade());
+        }
+
+
+        TVprofiledescription.setText(operatorShowAlInfo.getLevel());
         TVprogressbarreports.setText(operatorShowAlInfo.getCompleted_reports() + " Signalements");
 
         if (operatorShowAlInfo.getProfile_percent().equalsIgnoreCase("0")) {

@@ -40,7 +40,17 @@
 
             </RelativeLayout>
 
-
+            <TextView
+                android:id="@+id/grade"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/RLprofileimage"
+                android:layout_margin="5dp"
+                android:gravity="center_horizontal"
+                android:text="Grade ||"
+                android:textColor="@color/aluminiumcolor"
+                android:textSize="@dimen/textsize_18sp"
+                android:textStyle="bold" />
             <TextView
                 android:id="@+id/TVname"
                 android:layout_width="match_parent"
@@ -85,6 +95,7 @@
                     android:layout_marginLeft="15dp"
                     android:gravity="center_horizontal"
                     android:text="06/10"
+                    android:visibility="invisible"
                     android:textColor="@color/aluminiumcolor"
                     android:textSize="@dimen/textsize_12sp"
                     android:textStyle="bold" />

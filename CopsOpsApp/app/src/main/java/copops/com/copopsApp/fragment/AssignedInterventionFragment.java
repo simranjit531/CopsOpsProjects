@@ -14,6 +14,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
+import copops.com.copopsApp.activity.DashboardActivity;
 import copops.com.copopsApp.pojo.AssignmentListPojo;
 import copops.com.copopsApp.utils.Utils;
 
@@ -21,10 +22,10 @@ import copops.com.copopsApp.utils.Utils;
  * A simple {@link Fragment} subclass.
  */
 @SuppressLint("ValidFragment")
-public class AssignedInterventionFragment extends Fragment implements View.OnClickListener {
+public class AssignedInterventionFragment extends Fragment implements View.OnClickListener,Utils.clossPassInterFace {
     int pos;
     AssignmentListPojo assignmentListPojo;
-
+    Utils.clossPassInterFace mClossPassInterFace;
     @BindView(R.id.Tvdate)
     TextView Tvdate;
     @BindView(R.id.Tvtime)
@@ -66,6 +67,8 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
 
         ButterKnife.bind(this, view);
 
+        mClossPassInterFace=this;
+
         initView();
         return view;
     }
@@ -106,7 +109,17 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
 
             case R.id.Rlintervenue:
                 Utils.fragmentCall(new CloseIntervationReportFragment(dateString, assignmentListPojo.getData().get(pos).getAddress(), assignmentListPojo.getData().get(pos).getReference(), assignmentListPojo.getData().get(pos).getStatus(), assignmentListPojo.getData().get(pos).getId()), getFragmentManager());
+
+
+                // Utils.opendialogcustomdialogClose(getActivity(),getActivity().getString(R.string.exit_message),mClossPassInterFace);
+
                 break;
         }
+    }
+
+    @Override
+    public void onClick() {
+        Utils.fragmentCall(new CloseIntervationReportFragment(dateString, assignmentListPojo.getData().get(pos).getAddress(), assignmentListPojo.getData().get(pos).getReference(), assignmentListPojo.getData().get(pos).getStatus(), assignmentListPojo.getData().get(pos).getId()), getFragmentManager());
+
     }
 }

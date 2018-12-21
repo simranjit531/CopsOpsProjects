@@ -131,7 +131,6 @@
             android:clickable="false"
             android:drawableRight="@mipmap/img_write"
             android:focusable="false"
-            android:hint="36,rue desnos, la rochelle"
             android:inputType="text"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"></EditText>
@@ -173,7 +172,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"
             android:gravity="center_horizontal"
-            android:text="Description"
+            android:text="Intervention Report"
             android:textColor="@color/dodgerblue"
             android:textSize="@dimen/textsize_18sp"
             android:textStyle="bold" />
@@ -189,7 +188,6 @@
             android:background="@drawable/edittext_background"
 
             android:drawableRight="@mipmap/img_write"
-            android:hint="36,rue desnos, la rochelle"
             android:inputType="text"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"></EditText>
