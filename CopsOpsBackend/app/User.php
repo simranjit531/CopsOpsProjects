@@ -32,4 +32,15 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\Authent
     protected $hidden = [
         'user_password', 'remember_token',
     ];
+    
+    //protected $userPassword = 'user_password';
+    
+    public function getAuthPassword() {
+        return $this->user_password;
+    }
+        
+    public function getReporterType()
+    {
+        return $this->hasOne(UserType::class, 'id', 'ref_user_type_id');
+    }
 }

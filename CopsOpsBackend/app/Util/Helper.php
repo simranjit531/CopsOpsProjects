@@ -39,3 +39,26 @@ function get_address_city($lat, $lng)
 
     curl_close($curl);
 }
+
+// if (! function_exists('generate_unique_id')) {
+       
+//     function generate_unique_id($prefix)
+//     {
+//         return \Illuminate\Support\Str::words($value, $words, $end);
+//     }
+// }
+
+if (! function_exists('words')) {
+    /**
+     * Limit the number of words in a string.
+     *
+     * @param  string  $value
+     * @param  int     $words
+     * @param  string  $end
+     * @return string
+     */
+    function words($value, $words = 100, $end = '...')
+    {
+        return \Illuminate\Support\Str::words($value, $words, $end);
+    }
+}

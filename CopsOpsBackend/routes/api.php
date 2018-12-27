@@ -37,9 +37,15 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/incident/city/list', 'API\ApiController@get_incident_by_city');
 
     Route::post('/copincident/list', 'API\ApiController@get_cops_incident_list');
+	Route::post('/copincident/status/list', 'API\ApiController@get_cops_incident_all_list');
 
     Route::post('/profile/attributes', 'API\ApiController@get_profile_attributes');
     Route::post('/profile/set/availability', 'API\ApiController@set_available_status');
+    
+    
+    
+    Route::post('/registered/incident/assigned', 'API\ApiController@assigned_intervention');
+    Route::post('/registered/incident/intervent', 'API\ApiController@assign_intervention');
     Route::post('/registered/incident/close', 'API\ApiController@close_registered_incident');
 });
 

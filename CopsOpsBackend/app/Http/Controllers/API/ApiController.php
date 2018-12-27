@@ -14,7 +14,6 @@ use App\User;
 use App\UserDeviceMapping;
 use App\Util\ResponseMessage;
 use Carbon\Carbon;
-use http\Env\Response;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +23,8 @@ use QrCode;
 use Illuminate\Database\QueryException;
 use App\CopUserHandrailMapping;
 use App\CopUserIncidentMapping;
+use App\UserType;
+use App\CopUserIncidentTempMapping;
 
 class ApiController extends Controller
 {
@@ -44,7 +45,7 @@ class ApiController extends Controller
         $payload = $this->get_payload($request);
         if(isset($payload['status']) && $payload['status'] === false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> $payload['message']],200);
         }
 
         $rules  = [
@@ -75,7 +76,7 @@ class ApiController extends Controller
         $data = array(
             'gender'=> isset($payload['gender']) ? $payload['gender'] : '',
             'user_id' => $userId,
-            'ref_user_type_id'=> $payload['ref_user_type_id'] == "Cops" ? static::_STAKEHOLDER_OPERATOR : static::_STAKEHOLDER_CITIZEN,
+            'ref_user_type_id'=> $payload['ref_user_type_id'] == "Cops" ? UserType::_TYPE_OPERATOR : UserType::_TYPE_CITIZEN,
             'first_name'=> isset($payload['first_name']) ? $payload['first_name'] : '',
             'last_name'=> isset($payload['last_name']) ? $payload['last_name'] : '',
             'date_of_birth'=> isset($payload['date_of_birth']) ? $payload['date_of_birth'] : '',
@@ -84,8 +85,12 @@ class ApiController extends Controller
             'email_id'=> isset($payload['email_id']) ? $payload['email_id'] : '',
             'user_password'=> $payload['user_password'],
             'approved'=> $payload['ref_user_type_id'] == "Cops" ? 0 : 1,
+            'verified'=> $payload['ref_user_type_id'] == "Cops" ? 1 : 0,
             'otp'=> $otp,
-            'profile_qrcode'=>$userId.'.png'
+            'latitude'=> isset($payload['reg_latitude']) ? $payload['reg_latitude'] : 1,
+            'longitude'=>  isset($payload['reg_longitude']) ? $payload['reg_longitude'] : 1,
+            'profile_qrcode'=>$userId.'.png',
+            'cops_grade' => 'Grade I'
         );
 
         if($payload['ref_user_type_id'] == "Cops")
@@ -150,13 +155,16 @@ class ApiController extends Controller
                     'otp' => $otp
                 );
 
-                # Send OTP in email after successful registration
-                Mail::send('mail.welcome', $data, function ($message) use ($data) {
+                if($payload['ref_user_type_id'] != "Cops") {
+                
+                    # Send OTP in email after successful registration
+                    Mail::send('mail.welcome', $data, function ($message) use ($data) {
 
-                    $message->to($data['email']);
-                    $message->subject('User Activation code');
-                });
-
+                        $message->to($data['email']);
+                        $message->subject('User Activation code');
+                    });    
+                }   
+                
                 $attributes = $this->get_user_profile_attributes($user->id);
 
                 return $this->sendResponseMessage([
@@ -237,7 +245,7 @@ class ApiController extends Controller
 
         $email = isset($payload['email_id']) ? $payload['email_id'] : '';
         $password = isset($payload['user_password']) ? $payload['user_password'] : '';
-        $type = $payload['ref_user_type_id'] == "Cops" ? static::_STAKEHOLDER_OPERATOR : static::_STAKEHOLDER_CITIZEN;
+        $type = $payload['ref_user_type_id'] == "Cops" ? UserType::_TYPE_OPERATOR : UserType::_TYPE_CITIZEN;
 
         $rules  = [
             'email_id'=>'required',
@@ -252,6 +260,10 @@ class ApiController extends Controller
         if($auth->isEmpty()) return $this->sendResponseMessage(array(
             'status'=>'false',
             'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_INVALID_CREDENTIALS)), 200);
+
+        if($auth[0]->ref_user_type_id == UserType::_TYPE_OPERATOR && $auth[0]->approved == 0) return $this->sendResponseMessage(array(
+            'status'=>'false',
+            'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_PENDING)), 200);
 
         $attributes = $this->get_user_profile_attributes($auth[0]->id);
 
@@ -629,7 +641,7 @@ class ApiController extends Controller
         # Get all non deleted cities
         $cities = City::select('id', 'city_name')->where('is_deleted', 1)->get();
 
-        if(empty($rs)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        if(empty($rs)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_NO_INCIDENT_REPORTED)],200);
         return $this->sendResponseMessage(['status'=>true, 'data'=> $rs, 'cities'=>$cities],200);
     }
 
@@ -643,7 +655,8 @@ class ApiController extends Controller
         {
             return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
         }
-
+        
+        
         $rules =[
             'city_id'=>'required'
         ];
@@ -665,7 +678,7 @@ class ApiController extends Controller
 
             $rs = \DB::select($query);
 
-            if(empty($rs)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            if(empty($rs)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_NO_INCIDENT_REPORTED)],200);
             return $this->sendResponseMessage(['status'=>true, 'data'=> $rs],200);
 
         }catch (QueryException $e){
@@ -673,6 +686,7 @@ class ApiController extends Controller
                 'status' => false,
                 'message'=> $e->getMessage()], 200);
         }
+        
     }
 
 
@@ -690,22 +704,25 @@ class ApiController extends Controller
         }
 
         $copId = $payload['user_id'];
+		
 
-        $res = \DB::table('cop_user_incident_mapping')
-            ->select('ref_incident_subcategory.sub_category_name', 'cop_incident_details.id', 'cop_user_incident_mapping.status',
+
+        $res = \DB::table('cop_user_incident_temp_mapping')
+            ->select('ref_incident_subcategory.sub_category_name', 'cop_incident_details.id', 'cop_user_incident_temp_mapping.ref_incident_status_id',
                   'cop_incident_details.latitude', 'cop_incident_details.longitude', 'cop_incident_details.created_at',
                   'cop_incident_details.city', 'cop_incident_details.address', 'cop_incident_details.incident_description',
                   'cop_incident_details.other_description', 'cop_incident_details.reference')
-            ->join('cop_incident_details', 'cop_incident_details.id', '=', 'cop_user_incident_mapping.cop_incident_details_id')
+            ->join('cop_incident_details', 'cop_incident_details.id', '=', 'cop_user_incident_temp_mapping.cop_incident_details_id')
             ->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
             ->where(['ref_user_id'=>$copId])->get();
+			
 
         if($res->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
 
         foreach ($res as $k => $v)
         {
             # Check if incident is already closed
-            $status = $v->status;
+            $status = $v->ref_incident_status_id;
             $closedIncident = CopUserIncidentClosed::where('cop_incident_details_id', $v->id)->get();
 
             $res[$k]->status =  $closedIncident->isEmpty() ? $status :  $closedIncident[0]['ref_incident_status_id'];
@@ -713,6 +730,51 @@ class ApiController extends Controller
 
         return $this->sendResponseMessage(['status'=>true, 'data'=> $res],200);
     }
+	
+	//Prashant
+	public function get_cops_incident_all_list(Request $request)
+	{
+		$payload = $this->get_payload($request);
+
+        if(isset($payload['status']) && $payload['status'] == false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        }
+		$rules =[
+            'incident_lat'=>'required',
+            'incident_lng'=>'required',
+        ];
+
+        $result = $this->validate_request($payload, $rules);
+        if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
+        $lat = $payload['incident_lat'];
+        $lng = $payload['incident_lng'];
+        $copId = $payload['user_id'];
+		
+		/*
+		 $query = "SELECT ref_incident_subcategory.sub_category_name, cop_incident_details.id, 		cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
+                  cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.created_at, ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( latitude ) ) ) ) AS `distance`,
+                  cop_incident_details.city, cop_incident_details.address  
+                  FROM cop_incident_details 
+                  JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
+                  HAVING `distance` <= 5 ORDER BY status ASC";
+        */
+        
+        $query = "SELECT ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
+                  cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.created_at, ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( latitude ) ) ) ) AS `distance`,
+                  cop_incident_details.city, cop_incident_details.address, cop_user_incident_temp_mapping.ref_user_id
+                  FROM cop_incident_details 
+                  LEFT JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
+                  LEFT JOIN cop_user_incident_temp_mapping ON cop_user_incident_temp_mapping.cop_incident_details_id = cop_incident_details.id
+                  GROUP BY cop_incident_details.id HAVING `distance` <= 5 OR cop_user_incident_temp_mapping.ref_user_id = $copId ORDER BY status ASC";     
+                 
+        $res = \DB::select($query);
+			
+		
+        if(empty($res)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+
+        return $this->sendResponseMessage(['status'=>true, 'data'=> $res],200);
+	}
 
 
     public function get_profile_attributes(Request $request)
@@ -774,7 +836,81 @@ class ApiController extends Controller
                 'message'=> $e->getMessage()], 200);
         }
     }
+    
+    
+    public function assign_intervention(Request $request)
+    {
+        $payload = $this->get_payload($request);
+        
+        if(isset($payload['status']) && $payload['status'] == false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        }
+        
+        $userId = $payload['user_id'];
+        $incidentId = $payload['incident_id'];
+        
+        # Check whether intervention is already assigned to some user
+        $res = CopUserIncidentMapping::where(['cop_incident_details_id'=>$incidentId])->get();
+        if(!$res->isEmpty()) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ALREADY_ASSIGNED)],200);
+       
+        try
+        {
+            $rs = CopUserIncidentMapping::create([
+                'ref_user_id'=> $userId, 
+                'cop_incident_details_id'=> $incidentId,
+                'created_by'=>$userId,
+                'status'=>2
+            ]);
+            
+            User::where('id', $userId)->update(['available'=>0]);
+            
+            if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_SUCCESS)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_FAILURE)],200);
+        }
+        catch (QueryException $e)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=>  $e->getMessage()],200);
+        }
 
+    }
+    
+    public function assigned_intervention(Request $request)
+    {
+        $payload = $this->get_payload($request);
+        
+        if(isset($payload['status']) && $payload['status'] == false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        }
+        
+        $userId = $payload['user_id'];
+        
+        try
+        {
+            $assignedIntervention = CopUserIncidentMapping::where(['ref_user_id'=>$userId, 'status'=>2])->orderBy('created_at', 'desc')->first();
+
+            $res = \DB::table('cop_user_incident_mapping')
+            ->select('ref_incident_subcategory.sub_category_name', 'cop_incident_details.id', 'cop_user_incident_mapping.status',
+                'cop_incident_details.latitude', 'cop_incident_details.longitude', 'cop_incident_details.created_at',
+                'cop_incident_details.city', 'cop_incident_details.address', 'cop_incident_details.incident_description',
+                'cop_incident_details.other_description', 'cop_incident_details.reference')
+                ->join('cop_incident_details', 'cop_incident_details.id', '=', 'cop_user_incident_mapping.cop_incident_details_id')
+                ->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
+                ->where(['cop_user_incident_mapping.id'=>$assignedIntervention['id']])->get();
+            
+            return $this->sendResponseMessage(['status'=>true, 'data'=> $res],200);
+            
+            
+        }
+        catch (QueryException $e)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=>  $e->getMessage()],200);
+        }
+        
+    }
+    
+    
     public function close_registered_incident(Request $request)
     {
         $payload = $this->get_payload($request);
@@ -783,34 +919,63 @@ class ApiController extends Controller
         {
             return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
         }
+        
+        /* Validation for signature */
+        if(!$request->hasFile('signature')) return $this->sendResponseMessage(array('status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_SIGNATURE_REQUIRED)), 200);
 
+        $sign = "";
+        $signature = $this->uploadFile($request, 'uploads/signature', 'signature');
+        if ($signature['status'] == true) {
+            $sign = $signature['fileName'];
+        }
+        
         $userId = $payload['user_id'];
         $incidentId = $payload['incident_id'];
         $comment = $payload['comment'];
-
+        
+        $referenceNo = 700000;
+        try{
+            $allHandrails = CopUserIncidentClosed::all();
+        }catch (QueryException $e){
+            return $this->sendResponseMessage(['status'=>false, 'message'=>  $e->getMessage()],200);
+        }
+        
+        if(!$allHandrails->isEmpty()) $referenceNo = ($referenceNo+(count($allHandrails)+1));
+        QrCode::format('png')->size(250)->generate($referenceNo, public_path('uploads/qrcodes/'.$referenceNo.'.png'), 'image/png');
+        
         $data = array(
             'cop_incident_details_id' => $incidentId,
             'comment'=> $comment,
             'created_by'=> $userId,
             'ref_incident_status_id'=> 3,
+            'signature'=>$sign,
+            'reference'=>$referenceNo,
+            'qr_code'=>$referenceNo.'.png',
         );
         try{
             $rs = CopUserIncidentClosed::create($data);
 
             /* let's update the status of incident in incident details table also */
             IncidentDetail::where('id', $incidentId)->update(['status'=>3]);
-
-            if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_REGISTERED_INCIDENT_CLOSED_SUCCESS)],200);
+            
+            /* Update incident mapping status */
+            CopUserIncidentMapping::where(['cop_incident_details_id'=> $incidentId])->update(['status'=>3]);
+            
+            User::where('id', $userId)->update(['available'=>1]);
+            
+            if($rs) return $this->sendResponseMessage(['status'=>true, 
+                'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_REGISTERED_INCIDENT_CLOSED_SUCCESS),
+                'qrcode_url'=>asset('uploads/qrcodes/').'/'.$referenceNo.'.png',
+                'reference'=>$referenceNo
+                
+            ],200);
             return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_REGISTERED_INCIDENT_CLOSED_FAILURE)],200);
         }catch (QueryException $e){
 
         }
 
     }
-
-
-
-
+    
     private function get_user_profile_attributes($userId)
     {
         $newIncidentArray = array();
@@ -820,7 +985,8 @@ class ApiController extends Controller
         $userType = $userData[0]->ref_user_type_id;
         $newReport = 0;
         $quotient = 1;
-
+        
+        /*
         if($userType == 1)
         {
             $incidentData = CopUserIncidentMapping::select('cop_incident_details_id')->where(['ref_user_id'=>$userId])->get();
@@ -838,18 +1004,34 @@ class ApiController extends Controller
             $newReport = count($newIncidentData)-count($newIncidents);
 
             $report = $pending.'/4';
-            $quotient = (int)(count($incidentData)/4);
+            $quotient = ceil(count($incidentData)/4);
         }
         else {
             $incidentData = IncidentDetail::where('created_by', $userId)->get();
             $pending = count($incidentData) % 4;
+            if($pending == 0 && count($incidentData) != 0) $pending = 4;
+            elseif ($pending == 0 && count($incidentData) == 0) $pending = 0;
+            
             $closedIncidentData = $incidentData;
             $closedIncidentDataCount = count($closedIncidentData);
 
             $report = $pending.'/4';
 
-            $quotient = (int)(count($incidentData)/4);
+            $quotient = ceil(count($incidentData)/4); 
         }
+        */
+        
+        $incidentData = IncidentDetail::where('created_by', $userId)->get();
+        $pending = count($incidentData) % 4;
+        if($pending == 0 && count($incidentData) != 0) $pending = 4;
+        elseif ($pending == 0 && count($incidentData) == 0) $pending = 0;
+        
+        $closedIncidentData = $incidentData;
+        $closedIncidentDataCount = count($closedIncidentData);
+        
+        $report = $pending.'/4';        
+        $quotient = ceil(count($incidentData)/4); 
+        $newReport = count(CopUserIncidentMapping::where(['ref_user_id'=>$userId, 'status'=>2])->orderBy('created_at', 'desc')->first());
 
         /* Profile percentage calculations */
         $incidentDataCount = count($incidentData);
@@ -864,7 +1046,7 @@ class ApiController extends Controller
 
         if($closedIncidentDataCount == 0) $percentage = 0;
         return array(
-            'level'=>$quotient,
+            'level'=>'Level '.$quotient,
             'report'=>$report,
             'profile_percent'=>$percentage,
             'total_reports'=>$incidentDataCount,
@@ -884,9 +1066,9 @@ class ApiController extends Controller
 
         try
         {
-            if(!isset($payload['data'])) return array('status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND));
+            if(!isset($payload['data'])) return array('status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INVALID_REQUEST));
             $payload = json_decode($this->decrypt($this->key, $payload['data']), true);
-            if($payload === null) return array('status'=> false);
+            if($payload === null) return array('status'=> false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INVALID_JSON));
             return $payload;
         }
         catch (\Exception $e)
@@ -992,3 +1174,4 @@ class ApiController extends Controller
         return $decryptedData;
     }
 }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                

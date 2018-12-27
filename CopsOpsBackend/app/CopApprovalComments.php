@@ -4,20 +4,20 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CopUserIncidentMapping extends Model
+class CopApprovalComments extends Model
 {
-	protected $table = 'cop_user_incident_mapping';
-
+    protected $table = 'cop_approval_comments';
+    
     protected $fillable = [
-        'ref_user_id', 'cop_incident_details_id', 'created_by','updated_at', 'created_at', 'is_deleted', 'status'
+        'ref_user_id', 'comment', 'created_by'
     ];
-	
-	/**
+    
+    /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
     protected $hidden = [
-
+        
     ];
 }

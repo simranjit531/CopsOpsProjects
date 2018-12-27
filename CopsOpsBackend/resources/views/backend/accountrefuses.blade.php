@@ -72,13 +72,13 @@
 				</div>
 
 
-				<div class="inention-div">
+				<div class="inention-div operator">
 					<div class="row">
 						<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-							<h2>Inventation <br> Attribuee<span>12</span></h2>
+							<h2>Inventation <br> Attribuee<span id="operator_assigned_report">12</span></h2>
 						</div>
 						<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-							<h2>Inventation <br> Attribuee<span>12</span></h2>
+							<h2>Inventation <br> Attribuee<span id="operator_completed_report">12</span></h2>
 						</div>
 					</div>
 				</div>
@@ -87,13 +87,17 @@
 					<div class="row">
 						<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 zoom-left">
 							<h2>Carte professional</h2>
-							<a href=""><i class="fa fa-search-plus" aria-hidden="true"></i></a>
-							<a href=""><i class="fa fa-search-plus" aria-hidden="true"></i></a>
+							<a href="javascript:void(0)" id="business_card1"
+								class="showimage"><i class="fa fa-search-plus" aria-hidden="true"></i></a>
+							<a href="javascript:void(0)" id="business_card2"
+								class="showimage"><i class="fa fa-search-plus" aria-hidden="true"></i></a>
 						</div>
 						<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 zoom-left">
 							<h2>Carte professional</h2>
-							<a href=""><i class="fa fa-search-plus" aria-hidden="true"></i></a>
-							<a href=""><i class="fa fa-search-plus" aria-hidden="true"></i></a>
+							<a href="javascript:void(0)" id="id_card1"
+								class="showimage"><i class="fa fa-search-plus" aria-hidden="true"></i></a>
+							<a  href="javascript:void(0)" id="id_card2"
+								class="showimage" href=""><i class="fa fa-search-plus" aria-hidden="true"></i></a>
 						</div>
 					</div>
 				</div>
@@ -151,8 +155,9 @@
 			{
 				$('.loader_a').removeClass('hide');
 			},
-			success: function (d) {
-				
+			success: function (response) {
+				d = response.data;
+				/*
 				$('.loader_a').addClass('hide');
 				$('.rightPart').show();
 				 $('.user-mgm-m7 h6').html(d[0]['first_name']+" "+ d[0]['last_name']);
@@ -161,6 +166,42 @@
 				 $('.user-mgm-m7 .right-part ul li:eq(2) span').html(d[0]['date_of_birth']);
 				 $('.user-mgm-m7 .right-part ul li:eq(3) span').html(d[0]['phone_number']);
 				 $('.user-mgm-m7 .right-part ul li:eq(4) span').html(d[0]['email_id']);
+				 */
+
+
+				$('.rightPart .zoom-div .zoom-left').find('#business_card1').attr('href', 'javascript:void(0);').removeAttr('target');
+				$('.rightPart .zoom-div .zoom-left').find('#business_card2').attr('href', 'javascript:void(0);').removeAttr('target');
+				$('.rightPart .zoom-div .zoom-left').find('#id_card1').attr('href', 'javascript:void(0);').removeAttr('target');
+				$('.rightPart .zoom-div .zoom-left').find('#id_card2').attr('href', 'javascript:void(0);').removeAttr('target');
+				
+				$('.rightPart').show();
+				$('.user-mgm-m7 h6').html(d[0]['first_name']+" "+ d[0]['last_name']);
+				$('.user-mgm-m7 .right-part ul li:eq(0) span').html(d[0]['first_name']+" "+ d[0]['last_name']);
+				$('.user-mgm-m7 .right-part ul li:eq(1) span').html(d[0]['last_name']);
+				$('.user-mgm-m7 .right-part ul li:eq(2) span').html(d[0]['date_of_birth']);
+				$('.user-mgm-m7 .right-part ul li:eq(3) span').html(d[0]['phone_number']);
+				$('.user-mgm-m7 .right-part ul li:eq(4) span').html(d[0]['email_id']);
+
+				$('.rightPart').find('img#profile_image').attr('src', '{{asset('img/jean-img.jpg')}}');
+
+				
+				if(d[0]['profile_image'] !="") $('.rightPart').find('img#profile_image').attr('src', d[0]['profile_image']);
+				
+				if(d[0]['business_card1'] !="")$('.rightPart .zoom-div .zoom-left').find('#business_card1').attr('href', d[0]['business_card1']).attr('target','_blank');
+				if(d[0]['business_card2'] !="")$('.rightPart .zoom-div .zoom-left').find('#business_card2').attr('href', d[0]['business_card2']).attr('target','_blank');
+
+				if(d[0]['id_card1'] !="")$('.rightPart .zoom-div .zoom-left').find('#id_card1').attr('href', d[0]['id_card1']).attr('target','_blank');
+				if(d[0]['id_card2'] !="")$('.rightPart .zoom-div .zoom-left').find('#id_card2').attr('href', d[0]['id_card2']).attr('target','_blank');
+
+				$('.rightPart .operator').find('span#operator_assigned_report').text(d[0]['assigned_incidents']);						
+				$('.rightPart .operator').find('span#operator_completed_report').text(d[0]['completed_incidents']);
+				
+				$('.rightPart .zoom-div .zoom-left a:eq(0)').attr('rel', d[0]['id_card1']);
+
+				$('.rightPart .two-btn').find('#btn-validate-user').attr('data-user', d[0]['id']);
+				$('.rightPart .two-btn').find('#btn-refuse-user').attr('data-user', d[0]['id']);				
+
+				$('.loader_a').addClass('hide');
 			}
 		});
 

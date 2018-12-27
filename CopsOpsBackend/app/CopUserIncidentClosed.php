@@ -9,7 +9,15 @@ class CopUserIncidentClosed extends Model
     protected $table = 'cop_user_incidents_closed';
 
     protected $fillable = [
-        'cop_incident_details_id', 'comment', 'created_by','updated_at', 'created_at', 'ref_incident_status_id',
+        'cop_incident_details_id', 
+        'comment', 
+        'created_by',
+        'updated_at', 
+        'created_at', 
+        'ref_incident_status_id',
+        'signature',
+        'reference',
+        'qr_code',
         'is_deleted'
     ];
 

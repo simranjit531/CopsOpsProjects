@@ -4,8 +4,10 @@ namespace App\Util;
 
 class ResponseMessage
 {
-    const _STATUS_DATA_NOT_FOUND = 9999;
-
+    const _STATUS_INVALID_REQUEST = 1;
+    const _STATUS_DATA_NOT_FOUND = 2;
+    const _STATUS_INVALID_JSON = 3;
+    
     const _STATUS_REGISTRATION_SUCCESS = 1000;
     const _STATUS_REGISTRATION_FAILURE = 1001;
 
@@ -35,9 +37,19 @@ class ResponseMessage
     const _STATUS_SIGNATURE_REQUIRED = 6005;
     const _STATUS_REGISTERED_INCIDENT_CLOSED_SUCCESS = 6006;
     const _STATUS_REGISTERED_INCIDENT_CLOSED_FAILURE = 6007;
+    const _STATUS_NO_INCIDENT_REPORTED = 6008;
+    
+    const _STATUS_INTERVENTION_ASSIGNED_SUCCESS = 6009;
+    const _STATUS_INTERVENTION_ASSIGNED_FAILURE = 6010;
+    const _STATUS_INTERVENTION_ALREADY_ASSIGNED = 60011;
+    const _STATUS_ACCOUNT_APPROVAL_PENDING = 60012;
 
     public static $response = [
-        '9999' => 'Invalid request, data not found, please check again',
+        '1' => 'Invalid request, please check',
+        '2' => 'Data not found !!!',
+        '3' => 'Invalid JSON String',
+        
+//         '9999' => 'Invalid request, data not found, please check again',
 
         '1000' => 'Registration Successfull',
         '1001' => 'Unable to register, Please try again later !!!',
@@ -67,7 +79,12 @@ class ResponseMessage
         '6004' => 'Image or video is required',
         '6005' => 'Signature required',
         '6006' => 'Incident closed successfully',
-        '6007' => 'Something went wrong, unable to closed incident, please try again later'
+        '6007' => 'Something went wrong, unable to closed incident, please try again later',
+        '6008' => 'No Incident reported at this location',
+        '6009' => 'The intervention has been assigned to you',
+        '6010' => 'Something went wrong, please try again',
+        '60011' => 'This intervention has been already assigned.',
+        '60012' => 'Account approval pending from backoffice.'
     ];
 
     public static function statusResponses($responseKey)

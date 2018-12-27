@@ -74,8 +74,8 @@ $key = '0123456789abcdef'; #Same as in JAVA
 /* Report new handrail */
 
 $data = '{        
-        "description":"What is loreum ipsum",        
-        "created_by":"45"
+        "incident_lat":"28.6027944",
+		"incident_lng":"77.3812645"
     }';
 
 

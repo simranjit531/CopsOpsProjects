@@ -41,11 +41,20 @@ return [
 			'intervention' => 'Intervention',
 			'attributed' => 'Attributed',
 			'totelinterventionfenced' => 'Totel intervention fenced',
+	        'freeze_account' => 'Freeze the account',
+	        'change_access' => 'Change the access rank',
+	        'assigned_incidents' => 'Assigned Incidents',
+	       
 			
        ],
 	'archive' =>[
 		'reportlog' => 'Report Log',
 		'currenthand' => 'Current Hand',
+		'INTERVENTIONSATTRIBUEES' =>'INTERVENTIONS ATTRIBUEES',
+		'interventionAddress' => 'Intervention Address',
+		'status' => 'Status',
+		'generalInformation' => 'General Information',
+		'report' => 'Report',
 	],
     'copops' => 'COP OPS',
 	'fromParis' => 'from Paris',
