@@ -24,12 +24,12 @@
 				<form class="form-inline col-md-8 ml-3 mt-1 float-left">
 					<div class="input-group input-group-sm">
 						<div class="input-group-append">
-							<button class="btn btn-navbar" type="submit">
+							<button class="btn btn-navbar" type="button">
 								<i class="fa fa-search"></i>
 							</button>
 						</div>
 						<input class="form-control form-control-navbar" type="search"
-							placeholder="Porte" aria-label="Search">
+							placeholder="Porte" aria-label="Search" id="search_places">
 
 					</div>
 
@@ -67,6 +67,8 @@
 								class="fa fa-map-marker" aria-hidden="true"></i>
 						</h2>
 						<table class="table table-bordered table-striped" id="datatables">
+							<input type="hidden" name="hidden_lat"/>
+							<input type="hidden" name="hidden_lng"/>
 							<thead>
 								<tr>
 									<th>Date</th>
@@ -99,32 +101,127 @@
 @endsection @section('before-styles') @endsection 
 
 @section('after-scripts') 
-<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAP_KEY') }}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&key={{ env('GOOGLE_MAP_KEY') }}"></script>
 <script>
+
+var map, marker;
+var bounds = new google.maps.LatLngBounds();
+var markers = [];
+var markerArray = [];
 
 function init() 
 {
-	var map= {
+	map= {
 	  	center:new google.maps.LatLng(48.864716, 2.349014),
 	  	zoom:5,
 	};
 
-	var map = new google.maps.Map(document.getElementById("map"), map);
+	map = new google.maps.Map(document.getElementById("map"), map);
 }
+
+var content = [];
+function add_markers(markerArray)
+{
+	clear_markers();
+
+	for( i = 0; i < markerArray.length; i++ ) {
+		var html = '';	
+    	html += '<div class="info_content">';
+    	html += '<h3>'+markerArray[i][2]+'</h3>';
+    	html += '<p style="margin-top:10px">'+markerArray[i][3]+'</p>';
+    	html += '<p>'+markerArray[i][4]+'</p>';
+    	html +='</div>';
+
+    	content.push(html);
+	}
+
 	
+	// Loop through our array of markers & place each one on the map  
+    for( i = 0; i < markerArray.length; i++ ) {
+        var position = new google.maps.LatLng(markerArray[i][0], markerArray[i][1]);
+        bounds.extend(position);
+        
+        marker = new google.maps.Marker({
+            position: position,
+            map:map,
+            title: markerArray[i][2]      
+        });
+        markers.push(marker);
+		
+        var infoWindow = new google.maps.InfoWindow();
+        
+     // Allow each marker to have an info window    
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {            
+            return function() {
+                infoWindow.setContent(content[i]);
+                infoWindow.open(map, marker);
+            }
+        })(marker, i));
+        
+        // Automatically center the map fitting all markers on the screen
+        map.fitBounds(bounds);
+
+        
+    }
+    console.log(markerArray);
+    markerArray = [];
+}
+
+function setMapOnAll(map) 
+{
+	for (var i = 0; i < markers.length; i++) 
+	{
+  		markers[i].setMap(map);
+	}
+}
+
+function clear_markers()
+{
+	setMapOnAll(null);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+var oTable, lat, lng = '';
 $(function(){
 	init();
 	
-    var oTable = $('#datatables').DataTable({
+    oTable = $('#datatables').DataTable({
       processing: false,
       serverSide: true,
       parseHtml : true,
       ajax: {
           url: '{{ route("backoffice.incidents.list")  }}',	
-          type : 'post',          
-          data: {'_token': '{{ csrf_token() }}' }
-      },      
-      columns: [
+          type : 'post',
+          data: function (d) {
+        	  d._token = '{{ csrf_token() }}';
+              d.lat = $('input[type="hidden"][name="hidden_lat"]').val();
+              d.lng = $('input[type="hidden"][name="hidden_lng"]').val();
+              
+          },
+          dataFilter: function(response){
+              // this to see what exactly is being sent back
+              var result = JSON.parse(response);
+
+              $(result.data).each(function(k,v){
+              	markerArray.push([v.latitude, v.longitude, v.sub_category_name, v.incident_description, v.address]);	
+              });
+              add_markers(markerArray);
+              		
+              return response;
+          },
+      },
+      
+      	columns: [
           { data: 'date', name: 'date'},
           { data: 'address', name: 'address' },
           { data: 'reporter', name: 'reporter' },
@@ -136,6 +233,22 @@ $(function(){
       order: [[0, "desc"]]
 	});	  
 });
+
+/*************************************************************************************************************************/
+var input = document.getElementById('search_places');
+var autocomplete = new google.maps.places.Autocomplete(input);
+
+google.maps.event.addListener(autocomplete, 'place_changed', function () {
+    var place = autocomplete.getPlace();
+    lat = place.geometry.location.lat();
+    lng = place.geometry.location.lng();
+
+    $('input[type="hidden"][name="hidden_lat"]').val(lat);
+    $('input[type="hidden"][name="hidden_lng"]').val(lng);
+
+    oTable.ajax.reload();     
+});
+/*************************************************************************************************************************/
 
 
 $(document).on('click', '.view-incident', function(){

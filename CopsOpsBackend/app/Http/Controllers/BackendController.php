@@ -327,7 +327,7 @@ class BackendController extends Controller
 		return view('backend.chat');
 	}
 	
-	public function listofincidents()
+	public function listofincidents(Request $request)
 	{
 	    try {
 	        $incidents = DB::table('cop_incident_details')->select('ref_incident_subcategory.sub_category_name',
@@ -338,7 +338,27 @@ class BackendController extends Controller
 	            ->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
 	            ->join('ref_user', 'ref_user.id', '=', 'cop_incident_details.created_by')
 	            ->orderBy('cop_incident_details.updated_at', 'DESC')->get();
-	            
+
+	            if($request->input('lat') && $request->input('lng'))
+	            {
+
+	                $lat = $request->input('lat');
+	                $lng = $request->input('lng');
+	                $query = "SELECT ref_incident_subcategory.sub_category_name,
+              	             ref_user.first_name,ref_user.last_name, cop_incident_details.incident_description,
+             	             cop_incident_details.other_description, cop_incident_details.reference, cop_incident_details.created_by,
+            	             cop_incident_details.qr_code, cop_incident_details.latitude, cop_incident_details.longitude,
+            	             cop_incident_details.address, cop_incident_details.city, cop_incident_details.created_at, cop_incident_details.id, 
+                             ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( cop_incident_details.latitude ) ) * cos( radians( cop_incident_details.longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( cop_incident_details.latitude ) ) ) ) AS distance 
+                             FROM cop_incident_details
+                             JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
+                             JOIN ref_user ON ref_user.id = cop_incident_details.created_by
+                             HAVING `distance` <= 5 ORDER BY distance ASC";
+
+	                $incidents = \DB::select($query);
+
+	            }
+
 	            foreach ($incidents as $k => $v)
 	            {
 	                $users = User::where('id', $v->created_by)->get();
@@ -347,7 +367,7 @@ class BackendController extends Controller
 	                
 	                $incidents[$k]->reporter = $reporter;
 	                $incidents[$k]->date = Carbon::parse($v->created_at)->format('Y-m-d');
-	                $incidents[$k]->status = '<span class="text-danger">Waiting</span>';
+	                $incidents[$k]->status = '<span class="text-danger">On-Wait</span>';
 	                
 	                # Validate if incident has relavent entry in mapping table
 	                $incidentMapping = CopUserIncidentMapping::where('cop_incident_details_id', $v->id)->get();
