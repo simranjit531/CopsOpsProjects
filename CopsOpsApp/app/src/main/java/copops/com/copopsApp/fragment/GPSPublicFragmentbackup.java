@@ -11,11 +11,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +52,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.mapnavigation.AbstractRouting;
 import copops.com.copopsApp.mapnavigation.Route;

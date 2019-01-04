@@ -2,9 +2,10 @@ package copops.com.copopsApp.fragment;
 
 
 import android.annotation.SuppressLint;
+
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+
+
+import androidx.fragment.app.Fragment;
+
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

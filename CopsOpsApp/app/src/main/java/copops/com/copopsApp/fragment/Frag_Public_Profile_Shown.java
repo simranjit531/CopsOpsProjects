@@ -2,8 +2,7 @@ package copops.com.copopsApp.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +12,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.quickblox.sample.core.utils.ResourceUtils;
 
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
+import copops.com.copopsApp.chatmodule.App;
 import copops.com.copopsApp.pojo.OperatorShowAlInfo;
 import copops.com.copopsApp.utils.AppSession;
 
@@ -102,10 +106,26 @@ public class Frag_Public_Profile_Shown extends Fragment implements View.OnClickL
 
         if (mAppSession.getData("profile_qrcode") != null) {
 
-            Glide.with(this)
+
+
+
+            Glide.with(getActivity())
                     .load(mAppSession.getData("profile_qrcode"))
-                    .apply(new RequestOptions().override(250, 250))
+                    .override(250, 250)
                     .into(IVqrcode);
+//            RequestOptions myOptions = new RequestOptions()
+//                    .placeholder(R.drawable.ic_error_white)
+//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                    .dontAnimate()
+//                    .skipMemoryCache(true)
+//                    ;
+//            Glide
+//                    .with(getActivity())
+//                    .load(mAppSession.getData("profile_qrcode"))
+//                    .apply(myOptions.override(250, 250))
+//                    .into(IVqrcode);
+
+
         } else {
 
             IVqrcode.setImageResource(R.mipmap.img_qrcode);

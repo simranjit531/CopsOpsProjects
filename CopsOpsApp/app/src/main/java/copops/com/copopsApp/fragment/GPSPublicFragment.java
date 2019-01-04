@@ -13,12 +13,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
+
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -69,6 +64,11 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.pojo.IncidentSetPojo;
 import copops.com.copopsApp.pojo.IncidentSubPojo;

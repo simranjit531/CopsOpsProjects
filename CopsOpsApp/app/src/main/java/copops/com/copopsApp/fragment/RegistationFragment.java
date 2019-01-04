@@ -16,10 +16,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +25,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -41,17 +36,20 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.pojo.RegistationPjoSetData;
 import copops.com.copopsApp.pojo.RegistationPojo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
+import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.MyDatePickerFragment;
-import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -416,7 +414,12 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                                         mAppSession.saveData("image_url", registrationResponse.getProfile_url());
                                         mAppSession.saveData("grade", registrationResponse.getGrade());
                                         mAppSession.saveData("profile_qrcode", registrationResponse.getProfile_qrcode());
-                                        Utils.fragmentCall(new AuthenticateCodeFragment(userType, registrationResponse), getFragmentManager());
+
+                                        if(mAppSession.getData("userType").equalsIgnoreCase("Citizen")) {
+                                            Utils.fragmentCall(new AuthenticateCodeFragment(userType, registrationResponse), getFragmentManager());
+                                        }else{
+                                            Utils.fragmentCall(new LoginFragment(mAppSession.getData("userType")), getFragmentManager());
+                                        }
                                     }
                                     progressDialog.dismiss();
 

@@ -19,11 +19,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
+
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -41,12 +37,20 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import copops.com.copopsApp.R;
 
 
 public class Utils {
 
-
+    public static final String APP_ID = "75246";
+    public static final String AUTH_KEY = "xeF9L4KE2yg76tE";
+    public static final String AUTH_SECRET = "xcUmSHx-ZWFvT36";
+    public static final String ACCOUNT_KEY = "75246";
     public static String iv = "fedcba9876543210";
     public static String key = "0123456789abcdef";
 

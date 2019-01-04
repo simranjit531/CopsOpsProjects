@@ -71,6 +71,8 @@ public class IncdentSetPojo {
 
     String incident_lat;
     String incident_lng;
+    String latitude;
+    String longitude;
 
     public String getHandrail_lat() {
         return handrail_lat;

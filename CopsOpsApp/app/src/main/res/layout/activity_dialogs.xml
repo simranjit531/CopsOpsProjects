@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="RtlHardcoded,RtlSymmetry">
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/chattoolbar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+
+        android:background="@drawable/edittext_background">
+    </RelativeLayout>
+    <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
+        android:id="@+id/swipy_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        android:layout_marginLeft="@dimen/textsize_10sp"
+        android:layout_marginRight="@dimen/textsize_10sp"
+        app:srl_direction="bottom">
+
+        <ListView
+            android:id="@+id/list_dialogs_chats"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_chat_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:layout_centerInParent="true"
+         android:gravity="center"
+        android:onClick="onStartNewChatClick"
+        android:orientation="vertical"
+        tools:visibility="gone">
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/chat_empty_you_are_alone_here"
+            android:textColor="@color/text_color_dark_grey"
+            android:textSize="20sp"
+            android:visibility="visible"
+            app:robotoTypeface="roboto_medium" />
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/chat_empty_start_new_chat"
+            android:textColor="@color/text_color_green"
+            android:textSize="20sp"
+            android:visibility="visible"
+            app:robotoTypeface="roboto_medium" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_dialogs"
+        style="@style/CenterProgressBarStyle"
+        android:visibility="visible" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_dialogs_new_chat"
+        style="@style/FabStyle"
+        android:onClick="onStartNewChatClick"
+        android:visibility="gone"
+        android:src="@drawable/ic_action_start_chat" />
+</LinearLayout>

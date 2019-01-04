@@ -3,7 +3,7 @@ package copops.com.copopsApp.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +12,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
+import com.bumptech.glide.Glide;
+
+
+import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
@@ -75,11 +77,16 @@ public class IncedentReportFragment extends Fragment implements View.OnClickList
         if(incedentAcceptResponse.getReference()!=null) {
             TVreferencenumber.setText(incedentAcceptResponse.getReference());
         } if(incedentAcceptResponse.getQrcode_url()!=null){
-         //  Glide.with(this).load(incedentAcceptResponse.getQrcode_url()).into(barId);
-            Glide.with(this)
-                    .load(incedentAcceptResponse.getQrcode_url())
-                    .apply(new RequestOptions().override(250, 250))
+          // Glide.with(this).load(incedentAcceptResponse.getQrcode_url()).into(barId);
+            Glide.with(getActivity())
+                    .load(incedentAcceptResponse.getQrcode_url()).override(250, 250)
                     .into(barId);
+//            Glide
+//                    .with(getActivity())
+//                    .load(incedentAcceptResponse.getQrcode_url())
+//                    .apply(new RequestOptions().override(250, 250))
+//                    .into(barId);
+
         }
 
         RLfinish.setOnClickListener(this);

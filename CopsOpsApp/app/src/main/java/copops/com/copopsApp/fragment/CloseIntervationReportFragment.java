@@ -4,7 +4,7 @@ package copops.com.copopsApp.fragment;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
@@ -71,18 +72,10 @@ public class CloseIntervationReportFragment extends Fragment implements View.OnC
     String insidentId;
     Utils.resetPassInterFace mResetPassInterFace;
     AssignmentListPojo assignmentListPojo_close;
-//    public CloseIntervationReportFragment(String dateString, String address, String reference, String status, String insidentId) {
-//        // Required empty public constructor
-//
-//        this.dateString = dateString;
-//        this.address = address;
-//        this.reference = reference;
-//        this.status = status;
-//        this.insidentId = insidentId;
-//    }
 
-    public CloseIntervationReportFragment(AssignmentListPojo assignmentListPojo_close){
-this.assignmentListPojo_close=assignmentListPojo_close;
+
+    public CloseIntervationReportFragment(AssignmentListPojo assignmentListPojo_close) {
+        this.assignmentListPojo_close = assignmentListPojo_close;
     }
 
 
@@ -95,7 +88,7 @@ this.assignmentListPojo_close=assignmentListPojo_close;
 
         ButterKnife.bind(this, view);
 
-        mAppSession=mAppSession.getInstance(getActivity());
+        mAppSession = mAppSession.getInstance(getActivity());
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("loading...");
 
@@ -106,31 +99,31 @@ this.assignmentListPojo_close=assignmentListPojo_close;
     }
 
     private void initView() {
-try {
+        try {
 
 
-    closeIntervation.setOnClickListener(this);
-    Rltoolbar.setOnClickListener(this);
+            closeIntervation.setOnClickListener(this);
+            Rltoolbar.setOnClickListener(this);
 
-    if (assignmentListPojo_close.getData().get(0).getAddress() != null) {
-        etAddressId.setText(assignmentListPojo_close.getData().get(0).getAddress());
-    }
-    TVreferencenumber.setText(assignmentListPojo_close.getData().get(0).getReference());
+            if (assignmentListPojo_close.getData().get(0).getAddress() != null) {
+                etAddressId.setText(assignmentListPojo_close.getData().get(0).getAddress());
+            }
+            TVreferencenumber.setText(assignmentListPojo_close.getData().get(0).getReference());
 
-    //   TVreferencenumber.setText(reference);
-    //dateString = dateString;
-    String[] parts = assignmentListPojo_close.getData().get(0).getCreated_at().split(" ");
-    String date = parts[0]; // 004
-    String time = parts[1]; // 034556
-    Tvdate.setText(date);
-    Tvtime.setText(time);
-    if (assignmentListPojo_close.getData().get(0).getStatus().equalsIgnoreCase("2")) {
-        Tvstate.setText("Pending");
-        Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
-    }
-}catch (Exception e){
-    e.printStackTrace();
-}
+            //   TVreferencenumber.setText(reference);
+            //dateString = dateString;
+            String[] parts = assignmentListPojo_close.getData().get(0).getCreated_at().split(" ");
+            String date = parts[0]; // 004
+            String time = parts[1]; // 034556
+            Tvdate.setText(date);
+            Tvtime.setText(time);
+            if (assignmentListPojo_close.getData().get(0).getStatus().equalsIgnoreCase("2")) {
+                Tvstate.setText("Pending");
+                Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -142,18 +135,11 @@ try {
                     getFragmentManager().popBackStackImmediate();
                 }
                 break;
-
-
             case R.id.Rlintervenue:
-
-
-
                 if ((descId.getText().toString().trim().equalsIgnoreCase(""))) {
                     Utils.showAlert(getActivity().getString(R.string.des), getActivity());
                 } else {
-                    Utils.fragmentCall(new OperatorSignatureFragment(descId.getText().toString().trim(),assignmentListPojo_close.getData().get(0).getId()), getFragmentManager());
-
-
+                    Utils.fragmentCall(new OperatorSignatureFragment(descId.getText().toString().trim(), assignmentListPojo_close.getData().get(0).getId()), getFragmentManager());
                 }
 
                 break;
@@ -161,11 +147,9 @@ try {
 
     }
 
-
-
-
     @Override
     public void onClick(int id) {
-      //  Utils.fragmentCall(new OperatorSignatureFragment(), getFragmentManager());
+        //  Utils.fragmentCall(new OperatorSignatureFragment(), getFragmentManager());
+
     }
 }

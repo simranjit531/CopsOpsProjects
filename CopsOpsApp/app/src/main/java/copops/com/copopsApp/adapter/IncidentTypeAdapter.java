@@ -1,7 +1,7 @@
 package copops.com.copopsApp.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +10,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
+import androidx.recyclerview.widget.RecyclerView;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.interfaceview.IncedentInterface;
 import copops.com.copopsApp.pojo.IncidentTypePojo;
+
 
 public class IncidentTypeAdapter extends RecyclerView.Adapter<IncidentTypeAdapter.ViewHolder> {
     private ArrayList<IncidentTypePojo.Data> incidentType;
@@ -41,11 +42,11 @@ public class IncidentTypeAdapter extends RecyclerView.Adapter<IncidentTypeAdapte
         viewHolder.icident_type_name.setText(incidentType.get(i).getIncident_name());
         viewHolder.icident_type_desc.setText(incidentType.get(i).getIncident_description());
         if(incidentType.get(i).getIncident_img_url()!=null){
-            Glide.with(context)
-                    .load(incidentType.get(i).getIncident_img_url())
-                    .apply(new RequestOptions().override(150, 150))
-                    .into(viewHolder.icident_type_img);
-     //       Glide.with(context).load(incidentType.get(i).getIncident_img_url()).into(viewHolder.icident_type_img);
+//            Glide.with(context)
+//                    .load(incidentType.get(i).getIncident_img_url())
+//                    .apply(new RequestOptions().override(150, 150))
+//                    .into(viewHolder.icident_type_img);
+            Glide.with(context).load(incidentType.get(i).getIncident_img_url()).into(viewHolder.icident_type_img);
         }else{
             Glide.with(context).load(R.mipmap.img_police).into(viewHolder.icident_type_img);
         }

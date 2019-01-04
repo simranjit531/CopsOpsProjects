@@ -3,8 +3,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/grey</item>
+        <item name="colorPrimaryDark">@color/grey</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
     <!-- Base application theme. -->
@@ -48,5 +48,25 @@
     </style>
     <style name="datepicker" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorPrimary">@color/colorAccent</item>
+    </style>
+
+    <style name="ChatActivityTheme" parent="AppTheme">
+        <item name="android:windowBackground">@color/background_chat_color</item>
+    </style>
+
+    <style name="AppTheme.BlueAccent">
+        <item name="colorAccent">@color/color_blue_qb</item>
+    </style>
+
+    <style name="CustomDatePickerDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:dialogTheme">@style/MyDialogTheme</item>
+        <item name="android:datePickerStyle">@style/MyDatePicker</item>
+    </style>
+
+    <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:datePickerStyle">@style/MyDatePicker</item>
+    </style>
+    <style name="MyDatePicker" parent="@android:style/Widget.Material.DatePicker">
+        <item name="android:datePickerMode">spinner</item>
     </style>
 </resources>

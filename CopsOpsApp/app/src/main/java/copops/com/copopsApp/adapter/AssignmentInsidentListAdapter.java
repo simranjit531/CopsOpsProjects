@@ -1,7 +1,7 @@
 package copops.com.copopsApp.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import androidx.recyclerview.widget.RecyclerView;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.interfaceview.IncedentInterface;
 import copops.com.copopsApp.pojo.AssignmentListPojo;
@@ -29,16 +30,14 @@ public class AssignmentInsidentListAdapter extends RecyclerView.Adapter<Assignme
         this.mIncedentInterface = mIncedentInterface;
 
     }
-
-
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public AssignmentInsidentListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.assingment_item, viewGroup, false);
-        return new ViewHolder(view);
+        return new AssignmentInsidentListAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder,final int i) {
+    public void onBindViewHolder(AssignmentInsidentListAdapter.ViewHolder viewHolder,final int i) {
 
         viewHolder.dateTv.setText(assignmentListPojo.getData().get(i).getCreated_at());
         viewHolder.objectId.setText(assignmentListPojo.getData().get(i).getSub_category_name());

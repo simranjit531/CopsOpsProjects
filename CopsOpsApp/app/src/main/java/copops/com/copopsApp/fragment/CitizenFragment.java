@@ -4,9 +4,13 @@ package copops.com.copopsApp.fragment;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,10 +21,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
@@ -31,6 +39,7 @@ import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
+
 import copops.com.copopsApp.utils.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -90,6 +99,14 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
     AppSession mAppSession;
     ProgressDialog progressDialog;
 
+
+
+    double longitude;
+    double latitude;
+
+    LocationManager mLocationManager;
+    private boolean isNetworkEnabled;
+    private boolean isGpsEnabled;
     OperatorShowAlInfo operatorShowAlInfo;
     public CitizenFragment() {
 
@@ -113,6 +130,21 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
         RLnavigation.setOnClickListener(this);
         IVlogout.setOnClickListener(this);
         TVname.setOnClickListener(this);
+
+
+        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (checkPermission() && gpsEnabled()) {
+            if (isNetworkEnabled) {
+
+               progressDialog.show();
+                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
+                        10, mLocationListener);
+            } else {
+                progressDialog.show();
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+                        10, mLocationListener);
+            }
+        }
         return view;
     }
 
@@ -121,7 +153,7 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
         IVback.setVisibility(View.GONE);
         TVname.setText(mAppSession.getData("name"));
         if (mAppSession.getData("image_url") != null&&!mAppSession.getData("image_url").equals("")) {
-           Glide.with(this).load(mAppSession.getData("image_url")).into(IVprofilephoto);
+            Glide.with(getActivity()).load(mAppSession.getData("image_url")).into(IVprofilephoto);
          /*   Glide.with(this).load(mAppSession.getData("image_url"))
                     .error(R.mipmap.img_profile_photo).
                     .into(IVprofilephoto);*/
@@ -262,4 +294,72 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
+
+
+
+    ////Manish
+    private final android.location.LocationListener mLocationListener = new android.location.LocationListener() {
+
+        @Override
+        public void onLocationChanged(final Location location) {
+            if (location != null) {
+                // mCurrentLocation = location;
+                latitude=location.getLatitude();
+                longitude=location.getLongitude();
+                progressDialog.dismiss();
+                mAppSession.saveData("latitude",String.valueOf(latitude));
+                mAppSession.saveData("longitude",String.valueOf(longitude));
+
+                Log.e("latitude",String.valueOf(latitude));
+                Log.e("longitude",String.valueOf(longitude));
+
+                //  initMapFragment();
+            } else {
+                Toast.makeText(getActivity(), "Location is not available now", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+
+
+
+    private boolean checkPermission() {
+        boolean check = ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        if (!check) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            return false;
+        }
+        return true;
+//    }
+    }
+
+    private boolean gpsEnabled() {
+        isGpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        if (!isGpsEnabled && !isNetworkEnabled) {
+            // displayLocationSettingsRequest(getActivity());
+//    if (!isGpsEnabled) {
+//            Toast.makeText(m_activity, "GPS is not enabled", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
 }

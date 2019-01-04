@@ -46,7 +46,7 @@
                 android:layout_below="@id/RLprofileimage"
                 android:layout_margin="5dp"
                 android:gravity="center_horizontal"
-                android:text="Grade ||"
+                android:text="Grade |"
                 android:textColor="@color/aluminiumcolor"
                 android:textSize="@dimen/textsize_18sp"
                 android:textStyle="bold" />

@@ -4,10 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+
 
 import java.util.Calendar;
 
+import androidx.fragment.app.DialogFragment;
 import copops.com.copopsApp.R;
 
 @SuppressLint("ValidFragment")
@@ -24,7 +25,7 @@ public class MyDatePickerFragment extends DialogFragment {
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
-        DatePickerDialog dpDialog = new DatePickerDialog(getActivity(), R.style.datepicker, dateSetListener, year, month, day);
+        DatePickerDialog dpDialog = new DatePickerDialog(getActivity(), R.style.CustomDatePickerDialog, dateSetListener, year, month, day);
         dpDialog.getDatePicker().setMaxDate(c.getTimeInMillis());
         return dpDialog;
     }

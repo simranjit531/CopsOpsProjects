@@ -7,11 +7,6 @@
     android:layout_height="match_parent"
     >
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbarnew"
-        android:visibility="gone"
-        />
     <FrameLayout
         android:id="@+id/content_frame"
         android:layout_below="@+id/toolbar"

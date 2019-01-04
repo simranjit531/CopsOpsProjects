@@ -15,11 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +36,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
@@ -48,6 +49,7 @@ import copops.com.copopsApp.pojo.IncedentAcceptResponse;
 import copops.com.copopsApp.pojo.IncidentSubPojo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
+import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.Utils;
 import okhttp3.MediaType;
@@ -109,6 +111,8 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
     double longitude;
     double latitude;
 
+    AppSession mAppSession;
+
     public IncedentGenerateFragment(String incedentTypeId, IncidentSubPojo incidentSubPojo, int pos,String userId,String screeen) {
         this.incedentTypeId = incedentTypeId;
         this.incidentSubPojo = incidentSubPojo;
@@ -126,7 +130,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
         View v = inflater.inflate(R.layout.fragment_incedent_generate, container, false);
         ButterKnife.bind(this, v);
         mContext=getActivity();
-
+        mAppSession=mAppSession.getInstance(getActivity());
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (checkPermission() && gpsEnabled()) {
             if (isNetworkEnabled) {
@@ -242,8 +246,9 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
             mIncdentSetPojo.setIncident_description(ETdescribetheincident.getText().toString().trim());
             mIncdentSetPojo.setOther_description(ETotherinfoincident.getText().toString().trim());
             mIncdentSetPojo.setCreated_by(userId);
-            mIncdentSetPojo.setIncident_lat(String.valueOf(latitude));
-            mIncdentSetPojo.setIncident_lng(String.valueOf(longitude));
+            mIncdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+            mIncdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+         //   mIncdentSetPojo.setIncident_lng(String.valueOf(longitude));
             mIncdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
             if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
                // progressDialog.show();
@@ -598,6 +603,9 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
                 // mCurrentLocation = location;
                 latitude=location.getLatitude();
                 longitude=location.getLongitude();
+
+                mAppSession.saveData("latitude",String.valueOf(latitude));
+                mAppSession.saveData("longitude",String.valueOf(longitude));
                 //  initMapFragment();
             } else {
                 Toast.makeText(getActivity(), "Location is not available now", Toast.LENGTH_LONG).show();

@@ -5,7 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
@@ -143,10 +144,28 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                     Utils.showAlert(registrationResponse.getMessage(), mContext);
 
                                 } else {
-                                    if (registrationResponse.getVerified().equals("0")) {
 
-                                        Utils.fragmentCall(new AuthenticateCodeFragment(userType, registrationResponse), getFragmentManager());
-                                    } else {
+                                    if(userType.equalsIgnoreCase("Citizen")) {
+                                        if (registrationResponse.getVerified().equals("0")) {
+
+                                            Utils.fragmentCall(new AuthenticateCodeFragment(userType, registrationResponse), getFragmentManager());
+                                        } else {
+                                            mAppSession.saveData("Login", "1");
+                                            mAppSession.saveData("id", registrationResponse.getId());
+                                            mAppSession.saveData("name", registrationResponse.getUsername());
+                                            mAppSession.saveData("userType", userType);
+                                            mAppSession.saveData("image_url", registrationResponse.getProfile_url());
+                                            mAppSession.saveData("profile_qrcode", registrationResponse.getProfile_qrcode());
+                                            mAppSession.saveData("grade", registrationResponse.getGrade());
+                                            Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
+//                                            if (userType.equalsIgnoreCase("Citizen")) {
+//                                                Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
+//                                            } else {
+//                                                Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
+//                                            }
+                                        }
+                                    }else{
+
                                         mAppSession.saveData("Login", "1");
                                         mAppSession.saveData("id", registrationResponse.getId());
                                         mAppSession.saveData("name", registrationResponse.getUsername());
@@ -154,11 +173,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                         mAppSession.saveData("image_url", registrationResponse.getProfile_url());
                                         mAppSession.saveData("profile_qrcode", registrationResponse.getProfile_qrcode());
                                         mAppSession.saveData("grade", registrationResponse.getGrade());
-                                        if(userType.equalsIgnoreCase("Citizen")) {
-                                            Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
-                                        }else{
-                                            Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
-                                        }
+                                        Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
                                     }
                                 }
                                 progressDialog.dismiss();

@@ -4,12 +4,12 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.fragment.AuthenticateCodeFragment;
 import copops.com.copopsApp.fragment.CitizenFragment;
@@ -32,6 +32,11 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+
+
+     //   QBSettings.getInstance().setStoringMehanism(StoringMechanism.UNSECURED); //call before init method for QBSettings
+
         mAppSession=mAppSession.getInstance(this);
 
         if (Build.VERSION.SDK_INT >= 23) {

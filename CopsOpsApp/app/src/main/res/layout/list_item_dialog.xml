@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/list_item_side_margin"
+    android:paddingRight="@dimen/list_item_side_margin"
+    tools:ignore="RtlHardcoded">
+
+    <ImageView
+        android:id="@+id/image_dialog_icon"
+        style="@style/ListItemIconStyle"
+        tools:ignore="ContentDescription"
+        android:visibility="gone"
+        tools:src="@drawable/ic_chat_group" />
+
+    <LinearLayout
+        style="@style/WeightWidth"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_dialog_name"
+            style="@style/DialogNameStyle"
+            android:padding="@dimen/textsize_10sp"
+            android:textSize="@dimen/textsize_16sp"
+            tools:text="Room name" />
+
+        <TextView
+            android:id="@+id/text_dialog_last_message"
+            style="@style/DialogLastMessageStyle"
+            android:padding="@dimen/textsize_10sp"
+            android:textColor="@color/grey"
+            tools:text="Long last message to see how margin on the right side works" />
+        <!--<View-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:layout_marginLeft="5dp"-->
+            <!--android:layout_marginRight="5dp"-->
+            <!--android:background="@color/grey"/>-->
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_dialog_unread_count"
+        style="@style/DialogUnreadCounterStyle"
+        android:visibility="gone"
+        tools:text="4" />
+</LinearLayout>

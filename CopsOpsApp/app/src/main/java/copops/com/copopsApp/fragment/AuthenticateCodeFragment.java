@@ -5,7 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;

@@ -2,8 +2,10 @@ package copops.com.copopsApp.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -11,11 +13,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Telephony;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
+
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.Log;
@@ -32,12 +30,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.gson.Gson;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.adapter.AssignmentInsidentListAdapter;
+import copops.com.copopsApp.chat.ChatCopsActivity;
+import copops.com.copopsApp.chatmodule.ui.activity.AttachmentImageActivity;
+import copops.com.copopsApp.chatmodule.ui.activity.ChatActivity;
+import copops.com.copopsApp.chatmodule.ui.activity.DialogsActivity;
+import copops.com.copopsApp.chatmodule.ui.activity.SplashActivity;
+import copops.com.copopsApp.chatmodule.utils.Consts;
 import copops.com.copopsApp.pojo.AssignmentListPojo;
 import copops.com.copopsApp.pojo.CommanStatusPojo;
 import copops.com.copopsApp.pojo.IncdentSetPojo;
@@ -47,6 +58,7 @@ import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
+
 import copops.com.copopsApp.utils.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -99,6 +111,9 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
     @BindView(R.id.RLnavigation)
     RelativeLayout RLnavigation;
+
+    @BindView(R.id.rlchat)
+    RelativeLayout rlchat;
 
 
 
@@ -158,6 +173,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         llintervention.setOnClickListener(this);
         Tvavaiable.setOnClickListener(this);
         Tvnotavaiable.setOnClickListener(this);
+        rlchat.setOnClickListener(this);
 
 
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -165,9 +181,11 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
             if (isNetworkEnabled) {
                 mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
                         10, mLocationListener);
+                progressDialog.show();
             } else {
                 mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
                         10, mLocationListener);
+                progressDialog.show();
             }
         }
         return view;
@@ -178,7 +196,40 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         IVback.setVisibility(View.GONE);
         TVname.setText(mAppSession.getData("name"));
         if (mAppSession.getData("image_url") != null && !mAppSession.getData("image_url").equals("")) {
-            Glide.with(this).load(mAppSession.getData("image_url")).into(IVprofilephoto);
+            Glide.with(getActivity()).load(mAppSession.getData("image_url")).into(IVprofilephoto);
+
+//            Glide.with(getActivity()).load(mAppSession.getData("image_url")).diskCacheStrategy(DiskCacheStrategy.ALL)
+//                    .listener(new RequestListener<String, GlideDrawable>() {
+//                        @Override
+//                        public boolean onException(Exception e, String model,
+//                                                   Target<GlideDrawable> target, boolean isFirstResource) {
+//                            e.printStackTrace();
+//                            //progressBar.setVisibility(View.GONE);
+//                            return false;
+//                        }
+//
+//                        @Override
+//                        public boolean onResourceReady(GlideDrawable resource, String model,
+//                                                       Target<GlideDrawable> target, boolean isFromMemoryCache,
+//                                                       boolean isFirstResource) {
+//                           // progressBar.setVisibility(View.GONE);
+//                            return false;
+//                        }
+//                    })
+//                    .error(R.drawable.ic_error_white)
+//                    .dontTransform()
+//                    .into(IVprofilephoto);
+
+         //   GlideApp.with(getActivity()).load(mAppSession.getData("image_url")).into(IVprofilephoto);
+
+
+//
+//            Glide.with(getActivity())
+//                    .load(mAppSession.getData("image_url"))
+//                    .apply(new RequestOptions().error(R.drawable.ic_error_white)).apply(new RequestOptions().override(Consts.PREFERRED_IMAGE_SIZE_FULL, Consts.PREFERRED_IMAGE_SIZE_FULL))
+//                    .into(IVprofilephoto);
+
+
          /*   Glide.with(this).load(mAppSession.getData("image_url"))
                     .error(R.mipmap.img_profile_photo).
                     .into(IVprofilephoto);*/
@@ -228,6 +279,11 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
             case R.id.IVlogout:
                 opendialogcustomdialog();
+                break;
+
+                case R.id.rlchat:
+                    Intent mIntent = new Intent(getActivity(),DialogsActivity.class);
+                    startActivity(mIntent);
                 break;
 
             case R.id.TVname:
@@ -286,7 +342,9 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                         IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
 
                         incdentSetPojo.setUser_id(mAppSession.getData("id"));
-                        incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+                        incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+                        incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                      //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
                         Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                         RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                         getAssigmentList(mFile);
@@ -349,15 +407,11 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                         operatorShowAlInfo = response.body();
                         if (operatorShowAlInfo.getStatus().equals("false")) {
                             //  Utils.showAlert(registrationResponse.getMessage(), getActivity());
-
                         } else {
-
                             TVpsental.setText(operatorShowAlInfo.getLevel());
-
                             TVprogressbarnumber.setText(operatorShowAlInfo.getReport());
                             TVprogressbarreports.setText(operatorShowAlInfo.getCompleted_reports() + " completed interventions");
                             TVprogresspercentage.setText(operatorShowAlInfo.getProfile_percent()+"%");
-
                             progressBar1.setMax(100);
                             progressBar1.setProgress(Integer.valueOf(operatorShowAlInfo.getProfile_percent()));
 
@@ -377,26 +431,8 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                                 viewline2.setVisibility(View.INVISIBLE);
                                 viewlineId.setVisibility(View.VISIBLE);
                                 viewline2.setBackgroundResource(R.color.black);
-                                // Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
-
                             }
 
-//                            if (operatorShowAlInfo.getAvailable().equalsIgnoreCase("0")) {
-//                                Tvnotavaiable.setTextColor(getResources().getColor(R.color.sedocolor));
-//                                Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
-//                                viewline2.setBackgroundResource(R.color.sedocolor);
-//                                viewlineId.setBackgroundResource(R.color.blue_shade);
-//                                viewlineId.setVisibility(View.INVISIBLE);
-//
-//                            } else {
-//                                Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
-//                                Tvnotavaiable.setTextColor(getResources().getColor(R.color.black));
-//                                viewlineId.setBackgroundResource(R.color.blue_shade);
-//                                viewline2.setVisibility(View.INVISIBLE);
-//                                viewline2.setBackgroundResource(R.color.black);
-//                               // Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
-//
-//                            }
 
                             if (operatorShowAlInfo.getNew_reports().equalsIgnoreCase("0")) {
                                 countId.setVisibility(View.INVISIBLE);
@@ -406,6 +442,9 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
                                 countId.setText(operatorShowAlInfo.getNew_reports());
                             }
+
+                            TVprofiledescription.setText(operatorShowAlInfo.getGrade());
+
 
                         }
                         progressDialog.dismiss();
@@ -469,55 +508,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                                     // Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
                                     Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
                                 }
-//
-//                                if (operatorShowAlInfo.getAvailable().equalsIgnoreCase("0")) {
-//                                    Tvnotavaiable.setTextColor(getResources().getColor(R.color.sedocolor));
-//                                    Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
-//                                    viewline2.setBackgroundResource(R.color.sedocolor);
-//                                    viewlineId.setBackgroundResource(R.color.blue_shade);
-//                                    viewlineId.setVisibility(View.INVISIBLE);
-//
-//                                } else {
-//                                    Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
-//                                    Tvnotavaiable.setTextColor(getResources().getColor(R.color.black));
-//                                    viewlineId.setBackgroundResource(R.color.blue_shade);
-//                                    viewline2.setVisibility(View.INVISIBLE);
-//
-//                                    viewline2.setBackgroundResource(R.color.black);
-//                                    // Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
-//
-//                                }
-
-//                                if (commanStatusPojo.getAvailable().equalsIgnoreCase("0")) {
-//
-//
-//                                    SpannableString spanString = new SpannableString("Not Avaiable");
-//
-//                                    spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
-//
-//                                    Tvnotavaiable.setTextColor(getResources().getColor(R.color.sedocolor));
-//                                    Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
-//                                    viewline2.setBackgroundResource(R.color.sedocolor);
-//                                    viewlineId.setBackgroundResource(R.color.blue_shade);
-//                                   // Tvnotavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
-//                                  //  Tvavaiable.setTextColor(getResources().getColor(R.color.black));
-//
-//                                    Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
-//
-//
-//                                } else {
-//
-//                                    Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
-//                                    Tvnotavaiable.setTextColor(getResources().getColor(R.color.black));
-//                                    viewlineId.setBackgroundResource(R.color.blue_shade);
-//
-//                                    viewline2.setBackgroundResource(R.color.black);
-//
-//
-//                                    Tvnotavaiable.setText("Not Avaiable");
-//                                    Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
-//
-//                                }
 
                             }
                             progressDialog.dismiss();
@@ -642,6 +632,13 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                 // mCurrentLocation = location;
                 latitude=location.getLatitude();
                 longitude=location.getLongitude();
+                progressDialog.dismiss();
+                mAppSession.saveData("latitude",String.valueOf(latitude));
+                mAppSession.saveData("longitude",String.valueOf(longitude));
+
+                Log.e("latitude",String.valueOf(latitude));
+                Log.e("longitude",String.valueOf(longitude));
+
                 //  initMapFragment();
             } else {
                 Toast.makeText(getActivity(), "Location is not available now", Toast.LENGTH_LONG).show();
@@ -686,13 +683,8 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             assignmentListPojo_close = response.body();
                             if (assignmentListPojo_close.getStatus().equals("false")) {
                                 Utils.showAlert(assignmentListPojo_close.getMessage(), getActivity());
-
                             } else {
-
-
                                 Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close), getFragmentManager());
-
-
                             }
                             progressDialog.dismiss();
 
@@ -706,7 +698,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                         Utils.showAlert(e.getMessage(), getActivity());
                     }
                 }
-
                 @Override
                 public void onFailure(Call<AssignmentListPojo> call, Throwable t) {
                     Log.d("TAG", "Error " + t.getMessage());

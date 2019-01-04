@@ -3,11 +3,12 @@ package copops.com.copopsApp.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.fragment.app.Fragment;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.Utils;
@@ -38,10 +39,7 @@ public class SpleshFragment extends Fragment {
 
        refreshUI();
         return v;
-
-
     }
-
     private void refreshUI() {
         new Handler().postDelayed(new Runnable() {
                                       @Override

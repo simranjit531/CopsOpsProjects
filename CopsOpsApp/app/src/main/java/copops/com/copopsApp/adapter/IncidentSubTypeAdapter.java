@@ -1,7 +1,7 @@
 package copops.com.copopsApp.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +10,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+
+
 
 import java.util.ArrayList;
 
+import androidx.recyclerview.widget.RecyclerView;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.interfaceview.IncedentInterface;
 import copops.com.copopsApp.pojo.IncidentSubPojo;
@@ -40,9 +42,15 @@ public class IncidentSubTypeAdapter extends RecyclerView.Adapter<IncidentSubType
 
         viewHolder.icident_cat_name.setText(mIncidentSubPojo.getData().get(i).getIncident_name());
         if(mIncidentSubPojo.getData().get(i).getIncident_img_url()!=null){
+
+
+//            Glide
+//                    .with(context)
+//                    .load(mIncidentSubPojo.getData().get(i).getIncident_img_url()).apply(new RequestOptions().override(100, 100))
+//                    .into(viewHolder.icident_cat_img);
             Glide.with(context)
                     .load(mIncidentSubPojo.getData().get(i).getIncident_img_url())
-                    .apply(new RequestOptions().override(100, 100))
+                    .override(100, 100)
                     .into(viewHolder.icident_cat_img);
          //   Glide.with(context).load(mIncidentSubPojo.getData().get(i).getIncident_img_url()).into(viewHolder.icident_cat_img);
         }else{
