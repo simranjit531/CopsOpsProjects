@@ -20,8 +20,11 @@ Route::get('/logout', 'LoginController@logout')->name('logout');
 
 
 Route::get('/dashboard', 'BackendController@index')->name('dashboard');
-Route::get('/usermanagement', 'BackendController@usermanagement');
+Route::get('/usermanagement', 'BackendController@usermanagement')->name('usermanagement');
 Route::get('/dailycrew', 'BackendController@dailycrew');
+Route::post('/dailycrew/create', 'BackendController@dailycrewcreate')->name('dailycrewcreate');
+Route::post('/ajax/crew/get', 'BackendController@crewget')->name('crewget');
+
 Route::get('/validationofregistrants', 'BackendController@validationofregistrants');
 Route::get('/accountrefuses', 'BackendController@accountrefuses');
 Route::get('/reduseTabledata', 'BackendController@reduseTabledata');
@@ -30,14 +33,14 @@ Route::get('/validationRegTabledata', 'BackendController@validationRegTabledata'
 
 Route::get('/userdata', 'BackendController@userdata');
 Route::get('/userdatacitizen','BackendController@userdatacitizen');
-Route::get('/archivecenter', 'BackendController@archivecenter');
+Route::get('/archivecenter', 'BackendController@archivecenter')->name('archivecenter');
 Route::get('/archivedata', 'BackendController@archivedata');
 Route::post('/viewincident','BackendController@viewincident'); 
 Route::get('/currenthanddata','BackendController@currenthanddata'); 
 Route::post('/viewhandrail','BackendController@viewhandrail'); 
 
 Route::get('/currenthand', 'BackendController@currenthand');
-Route::get('/chat', 'BackendController@chat');
+Route::get('/chat', 'BackendController@chat')->name('chat');
 
 Route::post('/viewuser','BackendController@viewUser');
 
@@ -63,3 +66,7 @@ Route::post('account/refuse', 'BackendController@refuseaccount')->name('backoffi
 
 # Assing intervention
 Route::post('intervention/assign', 'BackendController@assignintervention')->name('backoffice.intervetnion.assign');
+
+#Control Center Incident View
+Route::post('/incident/view', 'BackendController@viewincidentdata')->name('backoffice.incidents.view');
+Route::post('/list/incidents/citizencops', 'BackendController@listofincidentscityzencops')->name('backoffice.incidents.citizencops');

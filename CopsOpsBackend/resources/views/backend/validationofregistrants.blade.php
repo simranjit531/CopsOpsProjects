@@ -123,6 +123,10 @@
 								class="fa fa-search-plus" aria-hidden="true"></i></a>
 						</div>
 					</div>
+					<div class="comment-box mt-3">
+					<h6>Comment</h6>
+					<textarea class="form-control"></textarea>
+					</div>
 				</div>
 
 
@@ -333,6 +337,7 @@ var oTable = '';
 
 			if(rejectreason == ""){
 				$('textarea[name="refuse_text"]').addClass('has-error');
+				return false;
 			}
 
 			$.ajax({

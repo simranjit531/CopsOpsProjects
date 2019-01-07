@@ -56,7 +56,7 @@
 
 					<div class="col-12 col-sm-2 col-md-2 col-lg-2 col-xl-2 left-part">
 						<figure><img src="{{ url('img/jean-img.jpg') }}" alt="jean-img"></figure>
-						<h2>Mobilsable <span>Grade III</span></h2>
+						<h2>Mobilsable <span></span></h2>
 					</div>
 
 					<div class="col-12 col-sm-10 col-md-10 col-lg-10 col-xl-10 right-part">
@@ -104,8 +104,8 @@
 
 				<div class="comment-box mt-3">
 					<h6>Comment</h6>
-					<textarea class="form-control"></textarea>
-					<a href="javascript:void(0)" class="comment-validate-btn">Validate</a>
+					<textarea class="form-control ac_comment" readonly="readonly"></textarea>
+					<a href="javascript:void(0)" class="comment-validate-btn" id="btn-validate-user">Validate</a>
 				</div>
 
 
@@ -121,8 +121,11 @@
 @endsection
 @section('after-scripts')
 <script>
+
+	
+	var oTable;
 	$(function() {
-		$('#reduseTable').DataTable({
+		oTable = $('#reduseTable').DataTable({
 			processing: true,
 			serverSide: true,
 			ajax: '{{ url("/reduseTabledata")  }}',
@@ -181,7 +184,7 @@
 				$('.user-mgm-m7 .right-part ul li:eq(2) span').html(d[0]['date_of_birth']);
 				$('.user-mgm-m7 .right-part ul li:eq(3) span').html(d[0]['phone_number']);
 				$('.user-mgm-m7 .right-part ul li:eq(4) span').html(d[0]['email_id']);
-
+				$('.ac_comment').html(d[0]['comment']);
 				$('.rightPart').find('img#profile_image').attr('src', '{{asset('img/jean-img.jpg')}}');
 
 				
@@ -198,14 +201,44 @@
 				
 				$('.rightPart .zoom-div .zoom-left a:eq(0)').attr('rel', d[0]['id_card1']);
 
-				$('.rightPart .two-btn').find('#btn-validate-user').attr('data-user', d[0]['id']);
-				$('.rightPart .two-btn').find('#btn-refuse-user').attr('data-user', d[0]['id']);				
+				$('.rightPart .comment-box').find('#btn-validate-user').attr('data-user', d[0]['id']);
+				$('.rightPart .comment-box').find('#btn-refuse-user').attr('data-user', d[0]['id']);				
 
 				$('.loader_a').addClass('hide');
 			}
 		});
 
 	   });
+
+
+	   $('#btn-validate-user').on('click', function(){
+			var userId = $(this).data('user');	
+			$.ajax({
+				url: "{{ route('backoffice.account.approve') }}",
+				data : { 'user-id': userId },
+				cache:false,
+				type: 'POST',   
+				dataType: "json",
+				beforeSend : function(data)
+				{
+					$('.loader_a').removeClass('hide');
+				},
+				success: function (d) 
+				{			
+					$('.loader_a').addClass('hide');
+					if(d.status){
+						oTable.draw(); 
+						
+						toastr.success(d.message, {timeOut: 10000});	
+						$('.rightPart').hide();					
+					}
+					else{
+						toastr.error("Invalid request", {timeOut: 10000});
+					}
+					 
+				}
+			});	
+		});
 
 	});
 </script>          

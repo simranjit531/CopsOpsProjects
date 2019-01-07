@@ -25,6 +25,8 @@
 {{ Html::style('css/plugins/datepicker/datepicker3.css') }}
 <!-- Daterange picker -->
 {{ Html::style('css/plugins/daterangepicker/daterangepicker-bs3.css') }}
+ <!-- Bootstrap time Picker -->
+ {{ Html::style('css/plugins/timepicker/bootstrap-timepicker.min.css') }}
 <!-- bootstrap wysihtml5 - text editor -->
 {{
 Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
@@ -63,7 +65,7 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 			<!-- Brand Logo -->
 			<div class="left-logo">
 				<div class="top-part">
-					<a href="index3.html" class="brand-link"> <!--<img src="{{asset('img/AdminLTELogo.png')}}" alt="COPOPS Logo" class="brand-image img-circle elevation-3"
+					<a href="javscript:void(0)" class="brand-link"> <!--<img src="{{asset('img/AdminLTELogo.png')}}" alt="COPOPS Logo" class="brand-image img-circle elevation-3"
 				   style="opacity: .8">--> <span class="brand-text font-weight-bold">COP
 							OPS</span>
 					</a>
@@ -100,43 +102,27 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 						<!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
 						<li class="nav-item"><a href="{{ url('/dashboard') }}"
-							class="nav-link"> <i class="nav-icon fa fa-home"></i>
+							class="nav-link {{ (\Request::route()->getName() == 'dashboard') ? 'active' : '' }}"> <i class="nav-icon fa fa-home"></i>
 								<p>{{ trans('pages.controlCenter') }}</p> <!--Centre de controle-->
 						</a></li>
 
 						<li class="nav-item"><a href="{{ url('/usermanagement') }}"
-							class="nav-link"> <i class="nav-icon fa fa-user-o"></i>
+							class="nav-link {{ (\Request::route()->getName() == 'usermanagement') ? 'active' : '' }}"> <i class="nav-icon fa fa-user-o"></i>
 								<p>{{ trans('pages.userManagement') }}</p> <!--Gestion des utilisateurs-->
 						</a></li>
 
-						<li class="nav-item"><a href="{{ url('/chat') }}" class="nav-link">
+						<li class="nav-item"><a href="{{ url('/chat') }}" class="nav-link {{ (\Request::route()->getName() == 'chat') ? 'active' : '' }}">
 								<i class="nav-icon fa fa-comments-o"></i>
 								<p>{{ trans('pages.discussion') }}</p> <!--Discussion-->
 						</a></li>
 
 
 						<li class="nav-item"><a href="{{ url('/archivecenter') }}"
-							class="nav-link"> <i class="nav-icon fa fa-archive"></i>
+							class="nav-link {{ (\Request::route()->getName() == 'archivecenter') ? 'active' : '' }}"> <i class="nav-icon fa fa-archive"></i>
 								<p>{{ trans('pages.archiveCenter') }}</p> <!--Center des archives-->
 						</a></li>
 
-						<!--<li class="nav-item has-treeview menu-open">
-            <a href="#" class="nav-link active">
-              <i class="nav-icon fa fa-dashboard"></i>
-              <p>
-                Center des archives
-                <i class="right fa fa-angle-left"></i>
-              </p>
-            </a>
-           <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="./index.html" class="nav-link active">
-                  <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Centre de controle</p>
-                </a>
-              </li>
-            </ul>
-          </li>-->
+						
 
 					</ul>
 				</nav>
@@ -180,6 +166,8 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 		src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
 	<!-- datepicker -->
 	{!! Html::script('js/plugins/datepicker/bootstrap-datepicker.js') !!}
+	<!-- Time Picker -->
+	{!! Html::script('js/plugins/timepicker/bootstrap-timepicker.min.js') !!}
 	<!-- Bootstrap WYSIHTML5 -->
 	{!!
 	Html::script('js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js')
@@ -216,5 +204,7 @@ $(document).ready(function(){
 			document.location.href="{{ route('lang', ['fr']) }}";
 		}
 	});
+
+
 });
 </script>

@@ -44,7 +44,7 @@
 					</div>
 					<input class="form-control form-control-navbar" type="text"
 						name="name" id="name"
-						placeholder="{{trans('pages.usermgnt.enternamecitizen')}}"
+						placeholder="{{trans('pages.usermgnt.enternameoperator')}}"
 						aria-label="Search">
 				</div>
 				<div class="locations-out">
@@ -109,7 +109,7 @@
 					</div>
 					<input class="form-control form-control-navbar" type="text"
 						name="cname" id="cname"
-						placeholder="{{trans('pages.usermgnt.enternameoperator')}}"
+						placeholder="{{trans('pages.usermgnt.enternamecitizen')}}"
 						aria-label="Search">
 				</div>
 			</div>
@@ -301,11 +301,11 @@
 							<div id="map" style="width:100%;height:200px;"></div>
 						</div>
 
-						<div
+						<!--<div
 							class="form-group col-12 col-sm-4 col-md-4 col-lg-4 col-xl-5 mt-2 pl-0">
 							<label class="w-100">Address</label> <input type="text"
 								class="form-control">
-						</div>
+						</div>-->
 
 
 
@@ -363,6 +363,7 @@
 
 <script>
 var oTable, oTableCitizen = "";
+var bounds = new google.maps.LatLngBounds();
 $(function(){
 
 
@@ -455,7 +456,7 @@ $(document).on('click','#viewCops',function(e){
 		},
 		success: function (response) {
 			var d = response.data;
-			
+			console.log(d);
 			$('.loader_a').addClass('hide');
 			$('.modal .modal-dialog .modal-content .modal-body .user-mgm-m7 h6').html(d[0]['first_name']+" "+ d[0]['last_name']);
 			$('.modal .modal-dialog .modal-content .modal-body .user-mgm-m7 .row .right-part ul li:eq(0) span').html(d[0]['first_name']+" "+ d[0]['last_name']);
@@ -492,11 +493,45 @@ $(document).on('click','#viewCops',function(e){
 				$('.modal .modal-dialog .modal-content .modal-body .citizen').find('span#citizen_fire_report').text(d[0]['report_fire']);
 				$('.modal .modal-dialog .modal-content .modal-body .citizen').find('span#citizen_city_report').text(d[0]['report_city']);
 				$('.modal .modal-dialog .modal-content .modal-body .citizen').find('span#citizen_handrail_report').text(d[0]['report_handrail']);
+				  	lat = d[0]['latitude'];
+					lng = d[0]['longitude'];
+					var position = new google.maps.LatLng(lat, lng);
+		        	bounds.extend(position);
+
+					map1= {
+					  	center:new google.maps.LatLng(lat, lng),
+					  	zoom:10,
+					};
+
+					map1 = new google.maps.Map(document.getElementById("map"), map1);
+					marker = new google.maps.Marker({
+		            position: position,
+		            map:map1,
+		            icon:'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+		        	});
 			}
 			else if(d[0]['ref_user_type_id'] == '{{ App\UserType::_TYPE_OPERATOR }}') {
 				$('.modal .modal-dialog .modal-content .modal-body .operator').find('span#operator_assigned_report').text(d[0]['assigned_incidents']);						
 				$('.modal .modal-dialog .modal-content .modal-body .operator').find('span#operator_completed_report').text(d[0]['completed_incidents']);	
-			}	
+			    lat = d[0]['latitude'];
+				lng = d[0]['longitude'];
+				console.log(d[0]['latitude']+""+d[0]['longitude'])
+				var position = new google.maps.LatLng(lat, lng);
+	        	bounds.extend(position);
+
+				map1= {
+				  	center:new google.maps.LatLng(lat, lng),
+				  	zoom:18,
+				};
+
+				map1 = new google.maps.Map(document.getElementById("map"), map1);
+				marker = new google.maps.Marker({
+	            position: position,
+	            map:map1,
+	            icon:'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+	        	});
+			}
+
 					
 			$('#myModal').modal('show');
 		}

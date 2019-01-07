@@ -1,0 +1,85 @@
+@extends('backend.layouts.backendapp')
+@section('content')
+<!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">{{ trans('pages.discussion') }}</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">{{ trans('pages.discussion') }}</li>
+              <input type="hidden" name="hidden_user_id" value="{{ Auth::user()->user_id }}"/>
+              <input type="hidden" name="hidden_user_full_name" value="{{ Auth::user()->first_name.' '.Auth::user()->last_name }}"/>
+              <input type="hidden" name="hidden_usergroup" value="copops"/>
+              <input type="hidden" name="hidden_email" value="{{ Auth::user()->email_id }}"/>
+            </ol>
+          </div><!-- /.col -->
+      </div>
+  </div>
+  
+  <div class="container-fluid">
+  	<div class="row">
+  		<div class="col-md-3">
+  			<div class="row">
+  				<div class="col-md-2"></div>
+  				<div class="col-md-8">
+  					<div class="input-group">
+  						<span class="input-group-addon">
+  							<i class="fa fa-search" aria-hidden="true"></i>
+  						</span>
+  						<input type="search" name="search_user" class="form-control">
+  					</div>
+  					
+  				</div>
+  				<div class="col-md-2"></div>
+  				<div class="clearfix"></div>		
+  			</div>
+  			<div class="row">
+  				<ul id="contact-lists"></ul>
+  			</div>
+  		</div>
+  		<div class="col-md-9">Right</div>
+  	</div>
+  </div>
+</div>
+
+  
+@endsection
+@section('after-scripts')
+
+<script src="{{ asset('js/plugins/quickblox/quickblox.min.js') }}" defer></script>
+<script src="{{ asset('js/plugins/quickblox/QBconfig.js') }}" defer></script>
+<script src="{{ asset('js/quickblox/app.js') }}" defer></script>
+<script src="{{ asset('js/quickblox/script.js') }}" defer></script>
+<script>
+$(function(){
+	_auto_login();	
+});
+
+function _auto_login()
+{
+	var login = $('input[type="hidden"][name="hidden_user_id"]').val();
+	var userName = $('input[type="hidden"][name="hidden_user_full_name"]').val();
+	var userGroup = $('input[type="hidden"][name="hidden_usergroup"]').val();
+	var email = $('input[type="hidden"][name="hidden_email"]').val();
+	
+	var user = {
+        login: login,
+        email : email,
+        password: 'webAppPass',
+        full_name: userName,
+        tag_list: userGroup
+    };
+
+	localStorage.setItem('user', JSON.stringify(user));
+	
+	_create_session();
+}
+
+
+</script>
+         
+@endsection

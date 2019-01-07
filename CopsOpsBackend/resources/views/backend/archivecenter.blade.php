@@ -62,6 +62,7 @@
                         <li><span>{{ trans('pages.usermgnt.object') }}</span><input type="text" value="" class="form-control objectinc" readonly="readonly"></li>
                         <li><span>Description</span> <textarea class="form-control descriptioninc" readonly="readonly"></textarea></li>
                          <li><span>Attachement</span> <p id="attachmentinc"></p><p id="attachmentvideoinc"></p></li>
+                         <li><span>Signature</span> <p id="signature"></p></li>
                         <li><span>Reference</span><input type="text" value="" class="form-control refrence-input refrence-input-info" readonly="readonly"></li>
                     </ul>
                 </div>
@@ -168,7 +169,12 @@
 		var video= "{{ url('/uploads/incident_video') }}/"+d.data[0]['video'];
 		$('#attachmentvideoinc').html('<a href="'+video+'" traget="_blank">View</a>');
 		}
-        
+    if(d.data[0]['signature'] != null)
+    {
+    var signature= "{{ url('/uploads/signature') }}/"+d.data[0]['signature'];
+    $('#signature').html('<a href="'+signature+'" traget="_blank">View</a>');
+    }
+      
         
         $('.addressinc').val(d.data[0]['address']);
         $('.objectinc').val(d.data[0]['sub_category_name']);

@@ -167,6 +167,24 @@ class ApiController extends Controller
                 
                 $attributes = $this->get_user_profile_attributes($user->id);
 
+
+                if($payload['ref_user_type_id'] == "Cops") {
+                    $resp = _quickblox_create_session();
+                    
+                    if($resp['flag'] == 1)
+                    {
+                        $data = array(
+                            'username'=>$user->user_id,
+                            'password'=>'12345678',
+                            'fullname'=> $user->first_name.' '.$user->last_name,
+                            'email'=>$user->email_id,
+                            'tag_list'=>'copops',
+                            'token' => $resp['result']->session->token
+                        );                        
+                        _quickblox_create_user($data);
+                    }                    
+                }
+                
                 return $this->sendResponseMessage([
                     'status' => true,
                     'id' => $user->id,
@@ -296,7 +314,7 @@ class ApiController extends Controller
         }
 
         $email = $payload['email_id'];
-        $type = $payload['ref_user_type_id'] == "Cops" ? static::_STAKEHOLDER_OPERATOR : static::_STAKEHOLDER_CITIZEN;
+        $type = $payload['ref_user_type_id'] == "Cops" ? UserType::_TYPE_OPERATOR : UserType::_TYPE_CITIZEN;
 
         # Check if data exists for user with provided email
         $user = User::where(['email_id'=>$email, 'ref_user_type_id'=>$type])->get();
