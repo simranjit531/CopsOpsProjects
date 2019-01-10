@@ -54,7 +54,7 @@
 					<div class="loactions-out-inner">
 
 						<h3>{{trans('pages.usermgnt.assignanintervention')}}</h3>
-
+						<a id="remove-parent" style="position: absolute; top: 5px; right: 5px;"><i class="fa fa-times"></i></a>
 						<div class="col-sm-12 input-field mb-4">
 						<label>Select Operator </label> 
 							<select class="form-control js-example-basic-single" name="_operators" style="width: 100%" multiple>
@@ -500,7 +500,7 @@ $(document).on('click','#viewCops',function(e){
 
 					map1= {
 					  	center:new google.maps.LatLng(lat, lng),
-					  	zoom:10,
+					  	zoom:15,
 					};
 
 					map1 = new google.maps.Map(document.getElementById("map"), map1);
@@ -521,7 +521,7 @@ $(document).on('click','#viewCops',function(e){
 
 				map1= {
 				  	center:new google.maps.LatLng(lat, lng),
-				  	zoom:18,
+				  	zoom:15,
 				};
 
 				map1 = new google.maps.Map(document.getElementById("map"), map1);
@@ -697,6 +697,11 @@ $(document).on('change', 'input[type="checkbox"][name="checkbox_freeze_account"]
 	
 });
 /* Freeze account */
+
+$("#remove-parent").on("click", function(){
+	$(this).parents('.loactions-out-inner').hide();
+});
+
 
 </script>
 @endsection

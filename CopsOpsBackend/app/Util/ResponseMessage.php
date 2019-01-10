@@ -43,6 +43,7 @@ class ResponseMessage
     const _STATUS_INTERVENTION_ASSIGNED_FAILURE = 6010;
     const _STATUS_INTERVENTION_ALREADY_ASSIGNED = 60011;
     const _STATUS_ACCOUNT_APPROVAL_PENDING = 60012;
+    const _STATUS_ACCOUNT_APPROVAL_FREEZED = 60013;
 
     public static $response = [
         '1' => 'Invalid request, please check',
@@ -84,7 +85,8 @@ class ResponseMessage
         '6009' => 'The intervention has been assigned to you',
         '6010' => 'Something went wrong, please try again',
         '60011' => 'This intervention has been already assigned.',
-        '60012' => 'Account approval pending from backoffice.'
+        '60012' => 'Account approval pending from backoffice.',
+        '60013' => 'Your account has been freezed by admin'
     ];
 
     public static function statusResponses($responseKey)

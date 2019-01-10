@@ -136,6 +136,9 @@ class BackendController extends Controller
             {
                 $response = array();
                 $response['crew'] = Crew::find($request->input('crew_id'));
+                $date = $response['crew']['created_at'];
+                $date = Carbon::parse($date)->format('l d/m/Y');
+                $response['crew']['date'] = $date; 
                 $members = Crew::find($request->input('crew_id'))->get_crew_members->toArray();
                 if(!empty($members))
                 {
@@ -476,23 +479,29 @@ class BackendController extends Controller
 	                $incidents[$k]->reporter = $reporter;
 	                $incidents[$k]->date = Carbon::parse($v->created_at)->format('Y-m-d');
 	                $incidents[$k]->status = '<span class="text-danger">On-Wait</span>';
+	                $incidents[$k]->state = 'On-Wait';
 	                
 	                # Validate if incident has relavent entry in mapping table
 	                $incidentMapping = CopUserIncidentMapping::where('cop_incident_details_id', $v->id)->get();
 	                if(!$incidentMapping->isEmpty())
 	                {
 	                    $incidents[$k]->status = '<span class="text-primary">Pending</span>';
+	                    $incidents[$k]->state = 'Pending';
 	                    # Incident has mapping available, Check if incident is closed ?
                         
 	                    $incidentClosedMapping = CopUserIncidentClosed::where('cop_incident_details_id', $v->id)->get();
-                        if(!$incidentClosedMapping->isEmpty())  $incidents[$k]->status = '<span class="text-success">Finised</span>';
+	                    if(!$incidentClosedMapping->isEmpty())  {
+	                        $incidents[$k]->status = '<span class="text-success">Finised</span>';
+	                        $incidents[$k]->state = 'Finished';
+	                    }
 	                }	                
 	                
 	                $incidents[$k]->status = $incidents[$k]->status;
+	                $incidents[$k]->state = $incidents[$k]->state;
 	            }
 	            
 	            return Datatables::of($incidents)->editColumn('status', function($incidents){
-	                return $incidents->status.'<a href="javascript:void(0)" class="view-incident" data-incident-id="'.$incidents->id.'" data-toggle="modal" data-target="#myModal"><i class="fa fa-angle-right" aria-hidden="true"></i></a>';
+	                return $incidents->status.'<a href="javascript:void(0)" class="view-incident" data-state="'.$incidents->state.'" data-incident-id="'.$incidents->id.'" data-toggle="modal" data-target="#myModal"><i class="fa fa-angle-right" aria-hidden="true"></i></a>';
 	            })
 	            ->rawColumns(['status'])->make(true);
 	            

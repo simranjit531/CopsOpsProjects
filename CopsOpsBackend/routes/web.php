@@ -21,12 +21,12 @@ Route::get('/logout', 'LoginController@logout')->name('logout');
 
 Route::get('/dashboard', 'BackendController@index')->name('dashboard');
 Route::get('/usermanagement', 'BackendController@usermanagement')->name('usermanagement');
-Route::get('/dailycrew', 'BackendController@dailycrew');
+Route::get('/dailycrew', 'BackendController@dailycrew')->name('dailycrew');
 Route::post('/dailycrew/create', 'BackendController@dailycrewcreate')->name('dailycrewcreate');
 Route::post('/ajax/crew/get', 'BackendController@crewget')->name('crewget');
 
-Route::get('/validationofregistrants', 'BackendController@validationofregistrants');
-Route::get('/accountrefuses', 'BackendController@accountrefuses');
+Route::get('/validationofregistrants', 'BackendController@validationofregistrants')->name('validationofregistrants');
+Route::get('/accountrefuses', 'BackendController@accountrefuses')->name('accountrefuses');
 Route::get('/reduseTabledata', 'BackendController@reduseTabledata');
 Route::get('/validationRegTabledata', 'BackendController@validationRegTabledata');
 

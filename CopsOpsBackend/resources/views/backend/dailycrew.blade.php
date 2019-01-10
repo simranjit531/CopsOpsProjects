@@ -31,6 +31,11 @@
                     <h2>Create A Team</h2>
                     <form method="post" name="form_create_team" action="{{ route('dailycrewcreate') }}">
                     	@csrf
+                    	<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-3">
+                            <label>Date</label>
+                            <input type="text" class="form-control" value="{{ \Carbon\carbon::now()->format('l d/m/Y') }}" disabled>
+                        </div>
+                        
                         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-3">
                             <label>Team Name</label>
                             <input type="text" class="form-control" name="team_name">
@@ -77,8 +82,8 @@
                 
                 <div class="caree-left-form col-12 col-sm-7 col-md-7 col-lg-7 col-xl-7" id="crew_data">
                     <ul class="list-heading">
-                        <li>Name of</li>
-                        <li>Effective</li>
+                        <li>Name of the crew </li>
+                        <li style="text-align: center; padding-left: 100px;">Effective</li>
                     </ul>
                     @if($teams)
                     	@foreach($teams as $k=>$t)
@@ -97,6 +102,7 @@
                     	<a href="javascript:void(0);" id="anchor_back"><i class="fa fa-chevron-left"></i></a>
                     </div>
                     <div class="text-center">
+                    	<h3 id="date"></h3>
                     	<p><b>Details</b></p>
                     	<p><b>Name of the crew</b></p>
                     	<p id="crew_name"></p>
@@ -181,6 +187,7 @@
 				{
 					
 					$('#crew_detail').find("#crew_name").html("<b>"+response.data.crew.crew_name+"</b>");
+					$('#crew_detail').find("#date").html(response.data.crew.date);
 
 					var html = '';
 					$(response.data.members).each(function(k, v){						

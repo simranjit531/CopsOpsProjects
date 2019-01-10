@@ -107,7 +107,7 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 						</a></li>
 
 						<li class="nav-item"><a href="{{ url('/usermanagement') }}"
-							class="nav-link {{ (\Request::route()->getName() == 'usermanagement') ? 'active' : '' }}"> <i class="nav-icon fa fa-user-o"></i>
+							class="nav-link {{ in_array(\Request::route()->getName(), array('usermanagement', 'dailycrew', 'validationofregistrants', 'accountrefuses')) ? 'active' : '' }}"> <i class="nav-icon fa fa-user-o"></i>
 								<p>{{ trans('pages.userManagement') }}</p> <!--Gestion des utilisateurs-->
 						</a></li>
 

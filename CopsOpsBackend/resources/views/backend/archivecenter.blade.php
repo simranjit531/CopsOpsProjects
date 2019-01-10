@@ -62,7 +62,7 @@
                         <li><span>{{ trans('pages.usermgnt.object') }}</span><input type="text" value="" class="form-control objectinc" readonly="readonly"></li>
                         <li><span>Description</span> <textarea class="form-control descriptioninc" readonly="readonly"></textarea></li>
                          <li><span>Attachement</span> <p id="attachmentinc"></p><p id="attachmentvideoinc"></p></li>
-                         <li><span>Signature</span> <p id="signature"></p></li>
+<!--                          <li><span>Signature</span> <p id="signature"></p></li> -->
                         <li><span>Reference</span><input type="text" value="" class="form-control refrence-input refrence-input-info" readonly="readonly"></li>
                     </ul>
                 </div>
@@ -84,6 +84,7 @@
                         <li><span>{{ trans('pages.usermgnt.object') }}</span><input type="text" value="" class="form-control objectinc" readonly="readonly"></li>
                         <li><span>Description</span> <textarea class="form-control commentreport" readonly="readonly"></textarea></li>
                         <li><span>Reference</span><input type="text" value="" id="referencereport" class="form-control refrence-input refrence-input-report" readonly="readonly"></li>
+                        <li><span>Signature</span><div id="reportsignature"></div></li>
                     </ul>
                 </div>
                 
@@ -162,7 +163,8 @@
 		if(d.data[0]['photo'] != null)
 		{
 		var photo= "{{ url('/uploads/incident_image') }}/"+d.data[0]['photo'];
-		$('#attachmentinc').html('<a href="'+photo+'" traget="_blank">View</a>');
+// 			$('#attachmentinc').html('<a href="'+photo+'" traget="_blank">View</a>');
+			$('#attachmentinc').html('<img src="'+photo+'" style="width:200px;">');
 		}
 		if(d.data[0]['video'] != null)
 		{
@@ -172,7 +174,8 @@
     if(d.data[0]['signature'] != null)
     {
     var signature= "{{ url('/uploads/signature') }}/"+d.data[0]['signature'];
-    $('#signature').html('<a href="'+signature+'" traget="_blank">View</a>');
+//     	$('#signature').html('<a href="'+signature+'" traget="_blank">View</a>');
+    	$('#reportsignature').html('<img src="'+signature+'" style="width:200px;">');
     }
       
         

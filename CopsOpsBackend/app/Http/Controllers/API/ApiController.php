@@ -273,12 +273,16 @@ class ApiController extends Controller
         $result = $this->validate_request($payload, $rules);
         if($result) return $this->sendResponseMessage($result,200);
 
-        $auth = User::where(array('email_id' => $email, 'user_password' => $password, 'ref_user_type_id'=>$type))->get();
+        $auth = User::where(array('email_id' => $email, 'user_password' => $password, 'ref_user_type_id'=>$type, 'status'=>1))->get();
 
         if($auth->isEmpty()) return $this->sendResponseMessage(array(
             'status'=>'false',
             'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_INVALID_CREDENTIALS)), 200);
-
+        
+        if($auth[0]->ref_user_type_id == UserType::_TYPE_OPERATOR && $auth[0]->status == 0) return $this->sendResponseMessage(array(
+            'status'=>'false',
+            'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_FREEZED)), 200);
+        
         if($auth[0]->ref_user_type_id == UserType::_TYPE_OPERATOR && $auth[0]->approved == 0) return $this->sendResponseMessage(array(
             'status'=>'false',
             'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_PENDING)), 200);

@@ -121,7 +121,7 @@ if(!function_exists('_quickblox_create_session')){
     }
 }
 
-
+// TODO
 if(!function_exists('_quickblox_create_user')){
     
     function _quickblox_create_user($data){

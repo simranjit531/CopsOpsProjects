@@ -1,5 +1,4 @@
-@extends('backend.layouts.backendapp') 
-@section('content')
+@extends('backend.layouts.backendapp') @section('content')
 
 <!-- Content Header (Page header) -->
 <div class="content-header">
@@ -14,12 +13,15 @@
 					<li class="breadcrumb-item"><a href="#">Home</a></li>
 					<li class="breadcrumb-item active">{{ trans('pages.controlCenter')
 						}}</li>
-						
-					<input type="hidden" name="hidden_user_id" value="{{ Auth::user()->user_id }}"/>
-                    <input type="hidden" name="hidden_user_full_name" value="{{ Auth::user()->first_name.' '.Auth::user()->last_name }}"/>
-                    <input type="hidden" name="hidden_usergroup" value="copops"/>
-                    <input type="hidden" name="hidden_userpassword" value="webAppPass"/>
-                    <input type="hidden" name="hidden_email" value="{{ Auth::user()->email_id }}"/>
+
+					<input type="hidden" name="hidden_user_id"
+						value="{{ Auth::user()->user_id }}" />
+					<input type="hidden" name="hidden_user_full_name"
+						value="{{ Auth::user()->first_name.' '.Auth::user()->last_name }}" />
+					<input type="hidden" name="hidden_usergroup" value="copops" />
+					<input type="hidden" name="hidden_userpassword" value="webAppPass" />
+					<input type="hidden" name="hidden_email"
+						value="{{ Auth::user()->email_id }}" />
 				</ol>
 			</div>
 
@@ -41,30 +43,35 @@
 					<div class="col-12 col-sm-2 col-md-2 ml-3 select-box">
 						<select name="user_type" id="user_type">
 							<option value="" selected>--Select--</option>
-							<option value="4">Citizen </option>
+							<option value="4">Citizen</option>
 							<option value="3">Operator</option>
-							<option value="">Zone of Interest</option>
-							<option value="">Point of Interest</option>
+							<option value="Zone-of-Interest">Zone of Interest</option>
+							<option value="Point-of-Interest">Point of Interest</option>
 						</select>
 					</div>
 
 					<div class="col-12 col-sm-4 col-md-4 location-zone ml-3">
 						<ul>
-							<li><a href="javascript:void(0);" id="add-circle">Zone <br>d'internet <i class="fa fa-map-marker"
-									aria-hidden="true"></i></a></li>
-							<li><a href="javascript:void(0);" id="remove-circle">Point <br>d'internet <i class="fa fa-arrows-v"
-									aria-hidden="true"></i></a></li>
+							<li><a href="javascript:void(0);" id="add-circle">Zone <br>d'internet
+									<i class="fa fa-map-marker" aria-hidden="true"></i></a></li>
+							<li><a href="javascript:void(0);" id="remove-circle">Point <br>d'internet
+									<i class="fa fa-arrows-v" aria-hidden="true"></i></a></li>
 						</ul>
 					</div>
 
 				</form>
+				
+				<div>
+					<a href="javascript:void(0)"; class="btn btn-success btn-sm" id="save-map-activity">Save</a>
+					<a href="javascript:void(0)"; class="btn btn-danger btn-sm" id="remove-map-activity">Remove</a>
+				</div>
 			</div>
 
 			<!-- /.col -->
 
 
-			<div class="col-sm-12 dashboard-map mb-1">			
-				<div id="map" style="width:100%;height:400px;"></div>
+			<div class="col-sm-12 dashboard-map mb-1">
+				<div id="map" style="width: 100%; height: 400px;"></div>
 			</div>
 
 
@@ -76,8 +83,8 @@
 								class="fa fa-map-marker" aria-hidden="true"></i>
 						</h2>
 						<table class="table table-bordered table-striped" id="datatables">
-							<input type="hidden" name="hidden_lat"/>
-							<input type="hidden" name="hidden_lng"/>
+							<input type="hidden" name="hidden_lat" />
+							<input type="hidden" name="hidden_lng" />
 							<thead>
 								<tr>
 									<th>Date</th>
@@ -95,81 +102,108 @@
 					<div class="col-sm-3 mini-selection chat-right-admin float-right">
 						<h2>Live Chat</h2>
 						<div class="chat-wrapper">
-						<div class="chat-header">
-							<div class="row">
-							<div class="col-md-2"><i class="fa fa-address-book-o" aria-hidden="true"></i></div>
-							<div class="col-md-8"><div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-search" aria-hidden="true"></i></span>
-                                    <input type="text" name="search" class="form-control">
-                                </div>
-                            </div>
-							<div class="col-md-2"><i class="fa fa-comments-o" aria-hidden="true"></i></div>
+							<div class="chat-header">
+								<div class="row">
+									<div class="col-md-2">
+										<i class="fa fa-address-book-o" aria-hidden="true"></i>
+									</div>
+									<div class="col-md-8">
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-search"
+												aria-hidden="true"></i></span> <input type="text"
+												name="search" class="form-control">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<i class="fa fa-comments-o" aria-hidden="true"></i>
+									</div>
+								</div>
 							</div>
-						</div>
-						<div class="chat-inner-section"></div>
+							<div class="chat-inner-section"></div>
 						</div>
 					</div>
 				</div>
 			</div>
 
 			<!--2Jan pp-->
-				<!-- Modal -->
-	<div id="myModal" class="modal fade" role="dialog">
-		<div class="modal-dialog">
+			<!-- Modal -->
+			<div id="myModal" class="modal fade" role="dialog">
+				<div class="modal-dialog">
 
-			<!-- Modal content-->
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
 
-				</div>
-				<div class="modal-body">
-					<div
-						class="col-12 col-sm-12 col-md-12 col-lg-12 col--xl-12 user-mgm-m7">
-						<h6></h6>
-
-						<div class="row">
-
-							<div class="col-12 col-sm-2 col-md-2 col-lg-2 col-xl-2 left-part">
-								<figure>
-									<img id="profile_image" src="{{asset('img/jean-img.jpg')}}" alt="jean-img">
-								</figure>
-								<h2>
-									<span id="cop_grade"></span>
-								</h2>
-							</div>
-
+						</div>
+						<div class="modal-body">
 							<div
-								class="col-12 col-sm-10 col-md-10 col-lg-10 col-xl-10 right-part">
-								<ul>
-									<li><b>{{ trans('pages.usermgnt.tables.firstname')}} / {{
-										trans('pages.usermgnt.tables.lastname')}}</b><span></span>
-									</li>
-									<li><b>{{ trans('pages.usermgnt.tables.birthdate')}}</b><span></span></li>
-									
-									<li><b>{{ trans('pages.usermgnt.tables.email')}}</b><span></span></li>
-								</ul>
-							</div>
+								class="col-12 col-sm-12 col-md-12 col-lg-12 col--xl-12 user-mgm-m7">
+								<h6></h6>
 
-						</div>
+								<div class="row">
 
-						<div class="inention-div citizen hide">
-							<div class="row">
-								<div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3" id="report_police"></div>
-								<div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3" id="report_fireman_medical"></div>
-								<div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3" id="report_city"></div>
-								<div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3" id="report_handrail"></div>
-								
-							</div>
-						</div>
-							<div class="inention-div operator hide">
-							<div class="row">
-								<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6" id="assigned_incidents"></div>
-								<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6" id="completed_incidents"></div>
-							</div>
-							</div>
-			
+									<div
+										class="col-12 col-sm-2 col-md-2 col-lg-2 col-xl-2 left-part">
+										<figure>
+											<img id="profile_image" src="{{asset('img/jean-img.jpg')}}"
+												alt="jean-img">
+										</figure>
+										<h2>
+											<span id="cop_grade"></span>
+										</h2>
+									</div>
 
+									<div
+										class="col-12 col-sm-10 col-md-10 col-lg-10 col-xl-10 right-part">
+										<div class="row">
+											<div class="col-md-6">
+												<ul>
+													<li><b>{{ trans('pages.usermgnt.tables.firstname')}} / {{
+															trans('pages.usermgnt.tables.lastname')}}</b><span></span>
+													</li>
+													<li><b>{{ trans('pages.usermgnt.tables.birthdate')}}</b><span></span></li>
+
+													<li><b>{{ trans('pages.usermgnt.tables.email')}}</b><span></span></li>
+												</ul>
+											</div>
+
+											<div class="col-md-6 text-right">
+												<p>State</p>
+												<div style="float: right;">
+													<p class="alert-success" id="incident-state"
+														style="padding: 6px 12px;">Pending</p>
+												</div>
+											</div>
+
+
+										</div>
+									</div>
+								</div>
+
+								<div class="inention-div citizen hide">
+									<div class="row">
+										<div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3"
+											id="report_police"></div>
+										<div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3"
+											id="report_fireman_medical"></div>
+										<div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3"
+											id="report_city"></div>
+										<div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3"
+											id="report_handrail"></div>
+
+									</div>
+								</div>
+								<div class="inention-div operator hide">
+									<div class="row">
+										<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6"
+											id="assigned_incidents"></div>
+										<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6"
+											id="completed_incidents"></div>
+									</div>
+								</div>
+
+								<!-- 
 						<div class="zoom-div mt-4">
 							<div class="row">
 								<div
@@ -186,39 +220,59 @@
 								</div>
 							</div>
 						</div>
+                         -->
+								<p>
+									<b>Information of the report</b>
+								</p>
+								<p>
+									<b>Localisation</b>
+								</p>
+								<div
+									class="location-div col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 p-0 mt-3">
+									<div id="map1" style="width: 100%; height: 200px;"></div>
+								</div>
 
-						<div
-							class="location-div col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 p-0 mt-3">
-							<div id="map1" style="width:100%;height:200px;"></div>
-						</div>
+								<div
+									class="form-group col-12 col-sm-4 col-md-4 col-lg-4 col-xl-5 mt-2 pl-0">
+									<label class="w-100">Address</label>
+								</div>
 
-						<div class="form-group col-12 col-sm-4 col-md-4 col-lg-4 col-xl-5 mt-2 pl-0">
-							<label class="w-100">Address</label> <p id="incidents_address"></p>
-						</div>
+								<div
+									class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 pl-0">
+									<input type="text" class="form-control" id="incidents_address">
+								</div>
 
-						<div class="form-group col-12 col-sm-4 col-md-4 col-lg-4 col-xl-5 mt-2 pl-0">
-							<label class="w-100">Subject Of the Report</label> <p id="subject_report"></p>
-						</div>
+								<div
+									class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 mt-2 pl-0">
+									<label class="">Subject of the report</label> <span
+										id="subject_report"></span>
+								</div>
 
-						<div class="form-group col-12 col-sm-4 col-md-4 col-lg-4 col-xl-5 mt-2 pl-0">
-							<label class="w-100">Incident Description</label> <p id="incident_description"></p>
-						</div>
+								<div
+									class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 pl-0">
+									<label class="w-100">Description</label>
+									<textarea class="form-control"
+										style="resize: none; width: 100%;" id="incident_description"></textarea>
+								</div>
 
-						<div class="form-group col-12 col-sm-4 col-md-4 col-lg-4 col-xl-5 mt-2 pl-0">
-							<label class="w-100">Other Description</label> <p id="other_description"></p>
-						</div>
-						<div class="form-group col-12 col-sm-4 col-md-4 col-lg-4 col-xl-5 mt-2 pl-0">
-							<label class="w-100">Attachment</label><p id="attachmentinc"></p><p id="attachmentvideoinc"></p>
+								<div
+									class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 pl-0">
+									<label class="w-100">Other Information</label>
+									<textarea class="form-control"
+										style="resize: none; width: 100%;" id="other_description"></textarea>
+								</div>
+								<div
+									class="form-group col-12 col-sm-4 col-md-4 col-lg-4 col-xl-5 mt-2 pl-0">
+									<label class="w-100">Attachment</label>
+									<p id="attachmentinc"></p>
+									<div id="attachmentvideoinc"></div>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
 				</div>
 			</div>
-
-		</div>
-	</div>
 			<!--end 2janpp-->
 
 
@@ -229,35 +283,84 @@
 	<!-- /.container-fluid -->
 </div>
 <style>
-.user__item_1.disabled{
-	display:none;
-} 
-.chat-header { border: 1px solid #e7e7e7; }
-.chat-header i { font-size:15px; }
-.chat-wrapper {border: 1px solid #e7e7e7;
-    
-    background: #fff;
+.user__item_1.disabled {
+	display: none;
 }
-.chat-wrapper .chat-inner-section
-{
-    padding: 5px;    
+
+.chat-header {
+	border: 1px solid #e7e7e7;
 }
-.chat-inner-section .user__item_1 .user__details p.user__name{
-border-bottom: 1px dotted grey;  margin-bottom: .1rem; cursor:pointer
+
+.chat-header i {
+	font-size: 15px;
 }
-.chat-header .input-group-addon { border: 1px solid #ced4da; }
-.chat-header .input-group-addon i { margin: 5px; border-right: 0px; }
-.chat-header input { height:30px; }
-.chat-header .col-md-2 { margin-top: 3px; }
+
+.chat-wrapper {
+	border: 1px solid #e7e7e7;
+	background: #fff;
+}
+
+.chat-wrapper .chat-inner-section {
+	padding: 5px;
+}
+
+.chat-inner-section .user__item_1 .user__details p.user__name {
+	border-bottom: 1px dotted grey;
+	margin-bottom: .1rem;
+	cursor: pointer
+}
+
+.chat-header .input-group-addon {
+	border: 1px solid #ced4da;
+}
+
+.chat-header .input-group-addon i {
+	margin: 5px;
+	border-right: 0px;
+}
+
+.chat-header input {
+	height: 30px;
+}
+
+.chat-header .col-md-2 {
+	margin-top: 3px;
+}
+
+#myModal .modal-dialog {
+	max-width: 700px;
+}
+
+#myModal .modal-dialog .user-mgm-m7 {
+	width: 90%;
+}
+
+.user-mgm-m7 {
+	border: none;
+	border-radius: none;
+	box-shadow: none;
+}
+
+.user-mgm-m7 .right-part ul li {
+	float: none;
+	clear: both;
+}
+
+.inention-div {
+	width: 100%;
+}
 </style>
 <!-- /.content-header -->
-@endsection @section('before-styles') @endsection 
+@endsection @section('before-styles') @endsection
 
-@section('after-scripts') 
-<script src="https://maps.googleapis.com/maps/api/js?&libraries=places&key={{ env('GOOGLE_MAP_KEY') }}"></script>
+@section('after-scripts')
+<script
+	src="https://maps.googleapis.com/maps/api/js?&libraries=places&key={{ env('GOOGLE_MAP_KEY') }}"></script>
 
 <script src="https://unpkg.com/navigo@4.3.6/lib/navigo.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js" defer></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"
+	defer></script>
 <script src="{{ asset('js/plugins/quickblox/quickblox.min.js') }}" defer></script>
 <script src="{{ asset('js/plugins/quickblox/QBconfig.js') }}" defer></script>
 <script src="{{ asset('js/plugins/quickblox/user.js') }}" defer></script>
@@ -635,6 +738,51 @@ $(function(){
 	});	  
 });
 
+/************************************************ form enter button functionality***********************************************/
+
+$(function(){
+	$(window).keydown(function(event){
+	    if(event.keyCode == 13) {
+	      event.preventDefault();
+	      $('#search_places').blur();
+	      codeAddress();
+	      return false;
+	    }
+	});
+});
+
+
+
+geocoder = new google.maps.Geocoder();
+
+function codeAddress() {
+
+    //In this case it gets the address from an element on the page, but obviously you  could just pass it to the method instead
+    var address = document.getElementById( 'search_places' ).value;
+
+    geocoder.geocode( { 'address' : address }, function( results, status ) {
+        if( status == google.maps.GeocoderStatus.OK ) {
+
+            //In this case it creates a marker, but you can get the lat and lng from the location.LatLng
+            var lat = results[0].geometry.location.lat();
+            var lng = results[0].geometry.location.lng();
+            
+            $('input[type="hidden"][name="hidden_lat"]').val(lat);
+            $('input[type="hidden"][name="hidden_lng"]').val(lng);
+            
+            map.setCenter( results[0].geometry.location );
+            map.setZoom(10);
+            
+        } else {
+            alert( 'Geocode was not successful for the following reason: ' + status );
+        }
+    } );
+}
+
+/************************************************ form enter button functionality***********************************************/
+ 
+
+
 /*************************************************************************************************************************/
 var input = document.getElementById('search_places');
 var autocomplete = new google.maps.places.Autocomplete(input);
@@ -688,6 +836,15 @@ google.maps.event.addListener(autocomplete, 'place_changed', function () {
 /****DropDown Filter**********/
 $('#user_type').change(function(){
 var userType = $(this).val();
+if(userType == "Zone-of-Interest"){
+	$("#add-circle").trigger("click");
+	return false;
+}
+else if(userType == "Point-of-Interest"){
+	$("#remove-circle").trigger("click");
+	return false;
+}
+	
 if(userType.length >0){
     //oTable.ajax.reload();   
     $.ajax ({
@@ -740,29 +897,46 @@ $('#remove-circle').on('click', function(){
 	//clear_circles();
 	var lat = $('input[type="hidden"][name="hidden_lat"]').val();
     var lng = $('input[type="hidden"][name="hidden_lng"]').val();
+
+    if(lat == "" || lng == "")
+	{
+		lat = "48.864716";
+		lng = "2.349014";		
+	}
+    
 	if(lat !="" && lng !=""){
 	countpointer += 1;
 
     if (countpointer < 100) {    
 	marker11 = new google.maps.Marker({
-        position: new google.maps.LatLng(lat, lng),
-//         icon: 'https://maps.google.com/mapfiles/kml/shapes/parking_lot_maps.png',
+        position: new google.maps.LatLng(lat, lng),        
         icon: "{{ asset('img/pin.png') }}",
         map: map,
         draggable:true
   	});
 
-  	pins.push(marker11);
 
-  	google.maps.event.addListener(marker11, 'rightclick', (function(marker, i) {
-  		alert("Test");
-        // return function() {
-        // 	 marker.setMap(null);
-	       //      countpointer -= 1;
-        // }
+  	initialLocation = new google.maps.LatLng(lat, lng);
+    map.setCenter(initialLocation);
+    map.setZoom(12);
+    
+  	google.maps.event.addListener(marker11, 'rightclick', (function(marker11, i) {
+//   		alert("Test");
+  		return function() {
+			if(pins.length >=1)
+			{
+				r = confirm("Are you sure you want to remove this point of interest");
+				if(r==true)
+				{
+		            marker11.setMap(null);
+		            count -= 1;
+				}
+			}	
+
+		}
     })(marker11, i));
 
-
+  	pins.push(marker11);
   }
 }
 });
@@ -772,6 +946,13 @@ $('#add-circle').on('click', function(){
 	var lat = $('input[type="hidden"][name="hidden_lat"]').val();
     var lng = $('input[type="hidden"][name="hidden_lng"]').val();
 	//countpointer = 0;
+	
+	if(lat == "" || lng == "")
+	{
+		lat = "48.864716";
+		lng = "2.349014";		
+	}
+	
 	if(lat !="" && lng !=""){
 	count += 1;
     if (count < 100) {
@@ -790,14 +971,63 @@ $('#add-circle').on('click', function(){
         draggable:true,
         clickable : true , editable : true , draggable : true
       });
-    circles.push(circle);
 
-	    google.maps.event.addListener(circle, 'rightclick', (function(circle, i) {  
-	        return function() {
-	            circle.setMap(null);
-	            count -= 1;
-	        }
-	    })(circle, i));
+    initialLocation = new google.maps.LatLng(lat, lng);
+    map.setCenter(initialLocation);
+    map.setZoom(12);
+        
+    google.maps.event.addListener(circle, 'rightclick', (function(circle, i) {  
+
+        return function() {
+
+    		if(circles.length >=1)
+    		{
+    			r = confirm("Are you sure you want to remove this zone of interest");
+				if(r==true)
+				{
+		            circle.setMap(null);
+		            count -= 1;
+				}
+    		}	
+
+        }
+    })(circle, i));
+
+
+    circles.push(circle);
+    
+//     google.maps.event.addListener(circle, 'rightclick', (function(mouseEvent) { 
+//     	r = confirm("Are you sure you want to remove this zone of interest");
+//     	if(r==true)
+//     	{
+// //         	console.log(mouseEvent.latLng.lat());
+// //         	console.log(mouseEvent.latLng.lng());
+// 			console.log(mouseEvent);
+// 			console.log(circle);
+// 			console.log(i);
+// // 			console.log(circle.latng.lng());
+// //         	console.log(circle.center.lat()+"=========="+circle.center.lng());
+
+// //         	for(i in circles)
+// //         	{
+// // //             	console.log(circles[i]);
+// // //             	console.log(circles[i].center.lat()+"=========="+circles[i].center.lng());
+// // 				if(circles[i].center == circle.center)
+// // 				{
+// // 					console.log(circles[i]);
+// // 					circle.setMap(null);
+// // 					circles.pop(circles[i]);
+// // 		            count -= 1;
+// // 				}
+// //         	}
+// //         	clear_circles();
+// // 	            circles[circle].setMap(null);
+
+	        
+//     	}
+//     })(circle, i));
+
+    
 	}
 	}
 });
@@ -805,6 +1035,7 @@ $('#add-circle').on('click', function(){
 //pp 2jan
 $(document).on('click','.view-incident',function(e){  
    var incidentId = $(this).attr('data-incident-id');
+   var incidentState = $(this).attr('data-state');
    $.ajaxSetup({
 		headers: {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -871,14 +1102,14 @@ $(document).on('click','.view-incident',function(e){
 			$('#completed_incidents').html("<h2>Completed<br>incidents<span >"+d[0]['completed_incidents']+"</span></h2>");
 			}
 		}
-			$('#incidents_address').html(d[0]['address']);
+			$('#incidents_address').val(d[0]['address']);
 			$('#subject_report').html(d[0]['sub_category_name']);
 			$('#incident_description').html(d[0]['incident_description']);
 			$('#other_description').html(d[0]['other_description']);
 			if(d[0]['photo'] != null)
 			{
 			var photo= "{{ url('/uploads/incident_image') }}/"+d[0]['photo'];
-			$('#attachmentinc').html('<a href="'+photo+'" traget="_blank">View</a>');
+			$('#attachmentinc').html('<img src="'+photo+'" style="width:200px;">');
 			}
 			if(d[0]['video'] != null)
 			{
@@ -891,6 +1122,24 @@ $(document).on('click','.view-incident',function(e){
 
 			if(d[0]['id_card1'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#id_card1').attr('href', d[0]['id_card1']).attr('target','_blank');
 			if(d[0]['id_card2'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#id_card2').attr('href', d[0]['id_card2']).attr('target','_blank');
+
+			$('#incident-state').removeClass('alert-danger');
+			$('#incident-state').removeClass('alert-primary');
+			$('#incident-state').removeClass('alert-success');
+			if(incidentState == "On-Wait")
+			{
+				$('#incident-state').addClass('alert-danger');
+			}
+			else if(incidentState == "Pending")
+			{
+				$('#incident-state').addClass('alert-primary');
+			}
+			else if(incidentState == "Finished")
+			{
+				$('#incident-state').addClass('alert-success');
+			}
+
+			$('#incident-state').html(incidentState);
 			
 			$('#myModal').modal('show');
 			lat = d[0]['latitude'];
@@ -900,7 +1149,7 @@ $(document).on('click','.view-incident',function(e){
 
 			map1= {
 			  	center:new google.maps.LatLng(lat, lng),
-			  	zoom:5,
+			  	zoom:15,
 			  	/*zoomControl: false,
 				   zoomControl: false,
 				  scaleControl: false,
@@ -908,18 +1157,73 @@ $(document).on('click','.view-incident',function(e){
 				  //disableDoubleClickZoom: true,
 				  //draggable:false
 			};
-
+			if(d[0]['ref_user_type_id'] == "3") icon='http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+	        else if(d[0]['ref_user_type_id'] == "4") icon = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+	        
 			map1 = new google.maps.Map(document.getElementById("map1"), map1);
 			marker = new google.maps.Marker({
             position: position,
             map:map1,
+            icon: icon,
         	});
 			
 		}
 	});
 });
 
+$('#save-map-activity').on("click", function(){
 
+	r = confirm("Do you want to save the information of the map, this action will undo your last save");
+	if(r == true)
+	{
+		var pinsArray = []
+		$(pins).each(function(k,v){
+			pin = {};
+			pin['icon'] = v.icon;
+			pin['lat'] = v.position.lat();
+			pin['lng'] = v.position.lng();
+			pinsArray.push(pin);
+		});
+
+		if(circles.length >= 1 )localStorage.setItem('circle', JSON.stringify(circles));
+		if(pins.length >= 1) localStorage.setItem('pins', JSON.stringify(pinsArray));
+			
+	}	
+});
+
+$("#remove-map-activity").on("click", function(){
+	r = confirm("Do you want to discard the saved information of the map");
+	if(r == true)
+	{
+		clear_markers();
+		localStorage.removeItem('circle');
+		localStorage.removeItem('pins');			
+	}	
+});
+
+$(function(){
+	/* Check if pins are already set
+	 * if yes let's plot them back on the map
+	 * saving history to overcome page refresh
+	 */
+
+	 var pinsArrray = JSON.parse(localStorage.getItem('pins'));
+
+	 if(pinsArrray.length >= 1)
+	 {
+		 $(pinsArrray).each(function(k,v){
+			 marker = new google.maps.Marker({
+	            position: new google.maps.LatLng(v.lat, v.lng),
+	            map:map,
+	            icon: v.icon,
+	            draggable:true
+        	});
+
+			pins.push(marker);
+			
+		 });				 
+	 }	
+});
 
 </script>
 
