@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -132,7 +131,7 @@
                 android:textSize="@dimen/textsize_12sp"
                 android:visibility="gone" />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:id="@+id/cityList"
                 android:layout_marginLeft="30dp"
@@ -141,7 +140,7 @@
                 android:visibility="gone"
                 android:layout_height="100dp">
 
-            </android.support.v7.widget.RecyclerView>
+            </androidx.recyclerview.widget.RecyclerView>
             <RelativeLayout
                 android:id="@+id/RLsearch"
                 android:layout_width="140dp"

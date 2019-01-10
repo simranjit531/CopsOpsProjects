@@ -11,13 +11,57 @@
         android:id="@+id/toolbar"
         layout="@layout/chattoolbar" />
 
+
+    <!--<EditText-->
+        <!--android:id="@+id/userSearch"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="48dp"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_marginLeft="30dp"-->
+        <!--android:layout_marginRight="30dp"-->
+        <!--android:background="@drawable/edittext_background"-->
+        <!--android:clickable="true"-->
+        <!--android:focusable="true"-->
+        <!--android:singleLine="true"-->
+        <!--android:maxLength="50"-->
+        <!--android:paddingLeft="40dp"-->
+        <!--android:paddingRight="15dp"-->
+        <!--android:hint="Search"-->
+         <!--android:src="@mipmap/img_edittext_search_background"-->
+        <!--android:imeOptions="actionDone"-->
+        <!--android:textColor="@color/aluminiumcolor"-->
+        <!--android:textSize="@dimen/textsize_16sp"-->
+        <!--android:visibility="visible" />-->
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-
         android:background="@drawable/edittext_background">
+
+        <EditText
+            android:id="@+id/userSearch"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:singleLine="true"
+            android:maxLength="50"
+            android:paddingLeft="10dp"
+            android:paddingRight="15dp"
+            android:drawableLeft="@mipmap/outline_search_black_18dp"
+            android:hint=" Search"
+            android:background="@android:color/transparent"
+            android:imeOptions="actionDone"
+            android:textColor="@color/aluminiumcolor"
+            android:textSize="@dimen/textsize_12sp"
+            android:drawableTint="@color/grey"
+            android:visibility="visible" />
+
     </RelativeLayout>
     <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
         android:id="@+id/swipy_refresh_layout"

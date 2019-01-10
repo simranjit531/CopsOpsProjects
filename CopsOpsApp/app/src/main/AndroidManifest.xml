@@ -117,7 +117,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".chatmodule.ui.activity.SelectUsersActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppThemenoactionbar"
             android:screenOrientation="portrait" />
         <activity
             android:name=".chatmodule.ui.activity.DialogsActivity"
@@ -125,7 +125,7 @@
         <activity
             android:name=".chatmodule.ui.activity.ChatActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/ChatActivityTheme"
+            android:theme="@style/AppThemenoactionbar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".chatmodule.ui.activity.ChatInfoActivity"

@@ -186,7 +186,7 @@ the code sent to </string>
 
     <string name="chat_sticker">Sticker</string>
     <string name="chat_send">Send</string>
-    <string name="chat_edit_text_hint">Message</string>
+    <string name="chat_edit_text_hint">Type a message...</string>
     <string name="chat_me">Me</string>
     <string name="chat_friend">Friend</string>
     <string name="chat_join_error">Error join group chat</string>
@@ -202,6 +202,7 @@ the code sent to </string>
     <string name="notification_title">Quickblox Chat Notification</string>
     <string name="connection_error">Chat connection has been dropped</string>
     <string name="reconnect_alert">Reconnecting in %s seconds</string>
+    <string name="write_someting_on_chat">Write Something to send.</string>
 
     <string name="chat_info">Chat info</string>
     <string name="chat_info_add_people_error">Add people errors</string>

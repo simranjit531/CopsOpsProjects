@@ -1,38 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/chatclickLL"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="@dimen/textsize_10sp"
-    android:layout_height="wrap_content">
+    android:orientation="vertical">
+
     <TextView
         android:id="@+id/nameTv"
-        android:layout_weight=".32"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Date"
-        android:padding="5dp"
-        android:textSize="@dimen/textsize_16sp"
-        android:textColor="@color/black"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        />
+        android:text="Date"
+        android:textColor="@color/black"
+        android:textSize="@dimen/textsize_16sp" />
+
     <TextView
         android:id="@+id/chatId"
-        android:layout_weight=".32"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:text="Date"
-        android:textSize="@dimen/textsize_14sp"
-        android:textColor="@color/grey"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        />
+        android:text="Date"
+        android:textColor="@color/grey"
+        android:textSize="@dimen/textsize_14sp" />
 
     <View
         android:layout_width="wrap_content"
         android:layout_height="1dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:background="@color/grey"/>
+        android:background="@color/grey" />
 </LinearLayout>

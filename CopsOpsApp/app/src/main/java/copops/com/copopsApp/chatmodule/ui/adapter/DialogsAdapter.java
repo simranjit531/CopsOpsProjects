@@ -37,7 +37,7 @@ public class DialogsAdapter extends BaseSelectableListAdapter<QBChatDialog> {
             holder.nameTextView = (TextView) convertView.findViewById(R.id.text_dialog_name);
             holder.lastMessageTextView = (TextView) convertView.findViewById(R.id.text_dialog_last_message);
           //  holder.dialogImageView = (ImageView) convertView.findViewById(R.id.image_dialog_icon);
-          //  holder.unreadCounterTextView = (TextView) convertView.findViewById(R.id.text_dialog_unread_count);
+            holder.unreadCounterTextView = (TextView) convertView.findViewById(R.id.text_dialog_unread_count);
 
             convertView.setTag(holder);
         } else {
@@ -58,10 +58,10 @@ public class DialogsAdapter extends BaseSelectableListAdapter<QBChatDialog> {
 
         int unreadMessagesCount = getUnreadMsgCount(dialog);
         if (unreadMessagesCount == 0) {
-           // holder.unreadCounterTextView.setVisibility(View.GONE);
+            holder.unreadCounterTextView.setVisibility(View.GONE);
         } else {
-         //   holder.unreadCounterTextView.setVisibility(View.VISIBLE);
-         //   holder.unreadCounterTextView.setText(String.valueOf(unreadMessagesCount > 99 ? "99+" : unreadMessagesCount));
+            holder.unreadCounterTextView.setVisibility(View.VISIBLE);
+            holder.unreadCounterTextView.setText(String.valueOf(unreadMessagesCount > 99 ? "99+" : unreadMessagesCount));
         }
 
         holder.rootLayout.setBackgroundColor(isItemSelected(position) ? ResourceUtils.getColor(R.color.selected_list_item_color) :

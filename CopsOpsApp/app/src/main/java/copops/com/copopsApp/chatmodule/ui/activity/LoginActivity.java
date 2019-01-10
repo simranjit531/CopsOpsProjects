@@ -27,10 +27,10 @@ import copops.com.copopsApp.chatmodule.App;
 import copops.com.copopsApp.chatmodule.ui.adapter.UsersAdapter;
 import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
 
-public class LoginActivity extends CoreBaseActivity {
+public class LoginActivity extends CoreBaseActivity implements UsersAdapter.clickPos {
 
     private ListView userListView;
-
+    UsersAdapter.clickPos mClickPos;
     public static void start(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
         context.startActivity(intent);
@@ -61,7 +61,7 @@ public class LoginActivity extends CoreBaseActivity {
         QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> result, Bundle params) {
-                UsersAdapter adapter = new UsersAdapter(LoginActivity.this, result);
+                UsersAdapter adapter = new UsersAdapter(LoginActivity.this, result,mClickPos);
                 userListView.setAdapter(adapter);
             }
 
@@ -102,6 +102,11 @@ public class LoginActivity extends CoreBaseActivity {
                         });
             }
         });
+    }
+
+    @Override
+    public void clickPostion() {
+
     }
 
     private class OnUserLoginItemClickListener implements AdapterView.OnItemClickListener {

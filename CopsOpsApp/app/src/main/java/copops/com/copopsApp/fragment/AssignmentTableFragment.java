@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
@@ -47,10 +48,15 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
     RecyclerView lvtableofassignments;
     @BindView(R.id.Rltoolbar)
     RelativeLayout Rltoolbar;
-    ProgressDialog progressDialog;
+
+    @BindView(R.id.swipeContainer)
+    SwipeRefreshLayout swipeContainer;
+
+    //    ProgressDialog progressDialog;
     IncedentInterface mIncedentInterface;
     AppSession mAppSession;
     AssignmentListPojo assignmentListPojo;
+    AssignmentInsidentListAdapter mAdapter;
 
     public AssignmentTableFragment(AssignmentListPojo assignmentListPojo) {
 
@@ -69,9 +75,9 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
         mIncedentInterface = this;
         mAppSession = mAppSession.getInstance(getActivity());
         Rltoolbar.setOnClickListener(this);
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("loading...");
-        AssignmentInsidentListAdapter mAdapter = new AssignmentInsidentListAdapter(getActivity(), assignmentListPojo, mIncedentInterface);
+//        progressDialog = new ProgressDialog(getActivity());
+//        progressDialog.setMessage("loading...");
+        mAdapter = new AssignmentInsidentListAdapter(getActivity(), assignmentListPojo, mIncedentInterface);
         lvtableofassignments.setHasFixedSize(true);
         lvtableofassignments.setLayoutManager(new LinearLayoutManager(getActivity()));
         lvtableofassignments.setItemAnimator(new DefaultItemAnimator());
@@ -81,8 +87,31 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
 
         } else{
 
-        lvtableofassignments.setAdapter(mAdapter);
-    }
+            lvtableofassignments.setAdapter(mAdapter);
+        }
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (Utils.checkConnection(getActivity())) {
+                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                    incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                    incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+                    incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                    //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                    RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                    getAssigmentList(mFile);
+                } else {
+                    Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+                }
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         return view;
     }
 
@@ -109,5 +138,44 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
         if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("1")) {
             Utils.fragmentCall(new AssignedInterventionFragment(pos, assignmentListPojo), getFragmentManager());
         }
+    }
+
+    private void getAssigmentList(RequestBody Data) {
+
+//        progressDialog.show();
+        Service login = ApiUtils.getAPIService();
+        Call<AssignmentListPojo> getallLatLong = login.getAssignmentList(Data);
+        getallLatLong.enqueue(new Callback<AssignmentListPojo>() {
+            @Override
+            public void onResponse(Call<AssignmentListPojo> call, Response<AssignmentListPojo> response)
+
+            {
+                try {
+                    if (response.body() != null) {
+                        assignmentListPojo = response.body();
+//                        progressDialog.dismiss();
+                        swipeContainer.setRefreshing(false);
+                        mAdapter.notifyDataSetChanged();
+
+                    } else {
+                        Utils.showAlert(response.message(), getActivity());
+                    }
+
+                } catch (Exception e) {
+                    swipeContainer.setRefreshing(false);
+//                    progressDialog.dismiss();
+                    e.getMessage();
+                    Utils.showAlert(e.getMessage(), getActivity());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AssignmentListPojo> call, Throwable t) {
+                Log.d("TAG", "Error " + t.getMessage());
+                swipeContainer.setRefreshing(false);
+//                progressDialog.dismiss();
+                Utils.showAlert(t.getMessage(), getActivity());
+            }
+        });
     }
 }

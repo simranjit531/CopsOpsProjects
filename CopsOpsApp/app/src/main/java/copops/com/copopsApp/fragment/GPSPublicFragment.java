@@ -1,10 +1,8 @@
 package copops.com.copopsApp.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.ApplicationInfo;
@@ -13,7 +11,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
-
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -226,7 +223,8 @@ public class GPSPublicFragment extends Fragment implements  View.OnClickListener
         IVmedicalheaderbodyaccident.setOnClickListener(this);
         IVmedicalheaderother.setOnClickListener(this);
         BTstart.setOnClickListener(this);
-//        BTstart.setVisibility(View.GONE);
+
+        BTstart.setVisibility(View.GONE);
 
         RLheader.setBackgroundResource(0);
         IVdropmenu.setImageResource(R.mipmap.img_menudropdown);
@@ -270,6 +268,7 @@ public class GPSPublicFragment extends Fragment implements  View.OnClickListener
                 {
                     Utils.showAlert(getActivity().getString(R.string.destination_selection),getActivity());
                 }else {
+                    BTstart.setVisibility(View.VISIBLE);
                     createRoute();
                 }
 
@@ -277,7 +276,7 @@ public class GPSPublicFragment extends Fragment implements  View.OnClickListener
 
             @Override
             public void onError(Status status) {
-
+                BTstart.setVisibility(View.GONE);
                 Toast.makeText(m_activity, status.toString(), Toast.LENGTH_SHORT).show();
 
             }
@@ -560,23 +559,15 @@ public class GPSPublicFragment extends Fragment implements  View.OnClickListener
                     Utils.showAlert(getActivity().getString(R.string.destination_selection),getActivity());
                 }else {
                     if (m_route == null) {
-                    //   createRoute();
+                        //   createRoute();
                     } else {
 
                         if(BTstart.getText().toString().equalsIgnoreCase("Start")) {
                             startNavigation();
                             BTstart.setText(R.string.stop);
                         }else {
-                            m_navigationManager.stop();
-
-
-                            /*
-                             * Restore the map orientation to show entire route on screen
-                             */
-                            m_map.zoomTo(m_geoBoundingBox, Map.Animation.NONE, 16);
                             BTstart.setText(R.string.start);
-                            m_map.setZoomLevel(17.5);
-                            m_route = null;
+                            stopNavigation();
                         }
                     }
                 }
@@ -593,10 +584,9 @@ public class GPSPublicFragment extends Fragment implements  View.OnClickListener
     public void getIncidentType() {
         try {
 
-
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage(getActivity().getString(R.string.loading_msg));
-          //  progressDialog.show();
+            //  progressDialog.show();
 
             Service incidentType = ApiUtils.getAPIService();
 
@@ -646,7 +636,7 @@ public class GPSPublicFragment extends Fragment implements  View.OnClickListener
 
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage(getActivity().getString(R.string.loading_msg));
-         //   progressDialog.show();
+            //   progressDialog.show();
             IncidentSetPojo incidentSetPojo = new IncidentSetPojo();
 
             incidentSetPojo.setIncident_id(incidentTypeResponse.getData().get(pos).getIncident_id());
@@ -697,67 +687,67 @@ public class GPSPublicFragment extends Fragment implements  View.OnClickListener
         }
 
     }
-//manish map
-private void initMapFragment() {
-    // Set path of isolated disk cache
-    String diskCacheRoot = Environment.getExternalStorageDirectory().getPath()
-            + File.separator + ".isolated-here-maps";
-    // Retrieve intent name from manifest
-    String intentName = "";
-    try {
-        ApplicationInfo ai = m_activity.getPackageManager().getApplicationInfo(m_activity.getPackageName(), PackageManager.GET_META_DATA);
-        Bundle bundle = ai.metaData;
-        intentName = bundle.getString("INTENT_NAME");
-    } catch (PackageManager.NameNotFoundException e) {
-        Log.d(this.getClass().toString(), "Failed to find intent name, NameNotFound: " + e.getMessage());
-    }
+    //manish map
+    private void initMapFragment() {
+        // Set path of isolated disk cache
+        String diskCacheRoot = Environment.getExternalStorageDirectory().getPath()
+                + File.separator + ".isolated-here-maps";
+        // Retrieve intent name from manifest
+        String intentName = "";
+        try {
+            ApplicationInfo ai = m_activity.getPackageManager().getApplicationInfo(m_activity.getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = ai.metaData;
+            intentName = bundle.getString("INTENT_NAME");
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.d(this.getClass().toString(), "Failed to find intent name, NameNotFound: " + e.getMessage());
+        }
 
-    boolean success = com.here.android.mpa.common.MapSettings.setIsolatedDiskCacheRootPath(diskCacheRoot, intentName);
-    if (!success) {
-        // Setting the isolated disk cache was not successful, please check if the path is valid and
-        // ensure that it does not match the default location
-        // (getExternalStorageDirectory()/.here-maps).
-        // Also, ensure the provided intent name does not match the default intent name.
-    } else {
-        if (m_mapFragment != null) {
-            /* Initialize the MapFragment, results will be given via the called back. */
-            m_mapFragment.init(new OnEngineInitListener() {
-                @Override
-                public void onEngineInitializationCompleted(OnEngineInitListener.Error error) {
+        boolean success = com.here.android.mpa.common.MapSettings.setIsolatedDiskCacheRootPath(diskCacheRoot, intentName);
+        if (!success) {
+            // Setting the isolated disk cache was not successful, please check if the path is valid and
+            // ensure that it does not match the default location
+            // (getExternalStorageDirectory()/.here-maps).
+            // Also, ensure the provided intent name does not match the default intent name.
+        } else {
+            if (m_mapFragment != null) {
+                /* Initialize the MapFragment, results will be given via the called back. */
+                m_mapFragment.init(new OnEngineInitListener() {
+                    @Override
+                    public void onEngineInitializationCompleted(OnEngineInitListener.Error error) {
 
-                    if (error == Error.NONE) {
-                        m_map = m_mapFragment.getMap();
-                        if(mCurrentLocation != null)
-                            m_map.setCenter(new GeoCoordinate(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()),
-                                    Map.Animation.NONE);
-                        //Put this call in Map.onTransformListener if the animation(Linear/Bow)
-                        //is used in setCenter()
-                        m_map.setZoomLevel(17.5);
-                        /*
-                         * Get the NavigationManager instance.It is responsible for providing voice
-                         * and visual instructions while driving and walking
-                         */
-                        // Create the MapMarker
-                        try {
-                            Image mMarker = new Image();
-                            mMarker.setImageResource(R.mipmap.img_navigation_icon);
-                            MapMarker myMapMarker = new MapMarker(new GeoCoordinate(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), mMarker);
-                            m_map.addMapObject(myMapMarker);
-                            m_navigationManager = NavigationManager.getInstance();
-                        }catch (Exception e)
-                        {
-                            e.getMessage();
+                        if (error == Error.NONE) {
+                            m_map = m_mapFragment.getMap();
+                            if(mCurrentLocation != null)
+                                m_map.setCenter(new GeoCoordinate(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()),
+                                        Map.Animation.NONE);
+                            //Put this call in Map.onTransformListener if the animation(Linear/Bow)
+                            //is used in setCenter()
+                            m_map.setZoomLevel(17.5);
+                            /*
+                             * Get the NavigationManager instance.It is responsible for providing voice
+                             * and visual instructions while driving and walking
+                             */
+                            // Create the MapMarker
+                            try {
+                                Image mMarker = new Image();
+                                mMarker.setImageResource(R.mipmap.img_navigation_icon);
+                                MapMarker myMapMarker = new MapMarker(new GeoCoordinate(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), mMarker);
+                                m_map.addMapObject(myMapMarker);
+                                m_navigationManager = NavigationManager.getInstance();
+                            }catch (Exception e)
+                            {
+                                e.getMessage();
+                            }
+                        } else {
+                            Toast.makeText(m_activity,
+                                    "ERROR: Cannot initialize Map with error " + error,
+                                    Toast.LENGTH_LONG).show();
                         }
-                    } else {
-                        Toast.makeText(m_activity,
-                                "ERROR: Cannot initialize Map with error " + error,
-                                Toast.LENGTH_LONG).show();
                     }
-                }
-            });
+                });
+            }
         }
     }
-}
 
     private void createRoute() {
         /* Initialize a CoreRouter */
@@ -839,7 +829,7 @@ private void initMapFragment() {
                                 }else {
                                     timeId.setText("" + routeResults.get(0).getRoute().getLength() / 360 + " Min ");
                                 }
-                               // startNavigation();
+                                // startNavigation();
                             } else {
                                 Toast.makeText(m_activity,
                                         "Error:route results returned is not valid",
@@ -929,9 +919,9 @@ private void initMapFragment() {
 //                    Toast.LENGTH_SHORT).show();
         }
     };
-@Override
+    @Override
     public void onDestroy() {
-    super.onDestroy();
+        super.onDestroy();
         /* Stop the navigation when app is destroyed */
         if (m_navigationManager != null) {
             stopForegroundService();
@@ -1034,7 +1024,7 @@ private void initMapFragment() {
     }
 
     private void startNavigation() {
-      //  BTstart.setText(R.string.stop);
+        //  BTstart.setText(R.string.stop);
         BTstart.setText(R.string.start);
         /* Configure Navigation manager to launch navigation on current map */
         m_navigationManager.setMap(m_map);
@@ -1052,9 +1042,9 @@ private void initMapFragment() {
 //        alertDialogBuilder.setMessage("Choose Mode");
 //        alertDialogBuilder.setNegativeButton("Navigation",new DialogInterface.OnClickListener() {
 //            public void onClick(DialogInterface dialoginterface, int i) {
-                m_navigationManager.startNavigation(m_route);
-                m_map.setTilt(60);
-                startForegroundService();
+        m_navigationManager.startNavigation(m_route);
+        m_map.setTilt(60);
+        startForegroundService();
 //            };
 //        });
 //        alertDialogBuilder.setPositiveButton("Simulation",new DialogInterface.OnClickListener() {
@@ -1080,5 +1070,24 @@ private void initMapFragment() {
          * listeners for demo purpose,please refer to HERE Android SDK API documentation for details
          */
         addNavigationListeners();
+    }
+
+    public void stopNavigation()
+    {
+        m_navigationManager.stop();
+        /*
+         * Restore the map orientation to show entire route on screen
+         */
+        m_map.zoomTo(m_geoBoundingBox, Map.Animation.NONE, 16);
+        BTstart.setText(R.string.start);
+        m_map.setZoomLevel(17.5);
+        stopForegroundService();
+        m_route = null;
+        toLatLng= null;
+        places.setText("");
+        timeId.setText("");
+        kmId.setText("");
+        initMapFragment();
+        BTstart.setVisibility(View.GONE);
     }
 }

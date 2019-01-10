@@ -11,8 +11,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.quickblox.chat.QBChatService;
@@ -45,6 +47,8 @@ import java.util.List;
 import androidx.appcompat.app.ActionBar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.chatmodule.ui.adapter.AttachmentPreviewAdapter;
 import copops.com.copopsApp.chatmodule.ui.adapter.ChatAdapter;
@@ -65,6 +69,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private ProgressBar progressBar;
     private EditText messageEditText;
+    private TextView userneame;
 
     private LinearLayout attachmentPreviewContainerLayout;
     private Snackbar snackbar;
@@ -75,7 +80,14 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private AttachmentPreviewAdapter attachmentPreviewAdapter;
     private ConnectionListener chatConnectionListener;
     private ImageAttachClickListener imageAttachClickListener;
+@BindView(R.id.IVback)
+ImageView IVback;
 
+@BindView(R.id.filterId)
+ImageView filterId;
+
+@BindView(R.id.chatAdd)
+ImageView chatAdd;
     private QBChatDialog qbChatDialog;
     private ArrayList<QBChatMessage> unShownMessages;
     private int skipPagination = 0;
@@ -92,6 +104,11 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        ButterKnife.bind(this);
+
+        IVback.setVisibility(View.GONE);
+        chatAdd.setVisibility(View.GONE);
+        filterId.setVisibility(View.VISIBLE);
 
         Log.v(TAG, "onCreate ChatCopsActivity on Thread ID = " + Thread.currentThread().getId());
 
@@ -279,6 +296,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         String text = messageEditText.getText().toString().trim();
         if (!TextUtils.isEmpty(text)) {
             sendChatMessage(text, null);
+        }else {
+            Toaster.shortToast(R.string.write_someting_on_chat);
         }
     }
 
@@ -309,6 +328,14 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private void initViews() {
       //  actionBar.setDisplayHomeAsUpEnabled(true);
 
+
+        filterId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         messageEditText = _findViewById(R.id.edit_chat_message);
         progressBar = _findViewById(R.id.progress_chat);
         attachmentPreviewContainerLayout = _findViewById(R.id.layout_attachment_preview_container);
@@ -337,6 +364,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private void initMessagesRecyclerView() {
         chatMessagesRecyclerView = findViewById(R.id.list_chat_messages);
+        userneame=(TextView) findViewById(R.id.userneame);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true);
@@ -358,6 +386,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
             chatMessage.addAttachment(attachment);
         } else {
             chatMessage.setBody(text);
+           // chatMessage.setProperty("ME /n",text);
         }
         chatMessage.setSaveToHistory(true);
         chatMessage.setDateSent(System.currentTimeMillis() / 1000);
@@ -369,7 +398,9 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
         }
 
         try {
+            //qbChatDialog.setName("ME \n");
             qbChatDialog.sendMessage(chatMessage);
+
 
             if (QBDialogType.PRIVATE.equals(qbChatDialog.getType())) {
                 showMessage(chatMessage);
@@ -457,7 +488,6 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 }
         );
     }
-
     private void loadDialogUsers() {
         ChatHelper.getInstance().getUsersFromDialog(qbChatDialog, new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
@@ -481,15 +511,18 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
 
     private void setChatNameToActionBar() {
         String chatName = QbDialogUtils.getDialogName(qbChatDialog);
-        ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            //ab.setTitle(chatName);
-          //  ab.set
 
-            ab.setTitle(Html.fromHtml("<font color='#000000'>"+chatName+" </font>"));
-            ab.setDisplayHomeAsUpEnabled(true);
-            ab.setHomeButtonEnabled(true);
-        }
+
+        userneame.setText(chatName);
+//        ActionBar ab = getSupportActionBar();
+//        if (ab != null) {
+//            //ab.setTitle(chatName);
+//          //  ab.set
+//
+//            ab.setTitle(Html.fromHtml("<font color='#000000'>"+chatName+" </font>"));
+//            ab.setDisplayHomeAsUpEnabled(true);
+//            ab.setHomeButtonEnabled(true);
+//        }
     }
 
     private void loadChatHistory() {

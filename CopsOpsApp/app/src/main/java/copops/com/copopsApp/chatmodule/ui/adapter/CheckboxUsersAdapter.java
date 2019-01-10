@@ -15,11 +15,13 @@ public class CheckboxUsersAdapter extends UsersAdapter {
 
     private List<Integer> initiallySelectedUsers;
     private Set<QBUser> selectedUsers;
+    clickPos mClickPos;
 
-    public CheckboxUsersAdapter(Context context, List<QBUser> users) {
-        super(context, users);
+    public CheckboxUsersAdapter(Context context, List<QBUser> users, clickPos mClickPos) {
+        super(context, users,mClickPos);
         selectedUsers = new HashSet<>();
         this.selectedUsers.add(currentUser);
+        this.mClickPos=mClickPos;
 
         this.initiallySelectedUsers = new ArrayList<>();
     }
@@ -43,23 +45,32 @@ public class CheckboxUsersAdapter extends UsersAdapter {
         final QBUser user = getItem(position);
         final ViewHolder holder = (ViewHolder) view.getTag();
 
-        view.setOnClickListener(new View.OnClickListener() {
+        holder.clickId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isAvailableForSelection(user)) {
-                    return;
-                }
-
-                holder.userCheckBox.setChecked(!holder.userCheckBox.isChecked());
-                if (holder.userCheckBox.isChecked()) {
-                    selectedUsers.add(user);
-                } else {
-                    selectedUsers.remove(user);
-                }
+                selectedUsers.add(user);
+                mClickPos.clickPostion();
             }
         });
 
-        holder.userCheckBox.setVisibility(View.VISIBLE);
+//        view.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (!isAvailableForSelection(user)) {
+//                    return;
+//                }
+//
+//                holder.userCheckBox.setChecked(!holder.userCheckBox.isChecked());
+//                if (holder.userCheckBox.isChecked()) {
+//                    selectedUsers.add(user);
+//
+//                } else {
+//                    selectedUsers.remove(user);
+//                }
+//            }
+//        });
+
+        holder.userCheckBox.setVisibility(View.GONE);
         holder.userCheckBox.setChecked(selectedUsers.contains(user));
 
         return view;

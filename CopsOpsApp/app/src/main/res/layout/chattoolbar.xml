@@ -20,8 +20,9 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
-            android:src="@mipmap/img_left"
-            android:visibility="gone" />
+
+            android:src="@mipmap/img_filter"
+            android:visibility="visible" />
 
         <ImageView
             android:id="@+id/filterId"
@@ -31,16 +32,18 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
-            android:src="@mipmap/img_filter"
-            android:visibility="visible" />
+            android:visibility="gone"
+            android:src="@mipmap/img_left"
+           />
 
         <TextView
             android:id="@+id/TVtitle"
-            android:layout_width="wrap_content"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/IVback"
             android:text=""
-            android:textColor="@color/white"
+
+            android:textColor="@color/blue"
             android:textSize="@dimen/textsize_20sp" />
 
 
@@ -53,8 +56,8 @@
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
             android:onClick="onStartNewChatClick"
-            android:src="@mipmap/plus"
-            android:tint="@color/blue"
+            android:src="@mipmap/baseline_add_black_18dp"
+
             android:visibility="visible" />
     </RelativeLayout>
 

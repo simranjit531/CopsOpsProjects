@@ -19,7 +19,7 @@ public abstract class BaseActivity extends CoreBaseActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
 
     }
 

@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.quickblox.chat.QBChatService;
@@ -21,10 +22,16 @@ import copops.com.copopsApp.R;
 public class UsersAdapter extends BaseListAdapter<QBUser> {
 
     protected QBUser currentUser;
+    clickPos mClickPos;
+    public interface clickPos{
 
-    public UsersAdapter(Context context, List<QBUser> users) {
+        public void clickPostion();
+    }
+
+    public UsersAdapter(Context context, List<QBUser> users,clickPos mClickPos ) {
         super(context, users);
         currentUser = QBChatService.getInstance().getUser();
+        this.mClickPos=mClickPos;
     }
 
     @Override
@@ -38,13 +45,14 @@ public class UsersAdapter extends BaseListAdapter<QBUser> {
             holder.userImageView = (ImageView) convertView.findViewById(R.id.image_user);
             holder.loginTextView = (TextView) convertView.findViewById(R.id.text_user_login);
             holder.userCheckBox = (CheckBox) convertView.findViewById(R.id.checkbox_user);
+            holder.clickId = (LinearLayout) convertView.findViewById(R.id.clickId);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
         if (isUserMe(user)) {
-            holder.loginTextView.setText(context.getString(R.string.placeholder_username_you, user.getFullName()));
+          //  holder.loginTextView.setText(context.getString(R.string.placeholder_username_you, user.getFullName()));
         } else {
             holder.loginTextView.setText(user.getFullName());
         }
@@ -52,7 +60,7 @@ public class UsersAdapter extends BaseListAdapter<QBUser> {
         if (isAvailableForSelection(user)) {
             holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_black));
         } else {
-            holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_medium_grey));
+           // holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_medium_grey));
         }
 
         holder.userImageView.setBackgroundDrawable(UiUtils.getColorCircleDrawable(position));
@@ -73,5 +81,6 @@ public class UsersAdapter extends BaseListAdapter<QBUser> {
         ImageView userImageView;
         TextView loginTextView;
         CheckBox userCheckBox;
+        LinearLayout clickId;
     }
 }

@@ -20,9 +20,9 @@ import copops.com.copopsApp.chatmodule.ui.adapter.UsersAdapter;
 import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
 import copops.com.copopsApp.chatmodule.utils.qb.QbUsersHolder;
 
-public class ChatInfoActivity extends BaseActivity {
+public class ChatInfoActivity extends BaseActivity implements UsersAdapter.clickPos{
     private static final String EXTRA_DIALOG = "dialog";
-
+    UsersAdapter.clickPos mClickPos;
     private ListView usersListView;
     private QBChatDialog qbDialog;
 
@@ -40,7 +40,7 @@ public class ChatInfoActivity extends BaseActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         usersListView = _findViewById(R.id.list_login_users);
         qbDialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_DIALOG);
-
+        mClickPos=this;
         getDialog();
     }
 
@@ -69,7 +69,12 @@ public class ChatInfoActivity extends BaseActivity {
     private void buildUserList() {
         List<Integer> userIds = qbDialog.getOccupants();
         List<QBUser> users = QbUsersHolder.getInstance().getUsersByIds(userIds);
-        UsersAdapter adapter = new UsersAdapter(this, users);
+        UsersAdapter adapter = new UsersAdapter(this, users,mClickPos);
         usersListView.setAdapter(adapter);
+    }
+
+    @Override
+    public void clickPostion() {
+
     }
 }

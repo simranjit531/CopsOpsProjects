@@ -35,6 +35,10 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.gson.Gson;
+import com.quickblox.messages.services.QBPushManager;
+import com.quickblox.messages.services.SubscribeService;
+import com.quickblox.sample.core.utils.SharedPrefsHelper;
+import com.quickblox.users.QBUsers;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -49,6 +53,9 @@ import copops.com.copopsApp.chatmodule.ui.activity.ChatActivity;
 import copops.com.copopsApp.chatmodule.ui.activity.DialogsActivity;
 import copops.com.copopsApp.chatmodule.ui.activity.SplashActivity;
 import copops.com.copopsApp.chatmodule.utils.Consts;
+import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
+import copops.com.copopsApp.chatmodule.utils.qb.QbDialogHolder;
+import copops.com.copopsApp.chatmodule.utils.qb.callback.QBPushSubscribeListenerImpl;
 import copops.com.copopsApp.pojo.AssignmentListPojo;
 import copops.com.copopsApp.pojo.CommanStatusPojo;
 import copops.com.copopsApp.pojo.IncdentSetPojo;
@@ -378,6 +385,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                 dialog.dismiss();
                 mAppSession.saveData("Login", "0");
                 Utils.fragmentCall(new HomeFragment(), getFragmentManager());
+                userLogout();
             }
         });
 
@@ -708,5 +716,39 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+    private void logout() {
+        if (QBPushManager.getInstance().isSubscribedToPushes()) {
+            QBPushManager.getInstance().addListener(new QBPushSubscribeListenerImpl() {
+                @Override
+                public void onSubscriptionDeleted(boolean success) {
+                    logoutREST();
+                    QBPushManager.getInstance().removeListener(this);
+                }
+            });
+            SubscribeService.unSubscribeFromPushes(getActivity());
+        } else {
+            logoutREST();
+        }
+    }
+
+    private void logoutREST() {
+        QBUsers.signOut().performAsync(null);
+    }
+
+
+
+    public void userLogout() {
+        ChatHelper.getInstance().destroy();
+        logout();
+        SharedPrefsHelper.getInstance().removeQbUser();
+
+        //  finish();
+        //  LoginActivity.start(DialogsActivity.this);
+        //   Intent mIntent = new Intent(DialogsActivity.this,DashboardActivity.class);
+        //   startActivity(mIntent);
+        QbDialogHolder.getInstance().clear();
+        //  ProgressDialogFragment.hide(getSupportFragmentManager());
+        //  finish();
     }
 }

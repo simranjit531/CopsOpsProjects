@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -27,18 +28,21 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import androidx.appcompat.app.ActionBar;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.chatmodule.App;
 import copops.com.copopsApp.chatmodule.ui.adapter.CheckboxUsersAdapter;
+import copops.com.copopsApp.chatmodule.ui.adapter.UsersAdapter;
 import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
 
-public class SelectUsersActivity extends BaseActivity {
+public class SelectUsersActivity extends BaseActivity implements UsersAdapter.clickPos {
     public static final String EXTRA_QB_USERS = "qb_users";
     public static final int MINIMUM_CHAT_OCCUPANTS_SIZE = 2;
     private static final long CLICK_DELAY = TimeUnit.SECONDS.toMillis(2);
     protected ActionBar actionBar;
     private static final String EXTRA_QB_DIALOG = "qb_dialog";
-
+    UsersAdapter.clickPos mClickPos;
     private ListView usersListView;
     private ProgressBar progressBar;
     private CheckboxUsersAdapter usersAdapter;
@@ -46,6 +50,13 @@ public class SelectUsersActivity extends BaseActivity {
     private long lastClickTime = 0l;
     private QBChatDialog qbChatDialog;
 
+
+    @BindView(R.id.chatAdd)
+    ImageView chatAdd;
+    @BindView(R.id.filterId)
+    ImageView filterId;
+    @BindView(R.id.IVback)
+    ImageView IVback;
     public static void start(Context context) {
         Intent intent = new Intent(context, SelectUsersActivity.class);
         context.startActivity(intent);
@@ -74,6 +85,12 @@ public class SelectUsersActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_users);
+
+        ButterKnife.bind(this);
+        mClickPos=this;
+        chatAdd.setVisibility(View.GONE);
+        filterId.setVisibility(View.VISIBLE);
+        IVback.setVisibility(View.GONE);
         qbChatDialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_QB_DIALOG);
         actionBar=getSupportActionBar();
         initUi();
@@ -86,8 +103,8 @@ public class SelectUsersActivity extends BaseActivity {
 
         TextView listHeader = (TextView) LayoutInflater.from(this)
                 .inflate(R.layout.include_list_hint_header, usersListView, false);
-        listHeader.setText(R.string.select_users_list_hint);
-        usersListView.addHeaderView(listHeader, null, false);
+     //   listHeader.setText(R.string.select_users_list_hint);
+   //     usersListView.addHeaderView(listHeader, null, false);
 
         if (isEditingChat()) {
             setActionBarTitle(Html.fromHtml("<font color='#000000'>"+"Add Users to chat"+" </font>"));
@@ -96,7 +113,14 @@ public class SelectUsersActivity extends BaseActivity {
             setActionBarTitle(Html.fromHtml("<font color='#000000'>"+"Create new chat"+" </font>"));
 
         }
-        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        filterId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+       // actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -197,7 +221,7 @@ public class SelectUsersActivity extends BaseActivity {
     }
 
     private void updateUsersAdapter() {
-        usersAdapter = new CheckboxUsersAdapter(this, users);
+        usersAdapter = new CheckboxUsersAdapter(this, users,mClickPos);
         if (qbChatDialog != null) {
             usersAdapter.addSelectedUsers(qbChatDialog.getOccupants());
         }
@@ -207,5 +231,17 @@ public class SelectUsersActivity extends BaseActivity {
 
     private boolean isEditingChat() {
         return getIntent().getSerializableExtra(EXTRA_QB_DIALOG) != null;
+    }
+
+    @Override
+    public void clickPostion() {
+        if (usersAdapter != null) {
+            List<QBUser> users = new ArrayList<>(usersAdapter.getSelectedUsers());
+            if (users.size() >= MINIMUM_CHAT_OCCUPANTS_SIZE) {
+                passResultToCallerActivity();
+            } else {
+                Toaster.shortToast(R.string.select_users_choose_users);
+            }
+        }
     }
 }

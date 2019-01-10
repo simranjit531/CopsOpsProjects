@@ -8,12 +8,15 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -71,6 +74,7 @@ import copops.com.copopsApp.chatmodule.utils.qb.QbChatDialogMessageListenerImp;
 import copops.com.copopsApp.chatmodule.utils.qb.QbDialogHolder;
 import copops.com.copopsApp.chatmodule.utils.qb.callback.QBPushSubscribeListenerImpl;
 import copops.com.copopsApp.chatmodule.utils.qb.callback.QbEntityCallbackImpl;
+import copops.com.copopsApp.utils.AppSession;
 
 public class DialogsActivity extends BaseActivity implements DialogsManager.ManagingDialogsCallbacks {
     private static final String TAG = DialogsActivity.class.getSimpleName();
@@ -95,9 +99,18 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     private QBIncomingMessagesManager incomingMessagesManager;
     private DialogsManager dialogsManager;
     private QBUser currentUser;
+    ArrayList<QBChatDialog> qbChatDialogArrayList;
+    AppSession mAppSession;
     ListView dialogsListView;
-  @BindView(R.id.chatAdd)
+    @BindView(R.id.chatAdd)
     ImageView chatAdd;
+
+    @BindView(R.id.IVback)
+    ImageView IVback;
+
+
+    @BindView(R.id.userSearch)
+    EditText userSearch;
     private static final int SPLASH_DELAY = 1500;
     public static void start(Context context) {
         Intent intent = new Intent(context, DialogsActivity.class);
@@ -115,6 +128,8 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
         ButterKnife.bind(this);
 
+        mAppSession=mAppSession.getInstance(this);
+
         googlePlayServicesHelper = new GooglePlayServicesHelper();
 
         pushBroadcastReceiver = new PushBroadcastReceiver();
@@ -128,7 +143,22 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
         initUi();
 
+        userSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filter(s.toString());
+            }
+        });
 
       //  setActionBarTitle(getString(R.string.dialogs_logged_in_as, currentUser.getFullName()));
 
@@ -138,6 +168,28 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         } else {
             loadDialogsFromQb(false, true);
         }
+    }
+
+
+    private void filter(String text) {
+        //new array list that will hold the filtered data
+      //  filterdNames = new ArrayList<>();
+
+
+        //looping through existing elements
+        for (QBChatDialog s : qbChatDialogArrayList) {
+            //if the existing elements contains the search input
+            if (s.getName().equalsIgnoreCase(text)) {
+                //adding the element to filtered list
+             //   filterdNames.add(s);
+                updateDialogsAdapter();
+            }
+
+        }
+
+
+        //calling a method of the adapter class and passing the filtered list
+
     }
 
     @Override
@@ -304,8 +356,11 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         progressBar = _findViewById(R.id.progress_dialogs);
         fab = _findViewById(R.id.fab_dialogs_new_chat);
         setOnRefreshListener = _findViewById(R.id.swipy_refresh_layout);
+          qbChatDialogArrayList= new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values());
 
-        dialogsAdapter = new DialogsAdapter(this, new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values()));
+     //   qbChatDialogArrayList.add((QBChatDialog) QbDialogHolder.getInstance().getDialogs().values());
+
+        dialogsAdapter = new DialogsAdapter(this,qbChatDialogArrayList);
 
         TextView listHeader = (TextView) LayoutInflater.from(this)
                 .inflate(R.layout.include_list_hint_header, dialogsListView, false);
@@ -316,7 +371,12 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         dialogsListView.setAdapter(dialogsAdapter);
 
 
-
+        IVback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         chatAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -437,6 +497,8 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
 
         dialogsAdapter.updateList(new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values()));
+
+       Log.e("ffff",""+qbChatDialogArrayList.size());
     }
 
     @Override
@@ -732,9 +794,11 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
               //  final QBUser user = list;
 
                 for(int i=0;i<list.size();i++){
-                    if(list.get(i).getLogin().equalsIgnoreCase("ranjanvelocis")){
+                    if(list.get(i).getLogin().equalsIgnoreCase(mAppSession.getData("user_id"))){
+
                         QBUser user = list.get(i);
-                        user.setPassword(App.getSampleConfigs().getUsersPassword());
+                       user.setPassword(App.getSampleConfigs().getUsersPassword());
+                        //user.setPassword(mAppSession.getData("user_id"));
                         login(user);
                         break;
                     }

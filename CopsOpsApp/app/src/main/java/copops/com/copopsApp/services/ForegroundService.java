@@ -76,7 +76,7 @@ public class ForegroundService extends Service {
     }
 
     public void initChannels(Context context) {
-        if (Build.VERSION.SDK_INT < 26) {
+        if (Build.VERSION.SDK_INT < 28) {
             return;
         }
         NotificationManager notificationManager =

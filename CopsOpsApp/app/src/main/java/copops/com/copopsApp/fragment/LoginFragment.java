@@ -152,6 +152,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                         } else {
                                             mAppSession.saveData("Login", "1");
                                             mAppSession.saveData("id", registrationResponse.getId());
+                                            mAppSession.saveData("user_id", registrationResponse.getUserid());
                                             mAppSession.saveData("name", registrationResponse.getUsername());
                                             mAppSession.saveData("userType", userType);
                                             mAppSession.saveData("image_url", registrationResponse.getProfile_url());
@@ -170,6 +171,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                         mAppSession.saveData("id", registrationResponse.getId());
                                         mAppSession.saveData("name", registrationResponse.getUsername());
                                         mAppSession.saveData("userType", userType);
+                                        mAppSession.saveData("user_id", registrationResponse.getUserid());
                                         mAppSession.saveData("image_url", registrationResponse.getProfile_url());
                                         mAppSession.saveData("profile_qrcode", registrationResponse.getProfile_qrcode());
                                         mAppSession.saveData("grade", registrationResponse.getGrade());
