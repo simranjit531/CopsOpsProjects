@@ -25,13 +25,13 @@
 <div class='archivecenter'>
         <div class="caree-form col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 main-archive">
             <div class="row">
-                <div class="caree-left-form archive-center-left col-12 col-sm-5 col-md-5 col-lg-5 col-xl-5">
+                <div class="caree-left-form archive-center-left col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                     <h2>{{ trans('pages.archive.INTERVENTIONSATTRIBUEES')}}</h2>
 					<div class="table-responsive">
                      <table class="table table-bordered table-striped" id="archivedata">
                     <thead>
                         <tr>
-                            <th>Date</th>
+                            <th>Date/ Time</th>
                             <th>{{ trans('pages.usermgnt.tables.firstname') }} / {{ trans('pages.usermgnt.tables.lastname') }}</th>  							
   							<th>{{ trans('pages.usermgnt.object') }}</th>
   							<th>{{ trans('pages.archive.interventionAddress') }}</th>
@@ -47,7 +47,7 @@
               
                 </div>
                 
-                <div class="caree-left-form m9-screen col-12 col-sm-7 col-md-7 col-lg-7 col-xl-7 rightPart">
+                <div class="caree-left-form m9-screen col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 rightPart">
                   <div class="inner-tab">
                      <div class="tab-div">
                           <ul>
@@ -69,7 +69,7 @@
                     </ul>
                 </div>
 
-                <div class="caree-left-form m9-screen col-12 col-sm-7 col-md-7 col-lg-7 col-xl-7 rightReportPart">
+                <div class="caree-left-form m9-screen col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 rightReportPart">
                   <div class="inner-tab">
                      <div class="tab-div">
                           <ul>
@@ -120,7 +120,7 @@
             { data: 'statuss', name: 'statuss' },
             { data: 'view', name : 'view', orderable: false, searchable: false},
         ],
-        order: [[0, "asc"]],
+        order: [[0, "desc"]],
         });
 
     $('.rightPart').hide();

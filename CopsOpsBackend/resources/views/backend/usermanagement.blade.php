@@ -55,16 +55,62 @@
 
 						<h3>{{trans('pages.usermgnt.assignanintervention')}}</h3>
 						<a id="remove-parent" style="position: absolute; top: 5px; right: 5px;"><i class="fa fa-times"></i></a>
-						<div class="col-sm-12 input-field mb-4">
-						<label>Select Operator </label> 
-							<select class="form-control js-example-basic-single" name="_operators" style="width: 100%" multiple>
-								<option value="">{{trans('pages.usermgnt.operator')}}</option>
-								@if($operators) @foreach($operators as $o)
-								<option value="{{ $o->id }}">{{ $o->first_name.'
-									'.$o->last_name }}</option> @endforeach @endif
-							</select>
-						</div>
-
+						
+						<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="margin-bottom: 15px;">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" class="">                                            
+                                            Operator
+                                        </a>
+                                        <i class="less-more fa fa-plus"></i>
+                                        <div class="clearfix"></div>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                                    <div class="panel-body">
+                                        <div class="col-sm-12 input-field mb-4">
+                    						<label>First/Last Name </label> 
+                    						<select class="form-control js-example-basic-single" name="_operators[]" style="width: 100%">
+                    							<option value="">{{trans('pages.usermgnt.operator')}}</option>
+                    							@if($operators) @foreach($operators as $o)
+                    							<option value="{{ $o->id }}">{{ $o->first_name.'
+                    							'.$o->last_name }}</option> @endforeach @endif
+                    						</select>
+                    					</div>
+                    					
+                    					<div class="col-sm-12 input-field mb-4">
+                    						<label>First/Last Name </label> 
+                    						<select class="form-control js-example-basic-single" name="_operators[]" style="width: 100%">
+                    							<option value="">{{trans('pages.usermgnt.operator')}}</option>
+                    							@if($operators) @foreach($operators as $o)
+                    							<option value="{{ $o->id }}">{{ $o->first_name.'
+                    							'.$o->last_name }}</option> @endforeach @endif
+                    						</select>
+                    					</div>
+                    					
+                    					<div class="col-sm-12 input-field mb-4" id="cloneDiv">
+                    						<label>First/Last Name </label> 
+                    						<select class="form-control js-example-basic-single" name="_operators[]" style="width: 100%">
+                    							<option value="">{{trans('pages.usermgnt.operator')}}</option>
+                    							@if($operators) @foreach($operators as $o)
+                    							<option value="{{ $o->id }}">{{ $o->first_name.'
+                    							'.$o->last_name }}</option> @endforeach @endif
+                    						</select>
+                    					</div>
+                    					
+                    					<div id="cloned-divs"></div>
+                    					
+                    					<div class="col-sm-12 input-field mb-4">
+                    						<label><a href="javascript:void(0);">add more <i class="fa fa-plus add-more-divs"></i></a> </label>
+                    					</div>
+                    					
+                    					
+                                    </div>
+                                </div>
+                            </div>
+						</div>						
+						
 						<div class="col-sm-12 input-field mb-4">
 							<label>{{ trans('pages.usermgnt.object') }} </label> <select
 								class="form-control" name="_object">
@@ -584,7 +630,12 @@ $(document).on('change', 'select[name="_object"]', function(){
 $('.assigner-btn').on('click', function(){
 	console.log("Test");
 	var objectId = $('select[name="_object"]').val();
-	var operatorId = $('select[name="_operators"]').val();
+
+	var operators = [];
+	$("select[name='_operators[]']").each(function(){
+		if($(this).val() !="") operators.push($(this).val());
+	});
+	var operatorId = operators;
 	//console.log(objectId+'----'+operatorId);
 // 	if(operatorId ==" ") alert("Please select some operators"); return false;
 // 	if(objectId ==" ") alert("Please select Intervention"); return false;
@@ -700,6 +751,19 @@ $(document).on('change', 'input[type="checkbox"][name="checkbox_freeze_account"]
 
 $("#remove-parent").on("click", function(){
 	$(this).parents('.loactions-out-inner').hide();
+});
+
+$(".less-more").on("click", function(){
+	$(this).toggleClass("fa-minus");
+	$("#collapseOne").toggle();
+});
+
+$(".add-more-divs").on("click", function(e){
+	var clonedDiv = $("#cloneDiv").clone();
+	clonedDiv.removeAttr("id");
+	clonedDiv.find('select[name="_operators[]"]').val('Operator');
+
+	$("#cloned-divs").append(clonedDiv);
 });
 
 

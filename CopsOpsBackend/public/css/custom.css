@@ -984,3 +984,31 @@ input:checked + .slider:before {
 .has-error{
 	border-color:red;
 }
+
+#accordion .panel-heading {
+	padding: 6px 12px;
+    border: 1px solid #e7e7e7;
+}
+
+#accordion #collapseOne {
+	padding: 6px 12px;
+    border: 1px solid rgb(193, 193, 193);
+    margin: 0px 6px;
+    box-shadow: rgb(204, 204, 204) 3px 3px 5px 6px;
+}
+
+#accordion .panel-title a {
+	display : block;
+	text-align:left;
+	width:90%;
+	margin:0;
+	float:left;
+}
+
+#accordion .panel-title i{
+	float:right;
+}
+
+.panel-body .input-field{
+	text-align:center;
+}

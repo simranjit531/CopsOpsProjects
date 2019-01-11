@@ -87,7 +87,7 @@
 							<input type="hidden" name="hidden_lng" />
 							<thead>
 								<tr>
-									<th>Date</th>
+									<th>Date/ Time</th>
 									<th>Address</th>
 									<th>Reporter</th>
 									<th>First/Last Name</th>
@@ -838,11 +838,17 @@ google.maps.event.addListener(autocomplete, 'place_changed', function () {
 $('#user_type').change(function(){
 var userType = $(this).val();
 if(userType == "Zone-of-Interest"){
-	$("#add-circle").trigger("click");
+	clear_pins();
+	clear_circles();
+	
+	render_circles();
 	return false;
 }
 else if(userType == "Point-of-Interest"){
-	$("#remove-circle").trigger("click");
+	clear_pins();
+	clear_circles();
+	
+	render_pins();
 	return false;
 }
 	
@@ -976,7 +982,7 @@ $('#add-circle').on('click', function(){
     initialLocation = new google.maps.LatLng(lat, lng);
     map.setCenter(initialLocation);
     map.setZoom(12);
-        
+
     google.maps.event.addListener(circle, 'rightclick', (function(circle, i) {  
 
         return function() {
@@ -994,9 +1000,14 @@ $('#add-circle').on('click', function(){
         }
     })(circle, i));
 
-
     circles.push(circle);
-    
+
+    circle.addListener('radius_changed', (function(circle, i) { 
+    	return function() {
+//         	circles.push(circle);        	
+    	}
+    })(circle, i));
+        
 //     google.maps.event.addListener(circle, 'rightclick', (function(mouseEvent) { 
 //     	r = confirm("Are you sure you want to remove this zone of interest");
 //     	if(r==true)
@@ -1186,16 +1197,27 @@ $('#save-map-activity').on("click", function(){
 	r = confirm("Do you want to save the information of the map, this action will undo your last save");
 	if(r == true)
 	{
-		var pinsArray = []
+		var pinsArray = []; circlesArray = [];
 		$(pins).each(function(k,v){
 			pin = {};
 			pin['icon'] = v.icon;
 			pin['lat'] = v.position.lat();
 			pin['lng'] = v.position.lng();
+			
 			pinsArray.push(pin);
 		});
 
-		if(circles.length >= 1 )localStorage.setItem('circle', JSON.stringify(circles));
+		$(circles).each(function(k,v){
+			console.log(v);
+			c = {};
+			c['lat'] = v.center.lat();
+			c['lng'] = v.center.lng();
+			c['radius'] = v.radius;
+
+			circlesArray.push(c);
+		});
+		console.log(circlesArray);
+		if(circles.length >= 1 )localStorage.setItem('circle', JSON.stringify(circlesArray));
 		if(pins.length >= 1) localStorage.setItem('pins', JSON.stringify(pinsArray));
 			
 	}	
@@ -1216,8 +1238,15 @@ $(function(){
 	 * if yes let's plot them back on the map
 	 * saving history to overcome page refresh
 	 */
-	 
-	 if (localStorage.getItem("pins") != null) {
+
+	 render_pins();
+	 render_circles();	 
+});
+
+
+function render_pins()
+{
+	if (localStorage.getItem("pins") != null) {
 		 var pinsArrray = JSON.parse(localStorage.getItem('pins'));
 		 if(pinsArrray.length >= 1)
 		 {
@@ -1234,8 +1263,37 @@ $(function(){
 			 });				 
 		 }	
 	 }
-	 
-});
+}
+
+function render_circles()
+{
+	if (localStorage.getItem("circle") != null) {
+		 var circlesArrray = JSON.parse(localStorage.getItem('circle'));
+		 if(circlesArrray.length >= 1)
+		 {
+			 $(circlesArrray).each(function(k,v){
+//				 console.log(v);
+
+				 circle = new google.maps.Circle({
+				        strokeColor: '#FF0000',
+				        strokeOpacity: 0.4,
+				        strokeWeight: 2,
+				        fillColor: '#FF0000',
+				        fillOpacity: 0.35,
+				        map: map,
+				        center: new google.maps.LatLng(v.lat, v.lng),
+				        radius: v.radius,
+				        draggable:true,
+				        clickable : true , editable : true , draggable : true
+			      });
+
+				circles.push(circle);
+				
+			 });				 
+		 }	
+	 }
+}
+
 
 </script>
 

@@ -30,7 +30,7 @@
 
                 <div class="row">
 
-                    <div class="col-12 col-sm-5 col-md-5 col-lg-5 col-xl-5 left-form p-0">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-5 left-form p-0">
                         <form>
                             <div class="col-lg-12">
                                 <label>From Date</label>
@@ -63,7 +63,7 @@
              <table class="table table-bordered table-striped" id="archiveCurrentHand">
                     <thead>
                         <tr>
-                        	<th>Date</th>
+                        	<th>Date/ Time</th>
                             <th>{{ trans('pages.usermgnt.tables.firstname') }} / {{ trans('pages.usermgnt.tables.lastname') }}</th>
                             <th>{{ trans('pages.usermgnt.object') }}</th>
                             <!--<th>{{ trans('pages.archive.interventionAddress') }}</th>-->
@@ -161,7 +161,7 @@
           { data: 'statuss', name: 'statuss' },
           { data: 'view', name : 'view', orderable: false, searchable: false},
           ],
-          order: [[0, "asc"]],
+          order: [[0, "desc"]],
       });
 
         $('#name').on('keyup', function(e) {
