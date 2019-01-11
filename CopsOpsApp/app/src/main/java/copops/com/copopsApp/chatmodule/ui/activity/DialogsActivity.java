@@ -69,6 +69,7 @@ import copops.com.copopsApp.chat.ChatCopsActivity;
 import copops.com.copopsApp.chatmodule.App;
 import copops.com.copopsApp.chatmodule.managers.DialogsManager;
 import copops.com.copopsApp.chatmodule.ui.adapter.DialogsAdapter;
+import copops.com.copopsApp.chatmodule.utils.PushBroadcastReceiver;
 import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
 import copops.com.copopsApp.chatmodule.utils.qb.QbChatDialogMessageListenerImp;
 import copops.com.copopsApp.chatmodule.utils.qb.QbDialogHolder;
@@ -112,6 +113,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     @BindView(R.id.userSearch)
     EditText userSearch;
     private static final int SPLASH_DELAY = 1500;
+
     public static void start(Context context) {
         Intent intent = new Intent(context, DialogsActivity.class);
         context.startActivity(intent);
@@ -128,7 +130,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
         ButterKnife.bind(this);
 
-        mAppSession=mAppSession.getInstance(this);
+        mAppSession = mAppSession.getInstance(this);
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
 
@@ -160,9 +162,9 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
             }
         });
 
-      //  setActionBarTitle(getString(R.string.dialogs_logged_in_as, currentUser.getFullName()));
+        //  setActionBarTitle(getString(R.string.dialogs_logged_in_as, currentUser.getFullName()));
 
-      //  registerQbChatListeners();
+        registerQbChatListeners();
         if (QbDialogHolder.getInstance().getDialogs().size() > 0) {
             loadDialogsFromQb(true, true);
         } else {
@@ -173,7 +175,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
     private void filter(String text) {
         //new array list that will hold the filtered data
-      //  filterdNames = new ArrayList<>();
+        //  filterdNames = new ArrayList<>();
 
 
         //looping through existing elements
@@ -181,7 +183,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
             //if the existing elements contains the search input
             if (s.getName().equalsIgnoreCase(text)) {
                 //adding the element to filtered list
-             //   filterdNames.add(s);
+                //   filterdNames.add(s);
                 updateDialogsAdapter();
             }
 
@@ -196,7 +198,8 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     protected void onResume() {
         super.onResume();
         googlePlayServicesHelper.checkPlayServicesAvailable(this);
-
+        Log.d("NitinCheck", "hii");
+        loadDialogsFromQb(true, true);
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
                 new IntentFilter(GcmConsts.ACTION_NEW_GCM_EVENT));
     }
@@ -211,7 +214,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     protected void onDestroy() {
         super.onDestroy();
 
-        unregisterQbChatListeners();
+//        unregisterQbChatListeners();
     }
 
     @Override
@@ -311,12 +314,12 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         logout();
         SharedPrefsHelper.getInstance().removeQbUser();
 
-      //  finish();
-      //  LoginActivity.start(DialogsActivity.this);
-  //   Intent mIntent = new Intent(DialogsActivity.this,DashboardActivity.class);
-  //   startActivity(mIntent);
+        //  finish();
+        //  LoginActivity.start(DialogsActivity.this);
+        //   Intent mIntent = new Intent(DialogsActivity.this,DashboardActivity.class);
+        //   startActivity(mIntent);
         QbDialogHolder.getInstance().clear();
-      //  ProgressDialogFragment.hide(getSupportFragmentManager());
+        //  ProgressDialogFragment.hide(getSupportFragmentManager());
         finish();
     }
 
@@ -352,21 +355,21 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
 
         LinearLayout emptyHintLayout = _findViewById(R.id.layout_chat_empty);
-         dialogsListView = _findViewById(R.id.list_dialogs_chats);
+        dialogsListView = _findViewById(R.id.list_dialogs_chats);
         progressBar = _findViewById(R.id.progress_dialogs);
         fab = _findViewById(R.id.fab_dialogs_new_chat);
         setOnRefreshListener = _findViewById(R.id.swipy_refresh_layout);
-          qbChatDialogArrayList= new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values());
+        qbChatDialogArrayList = new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values());
 
-     //   qbChatDialogArrayList.add((QBChatDialog) QbDialogHolder.getInstance().getDialogs().values());
+        //   qbChatDialogArrayList.add((QBChatDialog) QbDialogHolder.getInstance().getDialogs().values());
 
-        dialogsAdapter = new DialogsAdapter(this,qbChatDialogArrayList);
+        dialogsAdapter = new DialogsAdapter(this, qbChatDialogArrayList);
 
         TextView listHeader = (TextView) LayoutInflater.from(this)
                 .inflate(R.layout.include_list_hint_header, dialogsListView, false);
         listHeader.setText(R.string.dialogs_list_hint);
         dialogsListView.setEmptyView(emptyHintLayout);
-      //  dialogsListView.addHeaderView(listHeader, null, false);
+        //  dialogsListView.addHeaderView(listHeader, null, false);
 
         dialogsListView.setAdapter(dialogsAdapter);
 
@@ -456,6 +459,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                         ChatActivity.startForResult(DialogsActivity.this, REQUEST_DIALOG_ID_FOR_UPDATE, dialog);
                         ProgressDialogFragment.hide(getSupportFragmentManager());
                     }
+
                     @Override
                     public void onError(QBResponseException e) {
                         isProcessingResultInProgress = false;
@@ -465,6 +469,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                 }
         );
     }
+
     private void loadDialogsFromQb(final boolean silentUpdate, final boolean clearDialogHolder) {
         isProcessingResultInProgress = true;
         if (!silentUpdate) {
@@ -495,10 +500,9 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     private void updateDialogsAdapter() {
 
 
-
         dialogsAdapter.updateList(new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values()));
 
-       Log.e("ffff",""+qbChatDialogArrayList.size());
+        Log.e("ffff", "" + qbChatDialogArrayList.size());
     }
 
     @Override
@@ -509,6 +513,9 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     @Override
     public void onDialogUpdated(String chatDialog) {
         updateDialogsAdapter();
+       // Log.d("NitinCheck", "ji");
+
+   //     copops.com.copopsApp.chatmodule.utils.PushBroadcastReceiver.displayCustomNotificationForOrders("Copops", chatDialog, getApplicationContext());
     }
 
     @Override
@@ -645,8 +652,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     }
 
 
-
-
     protected boolean checkConfigsWithSnackebarError() {
         if (!sampleConfigIsCorrect()) {
             showSnackbarErrorParsingConfigs();
@@ -655,9 +660,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
         return true;
     }
-
-
-
 
 
     protected boolean sampleConfigIsCorrect() {
@@ -692,8 +694,8 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
     private void restoreChatSession() {
         if (ChatHelper.getInstance().isLogged()) {
-          //  DialogsActivity.start(this);
-        //    finish();
+            //  DialogsActivity.start(this);
+            //    finish();
         } else {
             QBUser currentUser = getUserFromSession();
 
@@ -704,7 +706,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
                 buildUsersList();
             } else {
-               // buildUsersList();
+                // buildUsersList();
                 loginToChat(currentUser);
             }
         }
@@ -724,7 +726,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     }
 
 
-
     private void loginToChat(final QBUser user) {
         ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_restoring_chat_session);
 
@@ -734,8 +735,8 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                 Log.v("TAG", "Chat login onSuccess()");
 
                 ProgressDialogFragment.hide(getSupportFragmentManager());
-              //  DialogsActivity.start(DialogsActivity.this);
-               // finish();
+                //  DialogsActivity.start(DialogsActivity.this);
+                // finish();
             }
 
             @Override
@@ -760,7 +761,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     }
 
 
-
     protected void showSnackbarErrorParsingConfigs() {
         ErrorUtils.showSnackbar(findViewById(com.quickblox.sample.core.R.id.layout_root), com.quickblox.sample.core.R.string.error_parsing_configs, com.quickblox.sample.core.R.string.dlg_ok, null);
     }
@@ -775,7 +775,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     }
 
 
-
     private void buildUsersList() {
 
         ProgressDialogFragment.show(getSupportFragmentManager());
@@ -787,17 +786,17 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
             @Override
             public void onSuccess(ArrayList<QBUser> result, Bundle params) {
 
-             //   progressDialog.dismiss();
+                //   progressDialog.dismiss();
 
-                list =result;
-               // QBUser user = new QBUser();
-              //  final QBUser user = list;
+                list = result;
+                // QBUser user = new QBUser();
+                //  final QBUser user = list;
 
-                for(int i=0;i<list.size();i++){
-                    if(list.get(i).getLogin().equalsIgnoreCase(mAppSession.getData("user_id"))){
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getLogin().equalsIgnoreCase(mAppSession.getData("user_id"))) {
 
                         QBUser user = list.get(i);
-                       user.setPassword(App.getSampleConfigs().getUsersPassword());
+                        user.setPassword(App.getSampleConfigs().getUsersPassword());
                         //user.setPassword(mAppSession.getData("user_id"));
                         login(user);
                         break;
@@ -807,10 +806,10 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
                 // We use hardcoded password for all users for test purposes
                 // Of course you shouldn't do that in your app
 
-              //  user.setLogin(user.getLogin());
-              //  user.setPassword(App.getSampleConfigs().getUsersPassword());
+                //  user.setLogin(user.getLogin());
+                //  user.setPassword(App.getSampleConfigs().getUsersPassword());
 
-              //  login(user);
+                //  login(user);
                 //  login()
 //                ChatAAdapter adapter = new ChatAAdapter(ChatCopsActivity.this, result,mChatInterFcee);
 //                chatlist.setHasFixedSize(true);
@@ -831,6 +830,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
             }
         });
     }
+
     private void login(final QBUser user) {
         ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_login);
         ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
@@ -843,8 +843,8 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 //                chatlist.setLayoutManager(new LinearLayoutManager(ChatCopsActivity.this));
 //                chatlist.setItemAnimator(new DefaultItemAnimator());
 //                chatlist.setAdapter(adapter);
-             //   DialogsActivity.start(DialogsActivity.this);
-              //  finish();
+                //   DialogsActivity.start(DialogsActivity.this);
+                //  finish();
 
                 ProgressDialogFragment.hide(getSupportFragmentManager());
             }
@@ -868,6 +868,6 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     public void onBackPressed() {
         super.onBackPressed();
 
-       // userLogout();
+        // userLogout();
     }
 }

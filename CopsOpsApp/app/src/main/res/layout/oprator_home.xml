@@ -175,7 +175,7 @@
                     android:layout_marginLeft="30dp"
                     android:layout_marginTop="10dp"
                     android:gravity="center_vertical|center_horizontal"
-                    android:text="Avaiable"
+                    android:text="Available"
                     android:textColor="@color/blue_shade"
                     android:textSize="@dimen/textsize_16sp" />
 
@@ -199,13 +199,14 @@
 
                 <TextView
                     android:id="@+id/Tvnotavaiable"
-                    android:layout_width="80dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="30sp"
                     android:gravity="center_vertical"
-                    android:text="Not Avaiable"
+                    android:text="Not Available"
+                    android:singleLine="true"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textsize_14sp" />
                 <View

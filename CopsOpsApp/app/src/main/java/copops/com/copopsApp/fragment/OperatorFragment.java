@@ -35,10 +35,21 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.gson.Gson;
+import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.QBIncomingMessagesManager;
+import com.quickblox.chat.model.QBChatDialog;
+import com.quickblox.chat.model.QBChatMessage;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.messages.services.QBPushManager;
 import com.quickblox.messages.services.SubscribeService;
+import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -46,15 +57,20 @@ import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
+import copops.com.copopsApp.activity.DashboardActivity;
 import copops.com.copopsApp.adapter.AssignmentInsidentListAdapter;
 import copops.com.copopsApp.chat.ChatCopsActivity;
+import copops.com.copopsApp.chatmodule.App;
 import copops.com.copopsApp.chatmodule.ui.activity.AttachmentImageActivity;
 import copops.com.copopsApp.chatmodule.ui.activity.ChatActivity;
 import copops.com.copopsApp.chatmodule.ui.activity.DialogsActivity;
 import copops.com.copopsApp.chatmodule.ui.activity.SplashActivity;
 import copops.com.copopsApp.chatmodule.utils.Consts;
+import copops.com.copopsApp.chatmodule.utils.PushBroadcastReceiver;
 import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
+import copops.com.copopsApp.chatmodule.utils.qb.QbChatDialogMessageListenerImp;
 import copops.com.copopsApp.chatmodule.utils.qb.QbDialogHolder;
+import copops.com.copopsApp.chatmodule.utils.qb.QbDialogUtils;
 import copops.com.copopsApp.chatmodule.utils.qb.callback.QBPushSubscribeListenerImpl;
 import copops.com.copopsApp.pojo.AssignmentListPojo;
 import copops.com.copopsApp.pojo.CommanStatusPojo;
@@ -123,16 +139,15 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     RelativeLayout rlchat;
 
 
-
     @BindView(R.id.IVlogout)
     ImageView IVlogout;
 
 
     @BindView(R.id.viewlineId)
-   View viewlineId;
+    View viewlineId;
 
     @BindView(R.id.viewline2)
-     View viewline2;
+    View viewline2;
 
     @BindView(R.id.IVback)
     ImageView IVback;
@@ -155,6 +170,11 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     AssignmentListPojo assignmentListPojo_close;
     double longitude;
     double latitude;
+    ArrayList<QBUser> list;
+
+    QBIncomingMessagesManager incomingMessagesManager;
+    private QBUser currentUser;
+
     public OperatorFragment() {
 
         // Required empty public constructor
@@ -182,7 +202,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         Tvnotavaiable.setOnClickListener(this);
         rlchat.setOnClickListener(this);
 
-
+        buildUsersList();
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (checkPermission() && gpsEnabled()) {
             if (isNetworkEnabled) {
@@ -197,6 +217,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         }
         return view;
     }
+
 
     private void initView() {
         IVlogout.setVisibility(View.VISIBLE);
@@ -227,7 +248,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 //                    .dontTransform()
 //                    .into(IVprofilephoto);
 
-         //   GlideApp.with(getActivity()).load(mAppSession.getData("image_url")).into(IVprofilephoto);
+            //   GlideApp.with(getActivity()).load(mAppSession.getData("image_url")).into(IVprofilephoto);
 
 
 //
@@ -288,9 +309,9 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                 opendialogcustomdialog();
                 break;
 
-                case R.id.rlchat:
-                    Intent mIntent = new Intent(getActivity(),DialogsActivity.class);
-                    startActivity(mIntent);
+            case R.id.rlchat:
+                Intent mIntent = new Intent(getActivity(), DialogsActivity.class);
+                startActivity(mIntent);
                 break;
 
             case R.id.TVname:
@@ -342,16 +363,14 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                     }
 
 
-
-
-                }else {
+                } else {
                     if (Utils.checkConnection(getActivity())) {
                         IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
 
                         incdentSetPojo.setUser_id(mAppSession.getData("id"));
                         incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
                         incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
-                      //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+                        //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
                         Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                         RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                         getAssigmentList(mFile);
@@ -419,7 +438,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             TVpsental.setText(operatorShowAlInfo.getLevel());
                             TVprogressbarnumber.setText(operatorShowAlInfo.getReport());
                             TVprogressbarreports.setText(operatorShowAlInfo.getCompleted_reports() + " completed interventions");
-                            TVprogresspercentage.setText(operatorShowAlInfo.getProfile_percent()+"%");
+                            TVprogresspercentage.setText(operatorShowAlInfo.getProfile_percent() + "%");
                             progressBar1.setMax(100);
                             progressBar1.setProgress(Integer.valueOf(operatorShowAlInfo.getProfile_percent()));
 
@@ -538,8 +557,8 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                     Utils.showAlert(t.getMessage(), getActivity());
                 }
             });
-        }catch (Exception e){
-          e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -561,7 +580,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
                             Utils.fragmentCall(new AssignmentTableFragment(assignmentListPojo), getFragmentManager());
                         } else {
-                                Utils.fragmentCall(new AssignmentTableFragment(assignmentListPojo), getFragmentManager());
+                            Utils.fragmentCall(new AssignmentTableFragment(assignmentListPojo), getFragmentManager());
 
                         }
                         progressDialog.dismiss();
@@ -604,7 +623,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     }
 
 
-
     private boolean checkPermission() {
         boolean check = ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
@@ -638,14 +656,14 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         public void onLocationChanged(final Location location) {
             if (location != null) {
                 // mCurrentLocation = location;
-                latitude=location.getLatitude();
-                longitude=location.getLongitude();
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
                 progressDialog.dismiss();
-                mAppSession.saveData("latitude",String.valueOf(latitude));
-                mAppSession.saveData("longitude",String.valueOf(longitude));
+                mAppSession.saveData("latitude", String.valueOf(latitude));
+                mAppSession.saveData("longitude", String.valueOf(longitude));
 
-                Log.e("latitude",String.valueOf(latitude));
-                Log.e("longitude",String.valueOf(longitude));
+                Log.e("latitude", String.valueOf(latitude));
+                Log.e("longitude", String.valueOf(longitude));
 
                 //  initMapFragment();
             } else {
@@ -668,9 +686,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
         }
     };
-
-
-
 
 
     private void getAssignIntervationData(RequestBody Data) {
@@ -706,6 +721,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                         Utils.showAlert(e.getMessage(), getActivity());
                     }
                 }
+
                 @Override
                 public void onFailure(Call<AssignmentListPojo> call, Throwable t) {
                     Log.d("TAG", "Error " + t.getMessage());
@@ -713,10 +729,11 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                     Utils.showAlert(t.getMessage(), getActivity());
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     private void logout() {
         if (QBPushManager.getInstance().isSubscribedToPushes()) {
             QBPushManager.getInstance().addListener(new QBPushSubscribeListenerImpl() {
@@ -737,7 +754,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     }
 
 
-
     public void userLogout() {
         ChatHelper.getInstance().destroy();
         logout();
@@ -751,4 +767,75 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         //  ProgressDialogFragment.hide(getSupportFragmentManager());
         //  finish();
     }
+
+
+    private void buildUsersList() {
+
+        ProgressDialogFragment.show(getActivity().getSupportFragmentManager());
+        List<String> tags = new ArrayList<>();
+        tags.add(App.getSampleConfigs().getUsersTag());
+
+        QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
+            @Override
+            public void onSuccess(ArrayList<QBUser> result, Bundle params) {
+
+                list = result;
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getLogin().equalsIgnoreCase(mAppSession.getData("user_id"))) {
+                        QBUser user = list.get(i);
+                        user.setPassword(App.getSampleConfigs().getUsersPassword());
+                        //user.setPassword(mAppSession.getData("user_id"));
+                        login(user);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+
+            }
+        });
+    }
+
+    private void login(final QBUser user) {
+        ProgressDialogFragment.show(getActivity().getSupportFragmentManager(), R.string.dlg_login);
+        ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void result, Bundle bundle) {
+                SharedPrefsHelper.getInstance().saveQbUser(user);
+                ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
+                currentUser = ChatHelper.getCurrentUser();
+
+                incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
+
+                incomingMessagesManager.addDialogMessageListener(new OperatorFragment.AllDialogsMessageListener());
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
+            }
+        });
+    }
+
+
+    private class AllDialogsMessageListener extends QbChatDialogMessageListenerImp {
+        @Override
+        public void processMessage(final String dialogId, final QBChatMessage qbChatMessage, Integer senderId) {
+            Log.d("RanjanCheck", "processMessage");
+            QBUser user=null;
+            int sender= qbChatMessage.getSenderId();
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getId().equals(sender)) {
+                     user = list.get(i);
+                    break;
+                }
+            }
+            PushBroadcastReceiver.displayCustomNotificationForOrders(user.getFullName(), " "+qbChatMessage.getBody(), getActivity());
+
+        }
+    }
+
+
 }

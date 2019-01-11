@@ -17,11 +17,27 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.QBIncomingMessagesManager;
+import com.quickblox.chat.model.QBChatMessage;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
+import com.quickblox.sample.core.utils.SharedPrefsHelper;
+import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
+import copops.com.copopsApp.chatmodule.App;
+import copops.com.copopsApp.chatmodule.utils.PushBroadcastReceiver;
+import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
+import copops.com.copopsApp.chatmodule.utils.qb.QbChatDialogMessageListenerImp;
 import copops.com.copopsApp.pojo.LoginPojoSetData;
 import copops.com.copopsApp.pojo.RegistationPojo;
 import copops.com.copopsApp.services.ApiUtils;
@@ -67,6 +83,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     String userTypeRegistation;
     AppSession mAppSession;
 
+
+    QBIncomingMessagesManager incomingMessagesManager;
+    private QBUser currentUser;
+    ArrayList<QBUser> list;
     public LoginFragment(String userType) {
 
         this.userType = userType;
@@ -176,6 +196,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                         mAppSession.saveData("profile_qrcode", registrationResponse.getProfile_qrcode());
                                         mAppSession.saveData("grade", registrationResponse.getGrade());
                                         Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
+
+
+                                        buildUsersList();
                                     }
                                 }
                                 progressDialog.dismiss();
@@ -227,6 +250,82 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             case R.id.Tvforgot:
                 Utils.fragmentCall(new ResetPasswordFragment(userType), getFragmentManager());
                 break;
+        }
+    }
+
+
+
+
+
+    private void buildUsersList() {
+
+        ProgressDialogFragment.show(getActivity().getSupportFragmentManager());
+        List<String> tags = new ArrayList<>();
+        tags.add(App.getSampleConfigs().getUsersTag());
+
+        QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
+            @Override
+            public void onSuccess(ArrayList<QBUser> result, Bundle params) {
+
+                list = result;
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getLogin().equalsIgnoreCase(mAppSession.getData("user_id"))) {
+                        QBUser user = list.get(i);
+                        user.setPassword(App.getSampleConfigs().getUsersPassword());
+                        //user.setPassword(mAppSession.getData("user_id"));
+                        login(user);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+
+            }
+        });
+    }
+
+    private void login(final QBUser user) {
+        ProgressDialogFragment.show(getActivity().getSupportFragmentManager(), R.string.dlg_login);
+        ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void result, Bundle bundle) {
+                SharedPrefsHelper.getInstance().saveQbUser(user);
+                ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
+                currentUser = ChatHelper.getCurrentUser();
+
+                incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
+
+                incomingMessagesManager.addDialogMessageListener(new AllDialogsMessageListener());
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
+            }
+        });
+    }
+
+
+
+    private class AllDialogsMessageListener extends QbChatDialogMessageListenerImp {
+        @Override
+        public void processMessage(final String dialogId, final QBChatMessage qbChatMessage, Integer senderId) {
+            Log.d("RanjanCheck", "processMessage");
+
+
+            Log.d("RanjanCheck", "processMessage");
+            QBUser user=null;
+            int sender= qbChatMessage.getSenderId();
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getId().equals(sender)) {
+                    user = list.get(i);
+                    break;
+                }
+            }
+            PushBroadcastReceiver.displayCustomNotificationForOrders(user.getFullName(), " "+qbChatMessage.getBody(), getActivity());
+         //   PushBroadcastReceiver.displayCustomNotificationForOrders("COPOPS", " "+qbChatMessage.getBody(), getActivity());
         }
     }
 }
