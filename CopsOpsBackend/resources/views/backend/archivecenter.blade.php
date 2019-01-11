@@ -31,11 +31,13 @@
                      <table class="table table-bordered table-striped" id="archivedata">
                     <thead>
                         <tr>
-                            <th>{{ trans('pages.usermgnt.tables.firstname') }} / {{ trans('pages.usermgnt.tables.lastname') }}</th>
-              							<th>{{ trans('pages.usermgnt.object') }}</th>
-              							<th>{{ trans('pages.archive.interventionAddress') }}</th>
-              							<th>{{ trans('pages.archive.status')}}</th>
-              							<th></th>
+                            <th>Date</th>
+                            <th>{{ trans('pages.usermgnt.tables.firstname') }} / {{ trans('pages.usermgnt.tables.lastname') }}</th>  							
+  							<th>{{ trans('pages.usermgnt.object') }}</th>
+  							<th>{{ trans('pages.archive.interventionAddress') }}</th>
+  							<th>{{ trans('pages.archive.status')}}</th>
+  							
+  							<th></th>
                         </tr>
                     </thead>
                     
@@ -99,6 +101,10 @@
   
 @endsection
 @section('after-scripts')
+
+<!-- Lightbox -->
+<link href="{{ asset('js/plugins/lightbox2/src/css/lightbox.css') }}" rel="stylesheet">
+<script src="{{ asset('js/plugins/lightbox2/src/js/lightbox.js') }}"></script>
       
 	  <script>
 	$(function() {
@@ -107,6 +113,7 @@
             serverSide: true,
             ajax: '{{ url("/archivedata")  }}',
             columns: [
+        	{ data: 'date', name: 'date' },
             { data: 'firstlast', name: 'firstlast' },
             { data: 'sub_category_name', name: 'sub_category_name' },
             { data: 'address', name: 'address' },
@@ -164,7 +171,20 @@
 		{
 		var photo= "{{ url('/uploads/incident_image') }}/"+d.data[0]['photo'];
 // 			$('#attachmentinc').html('<a href="'+photo+'" traget="_blank">View</a>');
-			$('#attachmentinc').html('<img src="'+photo+'" style="width:200px;">');
+// 			$('#attachmentinc').html('<img src="'+photo+'" style="width:200px;">');
+
+			IMG = $('<a href="'+photo+'" data-lightbox="image-1">')		    	
+	    	.append('<img src="'+photo+'" style="width:200px;"></a>')			
+		
+			$('#attachmentinc').html(IMG);
+
+			//lightbox open:
+			IMG.click(function(){
+			    lightbox.start($(this));
+			    return false;
+			})
+
+			
 		}
 		if(d.data[0]['video'] != null)
 		{
@@ -175,7 +195,18 @@
     {
     var signature= "{{ url('/uploads/signature') }}/"+d.data[0]['signature'];
 //     	$('#signature').html('<a href="'+signature+'" traget="_blank">View</a>');
-    	$('#reportsignature').html('<img src="'+signature+'" style="width:200px;">');
+//     	$('#reportsignature').html('<img src="'+signature+'" style="width:200px;">');
+
+    	IMG1 = $('<a href="'+signature+'" data-lightbox="image-1">')		    	
+    	.append('<img src="'+signature+'" style="width:200px;"></a>')			
+	
+		$('#reportsignature').html(IMG1);
+
+		//lightbox open:
+		IMG1.click(function(){
+		    lightbox.start($(this));
+		    return false;
+		})
     }
       
         

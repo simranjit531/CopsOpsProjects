@@ -33,7 +33,7 @@
                     	@csrf
                     	<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-3">
                             <label>Date</label>
-                            <input type="text" class="form-control" value="{{ \Carbon\carbon::now()->format('l d/m/Y') }}" disabled>
+                            <input type="text" class="form-control" name="fromdate" id="fromdate" >
                         </div>
                         
                         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-3">
@@ -121,6 +121,11 @@
 <script>
 	
 	$(function() {
+
+		$("#fromdate").datepicker({
+			startDate:new Date()
+		});
+		
 		@if(Session::has('type') && Session::get('type') == 'success')
 			toastr.success("{{ Session::get('message') }}", {timeOut: 10000});
 		@elseif(Session::has('type') && Session::get('type') == 'error')

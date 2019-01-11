@@ -373,8 +373,9 @@
 <script src="{{ asset('js/plugins/quickblox/route.js') }}" defer></script>
 
 
-
-
+<!-- Lightbox -->
+<link href="{{ asset('js/plugins/lightbox2/src/css/lightbox.css') }}" rel="stylesheet">
+<script src="{{ asset('js/plugins/lightbox2/src/js/lightbox.js') }}"></script>
 
 
 <script>
@@ -1108,8 +1109,17 @@ $(document).on('click','.view-incident',function(e){
 			$('#other_description').html(d[0]['other_description']);
 			if(d[0]['photo'] != null)
 			{
-			var photo= "{{ url('/uploads/incident_image') }}/"+d[0]['photo'];
-			$('#attachmentinc').html('<img src="'+photo+'" style="width:200px;">');
+				var photo= "{{ url('/uploads/incident_image') }}/"+d[0]['photo'];
+				IMG = $('<a href="'+photo+'" data-lightbox="image-1">')		    	
+		    	.append('<img src="'+photo+'" style="width:200px;"></a>')			
+			
+    			$('#attachmentinc').html(IMG);
+    
+    			//lightbox open:
+    			IMG.click(function(){
+    			    lightbox.start($(this));
+    			    return false;
+    			})
 			}
 			if(d[0]['video'] != null)
 			{
@@ -1206,23 +1216,25 @@ $(function(){
 	 * if yes let's plot them back on the map
 	 * saving history to overcome page refresh
 	 */
+	 
+	 if (localStorage.getItem("pins") != null) {
+		 var pinsArrray = JSON.parse(localStorage.getItem('pins'));
+		 if(pinsArrray.length >= 1)
+		 {
+			 $(pinsArrray).each(function(k,v){
+				 marker = new google.maps.Marker({
+		            position: new google.maps.LatLng(v.lat, v.lng),
+		            map:map,
+		            icon: v.icon,
+		            draggable:true
+	        	});
 
-	 var pinsArrray = JSON.parse(localStorage.getItem('pins'));
-
-	 if(pinsArrray.length >= 1)
-	 {
-		 $(pinsArrray).each(function(k,v){
-			 marker = new google.maps.Marker({
-	            position: new google.maps.LatLng(v.lat, v.lng),
-	            map:map,
-	            icon: v.icon,
-	            draggable:true
-        	});
-
-			pins.push(marker);
-			
-		 });				 
-	 }	
+				pins.push(marker);
+				
+			 });				 
+		 }	
+	 }
+	 
 });
 
 </script>

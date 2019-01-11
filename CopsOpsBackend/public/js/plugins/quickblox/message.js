@@ -24,7 +24,7 @@ Message.prototype.init = function () {
         document.forms.send_message.message_feald.focus();
     });
 
-//    document.forms.send_message.attach_file.addEventListener('change', self.prepareToUpload.bind(self));
+    document.forms.send_message.attach_file.addEventListener('change', self.prepareToUpload.bind(self));
     document.forms.send_message.message_feald.addEventListener('input', self.typingMessage.bind(self));
     document.forms.send_message.message_feald.addEventListener('input', self.checkMessageSymbolsCount.bind(self));
     document.forms.send_message.message_feald.addEventListener('keydown', function (e) {
@@ -366,7 +366,7 @@ Message.prototype.renderMessage = function (message, setAsFirst) {
     }
 };
 
-Message.prototype.prepareToUpload = function (e) {
+Message.prototype.prepareToUpload = function (e) {	
     if (!app.checkInternetConnection()) {
         return false;
     }

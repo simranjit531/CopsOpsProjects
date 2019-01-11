@@ -33,17 +33,14 @@
                     <div class="col-12 col-sm-5 col-md-5 col-lg-5 col-xl-5 left-form p-0">
                         <form>
                             <div class="col-lg-12">
-                                <label>Date</label>
+                                <label>From Date</label>
                                 <input type="text" class="form-control" name="fromdate"  id="fromdate" readonly="readonly">
                             </div>
-                            <!--<div class="col-lg-12">
-                                <label class="text-center">et</label>
+                            <div class="col-lg-12">
+                                <label class="text-center">To Date</label>
                                 <input type="text" class="form-control" name="todate" id="todate" readonly="readonly">
-                            </div>-->
-                            <div class="bootstrap-timepicker col-lg-12">
-                                    <label class="text-center">et</label>
-                                      <input type="text" name="todate" id="todate" class="form-control">
-                                </div>
+                            </div>
+                           
                             <button type="button" id="search-form" class="actual-btn mt-2 mb-2">Actual</button>
                         </form>
                     </div>
@@ -54,6 +51,10 @@
                             <label>{{ trans('pages.usermgnt.tables.firstname') }} / {{ trans('pages.usermgnt.tables.lastname') }}</label>
                             <input class="form-control form-control-navbar" type="text" name="name" id="name" placeholder="{{trans('pages.usermgnt.enternamecitizen')}}" aria-label="Search">
                         </div>
+                         <div class="bootstrap-timepicker col-lg-12">
+                                    <label class="text-center">et</label>
+                                      <input type="text" name="totime" id="totime" class="form-control">
+                                </div>
                         <!--<button type="button" class="actual-btn mt-2">Rechrecher</button>-->
                     </form>
                 </div>
@@ -62,6 +63,7 @@
              <table class="table table-bordered table-striped" id="archiveCurrentHand">
                     <thead>
                         <tr>
+                        	<th>Date</th>
                             <th>{{ trans('pages.usermgnt.tables.firstname') }} / {{ trans('pages.usermgnt.tables.lastname') }}</th>
                             <th>{{ trans('pages.usermgnt.object') }}</th>
                             <!--<th>{{ trans('pages.archive.interventionAddress') }}</th>-->
@@ -126,12 +128,17 @@
   
 @endsection
 @section('after-scripts')
+
+<!-- Lightbox -->
+<link href="{{ asset('js/plugins/lightbox2/src/css/lightbox.css') }}" rel="stylesheet">
+<script src="{{ asset('js/plugins/lightbox2/src/js/lightbox.js') }}"></script>
+
 <script>
     $(function() {
 
         $("#fromdate").datepicker();
-        //$("#todate").datepicker();
-          $('#todate').timepicker({
+        $("#todate").datepicker();
+          $('#totime').timepicker({
                showInputs: false
            })
         var oTable =$('#archiveCurrentHand').DataTable({
@@ -147,6 +154,7 @@
               }
           },
           columns: [
+    	  { data: 'date', name: 'date' },
           { data: 'firstlast', name: 'firstlast' },
           { data: 'object', name: 'object' },
           //{ data: 'address', name: 'address' },
@@ -210,7 +218,18 @@
 				{
 				var photo= "{{ url('/uploads/handrail_image') }}/"+d.data[0]['photo'];
 // 					$('#attachmentinc').html('<a href="'+photo+'" traget="_blank">View</a>');
-				$('#attachmentinc').html('<img src="'+photo+'" style="width:200px;">');
+// 					$('#attachmentinc').html('<img src="'+photo+'" style="width:200px;">');
+
+					IMG = $('<a href="'+photo+'" data-lightbox="image-1">')		    	
+			    	.append('<img src="'+photo+'" style="width:200px;"></a>')			
+				
+					$('#attachmentinc').html(IMG);
+
+					//lightbox open:
+					IMG.click(function(){
+					    lightbox.start($(this));
+					    return false;
+					})
 				}
 				if(d.data[0]['video'] != null)
 				{
@@ -221,7 +240,18 @@
 				{
 				var signature= "{{ url('/uploads/signature') }}/"+d.data[0]['signature'];
 // 					$('#signature').html('<a href="'+signature+'" traget="_blank">View</a>');
-				$('#signature').html('<img src="'+signature+'" style="width:200px;">');
+    				$('#signature').html('<img src="'+signature+'" style="width:200px;">');
+    
+    				IMG1 = $('<a href="'+signature+'" data-lightbox="image-1">')		    	
+    		    	.append('<img src="'+signature+'" style="width:200px;"></a>')			
+    			
+    				$('#signature').html(IMG1);
+    
+    				//lightbox open:
+    				IMG1.click(function(){
+    				    lightbox.start($(this));
+    				    return false;
+    				})
 				}
 				
 

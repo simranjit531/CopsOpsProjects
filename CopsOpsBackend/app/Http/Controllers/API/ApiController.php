@@ -286,7 +286,11 @@ class ApiController extends Controller
         if($auth[0]->ref_user_type_id == UserType::_TYPE_OPERATOR && $auth[0]->approved == 0) return $this->sendResponseMessage(array(
             'status'=>'false',
             'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_PENDING)), 200);
-
+        
+        elseif($auth[0]->ref_user_type_id == UserType::_TYPE_OPERATOR && $auth[0]->approved == 2) return $this->sendResponseMessage(array(
+            'status'=>'false',
+            'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_REFUSED)), 200);
+        
         $attributes = $this->get_user_profile_attributes($auth[0]->id);
 
         return $this->sendResponseMessage(array(

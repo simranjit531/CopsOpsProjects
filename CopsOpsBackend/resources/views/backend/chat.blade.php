@@ -201,12 +201,12 @@
                               autocorrect="off" autocapitalize="off" placeholder="Type a message" autofocus></textarea>
                 <div class="message__actions">
                     <div class="attachments_preview j-attachments_preview"></div>
-                    <!--
+                    
                     <label for="attach_btn" class="attach_btn">
-                        <i class="material-icons">attachment</i>
+                        <i class="fa fa-cloud-upload" aria-hidden="true"></i>
                         <input type="file" id="attach_btn" name="attach_file" class="attach_input" accept="image/*"/>
                     </label>
-                    -->
+                    
                     <button class="send_btn" style="display:none;">send</button>
                 </div>
             </form>

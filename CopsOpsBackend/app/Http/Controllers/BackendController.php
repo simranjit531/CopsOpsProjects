@@ -95,16 +95,19 @@ class BackendController extends Controller
         
         $request->validate([
             'team_name'=>'required',
-            'operator_name'=>'required'            
+            'operator_name'=>'required',
+            'fromdate'=>'required'
         ]);
         
+        $date = Carbon::parse($request->input('fromdate'))->format('Y-m-d H:i:s');
         try {
             $crew = Crew::create([
                 'crew_name'=>$request->input('team_name'),
                 'incident_handrail'=>1,
                 'cop_incident_details_id'=>1,
                 'cop_handrail_id'=>1,
-                'updated_by'=>$userId
+                'updated_by'=>$userId,
+                'created_at'=>$date
             ]);
             
             if($crew->id)
@@ -178,13 +181,19 @@ class BackendController extends Controller
 	public function archivedata(Request $request)
 	{
 			$users = \DB::table('cop_user_incidents_closed')->select('cop_user_incidents_closed.id','cop_incident_details.status','cop_incident_details.address','ref_user.first_name','ref_user.last_name', 'ref_incident_subcategory.sub_category_name',
-            'cop_incident_details.incident_description')
+            'cop_incident_details.incident_description', 'cop_incident_details.created_at')
 		->join('cop_incident_details','cop_incident_details.id','=','cop_user_incidents_closed.cop_incident_details_id')
 		->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
 		->join('ref_user','ref_user.id','=','cop_incident_details.created_by')
 		->get();
-		 return Datatables::of($users) ->addColumn('firstlast', function($row){
-      return $row->first_name.' '.$row->last_name;
+			
+		foreach($users as $k=>$u)
+		{
+		    $users[$k]->date = Carbon::parse($u->created_at)->format('l M d Y H:i a');		    
+		}
+		
+		return Datatables::of($users)->addColumn('firstlast', function($row){
+            return $row->first_name.' '.$row->last_name;
 		})
 		 ->addColumn('statuss',function($rows){ 
 		 	//echo $rows->status; die;
@@ -229,23 +238,22 @@ class BackendController extends Controller
 			
 			$from = date_format( new DateTime($request->fromdate), 'Y-m-d');
 			//print_r($from); die;
-			$to = date_format( new DateTime($request->todate), 'h:i:s');
-			$dat = $from.$to;
-			$now = date('Y-m-d H:i:s');
+// 			$to = date_format( new DateTime($request->todate), 'h:i:s');
+			$to = date_format( new DateTime($request->todate), 'Y-m-d');
+// 			$dat = $from.$to;
+// 			$now = date('Y-m-d H:i:s');
 			
 			//\DB::enableQueryLog();
-		    //$users = \DB::table('cop_user_incidents_closed')->select('cop_user_incidents_closed.id','cop_incident_details.status','cop_incident_details.address','cop_incident_details.updated_on','ref_user.first_name','ref_user.last_name', 'ref_incident_subcategory.sub_category_name',
-	       //     'cop_incident_details.incident_description')
-			//->join('cop_incident_details','cop_incident_details.id','=','cop_user_incidents_closed.cop_incident_details_id')
-			//->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
-			//->join('ref_user','ref_user.id','=','cop_incident_details.created_by')
-			//->whereBetween(DB::Raw("DATE_FORMAT(cop_user_incidents_closed.created_at, '%Y-%m-%d')"),[$from,$to])
-			//->get();
 			$users = \DB::table('cop_handrail')->select('cop_handrail.id','cop_handrail.status','cop_handrail.address','cop_handrail.updated_on','ref_user.first_name','ref_user.last_name', 'cop_handrail.object',
-	            'cop_handrail.signature')
-			->join('ref_user','ref_user.id','=','cop_handrail.created_by')
-			->whereBetween(DB::Raw("DATE_FORMAT(cop_handrail.created_at, '%Y-%m-%d %H:%m:%s')"),[$dat,$now])
+				    'cop_handrail.signature', 'cop_handrail.created_at')
+					->join('ref_user','ref_user.id','=','cop_handrail.created_by')
+			->whereBetween(DB::Raw("DATE_FORMAT(cop_handrail.created_at, '%Y-%m-%d')"),[$from,$to])
 			->get();
+// 			$users = \DB::table('cop_handrail')->select('cop_handrail.id','cop_handrail.status','cop_handrail.address','cop_handrail.updated_on','ref_user.first_name','ref_user.last_name', 'cop_handrail.object',
+// 			    'cop_handrail.signature', 'cop_handrail.created_at')
+// 			->join('ref_user','ref_user.id','=','cop_handrail.created_by')
+// 			->whereBetween(DB::Raw("DATE_FORMAT(cop_handrail.created_at, '%Y-%m-%d %H:%m:%s')"),[$dat,$now])
+// 			->get();
 			}
 			else
 			{
@@ -257,12 +265,18 @@ class BackendController extends Controller
 			->join('ref_user','ref_user.id','=','cop_incident_details.created_by')	
 			->get();*/
 			$users = \DB::table('cop_handrail')->select('cop_handrail.id','cop_handrail.status','cop_handrail.address','cop_handrail.updated_on','ref_user.first_name','ref_user.last_name', 'cop_handrail.object',
-	            'cop_handrail.signature')
+			    'cop_handrail.signature', 'cop_handrail.created_at')
 			->join('ref_user','ref_user.id','=','cop_handrail.created_by')
 			->get();
 			}
 			 //dd(\DB::getQueryLog());
-			
+			if(!$users->isEmpty())
+			{
+			    foreach ($users as $k=>$u)
+			    {
+			        $users[$k]->date = Carbon::parse($u->created_at)->format('l M d Y H:i a');
+			    }
+			}
 			 return Datatables::of($users) ->addColumn('firstlast', function($row){
 	     			 return $row->first_name.' '.$row->last_name;
 			})
@@ -477,7 +491,7 @@ class BackendController extends Controller
 	                $reporter = UserType::where('id', $users[0]->ref_user_type_id)->get()[0]->user_type;
 	                
 	                $incidents[$k]->reporter = $reporter;
-	                $incidents[$k]->date = Carbon::parse($v->created_at)->format('Y-m-d');
+	                $incidents[$k]->date = Carbon::parse($v->created_at)->format('M d Y H:i a');
 	                $incidents[$k]->status = '<span class="text-danger">On-Wait</span>';
 	                $incidents[$k]->state = 'On-Wait';
 	                
