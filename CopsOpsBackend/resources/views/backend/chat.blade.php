@@ -276,7 +276,9 @@
                         <% if (message.attachments.length) { %>
                         <div class="message__attachments_wtap">
                             <% _.each(message.attachments, function(attachment){ %>
-                            <img src="<%= attachment.src %>" alt="attachment" class="message_attachment">
+                            <a href="<%= attachment.src %>" class=".lokesh-lightbox" data-lightbox="image-1">
+                            <img src="<%= attachment.src %>" alt="attachment" class="message_attachment" >
+                            </a>
                             <% }); %>
                         </div>
                         <% } %>
@@ -413,6 +415,11 @@
 <script src="{{ asset('js/plugins/quickblox/login.js') }}" defer></script>
 <script src="{{ asset('js/plugins/quickblox/route.js') }}" defer></script>
 
+<!-- Lightbox -->
+<link href="{{ asset('js/plugins/lightbox2/src/css/lightbox.css') }}" rel="stylesheet">
+<script src="{{ asset('js/plugins/lightbox2/src/js/lightbox.js') }}"></script>
+
+
 <script>
 $(function(){
 	_auto_login();	
@@ -440,6 +447,11 @@ function _auto_login()
 	*/
 	$('.container-fluid').find('button[type="submit"][name="login_submit"]').trigger('click');
 // 	login_submit
+
+	$('.lokesh-lightbox').click(function(){
+	    lightbox.start($(this));
+	    return false;
+	});
 }
 
 $(document).on('click', '.user__item', function(e){
@@ -449,7 +461,23 @@ $(document).on('click', '.user__item', function(e){
 	$('.container-fluid').find('button[type="submit"][name="create_dialog_submit"]').trigger('click');
 });
 
+$(document).on('keyup', 'input[type="text"][name="search"]', function(){
+	params = {
+	        full_name: $(this).val(),
+	        per_page: 10
+	    };
+    
+	QB.users.get(params, function (err, responce) {
+        var userList = responce.items.map(function(data){
+            return userModule.addToCache(data.user);
+       });
 
+        app.generate_user_list(userList, app.user.id);
+	});
+
+	
+	
+});
 </script>
          
 @endsection

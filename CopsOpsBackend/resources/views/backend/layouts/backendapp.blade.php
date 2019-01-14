@@ -8,6 +8,7 @@
 <meta name="description" content="@yield('description')">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="csrf-token" content="{{ csrf_token() }}">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32x32.png') }}">
 <link
 	href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"
 	rel="stylesheet">

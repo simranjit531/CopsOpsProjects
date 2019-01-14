@@ -1,5 +1,50 @@
 @extends('backend.layouts.backendapp') @section('content')
 
+<style>
+.round {
+  position: relative;
+  padding-left: 10px;
+}
+
+.round label {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+  height: 20px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 20px;
+}
+
+.round label:after {
+  border: 2px solid #fff;
+    border-top: none;
+    border-right: none;
+    content: "";
+    height: 5px;
+    left: 5px;
+    opacity: 0;
+    position: absolute;
+    top: 5px;
+    transform: rotate(-45deg);
+    width: 10px;
+}
+
+.round input[type="checkbox"] {
+  visibility: hidden;
+}
+
+.round input[type="checkbox"]:checked + label {
+  background-color: #66bb6a;
+  border-color: #66bb6a;
+}
+
+.round input[type="checkbox"]:checked + label:after {
+  opacity: 1;
+}
+</style>
 <!-- Content Header (Page header) -->
 <div class="content-header">
 	<div class="container-fluid">
@@ -41,6 +86,7 @@
 					</div>
 
 					<div class="col-12 col-sm-2 col-md-2 ml-3 select-box">
+						<!-- 
 						<select name="user_type" id="user_type">
 							<option value="" selected>--Select--</option>
 							<option value="4">Citizen</option>
@@ -48,6 +94,38 @@
 							<option value="Zone-of-Interest">Zone of Interest</option>
 							<option value="Point-of-Interest">Point of Interest</option>
 						</select>
+						 -->
+						 <div class="dropdown">
+                         	<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Select
+                          	<span class="caret"></span></button>
+                          	<ul class="dropdown-menu dropdown-menu-form">
+                            	<li>                            	
+                        			<div class="round">
+                            			<input type="checkbox" id="checkbox_1" value="4"/> Citizen 
+                            			<label for="checkbox_1"></label>
+                          			</div>                            		
+                            	</li> 
+                            	<li>                            	
+                        			<div class="round">
+                            			<input type="checkbox" id="checkbox_2" value="3"/> Operator
+                            			<label for="checkbox_2"></label>
+                          			</div>                            		
+                            	</li> 
+                            	<li>                            	
+                        			<div class="round">
+                            			<input type="checkbox" id="checkbox_3" value="Zone-of-Interest"/> Zone of Interest
+                            			<label for="checkbox_3"></label>
+                          			</div>                            		
+                            	</li> 
+                            	<li>                            	
+                        			<div class="round">
+                            			<input type="checkbox" id="checkbox_4" value="Point-of-Interest"/> Point of Interest
+                            			<label for="checkbox_4"></label>
+                          			</div>                            		
+                            	</li>                            	
+                          	</ul>
+                    	</div>
+                    	
 					</div>
 
 					<div class="col-12 col-sm-4 col-md-4 location-zone ml-3">
@@ -377,6 +455,25 @@
 <link href="{{ asset('js/plugins/lightbox2/src/css/lightbox.css') }}" rel="stylesheet">
 <script src="{{ asset('js/plugins/lightbox2/src/js/lightbox.js') }}"></script>
 
+<script>
+$('input[type="text"][name="search"]').on('keyup', function(){
+	params = {
+	        full_name: $(this).val(),
+	        per_page: 10
+	    };
+	QB.users.get(params, function (err, responce) {
+        var userList = responce.items.map(function(data){
+            return userModule.addToCache(data.user);
+       });
+
+        generate_user_list(userList);
+	});
+
+	
+	
+});
+</script>
+
 
 <script>
 
@@ -428,91 +525,97 @@ function _get_users()
 
                     var user = JSON.parse(localStorage.getItem('user'));
                     
-                    var html = '';
-                    $(userList).each(function(k,v){                        
-                    	var disabled = ''; if(id == v.id) { console.log(id); console.log(v.id);  disabled=' disabled'; }
-                    	html +='<div class="user__item_1'+disabled+'" id="'+v.id+'">';
-                    	html +='<span class="user__avatar m-user__img_10" style="display:none;">';
-                    	html +='<i class="material-icons m-user_icon">account_circle</i>';
-                    	html +='</span>';
-                    	html +='<div class="user__details">';
-                		html +='<p class="user__name">'+v.name+'</p>';                
-            			html +='<p class="user__last_seen" style="display:none;">'+v.last_request_at+'</p>';                
-            			html +='</div>';
-            			html +='</div>';
-                    });
-                    
-                    html +='<form action="" name="create_dialog" class="dialog_form m-dialog_form_create j-create_dialog_form" style="display:none;">';
-            		html +='<input class="dialog_name" name="dialog_name" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Add conversation name" disabled="">';
-            		html +='<button class="btn m-create_dialog_btn j-create_dialog_btn" type="submit" name="create_dialog_submit">create</button>';
-            		html +='</form>';
-            		
-                    $('.chat-inner-section').html(html);
-
-
-                    $(document).on('click', '.user__item_1', function(e){
-                    	var $this = $(this);
-                    	
-                    	$('.user__item_1').each(function(){                        	
-                        	$(this).removeClass('selected');
-                        })
-                        
-                    	$(this).addClass('selected');
-						console.log($(this).attr('id'));
-//                    	$('button[type="submit"][name="create_dialog_submit"]').trigger('click');
-                    	
-                    	
-//                     	userModule.content = document.querySelector('.j-sidebar');
-//                         userModule.userListConteiner = userModule.content.querySelector('.j-sidebar__dilog_list');
-                    	
-                    	
-//                     	document.forms.create_dialog.create_dialog_submit.disabled = true;
-                        
-                        var users = $(this).attr('id'),
-                            type = users.length > 2 ? 2 : 3,
-                            name = document.forms.create_dialog.dialog_name.value,
-                            occupants_ids = [];
-                        
-                        occupants_ids.push(users);
-                        console.log(occupants_ids);
-                        if (!name && type === 2) {
-                            var userNames = [];
-                            
-                            _.each(occupants_ids, function (ids) {
-                                if (ids === id) {
-                                    userNames.push(self.user.name || self.user.login);
-                                } else {
-                                    userNames.push(userModule._cache[id].name);
-                                }
-                            });
-                            name = userNames.join(', ');
-                        }
-
-                        var params = {
-                            type: type,
-                            occupants_ids: occupants_ids.join(',')
-                        };
-                        
-                        if (type !== 3 && name) {
-                            params.name = name;
-                        }
-                        console.log(params);
-                        
-                        QB.chat.dialog.create(params, function (err, createdDialog) {
-                            if (err) {
-                                console.error(err);
-                            } else {
-                            	console.log(createdDialog._id);
-                            	window.location.href = "{{ url('/chat') }}#!/dialog/"+createdDialog._id
-//                             	router.navigate('#!/dialog/'+createdDialog._id);
-//                            	dialogModule.renderMessages(createdDialog._id);
-                            } 	
-                        });
-                    });
+                    generate_user_list(userList, id);
             	});
             }
 	});
 }
+
+function generate_user_list(userList, id)
+{
+	var html = '';
+    $(userList).each(function(k,v){                        
+    	var disabled = ''; if(id == v.id) { console.log(id); console.log(v.id);  disabled=' disabled'; }
+    	html +='<div class="user__item_1'+disabled+'" id="'+v.id+'">';
+    	html +='<span class="user__avatar m-user__img_10" style="display:none;">';
+    	html +='<i class="material-icons m-user_icon">account_circle</i>';
+    	html +='</span>';
+    	html +='<div class="user__details">';
+		html +='<p class="user__name">'+v.name+'</p>';                
+		html +='<p class="user__last_seen" style="display:none;">'+v.last_request_at+'</p>';                
+		html +='</div>';
+		html +='</div>';
+    });
+    
+    html +='<form action="" name="create_dialog" class="dialog_form m-dialog_form_create j-create_dialog_form" style="display:none;">';
+	html +='<input class="dialog_name" name="dialog_name" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Add conversation name" disabled="">';
+	html +='<button class="btn m-create_dialog_btn j-create_dialog_btn" type="submit" name="create_dialog_submit">create</button>';
+	html +='</form>';
+	
+    $('.chat-inner-section').html(html);
+
+
+    $(document).on('click', '.user__item_1', function(e){
+    	var $this = $(this);
+    	
+    	$('.user__item_1').each(function(){                        	
+        	$(this).removeClass('selected');
+        })
+        
+    	$(this).addClass('selected');
+		console.log($(this).attr('id'));
+//    	$('button[type="submit"][name="create_dialog_submit"]').trigger('click');
+    	
+    	
+//     	userModule.content = document.querySelector('.j-sidebar');
+//         userModule.userListConteiner = userModule.content.querySelector('.j-sidebar__dilog_list');
+    	
+    	
+//     	document.forms.create_dialog.create_dialog_submit.disabled = true;
+        
+        var users = $(this).attr('id'),
+            type = users.length > 2 ? 2 : 3,
+            name = document.forms.create_dialog.dialog_name.value,
+            occupants_ids = [];
+        
+        occupants_ids.push(users);
+        console.log(occupants_ids);
+        if (!name && type === 2) {
+            var userNames = [];
+            
+            _.each(occupants_ids, function (ids) {
+                if (ids === id) {
+                    userNames.push(self.user.name || self.user.login);
+                } else {
+                    userNames.push(userModule._cache[id].name);
+                }
+            });
+            name = userNames.join(', ');
+        }
+
+        var params = {
+            type: type,
+            occupants_ids: occupants_ids.join(',')
+        };
+        
+        if (type !== 3 && name) {
+            params.name = name;
+        }
+        console.log(params);
+        
+        QB.chat.dialog.create(params, function (err, createdDialog) {
+            if (err) {
+                console.error(err);
+            } else {
+            	console.log(createdDialog._id);
+            	window.location.href = "{{ url('/chat') }}#!/dialog/"+createdDialog._id
+//             	router.navigate('#!/dialog/'+createdDialog._id);
+//            	dialogModule.renderMessages(createdDialog._id);
+            } 	
+        });
+    });
+}
+
 
 function init() 
 {
@@ -526,6 +629,15 @@ function init()
 	};
 
 	map = new google.maps.Map(document.getElementById("map"), map);
+
+	/* Check if pins are already set
+	 * if yes let's plot them back on the map
+	 * saving history to overcome page refresh
+	 */
+	 setTimeout(function() {
+    	 render_pins();
+    	 render_circles();	
+	 }, 5000);
 }
 
 var content = [];
@@ -536,6 +648,7 @@ var pins = [];
 function add_markers(markerArray, lat, lng , type)
 {
 	clear_markers();
+	console.log(markerArray);
 	if(markerArray.length > 0)
 	{
 		for( i = 0; i < markerArray.length; i++ ) {
@@ -750,6 +863,12 @@ $(function(){
 	      return false;
 	    }
 	});
+
+	$('.dropdown-menu').on('click', function(e) {
+    	if($(this).hasClass('dropdown-menu-form')) {
+        	e.stopPropagation();
+      	}
+    });
 });
 
 
@@ -833,6 +952,68 @@ google.maps.event.addListener(autocomplete, 'place_changed', function () {
       });  
 });
 /*************************************************************************************************************************/
+
+
+$('input[type="checkbox"]').on("click", function(){
+	var checkboxes = [];
+	var userType = [];
+	clear_pins();
+	clear_circles();
+	clear_markers();
+	
+	$('input[type="checkbox"]').each(function(){
+		if($(this).is(":checked")){
+			checkboxes.push($(this).val());	
+		}
+	});
+	
+	if($.inArray("Zone-of-Interest", checkboxes) != -1){		
+		render_circles();		
+	}
+	if($.inArray( "Point-of-Interest", checkboxes) != -1){
+		render_pins();
+	}
+
+	if($.inArray( "3", checkboxes) != -1){
+		userType.push(3);
+	}
+
+	if($.inArray( "4", checkboxes) != -1){
+		userType.push(4);
+	}
+	
+	$.ajax ({
+        url: '{{ route("backoffice.incidents.citizencops")  }}',	
+        type : 'post',
+        dataType:'json',
+        data: {
+      	  "_token" : '{{ csrf_token() }}',
+            "lat": $('input[type="hidden"][name="hidden_lat"]').val(),
+            "lng": $('input[type="hidden"][name="hidden_lng"]').val(),
+            "usertype": userType
+            
+        },
+        success: function(response){
+            // this to see what exactly is being sent back
+            var markerArray = [];
+            var result = response;
+					
+            $(result.data).each(function(k,v){
+            	markerArray.push([v.latitude, v.longitude, v.sub_category_name, v.incident_description, v.address,v.ref_user_type_id]);	
+            });
+
+            lat = $('input[type="hidden"][name="hidden_lat"]').val();
+            lng = $('input[type="hidden"][name="hidden_lng"]').val();
+            
+            add_markers(markerArray, lat, lng);
+            		
+            return response;
+        },
+    });  
+});
+
+
+
 
 /****DropDown Filter**********/
 $('#user_type').change(function(){
@@ -1234,13 +1415,7 @@ $("#remove-map-activity").on("click", function(){
 });
 
 $(function(){
-	/* Check if pins are already set
-	 * if yes let's plot them back on the map
-	 * saving history to overcome page refresh
-	 */
-
-	 render_pins();
-	 render_circles();	 
+	 
 });
 
 
@@ -1260,7 +1435,11 @@ function render_pins()
 
 				pins.push(marker);
 				
-			 });				 
+			 });
+
+			 map.setCenter(new google.maps.LatLng(pinsArrray[0].lat, pinsArrray[0].lng));
+//	 		 map.fitBounds(bounds);
+			 map.setZoom(10);				 
 		 }	
 	 }
 }
@@ -1289,8 +1468,15 @@ function render_circles()
 
 				circles.push(circle);
 				
-			 });				 
+			 });
+// 			console.log(circlesArrray[0].lat, circlesArrray[0].lng);
+			
+			 map.setCenter(new google.maps.LatLng(circlesArrray[0].lat, circlesArrray[0].lng));
+//	 		 map.fitBounds(bounds);
+			 map.setZoom(10);				 
 		 }	
+// 		 bounds.extend(new google.maps.LatLng(circlesArrray[0].lat, circlesArrray[0].lng));
+		
 	 }
 }
 

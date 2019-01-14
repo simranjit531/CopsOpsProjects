@@ -273,95 +273,99 @@ App.prototype.showUserList = function () {
             return userModule.addToCache(data.user);
         });
         
-        var html = '';
-        $(userList).each(function(k,v){
-        	var disabled = ''; if(app.user.id == v.id) { disabled=' disabled'; }
-        	html +='<div class="user__item_1'+disabled+'" id="'+v.id+'" style="border-bottom: 2px solid #e7e7e7;">';
-        	html +='<span class="user__avatar m-user__img_10" style="display:none;">';
-        	html +='<i class="material-icons m-user_icon">account_circle</i>';
-        	html +='</span>';
-        	html +='<div class="user__details">';
-    		html +='<p class="user__name">'+v.name+'</p>';                
-			html +='<p class="user__last_seen">'+v.last_request_at+'</p>';                
-			html +='</div>';
-			html +='</div>';
-        });
-        
-        html +='<form action="" name="create_dialog" class="dialog_form m-dialog_form_create j-create_dialog_form" style="display:none;">';
-		html +='<input class="dialog_name" name="dialog_name" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Add conversation name" disabled="">';
-		html +='<button class="btn m-create_dialog_btn j-create_dialog_btn" type="submit" name="create_dialog_submit">create</button>';
-		html +='</form>';
-		
-        $('.j-sidebar__dilog_list').html(html);
-        
-        
-        
-        $(document).on('click', '.user__item_1', function(e){
-        	
-        	$('.user__item_1').each(function(){
-            	console.log("Removed");
-            	$(this).removeClass('selected');
-            })
-            
-        	$(this).addClass('selected');
-
-//        	$('button[type="submit"][name="create_dialog_submit"]').trigger('click');
-        	
-        	
-        	userModule.content = document.querySelector('.j-sidebar');
-            userModule.userListConteiner = userModule.content.querySelector('.j-sidebar__dilog_list');
-        	
-        	
-        	document.forms.create_dialog.create_dialog_submit.disabled = true;
-            
-            var users = userModule.userListConteiner.querySelectorAll('.selected'),
-                type = users.length > 2 ? 2 : 3,
-                name = document.forms.create_dialog.dialog_name.value,
-                occupants_ids = [];
-                
-            _.each(users, function (user) {
-                occupants_ids.push(user.id);
-            });
-            console.log(occupants_ids);
-            if (!name && type === 2) {
-                var userNames = [];
-                
-                _.each(occupants_ids, function (id) {
-                    if (id === self.user.id) {
-                        userNames.push(self.user.name || self.user.login);
-                    } else {
-                        userNames.push(userModule._cache[id].name);
-                    }
-                });
-                name = userNames.join(', ');
-            }
-
-            var params = {
-                type: type,
-                occupants_ids: occupants_ids.join(',')
-            };
-            
-            if (type !== 3 && name) {
-                params.name = name;
-            }
-            console.log(params);
-            
-            QB.chat.dialog.create(params, function (err, createdDialog) {
-                if (err) {
-                    console.error(err);
-                } else {
-                	console.log(createdDialog._id);
-                	router.navigate('#!/dialog/'+createdDialog._id);
-//                	dialogModule.renderMessages(createdDialog._id);
-                } 	
-            });
-        });
+        app.generate_user_list(userList, app.user.id);
         	       
         resolve(userList);
     });
 });
 };
 
+App.prototype.generate_user_list = function (userList, id)
+{
+	var html = '';
+    $(userList).each(function(k,v){
+    	var disabled = ''; if( id == v.id) { disabled=' disabled'; }
+    	html +='<div class="user__item_1'+disabled+'" id="'+v.id+'" style="border-bottom: 2px solid #e7e7e7;">';
+    	html +='<span class="user__avatar m-user__img_10" style="display:none;">';
+    	html +='<i class="material-icons m-user_icon">account_circle</i>';
+    	html +='</span>';
+    	html +='<div class="user__details">';
+		html +='<p class="user__name">'+v.name+'</p>';                
+		html +='<p class="user__last_seen">'+v.last_request_at+'</p>';                
+		html +='</div>';
+		html +='</div>';
+    });
+    
+    html +='<form action="" name="create_dialog" class="dialog_form m-dialog_form_create j-create_dialog_form" style="display:none;">';
+	html +='<input class="dialog_name" name="dialog_name" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Add conversation name" disabled="">';
+	html +='<button class="btn m-create_dialog_btn j-create_dialog_btn" type="submit" name="create_dialog_submit">create</button>';
+	html +='</form>';
+	
+    $('.j-sidebar__dilog_list').html(html);
+    
+    
+    
+    $(document).on('click', '.user__item_1', function(e){
+    	
+    	$('.user__item_1').each(function(){
+        	console.log("Removed");
+        	$(this).removeClass('selected');
+        })
+        
+    	$(this).addClass('selected');
+
+//    	$('button[type="submit"][name="create_dialog_submit"]').trigger('click');
+    	
+    	
+    	userModule.content = document.querySelector('.j-sidebar');
+        userModule.userListConteiner = userModule.content.querySelector('.j-sidebar__dilog_list');
+    	
+    	
+    	document.forms.create_dialog.create_dialog_submit.disabled = true;
+        
+        var users = userModule.userListConteiner.querySelectorAll('.selected'),
+            type = users.length > 2 ? 2 : 3,
+            name = document.forms.create_dialog.dialog_name.value,
+            occupants_ids = [];
+            
+        _.each(users, function (user) {
+            occupants_ids.push(user.id);
+        });
+        console.log(occupants_ids);
+        if (!name && type === 2) {
+            var userNames = [];
+            
+            _.each(occupants_ids, function (id) {
+                if (id === self.user.id) {
+                    userNames.push(self.user.name || self.user.login);
+                } else {
+                    userNames.push(userModule._cache[id].name);
+                }
+            });
+            name = userNames.join(', ');
+        }
+
+        var params = {
+            type: type,
+            occupants_ids: occupants_ids.join(',')
+        };
+        
+        if (type !== 3 && name) {
+            params.name = name;
+        }
+        console.log(params);
+        
+        QB.chat.dialog.create(params, function (err, createdDialog) {
+            if (err) {
+                console.error(err);
+            } else {
+            	console.log(createdDialog._id);
+            	router.navigate('#!/dialog/'+createdDialog._id);
+//            	dialogModule.renderMessages(createdDialog._id);
+            } 	
+        });
+    });
+}
 
 
 // QBconfig was loaded from QBconfig.js file

@@ -692,6 +692,7 @@ class BackendController extends Controller
 	
 	public function listofincidentscityzencops(Request $request)
 	{
+// 	    dd($request->input('usertype'));
 	    try {
 	    	if($request->input('usertype'))
 	    	{
@@ -703,7 +704,7 @@ class BackendController extends Controller
 	            'cop_incident_details.address', 'cop_incident_details.city', 'cop_incident_details.created_at', 'cop_incident_details.id','ref_user.ref_user_type_id')
 	            ->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
 	            ->join('ref_user', 'ref_user.id', '=', 'cop_incident_details.created_by')
-	            ->where('ref_user.ref_user_type_id',$user_type_id)
+	            ->whereIn('ref_user.ref_user_type_id', $user_type_id)
 	            ->orderBy('cop_incident_details.updated_at', 'DESC')->get();
 
 	            if($request->input('lat') && $request->input('lng'))
