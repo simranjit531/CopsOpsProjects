@@ -359,7 +359,7 @@ App.prototype.generate_user_list = function (userList, id)
             if (err) {
                 console.error(err);
             } else {
-            	console.log(createdDialog._id);
+            	console.log("dialog id=> "+createdDialog._id);
             	router.navigate('#!/dialog/'+createdDialog._id);
 //            	dialogModule.renderMessages(createdDialog._id);
             } 	

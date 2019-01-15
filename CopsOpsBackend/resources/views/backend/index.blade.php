@@ -621,7 +621,7 @@ function init()
 {
 	map= {
 	  	center:new google.maps.LatLng(48.864716, 2.349014),
-	  	zoom:5,
+// 	  	zoom:10,
 	  //disableDoubleClickZoom: true,
 	 // draggable:false,
 	  //scrollwheel: true,
@@ -630,14 +630,22 @@ function init()
 
 	map = new google.maps.Map(document.getElementById("map"), map);
 
+	map.setCenter( new google.maps.LatLng("48.864716", "2.349014") );
+    map.setZoom(10);
+    
 	/* Check if pins are already set
 	 * if yes let's plot them back on the map
 	 * saving history to overcome page refresh
 	 */
+	 render_pins();
+	 render_circles();	
+
+	 /*
 	 setTimeout(function() {
     	 render_pins();
     	 render_circles();	
 	 }, 5000);
+	 */
 }
 
 var content = [];
@@ -742,7 +750,9 @@ function add_markers(markerArray, lat, lng , type)
 	 }
         // Automatically center the map fitting all markers on the screen
         map.fitBounds(bounds);
-       
+        map.setCenter( new google.maps.LatLng("48.864716", "2.349014") );
+        map.setZoom(10);
+       	/*
 		if(lat !="" && lng !=""){
             initialLocation = new google.maps.LatLng(lat, lng);
             map.setCenter(initialLocation);
@@ -759,9 +769,9 @@ function add_markers(markerArray, lat, lng , type)
               center: new google.maps.LatLng(lat, lng),
               radius: 10000,
               draggable:true
-            });*/
+            });
 		}
-   
+   	*/
     
     
 }
@@ -1089,7 +1099,8 @@ $('#remove-circle').on('click', function(){
     if(lat == "" || lng == "")
 	{
 		lat = "48.864716";
-		lng = "2.349014";		
+		lng = "2.349014";	
+		
 	}
     
 	if(lat !="" && lng !=""){

@@ -25,6 +25,7 @@ use App\CopUserHandrailMapping;
 use App\CopUserIncidentMapping;
 use App\UserType;
 use App\CopUserIncidentTempMapping;
+use Edujugon\PushNotification\Facades\PushNotification;
 
 class ApiController extends Controller
 {
@@ -292,7 +293,9 @@ class ApiController extends Controller
             'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_REFUSED)), 200);
         
         $attributes = $this->get_user_profile_attributes($auth[0]->id);
-
+        
+        UserDeviceMapping::where('ref_user_id', $auth[0]->id)->update(['device_token'=>$payload['fcm_token']]);
+        
         return $this->sendResponseMessage(array(
             'status'=>'true',
             'id' => $auth[0]->id,
@@ -890,6 +893,22 @@ class ApiController extends Controller
             ]);
             
             User::where('id', $userId)->update(['available'=>0]);
+            
+            # Once intervention is assigned, send push notification
+            $push = new \Edujugon\PushNotification\PushNotification('fcm');
+            $push->setMessage([
+                'notification' => [
+                    'title'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_SUCCESS),
+                    'body'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_SUCCESS),
+                    'sound' => 'default'
+                ]
+            ]);
+            
+            # Get device token of the user
+            $tokenData = UserDeviceMapping::where('ref_user_id', $userId)->get();
+            $push->setDevicesToken($tokenData[0]->device_token);
+            $push->send();
+            $push->getFeedback();
             
             if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_SUCCESS)],200);
             return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_FAILURE)],200);

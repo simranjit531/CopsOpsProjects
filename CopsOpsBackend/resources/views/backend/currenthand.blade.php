@@ -161,7 +161,7 @@
           { data: 'statuss', name: 'statuss' },
           { data: 'view', name : 'view', orderable: false, searchable: false},
           ],
-          order: [[0, "desc"]],
+//           order: [[0, "desc"]],
       });
 
         $('#name').on('keyup', function(e) {

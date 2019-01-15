@@ -63,9 +63,11 @@
                         <li><span>Address</span> <input type="text" value="" class="form-control addressinc" readonly="readonly"></li>
                         <li><span>{{ trans('pages.usermgnt.object') }}</span><input type="text" value="" class="form-control objectinc" readonly="readonly"></li>
                         <li><span>Description</span> <textarea class="form-control descriptioninc" readonly="readonly"></textarea></li>
+                        <li><span>Reference</span><input type="text" value="" class="form-control refrence-input refrence-input-info" readonly="readonly"></li>
                          <li><span>Attachement</span> <p id="attachmentinc"></p><p id="attachmentvideoinc"></p></li>
 <!--                          <li><span>Signature</span> <p id="signature"></p></li> -->
-                        <li><span>Reference</span><input type="text" value="" class="form-control refrence-input refrence-input-info" readonly="readonly"></li>
+                        
+                        <li><span>Signature</span><div id="reportsignature"></div></li>
                     </ul>
                 </div>
 
@@ -86,7 +88,7 @@
                         <li><span>{{ trans('pages.usermgnt.object') }}</span><input type="text" value="" class="form-control objectinc" readonly="readonly"></li>
                         <li><span>Description</span> <textarea class="form-control commentreport" readonly="readonly"></textarea></li>
                         <li><span>Reference</span><input type="text" value="" id="referencereport" class="form-control refrence-input refrence-input-report" readonly="readonly"></li>
-                        <li><span>Signature</span><div id="reportsignature"></div></li>
+                        <li><span>Signature</span><div id="reportsignature_1"></div></li>
                     </ul>
                 </div>
                 
@@ -201,6 +203,11 @@
     	.append('<img src="'+signature+'" style="width:200px;"></a>')			
 	
 		$('#reportsignature').html(IMG1);
+
+    	IMG2 = $('<a href="'+signature+'" data-lightbox="image-1">')		    	
+    	.append('<img src="'+signature+'" style="width:200px;"></a>')	
+    	
+    	$('#reportsignature_1').html(IMG2);
 
 		//lightbox open:
 		IMG1.click(function(){

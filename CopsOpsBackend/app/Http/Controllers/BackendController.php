@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\IncidentDetail;
 use Carbon\Carbon;
+use App\UserDeviceMapping;
 use App\UserType;
 use App\CopUserIncidentMapping;
 use App\CopUserIncidentClosed;
@@ -23,6 +24,7 @@ use App\CopUserIncidentTempMapping;
 use DateTime;
 use App\Crew;
 use App\CrewUser;
+use App\Util\ResponseMessage;
 
 class BackendController extends Controller
 {
@@ -189,7 +191,7 @@ class BackendController extends Controller
 			
 		foreach($users as $k=>$u)
 		{
-		    $users[$k]->date = Carbon::parse($u->created_at)->format('l M d Y H:i a');		    
+		    $users[$k]->date = Carbon::parse($u->created_at)->format('M d Y H:i a');		    
 		}
 		
 		return Datatables::of($users)->addColumn('firstlast', function($row){
@@ -248,6 +250,7 @@ class BackendController extends Controller
 				    'cop_handrail.signature', 'cop_handrail.created_at')
 					->join('ref_user','ref_user.id','=','cop_handrail.created_by')
 			->whereBetween(DB::Raw("DATE_FORMAT(cop_handrail.created_at, '%Y-%m-%d')"),[$from,$to])
+			->orderBy('cop_handrail.created_at', 'desc')
 			->get();
 // 			$users = \DB::table('cop_handrail')->select('cop_handrail.id','cop_handrail.status','cop_handrail.address','cop_handrail.updated_on','ref_user.first_name','ref_user.last_name', 'cop_handrail.object',
 // 			    'cop_handrail.signature', 'cop_handrail.created_at')
@@ -267,6 +270,7 @@ class BackendController extends Controller
 			$users = \DB::table('cop_handrail')->select('cop_handrail.id','cop_handrail.status','cop_handrail.address','cop_handrail.updated_on','ref_user.first_name','ref_user.last_name', 'cop_handrail.object',
 			    'cop_handrail.signature', 'cop_handrail.created_at')
 			->join('ref_user','ref_user.id','=','cop_handrail.created_by')
+			->orderBy('cop_handrail.created_at', 'desc')
 			->get();
 			}
 			 //dd(\DB::getQueryLog());
@@ -274,7 +278,7 @@ class BackendController extends Controller
 			{
 			    foreach ($users as $k=>$u)
 			    {
-			        $users[$k]->date = Carbon::parse($u->created_at)->format('l M d Y H:i a');
+			        $users[$k]->date = Carbon::parse($u->created_at)->format('M d Y H:i a');
 			    }
 			}
 			 return Datatables::of($users) ->addColumn('firstlast', function($row){
@@ -459,7 +463,7 @@ class BackendController extends Controller
 	            'ref_user.first_name', 'ref_user.last_name', 'cop_incident_details.incident_description',
 	            'cop_incident_details.other_description', 'cop_incident_details.reference', 'cop_incident_details.created_by',
 	            'cop_incident_details.qr_code', 'cop_incident_details.latitude', 'cop_incident_details.longitude',
-	            'cop_incident_details.address', 'cop_incident_details.city', 'cop_incident_details.created_at', 'cop_incident_details.id','ref_user.ref_user_type_id')
+	            'cop_incident_details.address', 'ref_user.ref_user_type_id', 'cop_incident_details.city', 'cop_incident_details.created_at', 'cop_incident_details.id','ref_user.ref_user_type_id')
 	            ->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
 	            ->join('ref_user', 'ref_user.id', '=', 'cop_incident_details.created_by')
 	            ->orderBy('cop_incident_details.updated_at', 'DESC')->get();
@@ -473,7 +477,7 @@ class BackendController extends Controller
               	             ref_user.first_name,ref_user.last_name, cop_incident_details.incident_description,
              	             cop_incident_details.other_description, cop_incident_details.reference, cop_incident_details.created_by,
             	             cop_incident_details.qr_code, cop_incident_details.latitude, cop_incident_details.longitude,
-            	             cop_incident_details.address,ref_user.ref_user_type_id, cop_incident_details.city, cop_incident_details.created_at, cop_incident_details.id, 
+            	             cop_incident_details.address, ref_user.ref_user_type_id, cop_incident_details.city, cop_incident_details.created_at, cop_incident_details.id, 
                              ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( cop_incident_details.latitude ) ) * cos( radians( cop_incident_details.longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( cop_incident_details.latitude ) ) ) ) AS distance 
                              FROM cop_incident_details
                              JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
@@ -483,7 +487,7 @@ class BackendController extends Controller
 	                $incidents = \DB::select($query);
 
 	            }
-
+                
 	            foreach ($incidents as $k => $v)
 	            {
 	                $users = User::where('id', $v->created_by)->get();
@@ -619,10 +623,26 @@ class BackendController extends Controller
 	               'ref_incident_status_id' => 1
 	           ]);
 	           
+	           # Once intervention is assigned, send push notification
+	           $push = new \Edujugon\PushNotification\PushNotification('fcm');
+	           $push->setMessage([
+	               'notification' => [
+	                   'title'=>'A new intervention has been assigned to you',
+	                   'body'=>'A new intervention has been assigned to you',
+	                   'sound' => 'default'
+	               ]
+	           ]);
+	           
+	           # Get device token of the user
+	           $tokenData = UserDeviceMapping::where('ref_user_id', $o)->get();
+	           $push->setDevicesToken($tokenData[0]->device_token);
+	           $push->send();
+	           $push->getFeedback();
 	        }
 	        
 	        if($rs)
 	        {   
+	            
 	            #IncidentDetail::where('id', $request->input('objectId'))->update(['status'=>2]);
 	            return response()->json(['status'=>true, 'message'=>'Intervention assigned successfully'], 200);
 	        }
@@ -692,7 +712,7 @@ class BackendController extends Controller
 	
 	public function listofincidentscityzencops(Request $request)
 	{
-// 	    dd($request->input('usertype'));
+	    //dd($request->input('usertype'));
 	    try {
 	    	if($request->input('usertype'))
 	    	{
@@ -706,25 +726,31 @@ class BackendController extends Controller
 	            ->join('ref_user', 'ref_user.id', '=', 'cop_incident_details.created_by')
 	            ->whereIn('ref_user.ref_user_type_id', $user_type_id)
 	            ->orderBy('cop_incident_details.updated_at', 'DESC')->get();
-
+	            
 	            if($request->input('lat') && $request->input('lng'))
 	            {
-
+	                
+	                $condition = ""; 
+	                if(!empty($request->input('usertype'))){	                    
+	                    $users = implode(',',$request->input('usertype'));	                    
+	                    $condition = " where ref_user.ref_user_type_id in($users)";
+	                }
+	                \DB::enableQueryLog();
 	                $lat = $request->input('lat');
 	                $lng = $request->input('lng');
 	                $query = "SELECT ref_incident_subcategory.sub_category_name,
               	             ref_user.first_name,ref_user.last_name, cop_incident_details.incident_description,
              	             cop_incident_details.other_description, cop_incident_details.reference, cop_incident_details.created_by,
             	             cop_incident_details.qr_code, cop_incident_details.latitude, cop_incident_details.longitude,
-            	             cop_incident_details.address, cop_incident_details.city, cop_incident_details.created_at, cop_incident_details.id, 
+            	             cop_incident_details.address, cop_incident_details.city, cop_incident_details.created_at, cop_incident_details.id, ref_user.ref_user_type_id, 
                              ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( cop_incident_details.latitude ) ) * cos( radians( cop_incident_details.longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( cop_incident_details.latitude ) ) ) ) AS distance 
                              FROM cop_incident_details
                              JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
-                             JOIN ref_user ON ref_user.id = cop_incident_details.created_by
+                             JOIN ref_user ON ref_user.id = cop_incident_details.created_by " .$condition. "
                              HAVING `distance` <= 5 ORDER BY distance ASC";
-
+                    
 	                $incidents = \DB::select($query);
-
+//                     dd(\DB::getQueryLog());
 	            }
 
 	            foreach ($incidents as $k => $v)
