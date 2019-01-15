@@ -68,7 +68,7 @@ ext {
 
     rxAndroidVersion = '1.2.1'
     materialVersion = '1.0.0'
-
+    gmsVersion = " 16.0.1"
      glideVersion = '4.8.0'
     pullToRefreshVersion = '3.2.3'
     robotoTextViewVersion = '4.0.0'

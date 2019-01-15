@@ -42,7 +42,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_chat_messages"
         style="@style/MatchParent"
-      android:layout_below="@+id/ll"
+        android:layout_below="@+id/ll"
         android:layout_above="@+id/layout_attachment_preview_container"
         android:listSelector="@android:color/transparent" />
 
@@ -75,13 +75,16 @@
 
     <LinearLayout
         android:id="@+id/layout_chat_send_container"
-        style="@style/MatchWidth"
+       android:layout_height="wrap_content"
+        android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
+ android:weightSum="3"
         android:background="?attr/colorPrimary"
         android:orientation="horizontal">
 
         <ImageButton
+         android:layout_weight="1"
             android:id="@+id/button_chat_attachment"
             style="@style/BorderlessImageButtonStyle"
             android:layout_gravity="center_vertical"
@@ -91,8 +94,9 @@
 
         <EditText
             android:id="@+id/edit_chat_message"
-            style="@style/WeightWidth"
-            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_width="270dp"
+            android:layout_height="50dp"
             android:layout_marginBottom="3dp"
             android:layout_marginTop="3dp"
             android:background="@drawable/edittext_background_chat"
@@ -101,11 +105,14 @@
             android:padding="5dp" />
 
         <ImageButton
+            android:layout_weight="1"
             android:id="@+id/button_chat_send"
-            style="@style/BorderlessImageButtonStyle"
+            android:layout_width="@dimen/textsize_50sp"
+            android:layout_height="50dp"
             android:layout_gravity="center_vertical"
             android:onClick="onSendChatClick"
             android:src="@drawable/ic_send"
+            android:background="@color/white"
             android:text="@string/chat_send"
             android:tint="@color/blue" />
     </LinearLayout>

@@ -56,11 +56,18 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
     IncedentInterface mIncedentInterface;
     AppSession mAppSession;
     AssignmentListPojo assignmentListPojo;
+
+
     AssignmentInsidentListAdapter mAdapter;
 
-    public AssignmentTableFragment(AssignmentListPojo assignmentListPojo) {
+//    public AssignmentTableFragment(AssignmentListPojo assignmentListPojo) {
+//
+//        this.assignmentListPojo=assignmentListPojo;
+//        // Required empty public constructor
+//    }
 
-        this.assignmentListPojo=assignmentListPojo;
+
+    public AssignmentTableFragment() {
         // Required empty public constructor
     }
 
@@ -77,18 +84,23 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
         Rltoolbar.setOnClickListener(this);
 //        progressDialog = new ProgressDialog(getActivity());
 //        progressDialog.setMessage("loading...");
-        mAdapter = new AssignmentInsidentListAdapter(getActivity(), assignmentListPojo, mIncedentInterface);
-        lvtableofassignments.setHasFixedSize(true);
-        lvtableofassignments.setLayoutManager(new LinearLayoutManager(getActivity()));
-        lvtableofassignments.setItemAnimator(new DefaultItemAnimator());
 
-        if (assignmentListPojo.getStatus().equalsIgnoreCase("false")) {
-            Utils.showAlert(" No Assigned Intervention Found  so We can’t have access to the assigning an intervention", getActivity());
 
-        } else{
 
-            lvtableofassignments.setAdapter(mAdapter);
+
+        if (Utils.checkConnection(getActivity())) {
+            IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+            incdentSetPojo.setUser_id(mAppSession.getData("id"));
+            incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+            incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+            //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+            Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+            RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+            getAssigmentListFirst(mFile);
+        } else {
+            Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
         }
+
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -174,6 +186,52 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
                 Log.d("TAG", "Error " + t.getMessage());
                 swipeContainer.setRefreshing(false);
 //                progressDialog.dismiss();
+                Utils.showAlert(t.getMessage(), getActivity());
+            }
+        });
+    }
+
+
+
+    private void getAssigmentListFirst(RequestBody Data) {
+        //  progressDialog.show();
+        Service login = ApiUtils.getAPIService();
+        Call<AssignmentListPojo> getallLatLong = login.getAssignmentList(Data);
+        getallLatLong.enqueue(new Callback<AssignmentListPojo>() {
+            @Override
+            public void onResponse(Call<AssignmentListPojo> call, Response<AssignmentListPojo> response)
+
+            {
+                try {
+                    if (response.body() != null) {
+                         assignmentListPojo = response.body();
+
+                        if (assignmentListPojo.getStatus().equalsIgnoreCase("false")) {
+                            Utils.showAlert(" No Assigned Intervention Found  so We can’t have access to the assigning an intervention", getActivity());
+
+                        } else{
+                            mAdapter = new AssignmentInsidentListAdapter(getActivity(), assignmentListPojo, mIncedentInterface);
+                            lvtableofassignments.setHasFixedSize(true);
+                            lvtableofassignments.setLayoutManager(new LinearLayoutManager(getActivity()));
+                            lvtableofassignments.setItemAnimator(new DefaultItemAnimator());
+                            lvtableofassignments.setAdapter(mAdapter);
+                        }
+
+                    } else {
+                        Utils.showAlert(response.message(), getActivity());
+                    }
+
+                } catch (Exception e) {
+                    //  progressDialog.dismiss();
+                    e.getMessage();
+                    Utils.showAlert(e.getMessage(), getActivity());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AssignmentListPojo> call, Throwable t) {
+                Log.d("TAG", "Error " + t.getMessage());
+                //    progressDialog.dismiss();
                 Utils.showAlert(t.getMessage(), getActivity());
             }
         });

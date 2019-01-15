@@ -1,6 +1,7 @@
 package copops.com.copopsApp.activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBIncomingMessagesManager;
 import com.quickblox.chat.model.QBChatMessage;
@@ -32,6 +34,7 @@ import copops.com.copopsApp.chatmodule.ui.activity.DialogsActivity;
 import copops.com.copopsApp.chatmodule.utils.PushBroadcastReceiver;
 import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
 import copops.com.copopsApp.chatmodule.utils.qb.QbChatDialogMessageListenerImp;
+import copops.com.copopsApp.fragment.AssignmentTableFragment;
 import copops.com.copopsApp.fragment.AuthenticateCodeFragment;
 import copops.com.copopsApp.fragment.CitizenFragment;
 import copops.com.copopsApp.fragment.Frag_Call_Number;
@@ -42,6 +45,7 @@ import copops.com.copopsApp.fragment.IncedentReportFragment;
 import copops.com.copopsApp.fragment.OperatorFragment;
 import copops.com.copopsApp.fragment.SpleshFragment;
 import copops.com.copopsApp.utils.AppSession;
+import copops.com.copopsApp.utils.BackgroundBroadCast;
 import copops.com.copopsApp.utils.Utils;
 
 public class DashboardActivity extends AppCompatActivity {
@@ -55,8 +59,9 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-
+        Log.d("Firebase", "token "+ FirebaseInstanceId.getInstance().getToken());
      //   buildUsersList();
+
 
 
         //   QBSettings.getInstance().setStoringMehanism(StoringMechanism.UNSECURED); //call before init method for QBSettings
@@ -89,8 +94,15 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void fragmentContener() {
-
         Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
+
+//        String notification = mAppSession.getData("notification");
+//        if(notification=="") {
+//            Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
+//        }else{
+//
+//            Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
+//        }
     }
 
     @Override

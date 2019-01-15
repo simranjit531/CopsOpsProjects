@@ -6,6 +6,16 @@ public class LoginPojoSetData {
     String email_id;
     String otp;
 
+    public String getFcm_token() {
+        return fcm_token;
+    }
+
+    public void setFcm_token(String fcm_token) {
+        this.fcm_token = fcm_token;
+    }
+
+    String fcm_token;
+
     public String getRef_user_type_id() {
         return ref_user_type_id;
     }

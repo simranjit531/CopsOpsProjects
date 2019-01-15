@@ -4,6 +4,7 @@ package copops.com.copopsApp.fragment;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.text.InputType;
@@ -16,12 +17,16 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.iid.InstanceIDListenerService;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBIncomingMessagesManager;
+import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.messages.services.gcm.QBGcmPushInstanceIDService;
 import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.users.QBUsers;
@@ -34,6 +39,7 @@ import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
+import copops.com.copopsApp.activity.DashboardActivity;
 import copops.com.copopsApp.chatmodule.App;
 import copops.com.copopsApp.chatmodule.utils.PushBroadcastReceiver;
 import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
@@ -42,6 +48,7 @@ import copops.com.copopsApp.pojo.LoginPojoSetData;
 import copops.com.copopsApp.pojo.RegistationPojo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
+import copops.com.copopsApp.utils.BackgroundBroadCast;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.Utils;
@@ -112,6 +119,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }
 
 
+        Log.d("Firebase", "token "+ FirebaseInstanceId.getInstance().getToken());
+
+        mAppSession.saveData("fcm_token",FirebaseInstanceId.getInstance().getToken());
         return view;
     }
 
@@ -148,6 +158,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 loginPojoSetData.setUser_password(etPassword.getText().toString());
                 loginPojoSetData.setRef_user_type_id(userTypeRegistation);
                 loginPojoSetData.setDevice_id(Utils.getDeviceId(mContext));
+                loginPojoSetData.setFcm_token(mAppSession.getData("fcm_token"));
                 Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(loginPojoSetData)));
                 RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(loginPojoSetData)));
                 Service login = ApiUtils.getAPIService();
@@ -198,6 +209,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                         Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
 
 
+
+
+//                                        Intent alarm = new Intent(getActivity(), BackgroundBroadCast.class);
+//                                        getActivity().sendBroadcast(alarm);
                                         buildUsersList();
                                     }
                                 }
@@ -259,7 +274,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private void buildUsersList() {
 
-        ProgressDialogFragment.show(getActivity().getSupportFragmentManager());
+       ProgressDialogFragment.show(getActivity().getSupportFragmentManager());
         List<String> tags = new ArrayList<>();
         tags.add(App.getSampleConfigs().getUsersTag());
 
@@ -281,13 +296,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onError(QBResponseException e) {
-
+                ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
             }
         });
     }
 
     private void login(final QBUser user) {
-        ProgressDialogFragment.show(getActivity().getSupportFragmentManager(), R.string.dlg_login);
+       ProgressDialogFragment.show(getActivity().getSupportFragmentManager(), R.string.dlg_login);
         ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle bundle) {
@@ -295,7 +310,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
                 currentUser = ChatHelper.getCurrentUser();
 
+
                 incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
+
 
                 incomingMessagesManager.addDialogMessageListener(new AllDialogsMessageListener());
             }
@@ -316,6 +333,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
 
             Log.d("RanjanCheck", "processMessage");
+
+
             QBUser user=null;
             int sender= qbChatMessage.getSenderId();
             for (int i = 0; i < list.size(); i++) {

@@ -45,6 +45,8 @@ public class CoreApp extends Application {
 
     public void initCredentials() {
         if (qbConfigs != null) {
+
+
             QBSettings.getInstance().init(getApplicationContext(), qbConfigs.getAppId(), qbConfigs.getAuthKey(), qbConfigs.getAuthSecret());
             QBSettings.getInstance().setAccountKey(qbConfigs.getAccountKey());
 

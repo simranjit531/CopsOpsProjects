@@ -101,6 +101,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     private DialogsManager dialogsManager;
     private QBUser currentUser;
     ArrayList<QBChatDialog> qbChatDialogArrayList;
+    ArrayList<QBChatDialog> qbChatDialogArrayListSearchUpdate;
     AppSession mAppSession;
     ListView dialogsListView;
     @BindView(R.id.chatAdd)
@@ -142,7 +143,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         dialogsManager = new DialogsManager();
 
         currentUser = ChatHelper.getCurrentUser();
-
+        qbChatDialogArrayListSearchUpdate= new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values());
         initUi();
 
         userSearch.addTextChangedListener(new TextWatcher() {
@@ -154,11 +155,36 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
+
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                filter(s.toString());
+              //  filter(s.toString());
+                if(userSearch.getText().toString().trim().equalsIgnoreCase("")){
+                    updateDialogsAdapter();
+                }
+else{
+                    qbChatDialogArrayListSearchUpdate.clear();
+                    for(int i=0; i< qbChatDialogArrayList.size();i++){
+
+                        if(qbChatDialogArrayList.get(i).getName().equalsIgnoreCase(userSearch.getText().toString().trim())){
+                            //  updateDialogsAdapter();
+
+
+                            qbChatDialogArrayListSearchUpdate.add(qbChatDialogArrayList.get(i));
+
+                            // qbChatDialogArrayList= new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values());
+
+
+                            updateDialogsSearchAdapter(qbChatDialogArrayListSearchUpdate);
+                        }
+                    }
+                }
+
+
+           //     updateDialogsAdapter();
             }
         });
 
@@ -500,7 +526,28 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     private void updateDialogsAdapter() {
 
 
-        dialogsAdapter.updateList(new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values()));
+//ArrayList
+
+      //  qbChatDialogArrayList.add()
+
+         qbChatDialogArrayList= new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values());
+
+         dialogsAdapter.updateList(qbChatDialogArrayList);
+
+        Log.e("ffff", "" + qbChatDialogArrayList.size());
+    }
+
+
+    private void updateDialogsSearchAdapter(ArrayList<QBChatDialog> qbChatDialogArrayListSearchUpdate) {
+
+
+//ArrayList
+
+        //  qbChatDialogArrayList.add()
+
+     //   qbChatDialogArrayList= new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values());
+
+        dialogsAdapter.updateList(qbChatDialogArrayListSearchUpdate);
 
         Log.e("ffff", "" + qbChatDialogArrayList.size());
     }
@@ -832,7 +879,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     }
 
     private void login(final QBUser user) {
-        ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_login);
+      //  ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_login);
         ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle bundle) {

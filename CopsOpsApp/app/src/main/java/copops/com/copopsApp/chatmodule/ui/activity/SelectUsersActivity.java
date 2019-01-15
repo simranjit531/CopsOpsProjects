@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -47,9 +50,13 @@ public class SelectUsersActivity extends BaseActivity implements UsersAdapter.cl
     private ProgressBar progressBar;
     private CheckboxUsersAdapter usersAdapter;
     private List<QBUser> users;
+    private List<QBUser> searchUser;
     private long lastClickTime = 0l;
     private QBChatDialog qbChatDialog;
 
+
+    @BindView(R.id.userSearch)
+    EditText userSearch;
 
     @BindView(R.id.chatAdd)
     ImageView chatAdd;
@@ -88,6 +95,8 @@ public class SelectUsersActivity extends BaseActivity implements UsersAdapter.cl
 
         ButterKnife.bind(this);
         mClickPos=this;
+
+        searchUser = new ArrayList<>();
         chatAdd.setVisibility(View.GONE);
         filterId.setVisibility(View.VISIBLE);
         IVback.setVisibility(View.GONE);
@@ -118,6 +127,54 @@ public class SelectUsersActivity extends BaseActivity implements UsersAdapter.cl
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+
+
+
+
+
+
+        userSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //  filter(s.toString());
+                if(userSearch.getText().toString().trim().equalsIgnoreCase("")){
+                    updateUsersAdapter();
+                }
+                else{
+                    searchUser.clear();
+                    for(int i=0; i< users.size();i++){
+
+                        if(users.get(i).getFullName().equalsIgnoreCase(userSearch.getText().toString().trim())){
+                            //  updateDialogsAdapter();
+                            searchUser.add(users.get(i));
+
+                            updateUsersAdapterSearch(searchUser);
+
+                            // qbChatDialogArrayList= new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values());
+
+
+                         //   updateDialogsSearchAdapter(qbChatDialogArrayListSearchUpdate);
+                        }
+                    }
+                }
+
+
+                //     updateDialogsAdapter();
             }
         });
        // actionBar.setDisplayHomeAsUpEnabled(true);
@@ -222,6 +279,18 @@ public class SelectUsersActivity extends BaseActivity implements UsersAdapter.cl
 
     private void updateUsersAdapter() {
         usersAdapter = new CheckboxUsersAdapter(this, users,mClickPos);
+        if (qbChatDialog != null) {
+            usersAdapter.addSelectedUsers(qbChatDialog.getOccupants());
+        }
+        usersListView.setAdapter(usersAdapter);
+        progressBar.setVisibility(View.GONE);
+    }
+
+
+
+
+    private void updateUsersAdapterSearch(List<QBUser> searchUser) {
+        usersAdapter = new CheckboxUsersAdapter(this, searchUser,mClickPos);
         if (qbChatDialog != null) {
             usersAdapter.addSelectedUsers(qbChatDialog.getOccupants());
         }

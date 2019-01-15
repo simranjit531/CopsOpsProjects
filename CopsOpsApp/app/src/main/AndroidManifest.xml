@@ -16,7 +16,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <permission
         android:name="copops.com.copopsApp.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -41,6 +41,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
+
     <application
         android:name=".chatmodule.App"
         android:allowBackup="true"
@@ -60,6 +61,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <!--<service android:name=".utils.BackgroundService" />-->
+        <!--<receiver android:name=".utils.BackgroundBroadCast"></receiver>-->
         <!--
          Developers should put application credentials here.To obtain them, please register the application
          at https://developer.here.com/develop/mobile-sdks
@@ -200,6 +205,29 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths_chats"/>
         </provider>
+
+        <!-- [START firebase_service] -->
+        <service
+            android:name=".copsnoti.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <!-- [END firebase_service] -->
+        <!-- [START firebase_iid_service] -->
+        <service
+            android:name=".copsnoti.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <!--<service-->
+            <!--android:name=".conps.MyFirebaseInstanceIDService"-->
+            <!--android:stopWithTask="false">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.firebase.MESSAGING_EVENT" />-->
+            <!--</intent-filter>-->
+        <!--</service>-->
     </application>
 
 </manifest>

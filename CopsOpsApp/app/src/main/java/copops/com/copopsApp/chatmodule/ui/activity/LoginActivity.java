@@ -1,5 +1,6 @@
 package copops.com.copopsApp.chatmodule.ui.activity;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -49,7 +50,7 @@ public class LoginActivity extends CoreBaseActivity implements UsersAdapter.clic
 
         userListView.addHeaderView(listHeader, null, false);
         userListView.setOnItemClickListener(new OnUserLoginItemClickListener());
-
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         buildUsersList();
     }
 

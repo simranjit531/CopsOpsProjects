@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "440092303670",
-    "firebase_url": "https://copops-47080.firebaseio.com",
-    "project_id": "copops-47080",
-    "storage_bucket": "copops-47080.appspot.com"
+    "project_number": "1074070354893",
+    "firebase_url": "https://copops-736ff.firebaseio.com",
+    "project_id": "copops-736ff",
+    "storage_bucket": "copops-736ff.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:440092303670:android:aac3459a7d132001",
+        "mobilesdk_app_id": "1:1074070354893:android:aac3459a7d132001",
         "android_client_info": {
           "package_name": "copops.com.copopsApp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "440092303670-lf837ucl1rpt6sf1241ovlfihsi3h3j5.apps.googleusercontent.com",
+          "client_id": "1074070354893-1j78ln0mtub0at03d9oa0bjk6q8dgh5l.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "copops.com.copopsApp",
@@ -23,13 +23,13 @@
           }
         },
         {
-          "client_id": "440092303670-24id4560m6kfqf036hbnspda62k95jel.apps.googleusercontent.com",
+          "client_id": "1074070354893-1locbhoq4ou5s3dl9e4am8cm6qpakl04.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBHhApzyxGDSOuSTgt4twKA9vsf3MBFRWM"
+          "current_key": "AIzaSyDs6BCmOv7toqMEG4c9E3QOuy6CTwujkAU"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "440092303670-24id4560m6kfqf036hbnspda62k95jel.apps.googleusercontent.com",
+              "client_id": "1074070354893-1locbhoq4ou5s3dl9e4am8cm6qpakl04.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

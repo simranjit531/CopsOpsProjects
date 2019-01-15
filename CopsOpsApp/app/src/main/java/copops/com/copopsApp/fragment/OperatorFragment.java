@@ -578,9 +578,9 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                         AssignmentListPojo assignmentListPojo = response.body();
                         if (assignmentListPojo.getStatus().equals("false")) {
 
-                            Utils.fragmentCall(new AssignmentTableFragment(assignmentListPojo), getFragmentManager());
+                            Utils.fragmentCall(new AssignmentTableFragment(), getFragmentManager());
                         } else {
-                            Utils.fragmentCall(new AssignmentTableFragment(assignmentListPojo), getFragmentManager());
+                            Utils.fragmentCall(new AssignmentTableFragment(), getFragmentManager());
 
                         }
                         progressDialog.dismiss();
@@ -770,16 +770,14 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
 
     private void buildUsersList() {
-
-        ProgressDialogFragment.show(getActivity().getSupportFragmentManager());
+      //  ProgressDialogFragment.show(getActivity().getSupportFragmentManager());
         List<String> tags = new ArrayList<>();
         tags.add(App.getSampleConfigs().getUsersTag());
-
         QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> result, Bundle params) {
-
                 list = result;
+             //   ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
                 for (int i = 0; i < list.size(); i++) {
                     if (list.get(i).getLogin().equalsIgnoreCase(mAppSession.getData("user_id"))) {
                         QBUser user = list.get(i);
@@ -790,31 +788,33 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                     }
                 }
             }
-
             @Override
             public void onError(QBResponseException e) {
-
+            //    ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
             }
         });
     }
 
     private void login(final QBUser user) {
-        ProgressDialogFragment.show(getActivity().getSupportFragmentManager(), R.string.dlg_login);
+     //  ProgressDialogFragment.show(getActivity().getSupportFragmentManager(), R.string.dlg_login);
         ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle bundle) {
                 SharedPrefsHelper.getInstance().saveQbUser(user);
-                ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
-                currentUser = ChatHelper.getCurrentUser();
+             //   ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
 
-                incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
-
-                incomingMessagesManager.addDialogMessageListener(new OperatorFragment.AllDialogsMessageListener());
+               try {
+                   currentUser = ChatHelper.getCurrentUser();
+                   incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
+                   incomingMessagesManager.addDialogMessageListener(new OperatorFragment.AllDialogsMessageListener());
+               }catch(Exception e){
+                   e.printStackTrace();
+               }
             }
 
             @Override
             public void onError(QBResponseException e) {
-                ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
+            //   ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
             }
         });
     }

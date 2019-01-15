@@ -3,15 +3,19 @@ package copops.com.copopsApp.fragment;
 
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
+import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.Utils;
 
 
@@ -28,6 +32,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
     Fragment fragment;
 
+
+    AppSession mAppSession;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -41,8 +47,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         View view=inflater.inflate(R.layout.fragment_home, container, false);
 
         ButterKnife.bind(this, view);
-
+        mAppSession=mAppSession.getInstance(getActivity());
         onClick();
+
+        Log.d("Firebase", "token "+ FirebaseInstanceId.getInstance().getToken());
+
+        mAppSession.saveData("fcm_token",FirebaseInstanceId.getInstance().getToken());
         return view;
     }
 

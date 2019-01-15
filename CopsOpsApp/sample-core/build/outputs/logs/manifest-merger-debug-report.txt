@@ -1,41 +1,41 @@
 -- Merging decision tree log ---
 manifest
-ADDED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
-INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
-INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
-INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
-INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
-INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
-INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
+ADDED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
+INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
+INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
+INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
+INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
+INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
+INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
 	package
-		ADDED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:2:5-40
-		INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
-		INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
+		ADDED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:2:5-40
+		INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
+		INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
 	android:versionName
-		INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
-		ADDED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
-		INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
+		INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
+		ADDED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
+		INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
 	android:versionCode
-		INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
-		ADDED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
-		INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
+		INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
+		ADDED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:1-11:12
+		INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:11-69
+		ADDED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:1:11-69
 uses-permission#android.permission.INTERNET
-ADDED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:4:5-67
+ADDED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:4:5-67
 	android:name
-		ADDED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:4:22-64
+		ADDED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml:4:22-64
 uses-sdk
-INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
-INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
-INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
-INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
+INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
+INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
+INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
+INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
-		ADDED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
-		INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
+		INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
+		ADDED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
+		INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
-		ADDED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
-		INJECTED from D:\COPOPSAPP\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
+		INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
+		ADDED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml
+		INJECTED from E:\COPOPS\CopsOpsApp\sample-core\src\main\AndroidManifest.xml

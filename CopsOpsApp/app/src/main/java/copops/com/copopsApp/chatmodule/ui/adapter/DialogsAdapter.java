@@ -86,7 +86,7 @@ public class DialogsAdapter extends BaseSelectableListAdapter<QBChatDialog> {
                 for(int i=0;i<dialogs.size();i++){
                     if(unreadMessagesCount>0) {
 
-                      displayCustomNotificationForOrders(title,QbDialogUtils.getDialogName(dialog) + " " + unreadMessagesCount + "\n");
+                    //  displayCustomNotificationForOrders(title,QbDialogUtils.getDialogName(dialog) + " " + unreadMessagesCount + "\n");
 
                     }
                 }
