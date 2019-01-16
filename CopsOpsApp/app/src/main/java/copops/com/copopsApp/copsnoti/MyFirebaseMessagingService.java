@@ -20,6 +20,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import copops.com.copopsApp.R;
+import copops.com.copopsApp.activity.AssingmentActivity;
 import copops.com.copopsApp.activity.DashboardActivity;
 import copops.com.copopsApp.chatmodule.ui.activity.DialogsActivity;
 import copops.com.copopsApp.utils.AppSession;
@@ -95,10 +96,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationCompat.Builder builder;
             Intent intent = new Intent(context, DashboardActivity.class);
-            intent.putExtra("notification","notify");
-
-
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent;
             int importance = NotificationManager.IMPORTANCE_HIGH;
             if (mChannel == null) {
@@ -110,8 +108,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
             builder = new NotificationCompat.Builder(context, "0");
 
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                    Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+//                    Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.putExtra("notification","notify");
             pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
             builder.setContentTitle(title)
                     .setSmallIcon(getNotificationIcon()) // required
@@ -129,11 +128,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         } else {
 
             Intent intent = new Intent(context, DashboardActivity.class);
+
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("notification","notify");
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = null;
 
-            pendingIntent = PendingIntent.getActivity(context, 1251, intent, PendingIntent.FLAG_ONE_SHOT);
+            pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
@@ -150,6 +150,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notificationManager.notify(0, notificationBuilder.build());
         }
     }
+
+
+
 
     private void sendNotification(String messageBody) {
         Intent intent = new Intent(this, DashboardActivity.class);

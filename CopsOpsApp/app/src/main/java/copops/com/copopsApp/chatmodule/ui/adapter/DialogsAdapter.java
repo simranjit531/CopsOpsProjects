@@ -107,7 +107,7 @@ public class DialogsAdapter extends BaseSelectableListAdapter<QBChatDialog> {
         return convertView;
     }
 
-    private int getUnreadMsgCount(QBChatDialog chatDialog){
+    public int getUnreadMsgCount(QBChatDialog chatDialog){
         Integer unreadMessageCount = chatDialog.getUnreadMessageCount();
         if (unreadMessageCount == null) {
             return 0;

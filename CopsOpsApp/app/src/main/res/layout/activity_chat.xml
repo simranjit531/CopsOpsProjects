@@ -96,9 +96,9 @@
             android:id="@+id/edit_chat_message"
             android:layout_weight="1"
             android:layout_width="270dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/edittext_background_chat"
             android:hint="@string/chat_edit_text_hint"
             android:inputType="textMultiLine"
@@ -112,7 +112,7 @@
             android:layout_gravity="center_vertical"
             android:onClick="onSendChatClick"
             android:src="@drawable/ic_send"
-            android:background="@color/white"
+            android:background="@color/transparent"
             android:text="@string/chat_send"
             android:tint="@color/blue" />
     </LinearLayout>

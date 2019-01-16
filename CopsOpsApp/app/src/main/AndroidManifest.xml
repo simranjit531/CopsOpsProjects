@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <permission
         android:name="copops.com.copopsApp.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -41,7 +42,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-
     <application
         android:name=".chatmodule.App"
         android:allowBackup="true"
@@ -62,9 +62,8 @@
             </intent-filter>
         </activity>
 
-
-        <!--<service android:name=".utils.BackgroundService" />-->
-        <!--<receiver android:name=".utils.BackgroundBroadCast"></receiver>-->
+        <!-- <service android:name=".utils.BackgroundService" /> -->
+        <!-- <receiver android:name=".utils.BackgroundBroadCast"></receiver> -->
         <!--
          Developers should put application credentials here.To obtain them, please register the application
          at https://developer.here.com/develop/mobile-sdks
@@ -116,14 +115,14 @@
 
         <activity
             android:name=".chatmodule.ui.activity.SplashActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".chatmodule.ui.activity.LoginActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".chatmodule.ui.activity.SelectUsersActivity"
-            android:theme="@style/AppThemenoactionbar"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemenoactionbar" />
         <activity
             android:name=".chatmodule.ui.activity.DialogsActivity"
             android:screenOrientation="portrait" />
@@ -181,21 +180,21 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <!--<meta-data-->
-            <!--android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"-->
-            <!--android:value="GlideModule" />-->
+        <!-- <meta-data -->
+        <!-- android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule" -->
+        <!-- android:value="GlideModule" /> -->
 
-        <activity android:name=".chat.ChatCopsActivity"></activity>
+        <activity android:name=".chat.ChatCopsActivity" />
 
-        <!--<provider-->
-            <!--android:name="androidx.core.content.FileProvider"-->
-            <!--android:authorities="${applicationId}"-->
-            <!--android:exported="false"-->
-            <!--android:grantUriPermissions="true">-->
-            <!--<meta-data-->
-                <!--android:name="android.support.FILE_PROVIDER_PATHS"-->
-                <!--android:resource="@xml/provider_paths_chats" />-->
-        <!--</provider>-->
+        <!-- <provider -->
+        <!-- android:name="androidx.core.content.FileProvider" -->
+        <!-- android:authorities="${applicationId}" -->
+        <!-- android:exported="false" -->
+        <!-- android:grantUriPermissions="true"> -->
+        <!-- <meta-data -->
+        <!-- android:name="android.support.FILE_PROVIDER_PATHS" -->
+        <!-- android:resource="@xml/provider_paths_chats" /> -->
+        <!-- </provider> -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="copops.com.copopsApp.utils"
@@ -203,31 +202,30 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths_chats"/>
+                android:resource="@xml/provider_paths_chats" />
         </provider>
 
         <!-- [START firebase_service] -->
-        <service
-            android:name=".copsnoti.MyFirebaseMessagingService">
+        <service android:name=".copsnoti.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <!-- [END firebase_service] -->
         <!-- [START firebase_iid_service] -->
-        <service
-            android:name=".copsnoti.MyFirebaseInstanceIDService">
+        <service android:name=".copsnoti.MyFirebaseInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <!--<service-->
-            <!--android:name=".conps.MyFirebaseInstanceIDService"-->
-            <!--android:stopWithTask="false">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.google.firebase.MESSAGING_EVENT" />-->
-            <!--</intent-filter>-->
-        <!--</service>-->
+        <!-- <service -->
+        <!-- android:name=".conps.MyFirebaseInstanceIDService" -->
+        <!-- android:stopWithTask="false"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="com.google.firebase.MESSAGING_EVENT" /> -->
+        <!-- </intent-filter> -->
+        <!-- </service> -->
+        <activity android:name=".activity.AssingmentActivity"></activity>
     </application>
 
 </manifest>

@@ -94,15 +94,16 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void fragmentContener() {
-        Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
+       // Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
 
-//        String notification = mAppSession.getData("notification");
-//        if(notification=="") {
-//            Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
-//        }else{
-//
-//            Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
-//        }
+        String intent= getIntent().getStringExtra("notification");
+
+      //  String notification = mAppSession.getData("notification");
+        if(intent==null) {
+            Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
+        }else{
+            Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
+        }
     }
 
     @Override
@@ -123,6 +124,8 @@ public class DashboardActivity extends AppCompatActivity {
 
         } else if (f instanceof AuthenticateCodeFragment) {//the fragment on which you want to handle your back press
 
+        }else if (f instanceof AssignmentTableFragment) {//the fragment on which you want to handle your back press
+            Utils.fragmentCall(new OperatorFragment(), getSupportFragmentManager());
         } else if (f instanceof Frag_Call_Number) {//the fragment on which you want to handle your back press
 
         } else if (f instanceof IncedentGenerateFragment) {

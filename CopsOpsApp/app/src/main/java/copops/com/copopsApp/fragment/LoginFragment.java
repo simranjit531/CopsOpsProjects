@@ -44,6 +44,8 @@ import copops.com.copopsApp.chatmodule.App;
 import copops.com.copopsApp.chatmodule.utils.PushBroadcastReceiver;
 import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
 import copops.com.copopsApp.chatmodule.utils.qb.QbChatDialogMessageListenerImp;
+import copops.com.copopsApp.chatmodule.utils.qb.QbDialogHolder;
+import copops.com.copopsApp.chatmodule.utils.qb.callback.QbEntityCallbackImpl;
 import copops.com.copopsApp.pojo.LoginPojoSetData;
 import copops.com.copopsApp.pojo.RegistationPojo;
 import copops.com.copopsApp.services.ApiUtils;
@@ -337,14 +339,50 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
             QBUser user=null;
             int sender= qbChatMessage.getSenderId();
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).getId().equals(sender)) {
-                    user = list.get(i);
-                    break;
-                }
-            }
-            PushBroadcastReceiver.displayCustomNotificationForOrders(user.getFullName(), " "+qbChatMessage.getBody(), getActivity());
+//            for (int i = 0; i < list.size(); i++) {
+//                if (list.get(i).getId().equals(sender)) {
+//                    user = list.get(i);
+//
+//                    break;
+//                }
+//            }
+
+            loadUpdatedDialog(qbChatMessage.getDialogId(),qbChatMessage);
+
+
+          //  PushBroadcastReceiver.displayCustomNotificationForOrders(user.getFullName(), " "+qbChatMessage.getBody(), getActivity());
          //   PushBroadcastReceiver.displayCustomNotificationForOrders("COPOPS", " "+qbChatMessage.getBody(), getActivity());
+        }
+    }
+
+
+
+
+    private void loadUpdatedDialog(String dialogId,QBChatMessage qbChatMessage) {
+        ChatHelper.getInstance().getDialogById(dialogId, new QbEntityCallbackImpl<QBChatDialog>() {
+            @Override
+            public void onSuccess(QBChatDialog result, Bundle bundle) {
+                //   isProcessingResultInProgress = false;
+                QbDialogHolder.getInstance().addDialog(result);
+                int count= getUnreadMsgCount(result);
+                PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " "+qbChatMessage.getBody()+" "+count, getActivity());
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+
+                e.printStackTrace();
+
+            }
+        });
+    }
+
+    public int getUnreadMsgCount(QBChatDialog chatDialog){
+        Integer unreadMessageCount = chatDialog.getUnreadMessageCount();
+        if (unreadMessageCount == null) {
+            return 0;
+        } else {
+            return unreadMessageCount;
         }
     }
 }

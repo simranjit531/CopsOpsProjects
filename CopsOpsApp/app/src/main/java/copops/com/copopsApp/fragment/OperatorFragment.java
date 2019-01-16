@@ -72,6 +72,7 @@ import copops.com.copopsApp.chatmodule.utils.qb.QbChatDialogMessageListenerImp;
 import copops.com.copopsApp.chatmodule.utils.qb.QbDialogHolder;
 import copops.com.copopsApp.chatmodule.utils.qb.QbDialogUtils;
 import copops.com.copopsApp.chatmodule.utils.qb.callback.QBPushSubscribeListenerImpl;
+import copops.com.copopsApp.chatmodule.utils.qb.callback.QbEntityCallbackImpl;
 import copops.com.copopsApp.pojo.AssignmentListPojo;
 import copops.com.copopsApp.pojo.CommanStatusPojo;
 import copops.com.copopsApp.pojo.IncdentSetPojo;
@@ -349,21 +350,21 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
             case R.id.llintervention:
 
-                if (operatorShowAlInfo.getNew_reports().equalsIgnoreCase("1")) {
-                    if (Utils.checkConnection(getActivity())) {
-                        IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
-
-                        incdentSetPojo.setUser_id(mAppSession.getData("id"));
-                        incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
-                        Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                        RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                        getAssignIntervationData(mFile);
-                    } else {
-                        Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
-                    }
-
-
-                } else {
+//                if (operatorShowAlInfo.getNew_reports().equalsIgnoreCase("1")) {
+//                    if (Utils.checkConnection(getActivity())) {
+//                        IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+//
+//                        incdentSetPojo.setUser_id(mAppSession.getData("id"));
+//                        incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+//                        Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+//                        RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+//                        getAssignIntervationData(mFile);
+//                    } else {
+//                        Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+//                    }
+//
+//
+//                } else {
                     if (Utils.checkConnection(getActivity())) {
                         IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
 
@@ -378,7 +379,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                         Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
                     }
 
-                }
+              //  }
                 break;
 
         }
@@ -826,16 +827,46 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
             Log.d("RanjanCheck", "processMessage");
             QBUser user=null;
             int sender= qbChatMessage.getSenderId();
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).getId().equals(sender)) {
-                     user = list.get(i);
-                    break;
-                }
-            }
-            PushBroadcastReceiver.displayCustomNotificationForOrders(user.getFullName(), " "+qbChatMessage.getBody(), getActivity());
+//            for (int i = 0; i < list.size(); i++) {
+//                if (list.get(i).getId().equals(sender)) {
+//                     user = list.get(i);
+//
+//                    break;
+//                }
+//            }
+           // createDialog(list);
+
+            loadUpdatedDialog(qbChatMessage.getDialogId(),qbChatMessage);
+
 
         }
     }
 
+    private void loadUpdatedDialog(String dialogId,QBChatMessage qbChatMessage) {
+        ChatHelper.getInstance().getDialogById(dialogId, new QbEntityCallbackImpl<QBChatDialog>() {
+            @Override
+            public void onSuccess(QBChatDialog result, Bundle bundle) {
+             //   isProcessingResultInProgress = false;
+                QbDialogHolder.getInstance().addDialog(result);
+                int count= getUnreadMsgCount(result);
+                PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " "+qbChatMessage.getBody()+"  "+count, getActivity());
+            }
 
+            @Override
+            public void onError(QBResponseException e) {
+
+                e.printStackTrace();
+
+            }
+        });
+    }
+
+    public int getUnreadMsgCount(QBChatDialog chatDialog){
+        Integer unreadMessageCount = chatDialog.getUnreadMessageCount();
+        if (unreadMessageCount == null) {
+            return 0;
+        } else {
+            return unreadMessageCount;
+        }
+    }
 }

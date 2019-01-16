@@ -227,6 +227,17 @@ public class Utils {
         }
     }
 
+    /////fragment call
+    public static void fragmentCalladd(Fragment fragment, FragmentManager fm) {
+        if (fragment != null) {
+            FragmentTransaction transaction = fm.beginTransaction().addToBackStack(null);
+            transaction.setCustomAnimations(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left, R.anim.anim_slide_in_righ, R.anim.anim_slide_out_right);
+            transaction.add(R.id.content_frame, fragment);
+            //  transaction.commit();
+            transaction.commitAllowingStateLoss();
+        }
+    }
+
 
     public SharedPreferences getSharedPref(Context mContext) {
         return mContext.getSharedPreferences(myPrefrence, Context.MODE_PRIVATE);
