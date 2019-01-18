@@ -25,6 +25,9 @@ use DateTime;
 use App\Crew;
 use App\CrewUser;
 use App\Util\ResponseMessage;
+use App\Notification;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use function GuzzleHttp\json_encode;
 
 class BackendController extends Controller
 {
@@ -182,12 +185,21 @@ class BackendController extends Controller
 	
 	public function archivedata(Request $request)
 	{
-			$users = \DB::table('cop_user_incidents_closed')->select('cop_user_incidents_closed.id','cop_incident_details.status','cop_incident_details.address','ref_user.first_name','ref_user.last_name', 'ref_incident_subcategory.sub_category_name',
+		$users = \DB::table('cop_user_incidents_closed')->select('cop_user_incidents_closed.id','cop_incident_details.status','cop_incident_details.address','ref_user.first_name','ref_user.last_name', 'ref_incident_subcategory.sub_category_name',
             'cop_incident_details.incident_description', 'cop_incident_details.created_at')
 		->join('cop_incident_details','cop_incident_details.id','=','cop_user_incidents_closed.cop_incident_details_id')
 		->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
-		->join('ref_user','ref_user.id','=','cop_incident_details.created_by')
-		->get();
+		->join('ref_user','ref_user.id','=','cop_incident_details.created_by');
+		
+		if($request->fromdate != "" && $request->todate != "" )
+		{		    
+		    $from = date_format( new DateTime($request->fromdate), 'Y-m-d');		 
+		    $to = date_format( new DateTime($request->todate), 'Y-m-d');
+		    
+	        $users = $users->whereBetween(DB::Raw("DATE_FORMAT(cop_incident_details.created_at, '%Y-%m-%d')"),[$from,$to]);		        
+		}
+		
+		$users = $users->get();
 			
 		foreach($users as $k=>$u)
 		{
@@ -206,7 +218,16 @@ class BackendController extends Controller
 		 })
 		 ->addColumn('view', function($userview){
 				return '<a href="javascript:void(0)" id="viewIncident" rel="'.$userview->id.'" data-toggle="modal" data-target="#myModal"><i class="fa fa-angle-right" aria-hidden="true"></i></a>';
-			})->rawColumns(array("view"))->make(true);
+			})->rawColumns(array("view"))
+			->filter(function ($instance) use ($request) {
+			    if ($request->has('first_name') && $request->first_name != "") {
+			        $instance->collection = $instance->collection->filter(function ($row) use ($request) {
+			            
+			            return Str::contains(strtolower($row['first_name']."".$row['last_name']), strtolower($request->get('first_name'))) ? true : false;
+			        });
+			    }			    
+			})
+			->make(true);
 	}
 	
 	public function viewincident(Request $request)
@@ -344,8 +365,17 @@ class BackendController extends Controller
 	
     public function userdata(Request $request)
     {
-    	 $users = User::where([['ref_user_type_id','=',UserType::_TYPE_OPERATOR],['approved','=',1]])->get(); // Approved User
-
+        \DB::enableQueryLog();
+    	 $users = User::where([['ref_user_type_id','=',UserType::_TYPE_OPERATOR],['approved','=',1]]);
+    	 if($request->registration_start_date !="" && $request->registration_end_date){
+//     	     $users = $users->where(DB::Raw("DATE_FORMAT('created_at', '%Y-%m-%d')"), Carbon::parse($request->registration_date)->format('Y-m-d'));
+    	     $sdate = Carbon::parse($request->registration_start_date)->format('Y-m-d');
+    	     $edate = Carbon::parse($request->registration_end_date)->format('Y-m-d');
+    	     
+    	     $users = $users->whereBetween(DB::Raw("DATE_FORMAT(created_at, '%Y-%m-%d')"),[$sdate, $edate]);
+    	 }
+    	 $users = $users->get(); // Approved User
+//         dd(DB::getQueryLog());
         return Datatables::of($users)->addColumn('action', function ($user) {
                 return '<div class="radio"><label><input type="radio" name="optradio"></label></div>';
             })->removeColumn('user_password')
@@ -419,7 +449,13 @@ class BackendController extends Controller
 	
     public function userdatacitizen(Request $request)
     {
-        $users = User::where('ref_user_type_id','=',UserType::_TYPE_CITIZEN)->get();
+        $users = User::where('ref_user_type_id','=',UserType::_TYPE_CITIZEN);
+        if($request->registration_start_date !="" && $request->registration_start_date !=""){
+            $sdate = Carbon::parse($request->registration_start_date)->format('Y-m-d');
+            $edate = Carbon::parse($request->registration_end_date)->format('Y-m-d');
+            $users = $users->whereBetween(DB::Raw("DATE_FORMAT(created_at, '%Y-%m-%d')"),[$sdate, $edate]);
+        }
+        $users = $users->get();
         
         foreach ($users as $k => $v)
         {
@@ -782,10 +818,46 @@ class BackendController extends Controller
 	            })
 	            ->rawColumns(['status'])->make(true);
 	        }
+	        
+	        return response()->json(['flag'=>0]);
 	            
 	    } catch (Exception $e) 
 	    {
 	       
+	    }
+	}
+	
+	public function pushServerSentEvents()
+	{
+	    
+	    
+	    $response =  new StreamedResponse();
+	    $response->headers->set('Content-Type', 'text/event-stream');
+	    $response->headers->set('Cache-Control', 'no-cache');
+	    $response->setCallback(
+	        function() {
+	            $notifications = Notification::where('status', 0)->get();
+	            
+	            if($notifications->isEmpty()) {
+	                
+	            }
+	            
+	            $res['count'] = count($notifications->toArray());
+	            $res['data'] = $notifications->toArray();
+	            echo "retry: 100\n\n"; // no retry would default to 3 seconds.
+	            echo "data: ".json_encode($res)."\n\n";
+	            ob_flush();
+	            flush();
+	            sleep(10);
+	        });
+	    return $response->send();
+	}
+	
+	public function updateNotificationStatus(Request $request)
+	{
+	    if($request->has('id') && $request->input('id') !="")
+	    {
+	        return Notification::where('id', $request->input('id'))->update(['status'=>1]);	        
 	    }
 	}
 }

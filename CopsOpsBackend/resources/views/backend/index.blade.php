@@ -41,6 +41,13 @@
   border-color: #66bb6a;
 }
 
+/*
+.dropdown-menu-form li:nth-child(2) .round input[type="checkbox"]:checked + label{
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+*/
+
 .round input[type="checkbox"]:checked + label:after {
   opacity: 1;
 }
@@ -130,9 +137,9 @@
 
 					<div class="col-12 col-sm-4 col-md-4 location-zone ml-3">
 						<ul>
-							<li><a href="javascript:void(0);" id="add-circle">Zone <br>d'internet
+							<li><a href="javascript:void(0);" id="add-zone-of-interest">Zone <br>d'internet
 									<i class="fa fa-map-marker" aria-hidden="true"></i></a></li>
-							<li><a href="javascript:void(0);" id="remove-circle">Point <br>d'internet
+							<li><a href="javascript:void(0);" id="add-point-of-interest">Point <br>d'internet
 									<i class="fa fa-arrows-v" aria-hidden="true"></i></a></li>
 						</ul>
 					</div>
@@ -141,7 +148,7 @@
 				
 				<div>
 					<a href="javascript:void(0)"; class="btn btn-success btn-sm" id="save-map-activity">Save</a>
-					<a href="javascript:void(0)"; class="btn btn-danger btn-sm" id="remove-map-activity">Remove</a>
+<!-- 					<a href="javascript:void(0)"; class="btn btn-danger btn-sm" id="remove-map-activity">Remove</a> -->
 				</div>
 			</div>
 
@@ -456,520 +463,272 @@
 <script src="{{ asset('js/plugins/lightbox2/src/js/lightbox.js') }}"></script>
 
 <script>
-$('input[type="text"][name="search"]').on('keyup', function(){
-	params = {
-	        full_name: $(this).val(),
-	        per_page: 10
-	    };
-	QB.users.get(params, function (err, responce) {
-        var userList = responce.items.map(function(data){
-            return userModule.addToCache(data.user);
-       });
+var oTable, map, marker, pin, zone;
 
-        generate_user_list(userList);
-	});
+var markers = [], content = [], latLng = [], pins = []; zones = [];
 
-	
-	
-});
-</script>
-
-
-<script>
-
-var map, marker, circle, marker11;
-var bounds = new google.maps.LatLngBounds();
-
-function _get_users()
-{
-	var login = $('input[type="hidden"][name="hidden_user_id"]').val();
-	var userName = $('input[type="hidden"][name="hidden_user_full_name"]').val();
-	var userPassword = $('input[type="hidden"][name="hidden_userpassword"]').val();
-	var userGroup = $('input[type="hidden"][name="hidden_usergroup"]').val();
-	var email = $('input[type="hidden"][name="hidden_email"]').val();
-	
-	var user = {
-        login: login,
-        email : email,
-        password: userPassword,
-        full_name: userName,
-        tag_list: userGroup
-    };
-
-	localStorage.setItem('user', JSON.stringify(user));
-
-	QB.createSession(function(csErr, csRes) {
-		var userRequiredParams = {
-                'login':user.login,
-                'password': user.password
-            };
-            if (csErr) {
-                loginError(csErr);
-            } 
-            else 
-            {
-                var id;
-            	QB.login(userRequiredParams, function(loginErr, loginUser){
-            		console.log(loginUser); 
-            		id = loginUser.id;           		
-            	});
-
-            	params = {
-            	        tags: user.tag_list,
-            	        per_page: 100
-            	    };
-            	QB.users.get(params, function (err, responce) {
-                    var userList = responce.items.map(function(data){
-                        return userModule.addToCache(data.user);
-                    });
-
-                    var user = JSON.parse(localStorage.getItem('user'));
-                    
-                    generate_user_list(userList, id);
-            	});
-            }
-	});
-}
-
-function generate_user_list(userList, id)
-{
-	var html = '';
-    $(userList).each(function(k,v){                        
-    	var disabled = ''; if(id == v.id) { console.log(id); console.log(v.id);  disabled=' disabled'; }
-    	html +='<div class="user__item_1'+disabled+'" id="'+v.id+'">';
-    	html +='<span class="user__avatar m-user__img_10" style="display:none;">';
-    	html +='<i class="material-icons m-user_icon">account_circle</i>';
-    	html +='</span>';
-    	html +='<div class="user__details">';
-		html +='<p class="user__name">'+v.name+'</p>';                
-		html +='<p class="user__last_seen" style="display:none;">'+v.last_request_at+'</p>';                
-		html +='</div>';
-		html +='</div>';
-    });
-    
-    html +='<form action="" name="create_dialog" class="dialog_form m-dialog_form_create j-create_dialog_form" style="display:none;">';
-	html +='<input class="dialog_name" name="dialog_name" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Add conversation name" disabled="">';
-	html +='<button class="btn m-create_dialog_btn j-create_dialog_btn" type="submit" name="create_dialog_submit">create</button>';
-	html +='</form>';
-	
-    $('.chat-inner-section').html(html);
-
-
-    $(document).on('click', '.user__item_1', function(e){
-    	var $this = $(this);
-    	
-    	$('.user__item_1').each(function(){                        	
-        	$(this).removeClass('selected');
-        })
-        
-    	$(this).addClass('selected');
-		console.log($(this).attr('id'));
-//    	$('button[type="submit"][name="create_dialog_submit"]').trigger('click');
-    	
-    	
-//     	userModule.content = document.querySelector('.j-sidebar');
-//         userModule.userListConteiner = userModule.content.querySelector('.j-sidebar__dilog_list');
-    	
-    	
-//     	document.forms.create_dialog.create_dialog_submit.disabled = true;
-        
-        var users = $(this).attr('id'),
-            type = users.length > 2 ? 2 : 3,
-            name = document.forms.create_dialog.dialog_name.value,
-            occupants_ids = [];
-        
-        occupants_ids.push(users);
-        console.log(occupants_ids);
-        if (!name && type === 2) {
-            var userNames = [];
-            
-            _.each(occupants_ids, function (ids) {
-                if (ids === id) {
-                    userNames.push(self.user.name || self.user.login);
-                } else {
-                    userNames.push(userModule._cache[id].name);
-                }
-            });
-            name = userNames.join(', ');
-        }
-
-        var params = {
-            type: type,
-            occupants_ids: occupants_ids.join(',')
-        };
-        
-        if (type !== 3 && name) {
-            params.name = name;
-        }
-        console.log(params);
-        
-        QB.chat.dialog.create(params, function (err, createdDialog) {
-            if (err) {
-                console.error(err);
-            } else {
-            	console.log(createdDialog._id);
-            	window.location.href = "{{ url('/chat') }}#!/dialog/"+createdDialog._id
-//             	router.navigate('#!/dialog/'+createdDialog._id);
-//            	dialogModule.renderMessages(createdDialog._id);
-            } 	
-        });
-    });
-}
-
-
-function init() 
-{
-	map= {
-	  	center:new google.maps.LatLng(48.864716, 2.349014),
-// 	  	zoom:10,
-	  //disableDoubleClickZoom: true,
-	 // draggable:false,
-	  //scrollwheel: true,
-	  //zoomControl: true
-	};
-
-	map = new google.maps.Map(document.getElementById("map"), map);
-
-	map.setCenter( new google.maps.LatLng("48.864716", "2.349014") );
-    map.setZoom(10);
-    
-	/* Check if pins are already set
-	 * if yes let's plot them back on the map
-	 * saving history to overcome page refresh
-	 */
-	 render_pins();
-	 render_circles();	
-
-	 /*
-	 setTimeout(function() {
-    	 render_pins();
-    	 render_circles();	
-	 }, 5000);
-	 */
-}
-
-var content = [];
-var markers = [];
-var circles = [];
-var pins = [];
-
-function add_markers(markerArray, lat, lng , type)
-{
-	clear_markers();
-	console.log(markerArray);
-	if(markerArray.length > 0)
-	{
-		for( i = 0; i < markerArray.length; i++ ) {
-		var html = '';	
-    	html += '<div class="info_content">';
-    	html += '<h3>'+markerArray[i][2]+'</h3>';
-    	html += '<p style="margin-top:10px">'+markerArray[i][3]+'</p>';
-    	html += '<p>'+markerArray[i][4]+'</p>';
-    	html +='</div>';
-
-    	content.push(html);
-	}
-
-	
-	// Loop through our array of markers & place each one on the map  
-    for( i = 0; i < markerArray.length; i++ ) {
-        var position = new google.maps.LatLng(markerArray[i][0], markerArray[i][1]);
-        bounds.extend(position);
-        if(type == "4")
-		{
-			//marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
-			marker = new google.maps.Marker({
-            position: position,
-            map:map,
-            icon:'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
-            title: markerArray[i][2],
-            type:markerArray[i][5]    
-        	});
-		}
-		else if(type == "3")
-		{
-		   //marker.setIcon('http://maps.google.com/mapfiles/ms/icons/yellow-dot.png');
-		   marker = new google.maps.Marker({
-            position: position,
-            map:map,
-            icon:'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-            title: markerArray[i][2],
-            type:markerArray[i][5]    
-        	});	
-		}
-		else if(markerArray[i][5] == "3")
-		{
-			marker = new google.maps.Marker({
-            position: position,
-            map:map,
-            icon:'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-            title: markerArray[i][2],
-            type:markerArray[i][5]    
-        	});
-		}
-		else if(markerArray[i][5] == "4")
-		{
-			marker = new google.maps.Marker({
-            position: position,
-            map:map,
-            icon:'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
-            title: markerArray[i][2],
-            type:markerArray[i][5]    
-        	});
-		}
-		else
-		{
-			marker = new google.maps.Marker({
-            position: position,
-            map:map,
-            title: markerArray[i][2],
-            type:markerArray[i][5]    
-        	});
-		}
-        
-        markers.push(marker);
-		
-        var infoWindow = new google.maps.InfoWindow();
-        
-     // Allow each marker to have an info window    
-        google.maps.event.addListener(marker, 'click', (function(marker, i) {  
-            return function() {
-                infoWindow.setContent(content[i]);
-                infoWindow.open(map, marker);
-                if(marker.type=="4")
-                {
-                 marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');	
-                }
-                if(marker.type=="3")
-                {
-                 marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');	
-                }
-            }
-        })(marker, i));
-	}
-	 }
-        // Automatically center the map fitting all markers on the screen
-        map.fitBounds(bounds);
-        map.setCenter( new google.maps.LatLng("48.864716", "2.349014") );
-        map.setZoom(10);
-       	/*
-		if(lat !="" && lng !=""){
-            initialLocation = new google.maps.LatLng(lat, lng);
-            map.setCenter(initialLocation);
-            map.setZoom(12);
-
-         // Add the circle for this city to the map.
-           /* circle = new google.maps.Circle({
-              strokeColor: '#FF0000',
-              strokeOpacity: 0.4,
-              strokeWeight: 2,
-              fillColor: '#FF0000',
-              fillOpacity: 0.35,
-              map: map,
-              center: new google.maps.LatLng(lat, lng),
-              radius: 10000,
-              draggable:true
-            });
-		}
-   	*/
-    
-    
-}
-
-
-
-function setMapOnAll(map) 
-{	
-	for (var i = 0; i < markers.length; i++) 
-	{
-  		markers[i].setMap(map);
-	}
-	
-	markers = [];
-	
-}
-
-function clear_markers()
-{
-	setMapOnAll(null);
-}
-
-function clear_circles()
-{
-	for(var i in circles)
-	{
-		circles[i].setMap(null);
-	}
-	circles = [];
-}
-
-function clear_pins()
-{
-	for(var i in pins)
-	{
-		pins[i].setMap(null);
-	}
-	pins = [];
-}
-
-var oTable, lat, lng = '';
-$(function(){
-	init();
-	_get_users();
-
-	
-    oTable = $('#datatables').DataTable({
-      processing: false,
-      serverSide: true,
-      parseHtml : true,
-      ajax: {
-          url: '{{ route("backoffice.incidents.list")  }}',	
-          type : 'post',
-          data: function (d) {
-        	  d._token = '{{ csrf_token() }}';
-              d.lat = $('input[type="hidden"][name="hidden_lat"]').val();
-              d.lng = $('input[type="hidden"][name="hidden_lng"]').val();
-              
-          },
-          dataFilter: function(response){
-              // this to see what exactly is being sent back
-              var markerArray = [];
-              var result = JSON.parse(response);
-					
-              $(result.data).each(function(k,v){
-              	markerArray.push([v.latitude, v.longitude, v.sub_category_name, v.incident_description, v.address,v.ref_user_type_id]);	
-              });
-
-              lat = $('input[type="hidden"][name="hidden_lat"]').val();
-              lng = $('input[type="hidden"][name="hidden_lng"]').val();
-              
-              add_markers(markerArray, lat, lng);
-              		
-              return response;
-          },
-      },
-      
-      	columns: [
-          { data: 'date', name: 'date'},
-          { data: 'address', name: 'address' },
-          { data: 'reporter', name: 'reporter' },
-          { data: 'first_name', name: 'first_name' },
-          { data: 'sub_category_name', name: 'sub_category_name' }, 
-          { data: 'incident_description', name: 'incident_description' },
-          { data: 'status', name: 'status' },
-      ],
-      order: [[0, "desc"]]
-	});	  
-});
-
-/************************************************ form enter button functionality***********************************************/
+bounds  = new google.maps.LatLngBounds();
 
 $(function(){
+	_initialize(new google.maps.LatLng(48.864716, 2.349014), 'map', 12);
+	
+	_incidents_list();
+// 	_auto_refresh_incidents_lists();
+
+
+	/* Prevent form submit with enter */
 	$(window).keydown(function(event){
 	    if(event.keyCode == 13) {
 	      event.preventDefault();
 	      $('#search_places').blur();
-	      codeAddress();
+	      var address = document.getElementById( 'search_places' ).value;
+	      codeAddress(address);
 	      return false;
 	    }
 	});
 
-	$('.dropdown-menu').on('click', function(e) {
-    	if($(this).hasClass('dropdown-menu-form')) {
-        	e.stopPropagation();
-      	}
-    });
+	render_circles();
+	render_pins();
 });
 
+/* Initalise map */
+function _initialize(center, mapId, zoom) {
+	
+    var mapOptions = {
+        center: center,
+        zoom : zoom
+    };
+    map = new google.maps.Map(document.getElementById(mapId), mapOptions);	 
+} 
+/* Initalise map */
 
+/* Add markers to the map */
 
-geocoder = new google.maps.Geocoder();
+function add_markers(markerArray, lat, lng)
+{	
+	_add_infowindow(markerArray);
+	clear_markers();
+	console.log(markerArray);
+	for( i = 0; i < markerArray.length; i++ ) 
+	{
+		var position = new google.maps.LatLng(markerArray[i][0], markerArray[i][1]);
+		bounds.extend(position);
+		
+		marker = new google.maps.Marker({
+            position: position,
+            map:map,
+            title: markerArray[i][2]
+    	});
 
-function codeAddress() {
+		if(markerArray[i][5] == "3") marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+		else if(markerArray[i][5] == "4")  marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+		
+		var infoWindow = new google.maps.InfoWindow();
+		        
+	    // Allow each marker to have an info window    
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {  
+            return function() {
+                infoWindow.setContent(content[i]);
+                infoWindow.open(map, marker);
+            }
+        })(marker, i));
 
-    //In this case it gets the address from an element on the page, but obviously you  could just pass it to the method instead
-    var address = document.getElementById( 'search_places' ).value;
+		markers.push(marker);
+		
+	}
 
-    geocoder.geocode( { 'address' : address }, function( results, status ) {
-        if( status == google.maps.GeocoderStatus.OK ) {
-
-            //In this case it creates a marker, but you can get the lat and lng from the location.LatLng
-            var lat = results[0].geometry.location.lat();
-            var lng = results[0].geometry.location.lng();
-            
-            $('input[type="hidden"][name="hidden_lat"]').val(lat);
-            $('input[type="hidden"][name="hidden_lng"]').val(lng);
-            
-            map.setCenter( results[0].geometry.location );
-            map.setZoom(10);
-            
-        } else {
-            alert( 'Geocode was not successful for the following reason: ' + status );
-        }
-    } );
+	
+// 	map.fitBounds(bounds);       
+// 	map.panToBounds(bounds);
+// 	map.setZoom(5);
 }
 
-/************************************************ form enter button functionality***********************************************/
- 
+/* Add markers to the map */
 
 
-/*************************************************************************************************************************/
-var input = document.getElementById('search_places');
-var autocomplete = new google.maps.places.Autocomplete(input);
+/* Add point of interest */
 
-google.maps.event.addListener(autocomplete, 'place_changed', function () {
-    var place = autocomplete.getPlace();
-    lat = place.geometry.location.lat();
-    lng = place.geometry.location.lng();
+function add_point_of_interest_markers(markerArray)
+{
+	for( var i = 0; i < markerArray.length; i++ ) 
+	{
+		var position = new google.maps.LatLng(markerArray[i][0], markerArray[i][1]);
+		
+		pin = new google.maps.Marker({
+            position: position,
+            map:map,
+            icon : "{{ asset('img/pin.png') }}",
+            draggable: (markerArray[i][2] == 'history') ? false : true,
+    	});			
 
-    $('input[type="hidden"][name="hidden_lat"]').val(lat);
-    $('input[type="hidden"][name="hidden_lng"]').val(lng);
+    	google.maps.event.addListener(pin, 'rightclick', (function(pin, i) {  		
+      		return function() {
+    			if(pins.length >=1)
+    			{
+    				r = confirm("Are you sure you want to remove this point of interest");
+    				if(r==true)
+    				{
+    		            pin.setMap(null);    		            
+    				}
+    			}	
+    
+    		}
+        })(pin, i));
 
-    //oTable.ajax.reload();   
-    $.ajax ({
-          url: '{{ route("backoffice.incidents.list")  }}',	
-          type : 'post',
-          dataType:'json',
-          data: {
-        	  "_token" : '{{ csrf_token() }}',
-              "lat": $('input[type="hidden"][name="hidden_lat"]').val(),
-              "lng": $('input[type="hidden"][name="hidden_lng"]').val()
-              
-          },
-          success: function(response){
-     
-              // this to see what exactly is being sent back
-              var markerArray = [];
-              var result = response;
-              var type = '';
+        pins.push(pin);
+	}
+}
 
-              if(result.recordsTotal > 0)
-              {
-              	console.log("Test");
-              	var type = result.data[0]['ref_user_type_id'];
-              $(result.data).each(function(k,v){
-              	markerArray.push([v.latitude, v.longitude, v.sub_category_name, v.incident_description, v.address,v.ref_user_type_id]);	
-              });
 
-	              	
-              }	
+/* Add point of interest */
 
-              lat = $('input[type="hidden"][name="hidden_lat"]').val();
-              lng = $('input[type="hidden"][name="hidden_lng"]').val();
+/* Add zone of interest */
+
+function add_zone_of_interest_circles(circleArray)
+{
+// 	console.log(circleArray);
+// 	console.log(circleArray.length);
+	for( var i = 0; i < circleArray.length; i++ ) 
+	{
+		var position = new google.maps.LatLng(circleArray[i][0], circleArray[i][1]);
+		console.log(i);
+		zone = new google.maps.Circle({
+	        strokeColor: '#FF0000',
+	        strokeOpacity: 0.4,
+	        strokeWeight: 2,
+	        fillColor: '#FF0000',
+	        fillOpacity: 0.35,
+	        map: map,
+	        center: position,
+	        radius: circleArray[i][2],
+	        draggable: (circleArray[i][3] == 'history') ? false : true,
+	        clickable : true , 
+	        editable : true,
+       });	
+
+    	google.maps.event.addListener(zone, 'rightclick', (function(zone, i) {  		
+      		return function() {
+    			if(zones.length >=1)
+    			{
+    				r = confirm("Are you sure you want to remove this point of interest");
+    				if(r==true)
+    				{
+    					zone.setMap(null);    
+    					zones.pop(zone);	
+    						            
+    				}
+    			}	
+    
+    		}
+        })(zone, i));
+
+    	zones.push(zone);
+	}
+}
+
+/* Add zone of interest */
+
+/* Info window */
+
+function _add_infowindow(markerArray)
+{
+	if(markerArray.length > 0)
+	{
+		for( i = 0; i < markerArray.length; i++ ) 
+		{
+    		var html = '';	
+        	html += '<div class="info_content">';
+        	html += '<h3>'+markerArray[i][2]+'</h3>';
+        	html += '<p style="margin-top:10px">'+markerArray[i][3]+'</p>';
+        	html += '<p>'+markerArray[i][4]+'</p>';
+        	html +='</div>';
+
+    		content.push(html);
+		}
+	}
+}
+
+/* Info window */
+
+
+/* Auto refresh incidents list */
+
+function _auto_refresh_incidents_lists()
+{
+	setInterval( function () {
+	    oTable.ajax.reload( null, false );
+	}, 10000 );
+}
+
+/* Auto refresh incidents list */ 
+
+
+/* Incident list table generate */
+function _incidents_list()
+{
+	oTable = $('#datatables').DataTable({
+	      processing: false,
+	      serverSide: true,
+	      parseHtml : true,
+	      ajax: {
+	          url: '{{ route("backoffice.incidents.list")  }}',	
+	          type : 'post',
+	          data: function (d) {
+	        	  d._token = '{{ csrf_token() }}';
+	              d.lat = $('input[type="hidden"][name="hidden_lat"]').val();
+	              d.lng = $('input[type="hidden"][name="hidden_lng"]').val();
 	              
-              add_markers(markerArray, lat, lng , type);		  
-          },
-      });  
-});
-/*************************************************************************************************************************/
+	          },
+	          dataFilter: function(response){
+	              // this to see what exactly is being sent back
+	              
+	              var result = JSON.parse(response);
 
+				  var markerArray = [], latLngArray = [];		
+	              $(result.data).each(function(k,v){
+	              		markerArray.push([v.latitude, v.longitude, v.sub_category_name, v.incident_description, v.address,v.ref_user_type_id]);
+	              		latLngArray.push([v.latitude, v.longitude]);	
+	              });
+
+	              lat = $('input[type="hidden"][name="hidden_lat"]').val();
+	              lng = $('input[type="hidden"][name="hidden_lng"]').val();
+
+	              var checkboxes = [], userType = [];	
+	          	
+	          	  $('input[type="checkbox"]').each(function(){
+    	          	if($(this).is(":checked")){
+    	          		checkboxes.push($(this).val());	
+    	          	}
+    	          });	
+
+				  if(checkboxes.length == 0) add_markers(markerArray, true);
+	              		
+	              return response;
+	          },
+	      },
+	      
+	      	columns: [
+	          { data: 'date', name: 'date'},
+	          { data: 'address', name: 'address' },
+	          { data: 'reporter', name: 'reporter' },
+	          { data: 'first_name', name: 'first_name' },
+	          { data: 'sub_category_name', name: 'sub_category_name' }, 
+	          { data: 'incident_description', name: 'incident_description' },
+	          { data: 'status', name: 'status' },
+	      ],
+     	order: [[0, "desc"]]
+	});	
+}
+/* Incident list table generate */
+
+
+/* Dropdown functionality */
 
 $('input[type="checkbox"]').on("click", function(){
-	var checkboxes = [];
-	var userType = [];
+	var checkboxes = [], userType = [];	
+
 	clear_pins();
-	clear_circles();
-	clear_markers();
+	clear_zones();
 	
 	$('input[type="checkbox"]').each(function(){
 		if($(this).is(":checked")){
@@ -1005,383 +764,207 @@ $('input[type="checkbox"]').on("click", function(){
         },
         success: function(response){
             // this to see what exactly is being sent back
-            var markerArray = [];
-            var result = response;
-					
-            $(result.data).each(function(k,v){
-            	markerArray.push([v.latitude, v.longitude, v.sub_category_name, v.incident_description, v.address,v.ref_user_type_id]);	
-            });
-
-            lat = $('input[type="hidden"][name="hidden_lat"]').val();
-            lng = $('input[type="hidden"][name="hidden_lng"]').val();
             
-            add_markers(markerArray, lat, lng);
+            if(response.flag == 0){
+            	clear_markers();
+            }
+            else{            	
+				var result = response;
+				
+                var markerArray = [], latLngArray = [];		
+                $(result.data).each(function(k,v){
+                		markerArray.push([v.latitude, v.longitude, v.sub_category_name, v.incident_description, v.address,v.ref_user_type_id]);
+                		latLngArray.push([v.latitude, v.longitude]);	
+                });
+
+                lat = $('input[type="hidden"][name="hidden_lat"]').val();
+                lng = $('input[type="hidden"][name="hidden_lng"]').val();
+                
+                add_markers(markerArray, lat, lng);
+            }            
+            
             		
             return response;
         },
     });  
 });
 
+/* Dropdown functionality */
 
+/* Get address */
+geocoder = new google.maps.Geocoder();
 
+function codeAddress(address) 
+{
+    //In this case it gets the address from an element on the page, but obviously you  could just pass it to the method instead
+//     var address = document.getElementById( 'search_places' ).value;
+	console.log(address);
+    geocoder.geocode( { 'address' : address }, function( results, status ) {
+        if( status == google.maps.GeocoderStatus.OK ) {
 
-/****DropDown Filter**********/
-$('#user_type').change(function(){
-var userType = $(this).val();
-if(userType == "Zone-of-Interest"){
-	clear_pins();
-	clear_circles();
-	
-	render_circles();
-	return false;
+            //In this case it creates a marker, but you can get the lat and lng from the location.LatLng
+            var lat = results[0].geometry.location.lat();
+            var lng = results[0].geometry.location.lng();
+            
+            $('input[type="hidden"][name="hidden_lat"]').val(lat);
+            $('input[type="hidden"][name="hidden_lng"]').val(lng);
+            
+            map.setCenter( results[0].geometry.location );
+            map.setZoom(12);
+            
+        } else {
+            alert( 'Geocode was not successful for the following reason: ' + status );
+        }
+    } );
 }
-else if(userType == "Point-of-Interest"){
-	clear_pins();
-	clear_circles();
-	
-	render_pins();
-	return false;
-}
-	
-if(userType.length >0){
-    //oTable.ajax.reload();   
-    $.ajax ({
-          url: '{{ route("backoffice.incidents.citizencops")  }}',	
-          type : 'post',
-          dataType:'json',
-          data: {
-        	  "_token" : '{{ csrf_token() }}',
-              "lat": $('input[type="hidden"][name="hidden_lat"]').val(),
-              "lng": $('input[type="hidden"][name="hidden_lng"]').val(),
-              "usertype": userType
-              
-          },
-          success: function(response){
-              // this to see what exactly is being sent back
-              var markerArray = [];
-              var result = response;
-					
-              $(result.data).each(function(k,v){
-              	markerArray.push([v.latitude, v.longitude, v.sub_category_name, v.incident_description, v.address,v.ref_user_type_id]);	
-              });
 
-              lat = $('input[type="hidden"][name="hidden_lat"]').val();
-              lng = $('input[type="hidden"][name="hidden_lng"]').val();
-              
-              add_markers(markerArray, lat, lng ,userType);
-              		
-              return response;
-          },
-      });  
 
-}
+var input = document.getElementById('search_places');
+var autocomplete = new google.maps.places.Autocomplete(input);
+
+google.maps.event.addListener(autocomplete, 'place_changed', function () {
+    var place = autocomplete.getPlace();
+    if(place !="")
+    {
+    	lat = place.geometry.location.lat();
+        lng = place.geometry.location.lng();
+
+        $('input[type="hidden"][name="hidden_lat"]').val(lat);
+        $('input[type="hidden"][name="hidden_lng"]').val(lng);
+
+        //oTable.ajax.reload();   
+        $.ajax ({
+              url: '{{ route("backoffice.incidents.list")  }}',	
+              type : 'post',
+              dataType:'json',
+              data: {
+            	  "_token" : '{{ csrf_token() }}',
+                  "lat": $('input[type="hidden"][name="hidden_lat"]').val(),
+                  "lng": $('input[type="hidden"][name="hidden_lng"]').val()
+                  
+              },
+              success: function(response){
+         
+                  // this to see what exactly is being sent back
+                  var markerArray = [];
+                  var result = response;
+                  var type = '';
+
+                  if(result.recordsTotal > 0)
+                  {
+                  	console.log("Test");
+                  	 var type = result.data[0]['ref_user_type_id'];
+                     $(result.data).each(function(k,v){
+                     		markerArray.push([v.latitude, v.longitude, v.sub_category_name, v.incident_description, v.address,v.ref_user_type_id]);	
+                     });	
+
+    	              	
+                  }	
+
+                  lat = $('input[type="hidden"][name="hidden_lat"]').val();
+                  lng = $('input[type="hidden"][name="hidden_lng"]').val();
+    	              
+                  add_markers(markerArray, lat, lng);		  
+              },
+          });  
+    }    
 });
-/****End Dropdown Filter******/
 
-$(document).on('click', '.view-incident', function(){
-	var $this = $(this);
-	var incidentId = $this.data('incidentId');
-
-	/* Get data based on incident id */	
-});
+/* Get address */
 
 
+function render_circles()
+{
+	if (localStorage.getItem("circle") != '') {		
+		 var circlesArrray = JSON.parse(localStorage.getItem('circle'));
+		 console.log(circlesArrray);
+		 if(circlesArrray.length >= 1)
+		 {	
+			 var markerArray =  [];
+			 $(circlesArrray).each(function(k,v){				
+				 markerArray.push([v.lat, v.lng, v.radius, 'history']);				 				
+			});
 
-var count = 0;
-var countpointer = 0;
-$('#remove-circle').on('click', function(){
-	//count =0;
-	//circle.setMap(null);
-	//clear_circles();
+			add_zone_of_interest_circles(markerArray);
+			 
+		 	var zoom = localStorage.getItem('zoom');
+			var lat = localStorage.getItem('lat');
+			var lng = localStorage.getItem('lng');
+			
+			map.setCenter(new google.maps.LatLng(lat, lng));	 		 
+			map.setZoom(parseInt(zoom));				 
+		 }
+		 
+		
+	 }
+}
+
+function render_pins()
+{
+	if (localStorage.getItem("pins") != '') {
+		 var pinsArrray = JSON.parse(localStorage.getItem('pins'));
+		 if(pinsArrray.length >= 1)
+		 {
+			 var markerArray =  [];
+			 $(pinsArrray).each(function(k,v){
+				 				 
+				 markerArray.push([v.lat, v.lng, 'history']);
+			});
+
+		 	add_point_of_interest_markers(markerArray);	
+
+			var zoom = localStorage.getItem('zoom');
+			var lat = localStorage.getItem('lat');
+			var lng = localStorage.getItem('lng');
+				
+			map.setCenter(new google.maps.LatLng(lat, lng));	 		 
+			map.setZoom(parseInt(zoom));				 
+		 }	
+	 }
+}
+
+
+
+
+
+
+
+$("#add-point-of-interest").on("click", function(){
+
+	var markerArray = [];
 	var lat = $('input[type="hidden"][name="hidden_lat"]').val();
     var lng = $('input[type="hidden"][name="hidden_lng"]').val();
-
+    
     if(lat == "" || lng == "")
 	{
-		lat = "48.864716";
-		lng = "2.349014";	
-		
+    	lat = "48.864716"; lng = "2.349014";
+    	markerArray.push([lat, lng]);	
 	}
-    
-	if(lat !="" && lng !=""){
-	countpointer += 1;
+    else if(lat !="" && lng !=""){
+		markerArray.push([lat, lng]);
+	}
 
-    if (countpointer < 100) {    
-	marker11 = new google.maps.Marker({
-        position: new google.maps.LatLng(lat, lng),        
-        icon: "{{ asset('img/pin.png') }}",
-        map: map,
-        draggable:true
-  	});
+	add_point_of_interest_markers(markerArray);
 
-
-  	initialLocation = new google.maps.LatLng(lat, lng);
-    map.setCenter(initialLocation);
-    map.setZoom(12);
-    
-  	google.maps.event.addListener(marker11, 'rightclick', (function(marker11, i) {
-//   		alert("Test");
-  		return function() {
-			if(pins.length >=1)
-			{
-				r = confirm("Are you sure you want to remove this point of interest");
-				if(r==true)
-				{
-		            marker11.setMap(null);
-		            count -= 1;
-				}
-			}	
-
-		}
-    })(marker11, i));
-
-  	pins.push(marker11);
-  }
-}
 });
 
+$("#add-zone-of-interest").on("click", function(){
 
-$('#add-circle').on('click', function(){
+	var circleArray = [];
 	var lat = $('input[type="hidden"][name="hidden_lat"]').val();
     var lng = $('input[type="hidden"][name="hidden_lng"]').val();
-	//countpointer = 0;
-	
-	if(lat == "" || lng == "")
+    
+    if(lat == "" || lng == "")
 	{
-		lat = "48.864716";
-		lng = "2.349014";		
+    	lat = "48.864716"; lng = "2.349014";
+    	circleArray.push([lat, lng, 3000]);	
 	}
-	
-	if(lat !="" && lng !=""){
-	count += 1;
-    if (count < 100) {
-	//marker11.setMap(null);
-
-
-    circle = new google.maps.Circle({
-        strokeColor: '#FF0000',
-        strokeOpacity: 0.4,
-        strokeWeight: 2,
-        fillColor: '#FF0000',
-        fillOpacity: 0.35,
-        map: map,
-        center: new google.maps.LatLng(lat, lng),
-        radius: 3000,
-        draggable:true,
-        clickable : true , editable : true , draggable : true
-      });
-
-    initialLocation = new google.maps.LatLng(lat, lng);
-    map.setCenter(initialLocation);
-    map.setZoom(12);
-
-    google.maps.event.addListener(circle, 'rightclick', (function(circle, i) {  
-
-        return function() {
-
-    		if(circles.length >=1)
-    		{
-    			r = confirm("Are you sure you want to remove this zone of interest");
-				if(r==true)
-				{
-		            circle.setMap(null);
-		            count -= 1;
-				}
-    		}	
-
-        }
-    })(circle, i));
-
-    circles.push(circle);
-
-    circle.addListener('radius_changed', (function(circle, i) { 
-    	return function() {
-//         	circles.push(circle);        	
-    	}
-    })(circle, i));
-        
-//     google.maps.event.addListener(circle, 'rightclick', (function(mouseEvent) { 
-//     	r = confirm("Are you sure you want to remove this zone of interest");
-//     	if(r==true)
-//     	{
-// //         	console.log(mouseEvent.latLng.lat());
-// //         	console.log(mouseEvent.latLng.lng());
-// 			console.log(mouseEvent);
-// 			console.log(circle);
-// 			console.log(i);
-// // 			console.log(circle.latng.lng());
-// //         	console.log(circle.center.lat()+"=========="+circle.center.lng());
-
-// //         	for(i in circles)
-// //         	{
-// // //             	console.log(circles[i]);
-// // //             	console.log(circles[i].center.lat()+"=========="+circles[i].center.lng());
-// // 				if(circles[i].center == circle.center)
-// // 				{
-// // 					console.log(circles[i]);
-// // 					circle.setMap(null);
-// // 					circles.pop(circles[i]);
-// // 		            count -= 1;
-// // 				}
-// //         	}
-// //         	clear_circles();
-// // 	            circles[circle].setMap(null);
-
-	        
-//     	}
-//     })(circle, i));
-
-    
+    else if(lat !="" && lng !=""){
+    	circleArray.push([lat, lng, 3000]);
 	}
-	}
-});
 
-//pp 2jan
-$(document).on('click','.view-incident',function(e){  
-   var incidentId = $(this).attr('data-incident-id');
-   var incidentState = $(this).attr('data-state');
-   $.ajaxSetup({
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		}
-	});
-   $.ajax({
-		url: '{{ route("backoffice.incidents.view") }}',
-		data: { 'incidentid': incidentId},
-		cache:false,
-		type: 'POST',   
-		dataType: "json",
-		beforeSend : function(data)
-		{
-			$('.loader_a').removeClass('hide');
-		},
-		success: function (response) {
+    add_zone_of_interest_circles(circleArray);
 
-			var d = response.data;
-			console.log(d);
-			$('.loader_a').addClass('hide');
-			
-			$('.modal .modal-dialog .modal-content .modal-body .user-mgm-m7 .row .right-part ul li:eq(0) span').html(d[0]['first_name']+" "+ d[0]['last_name']);
-			$('.modal .modal-dialog .modal-content .modal-body .user-mgm-m7 .row .right-part ul li:eq(1) span').html(d[0]['date_of_birth']);
-			$('.modal .modal-dialog .modal-content .modal-body .user-mgm-m7 .row .right-part ul li:eq(2) span').html(d[0]['email_id']);
-
-			if(d[0]['profile_image'] !="") $('.modal .modal-dialog .modal-content .modal-body').find('img#profile_image').attr('src', d[0]['profile_image']);
-
-			$('.operator').removeClass('hide');
-			$('.citizen ').addClass('hide');
-			
-			if(d[0]['ref_user_type_id'] != '{{ App\UserType::_TYPE_OPERATOR }}'){
-				$('.operator').addClass('hide');
-				$('.citizen ').removeClass('hide');	
-			if(typeof d[0]['report_police'] !== 'undefined')
-			{
-				$('#report_police').html("<h2>Report <br>Police<span >"+d[0]['report_police']+"</span></h2>");
-			}
-			
-			if(typeof d[0]['report_fire'] !== 'undefined')
-			{
-			$('#report_fireman_medical').html("<h2>Report <br> Fireman/medical<span >"+d[0]['report_fire']+"</span></h2>");
-			}
-
-			if(typeof d[0]['report_city'] !== 'undefined')
-			{
-			$('#report_city').html("<h2>Report <br> City<span >"+d[0]['report_city']+"</span></h2>");
-			}
-			
-			if(typeof d[0]['report_handrail'] !== 'undefined')
-			{
-			$('#report_handrail').html("<h2>Handrail<span >"+d[0]['report_handrail']+"</span></h2>");
-			}
-		}
-		else if(d[0]['ref_user_type_id'] == '{{ App\UserType::_TYPE_OPERATOR }}') {
-				$('.operator').removeClass('hide');
-				$('.citizen ').addClass('hide');	
-			if(typeof d[0]['assigned_incidents'] !== 'undefined')
-			{
-			$('#assigned_incidents').html("<h2>Assigned<br>incidents<span >"+d[0]['assigned_incidents']+"</span></h2>");
-			}
-
-			if(typeof d[0]['completed_incidents'] !== 'undefined')
-			{
-			$('#completed_incidents').html("<h2>Completed<br>incidents<span >"+d[0]['completed_incidents']+"</span></h2>");
-			}
-		}
-			$('#incidents_address').val(d[0]['address']);
-			$('#subject_report').html(d[0]['sub_category_name']);
-			$('#incident_description').html(d[0]['incident_description']);
-			$('#other_description').html(d[0]['other_description']);
-			if(d[0]['photo'] != null)
-			{
-				var photo= "{{ url('/uploads/incident_image') }}/"+d[0]['photo'];
-				IMG = $('<a href="'+photo+'" data-lightbox="image-1">')		    	
-		    	.append('<img src="'+photo+'" style="width:200px;"></a>')			
-			
-    			$('#attachmentinc').html(IMG);
-    
-    			//lightbox open:
-    			IMG.click(function(){
-    			    lightbox.start($(this));
-    			    return false;
-    			})
-			}
-			if(d[0]['video'] != null)
-			{
-			var video= "{{ url('/uploads/incident_video') }}/"+d[0]['video'];
-			$('#attachmentvideoinc').html('<a href="'+video+'" traget="_blank">View</a>');
-			}
-
-			if(d[0]['business_card1'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#business_card1').attr('href', d[0]['business_card1']).attr('target','_blank');
-			if(d[0]['business_card2'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#business_card2').attr('href', d[0]['business_card2']).attr('target','_blank');
-
-			if(d[0]['id_card1'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#id_card1').attr('href', d[0]['id_card1']).attr('target','_blank');
-			if(d[0]['id_card2'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#id_card2').attr('href', d[0]['id_card2']).attr('target','_blank');
-
-			$('#incident-state').removeClass('alert-danger');
-			$('#incident-state').removeClass('alert-primary');
-			$('#incident-state').removeClass('alert-success');
-			if(incidentState == "On-Wait")
-			{
-				$('#incident-state').addClass('alert-danger');
-			}
-			else if(incidentState == "Pending")
-			{
-				$('#incident-state').addClass('alert-primary');
-			}
-			else if(incidentState == "Finished")
-			{
-				$('#incident-state').addClass('alert-success');
-			}
-
-			$('#incident-state').html(incidentState);
-			
-			$('#myModal').modal('show');
-			lat = d[0]['latitude'];
-			lng = d[0]['longitude'];
-			var position = new google.maps.LatLng(lat, lng);
-        	bounds.extend(position);
-
-			map1= {
-			  	center:new google.maps.LatLng(lat, lng),
-			  	zoom:15,
-			  	/*zoomControl: false,
-				   zoomControl: false,
-				  scaleControl: false,
-				  scrollwheel: false,*/
-				  //disableDoubleClickZoom: true,
-				  //draggable:false
-			};
-			if(d[0]['ref_user_type_id'] == "3") icon='http://maps.google.com/mapfiles/ms/icons/red-dot.png';
-	        else if(d[0]['ref_user_type_id'] == "4") icon = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
-	        
-			map1 = new google.maps.Map(document.getElementById("map1"), map1);
-			marker = new google.maps.Marker({
-            position: position,
-            map:map1,
-            icon: icon,
-        	});
-			
-		}
-	});
 });
 
 $('#save-map-activity').on("click", function(){
@@ -1390,6 +973,7 @@ $('#save-map-activity').on("click", function(){
 	if(r == true)
 	{
 		var pinsArray = []; circlesArray = [];
+		console.log(zones);
 		$(pins).each(function(k,v){
 			pin = {};
 			pin['icon'] = v.icon;
@@ -1399,7 +983,7 @@ $('#save-map-activity').on("click", function(){
 			pinsArray.push(pin);
 		});
 
-		$(circles).each(function(k,v){
+		$(zones).each(function(k,v){
 			console.log(v);
 			c = {};
 			c['lat'] = v.center.lat();
@@ -1408,90 +992,62 @@ $('#save-map-activity').on("click", function(){
 
 			circlesArray.push(c);
 		});
-		console.log(circlesArray);
-		if(circles.length >= 1 )localStorage.setItem('circle', JSON.stringify(circlesArray));
-		if(pins.length >= 1) localStorage.setItem('pins', JSON.stringify(pinsArray));
-			
+		
+		if(zones.length >= 1 )circlesArray = JSON.stringify(circlesArray);
+		localStorage.setItem('circle', circlesArray);
+		
+		if(pins.length >= 1) pinsArray = JSON.stringify(pinsArray)
+		localStorage.setItem('pins', pinsArray);
+		
+		localStorage.setItem('zoom', map.getZoom());
+		localStorage.setItem('lat', map.getCenter().lat());
+		localStorage.setItem('lng', map.getCenter().lng());		
+		
 	}	
 });
 
 $("#remove-map-activity").on("click", function(){
 	r = confirm("Do you want to discard the saved information of the map");
 	if(r == true)
-	{
-		clear_markers();
-		localStorage.removeItem('circle');
-		localStorage.removeItem('pins');			
+	{		
+		localStorage.setItem('circle','');
+		localStorage.setItem('pins','');
+
+		clear_zones();
+		render_pins();			
 	}	
 });
 
-$(function(){
-	 
-});
-
-
-function render_pins()
+function clear_zones()
 {
-	if (localStorage.getItem("pins") != null) {
-		 var pinsArrray = JSON.parse(localStorage.getItem('pins'));
-		 if(pinsArrray.length >= 1)
-		 {
-			 $(pinsArrray).each(function(k,v){
-				 marker = new google.maps.Marker({
-		            position: new google.maps.LatLng(v.lat, v.lng),
-		            map:map,
-		            icon: v.icon,
-		            draggable:true
-	        	});
-
-				pins.push(marker);
-				
-			 });
-
-			 map.setCenter(new google.maps.LatLng(pinsArrray[0].lat, pinsArrray[0].lng));
-//	 		 map.fitBounds(bounds);
-			 map.setZoom(10);				 
-		 }	
-	 }
+	for(var i in zones)
+	{
+		zones[i].setMap(null);
+	}
+	zones = [];
 }
 
-function render_circles()
+function clear_pins()
 {
-	if (localStorage.getItem("circle") != null) {
-		 var circlesArrray = JSON.parse(localStorage.getItem('circle'));
-		 if(circlesArrray.length >= 1)
-		 {
-			 $(circlesArrray).each(function(k,v){
-//				 console.log(v);
-
-				 circle = new google.maps.Circle({
-				        strokeColor: '#FF0000',
-				        strokeOpacity: 0.4,
-				        strokeWeight: 2,
-				        fillColor: '#FF0000',
-				        fillOpacity: 0.35,
-				        map: map,
-				        center: new google.maps.LatLng(v.lat, v.lng),
-				        radius: v.radius,
-				        draggable:true,
-				        clickable : true , editable : true , draggable : true
-			      });
-
-				circles.push(circle);
-				
-			 });
-// 			console.log(circlesArrray[0].lat, circlesArrray[0].lng);
-			
-			 map.setCenter(new google.maps.LatLng(circlesArrray[0].lat, circlesArrray[0].lng));
-//	 		 map.fitBounds(bounds);
-			 map.setZoom(10);				 
-		 }	
-// 		 bounds.extend(new google.maps.LatLng(circlesArrray[0].lat, circlesArrray[0].lng));
-		
-	 }
+	for(var i in pins)
+	{
+		pins[i].setMap(null);
+	}
+	pins = [];
 }
 
+function clear_markers() 
+{	
+	for (var i = 0; i < markers.length; i++) 
+	{
+  		markers[i].setMap(null);
+	}
+	
+	markers = [];	
+}
 
 </script>
+
+
 
 @endsection

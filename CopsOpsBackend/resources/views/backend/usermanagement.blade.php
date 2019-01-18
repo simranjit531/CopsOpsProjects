@@ -140,6 +140,25 @@
 					</div>
 
 				</div>
+				
+				<div class="input-group input-group-sm">
+					<div class="input-group-append">
+						<button class="btn btn-navbar" type="submit">
+							<i class="fa fa-calendar"></i>
+						</button>
+					</div>
+					<input class="form-control form-control-navbar" type="text" name="registration_start_date" id="registration_start_date" placeholder="Select Registration Date" aria-label="Search">
+				</div>
+				
+				<div class="input-group input-group-sm">
+					<div class="input-group-append">
+						<button class="btn btn-navbar" type="submit">
+							<i class="fa fa-calendar"></i>
+						</button>
+					</div>
+					<input class="form-control form-control-navbar" type="text" name="registration_end_date" id="registration_end_date" placeholder="Select Registration Date" aria-label="Search">
+				</div>
+				
 			</div>
 		</div>
 
@@ -157,6 +176,23 @@
 						name="cname" id="cname"
 						placeholder="{{trans('pages.usermgnt.enternamecitizen')}}"
 						aria-label="Search">
+				</div>
+				<div class="input-group input-group-sm">
+					<div class="input-group-append">
+						<button class="btn btn-navbar" type="submit">
+							<i class="fa fa-calendar"></i>
+						</button>
+					</div>
+					<input class="form-control form-control-navbar" type="text" name="citizen_registration_start_date" id="citizen_registration_start_date" placeholder="Select Registration Date" aria-label="Search">
+				</div>
+				
+				<div class="input-group input-group-sm">
+					<div class="input-group-append">
+						<button class="btn btn-navbar" type="submit">
+							<i class="fa fa-calendar"></i>
+						</button>
+					</div>
+					<input class="form-control form-control-navbar" type="text" name="citizen_registration_end_date" id="citizen_registration_end_date" placeholder="Select Registration Date" aria-label="Search">
 				</div>
 			</div>
 		</div>
@@ -412,6 +448,27 @@ var oTable, oTableCitizen = "";
 var bounds = new google.maps.LatLngBounds();
 $(function(){
 
+	$("#registration_start_date").datepicker().on('changeDate', function (ev) {
+		$(this).datepicker('hide');
+		$("#registration_end_date").val($(this).val());
+		oTable.ajax.reload(); 
+	});
+
+	$("#registration_end_date").datepicker().on('changeDate', function (ev) {
+		$(this).datepicker('hide');
+		oTable.ajax.reload(); 
+	});
+
+	$("#citizen_registration_start_date").datepicker().on('changeDate', function (ev) {
+		$(this).datepicker('hide');
+		$("#citizen_registration_end_date").val($(this).val());
+		oTableCitizen.ajax.reload(); 
+	});
+
+	$("#citizen_registration_end_date").datepicker().on('changeDate', function (ev) {
+		$(this).datepicker('hide');
+		oTableCitizen.ajax.reload(); 
+	});
 
 	$('.js-example-basic-single').select2({ placeholder: "Select a operator",});
 	
@@ -426,6 +483,8 @@ $(function(){
 	          url: '{{ url("/userdata")  }}',
 	          data: function (d) {
 	              d.first_name = $('input[name=name]').val();
+	              d.registration_start_date = $('#registration_start_date').val();
+	              d.registration_end_date = $('#registration_end_date').val();	              
 	          }
 	      },
 	      columns: [
@@ -446,6 +505,8 @@ $(function(){
           url: '{{ url("/userdatacitizen")  }}',
           data: function (d) {
             d.first_name = $('input[name=cname]').val();
+            d.registration_start_date = $('#citizen_registration_start_date').val();
+            d.registration_end_date = $('#citizen_registration_end_date').val();
           }
         },
         columns: [

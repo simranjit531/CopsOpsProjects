@@ -49,7 +49,17 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 				<li class="nav-item"><a class="nav-link" data-widget="pushmenu"
 					href="#"><i class="fa fa-bars"></i></a></li>
 				<li class="pull-right"><a href="{{ route('logout') }}" class="nav-link"><i class="fa fa-sign-out"></i> Logout</a></li>
-
+				
+				<li role="presentation" class="dropdown pull-right">
+                  <a href="javascript:void(0);" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="true">
+                    <i class="fa fa-bell-o"></i>
+                    <span class="badge bg-green" id="noticount">0</span>
+                  </a>
+                  <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
+                                   
+                  </ul>
+                </li>
+				
 				<li class="language-drop"><select id="language">
 						<option value="" selected>Language</option>
 						<option value="en">Eng</option>
@@ -80,7 +90,7 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 						<div class="image">
 							<img src="{{asset('img/user2-160x160.jpg')}}"
 								class="img-circle elevation-2" alt="User Image"> <a href="#"
-								class="image-name">Michel CABOCHE</a> <span class="online-sign">{{
+								class="image-name">{{ Auth::user()->first_name.' '. Auth::user()->last_name }}</a> <span class="online-sign">{{
 								trans('pages.administrator') }}</span>
 						</div>
 
@@ -206,6 +216,38 @@ $(document).ready(function(){
 		}
 	});
 
+	
+    var source = new EventSource("{{ route('backoffice.notifications') }}");
+    
+    source.onmessage = function(event) {        
+        res = JSON.parse(event.data)
+    	$("#noticount").html(res.count);		
+        var li = '';
+    	$(res.data).each(function(k,v){
+			li +='<li style="padding:6px 12px;"><a class="on-click-change-stat" href="javascript:void(0);" data-id="'+v.id+'" data-table="'+v.table+'" data-table-id="'+v.table_id+'"><span class="message" style="font-size:12px;">'+v.message+'</span></a></li>';     
+        });
 
+        $('#menu1').html(li);
+    };
+	
+});
+
+$(document).on('click', '.on-click-change-stat', function(){
+	var $this = $(this);
+	var table = $(this).data('table');
+	var tableId = $(this).data('table_id');
+	var id = $(this).data('id');
+
+	var count = (parseInt($('#noticount').html()) - 1);
+	$('#noticount').html(count);
+	
+	$.ajax({
+		'url': "{{ route('backoffice.update.notifications') }}",
+		'data': {'id':id, '_token': '{{ csrf_token() }}'},
+		'type':'post',
+		success : function(response){
+			$this.parents('li').remove();
+		}
+	});
 });
 </script>

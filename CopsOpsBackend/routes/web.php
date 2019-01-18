@@ -70,3 +70,8 @@ Route::post('intervention/assign', 'BackendController@assignintervention')->name
 #Control Center Incident View
 Route::post('/incident/view', 'BackendController@viewincidentdata')->name('backoffice.incidents.view');
 Route::post('/list/incidents/citizencops', 'BackendController@listofincidentscityzencops')->name('backoffice.incidents.citizencops');
+
+
+# Get notification
+Route::get('/notifications', 'BackendController@pushServerSentEvents')->name('backoffice.notifications');
+Route::post('/notifications/status/update', 'BackendController@updateNotificationStatus')->name('backoffice.update.notifications');

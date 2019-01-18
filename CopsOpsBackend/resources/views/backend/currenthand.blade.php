@@ -51,10 +51,12 @@
                             <label>{{ trans('pages.usermgnt.tables.firstname') }} / {{ trans('pages.usermgnt.tables.lastname') }}</label>
                             <input class="form-control form-control-navbar" type="text" name="name" id="name" placeholder="{{trans('pages.usermgnt.enternamecitizen')}}" aria-label="Search">
                         </div>
+                        <!-- 
                          <div class="bootstrap-timepicker col-lg-12">
                                     <label class="text-center">et</label>
                                       <input type="text" name="totime" id="totime" class="form-control">
-                                </div>
+                         </div>
+                         -->
                         <!--<button type="button" class="actual-btn mt-2">Rechrecher</button>-->
                     </form>
                 </div>

@@ -26,6 +26,7 @@ use App\CopUserIncidentMapping;
 use App\UserType;
 use App\CopUserIncidentTempMapping;
 use Edujugon\PushNotification\Facades\PushNotification;
+use App\Notification;
 
 class ApiController extends Controller
 {
@@ -166,7 +167,10 @@ class ApiController extends Controller
                     });    
                 }   
                 
-                $attributes = $this->get_user_profile_attributes($user->id);
+                $lat = $payload['incident_lat'];
+                $lng = $payload['incident_lng'];
+                
+                $attributes = $this->get_user_profile_attributes($user->id, $lat, $lng);
 
 
                 if($payload['ref_user_type_id'] == "Cops") {
@@ -185,6 +189,13 @@ class ApiController extends Controller
                         _quickblox_create_user($data);
                     }                    
                 }
+                
+                # New user registration notification
+                Notification::create([
+                    'table_id' =>$user->id,
+                    'table' => 'ref_user', 
+                    'message' => 'A new user is registerd'                    
+                ]);
                 
                 return $this->sendResponseMessage([
                     'status' => true,
@@ -292,7 +303,10 @@ class ApiController extends Controller
             'status'=>'false',
             'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_REFUSED)), 200);
         
-        $attributes = $this->get_user_profile_attributes($auth[0]->id);
+        $lat = $payload['incident_lat'];
+        $lng = $payload['incident_lng'];
+        
+        $attributes = $this->get_user_profile_attributes($auth[0]->id, $lat, $lng);
         
         UserDeviceMapping::where('ref_user_id', $auth[0]->id)->update(['device_token'=>$payload['fcm_token']]);
         
@@ -526,6 +540,13 @@ class ApiController extends Controller
                         return $this->sendResponseMessage(['status'=>false, 'message'=>  $e->getMessage()],200);
                     }
                 }
+                
+                # New incident registration notification
+                Notification::create([
+                    'table_id' =>$rs->id,
+                    'table' => 'cop_incident_details',
+                    'message' => 'A new incident is registerd'
+                ]);
 
                 if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS), 'reference'=>$rs->reference, 'qrcode_url'=>asset('uploads/qrcodes').'/'.$referenceNo.'.png', 'helpline_number'=>$helplineNumber],200);
                 return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_FAILURE)],200);
@@ -623,7 +644,14 @@ class ApiController extends Controller
                     }
 
                 }
-
+                
+                # New hadrail registration notification
+                Notification::create([
+                    'table_id' =>$rs->id,
+                    'table' => 'cop_handrail',
+                    'message' => 'A new handrail is registerd'
+                ]);
+                
                 if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_HANDRAIL_ADD_SUCCESS), 'reference'=>$referenceNo, 'qrcode_url'=>asset('uploads/qrcodes/').'/'.$referenceNo.'.png'],200);
                 return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_HANDRAIL_ADD_FAILURE)],200);
             }
@@ -816,7 +844,10 @@ class ApiController extends Controller
         }
 
         $userId = $payload['user_id'];
-        $attributes = $this->get_user_profile_attributes($userId);
+        $lat = $payload['incident_lat'];
+        $lng = $payload['incident_lng'];
+        
+        $attributes = $this->get_user_profile_attributes($userId, $lat, $lng);
 
         try{
             $user = User::where('id', $userId)->get();
@@ -910,6 +941,7 @@ class ApiController extends Controller
             $push->send();
             $push->getFeedback();
             
+            IncidentDetail::where('id', $incidentId)->update(['status'=>2]);
             if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_SUCCESS)],200);
             return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_FAILURE)],200);
         }
@@ -1006,7 +1038,8 @@ class ApiController extends Controller
             /* Update incident mapping status */
             CopUserIncidentMapping::where(['cop_incident_details_id'=> $incidentId])->update(['status'=>3]);
             
-            User::where('id', $userId)->update(['available'=>1]);
+            $mappingCount = CopUserIncidentMapping::where(['ref_user_id'=>$userId, 'status'=>2])->get();
+            if(count($mappingCount) == 0) { User::where('id', $userId)->update(['available'=>1]); }
             
             if($rs) return $this->sendResponseMessage(['status'=>true, 
                 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_REGISTERED_INCIDENT_CLOSED_SUCCESS),
@@ -1021,7 +1054,7 @@ class ApiController extends Controller
 
     }
     
-    private function get_user_profile_attributes($userId)
+    private function get_user_profile_attributes($userId, $lat=null, $lng=null)
     {
         $newIncidentArray = array();
 
@@ -1076,8 +1109,18 @@ class ApiController extends Controller
         
         $report = $pending.'/4';        
         $quotient = ceil(count($incidentData)/4); 
-        $newReport = count(CopUserIncidentMapping::where(['ref_user_id'=>$userId, 'status'=>2])->orderBy('created_at', 'desc')->first());
-
+//         $newReport = count(CopUserIncidentMapping::where(['ref_user_id'=>$userId, 'status'=>2])->orderBy('created_at', 'desc')->first());
+        $query = "SELECT ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
+                  cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.created_at, ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( latitude ) ) ) ) AS `distance`,
+                  cop_incident_details.city, cop_incident_details.address, cop_user_incident_temp_mapping.ref_user_id
+                  FROM cop_incident_details
+                  LEFT JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
+                  LEFT JOIN cop_user_incident_temp_mapping ON cop_user_incident_temp_mapping.cop_incident_details_id = cop_incident_details.id
+                  GROUP BY cop_incident_details.id HAVING `distance` <= 5 and cop_incident_details.status=1  ORDER BY status ASC";
+        
+        $res = \DB::select($query);
+        $newReport = count($res);
+        
         /* Profile percentage calculations */
         $incidentDataCount = count($incidentData);
 

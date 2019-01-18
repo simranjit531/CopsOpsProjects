@@ -27,6 +27,39 @@
             <div class="row">
                 <div class="caree-left-form archive-center-left col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                     <h2>{{ trans('pages.archive.INTERVENTIONSATTRIBUEES')}}</h2>
+                    <div class="row">
+
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-5 left-form p-0">
+                        <form>
+                            <div class="col-lg-12">
+                                <label>From Date</label>
+                                <input type="text" class="form-control" name="fromdate"  id="fromdate" readonly="readonly">
+                            </div>
+                            <div class="col-lg-12">
+                                <label class="text-center">To Date</label>
+                                <input type="text" class="form-control" name="todate" id="todate" readonly="readonly">
+                            </div>
+                           
+                            <button type="button" id="search-form" class="actual-btn mt-2 mb-2">Actual</button>
+                        </form>
+                    </div>
+                    
+                    <div class="col-12 col-sm-7 col-md-7 col-lg-7 col-xl-7 left-form border-0">
+                           <form>
+                            <div class="col-lg-12">
+                                <label>{{ trans('pages.usermgnt.tables.firstname') }} / {{ trans('pages.usermgnt.tables.lastname') }}</label>
+                                <input class="form-control form-control-navbar" type="text" name="name" id="name" placeholder="{{trans('pages.usermgnt.enternamecitizen')}}" aria-label="Search">
+                            </div>
+                            <!-- 
+                             <div class="bootstrap-timepicker col-lg-12">
+                                        <label class="text-center">et</label>
+                                          <input type="text" name="totime" id="totime" class="form-control">
+                             </div>
+                             -->
+                            <!--<button type="button" class="actual-btn mt-2">Rechrecher</button>-->
+                        </form>
+                    </div>
+                    </div>
 					<div class="table-responsive">
                      <table class="table table-bordered table-striped" id="archivedata">
                     <thead>
@@ -109,15 +142,36 @@
 <script src="{{ asset('js/plugins/lightbox2/src/js/lightbox.js') }}"></script>
       
 	  <script>
+	var oTable;
 	$(function() {
-		$('#archivedata').DataTable({
+
+		$("#fromdate").datepicker().on('changeDate', function (ev) {		   
+			$("#todate").val($(this).val());
+			$(this).datepicker('hide');
+		});
+		
+        $("#todate").datepicker().on('changeDate', function (ev) {
+		   $(this).datepicker('hide');;
+        });
+
+
+		
+		oTable = $('#archivedata').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{{ url("/archivedata")  }}',
+//             ajax: '{{ url("/archivedata")  }}',
+			ajax: {
+              url: '{{ url("/archivedata")  }}',
+              data: function (d) {
+                  d.first_name = $('input[name=name]').val();
+                  d.fromdate = $('input[name=fromdate]').val();
+                  d.todate = $('input[name=todate]').val();
+              }
+          	},
             columns: [
         	{ data: 'date', name: 'date' },
             { data: 'firstlast', name: 'firstlast' },
-            { data: 'sub_category_name', name: 'sub_category_name' },
+            { data: 'sub_category_name', name: 'sub_category_name'},
             { data: 'address', name: 'address' },
             { data: 'statuss', name: 'statuss' },
             { data: 'view', name : 'view', orderable: false, searchable: false},
@@ -139,6 +193,10 @@
       $('.rightPart').show();
       $('.rightReportPart').hide();
     })
+    
+     $('#search-form').on('click', function(e) {
+            oTable.draw();
+        });
 
     $(document).on('click','#viewIncident',function(e){   
      var incidentid = $(this).attr('rel');
