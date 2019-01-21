@@ -100,7 +100,7 @@
                          <li><span>Attachement</span> <p id="attachmentinc"></p><p id="attachmentvideoinc"></p></li>
 <!--                          <li><span>Signature</span> <p id="signature"></p></li> -->
                         
-                        <li><span>Signature</span><div id="reportsignature"></div></li>
+<!--                         <li><span>Signature</span><div id="reportsignature"></div></li> -->
                     </ul>
                 </div>
 

@@ -45,6 +45,8 @@ class ResponseMessage
     const _STATUS_ACCOUNT_APPROVAL_PENDING = 60012;
     const _STATUS_ACCOUNT_APPROVAL_FREEZED = 60013;
     const _STATUS_ACCOUNT_APPROVAL_REFUSED = 60014;
+    const _STATUS_PROFILE_IMAGE_REQUIRED = 60015;
+    const _STATUS_INTERVENTION_CLOSE_ERROR = 60016;
 
     public static $response = [
         '1' => 'Invalid request, please check',
@@ -89,6 +91,9 @@ class ResponseMessage
         '60012' => 'Account approval pending from backoffice.',
         '60013' => 'Your account has been freezed by admin',
         '60014' => 'Account refused from backoffice.',
+        '60015' => 'Profile Image is required !',
+        '60016' => 'You can only close interventions assigned to you only'
+        
     ];
 
     public static function statusResponses($responseKey)

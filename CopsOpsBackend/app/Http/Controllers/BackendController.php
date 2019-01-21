@@ -28,6 +28,7 @@ use App\Util\ResponseMessage;
 use App\Notification;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use function GuzzleHttp\json_encode;
+use App\CopUserLocation;
 
 class BackendController extends Controller
 {
@@ -859,5 +860,16 @@ class BackendController extends Controller
 	    {
 	        return Notification::where('id', $request->input('id'))->update(['status'=>1]);	        
 	    }
+	}
+	
+	public function userLiveLocation(Request $request)
+	{
+	    $userId = $request->input('user_id');
+	    $lastLocation = CopUserLocation::where('user_id', $userId)->orderBy('created_at', 'desc')->first();
+	    
+	    $userData = User::where('id', $userId)->first();
+	    
+	    if(empty($lastLocation)) return response()->json(['status'=>false]);
+	    return response()->json(['status'=>true, 'data'=>$lastLocation, 'ref_user_type_id'=>$userData[0]->ref_user_type_id]);
 	}
 }

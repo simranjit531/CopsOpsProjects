@@ -291,7 +291,7 @@ App.prototype.generate_user_list = function (userList, id)
     	html +='</span>';
     	html +='<div class="user__details">';
 		html +='<p class="user__name">'+v.name+'</p>';                
-		html +='<p class="user__last_seen">'+v.last_request_at+'</p>';                
+		//html +='<p class="user__last_seen">'+v.last_request_at+'</p>';                
 		html +='</div>';
 		html +='</div>';
     });

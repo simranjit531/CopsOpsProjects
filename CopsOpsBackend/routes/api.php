@@ -41,7 +41,7 @@ Route::group(['prefix' => 'auth'], function () {
 
     Route::post('/profile/attributes', 'API\ApiController@get_profile_attributes');
     Route::post('/profile/set/availability', 'API\ApiController@set_available_status');
-    
+    Route::post('/profile/set/locations', 'API\ApiController@store_lat_lng');
     
     
     Route::post('/registered/incident/assigned', 'API\ApiController@assigned_intervention');

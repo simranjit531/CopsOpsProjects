@@ -394,10 +394,10 @@
 						<div id="accordion" class="accordion">
 							<div class="card mb-0">
 								<div class="card-header collapsed" data-toggle="collapse"
-									href="#collapseOne">
+									href="#collapseOne9">
 									<a class="card-title"> Option </a>
 								</div>
-								<div id="collapseOne" class="card-body collapse"
+								<div id="collapseOne9" class="card-body collapse"
 									data-parent="#accordion">
 									<div class="form-group">
 										<div class="pull-left">{{ trans('pages.usermgnt.freeze_account')}}</div>
@@ -433,7 +433,7 @@
 
 		</div>
 	</div>
-
+<input type="hidden" name="hidden_user_id">
 </div>
 
 @endsection @section('before-styles') @endsection
@@ -546,6 +546,7 @@ $("#assignanintervention").click(function(){
 
 $(document).on('click','#viewCops',function(e){   
    var userid = $(this).attr('rel');
+   $('input[type="hidden"][name="hidden_user_id"]').val(userid);
    $.ajaxSetup({
 		headers: {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -600,47 +601,57 @@ $(document).on('click','#viewCops',function(e){
 				$('.modal .modal-dialog .modal-content .modal-body .citizen').find('span#citizen_fire_report').text(d[0]['report_fire']);
 				$('.modal .modal-dialog .modal-content .modal-body .citizen').find('span#citizen_city_report').text(d[0]['report_city']);
 				$('.modal .modal-dialog .modal-content .modal-body .citizen').find('span#citizen_handrail_report').text(d[0]['report_handrail']);
-				  	lat = d[0]['latitude'];
-					lng = d[0]['longitude'];
-					var position = new google.maps.LatLng(lat, lng);
-		        	bounds.extend(position);
+// 				  	lat = d[0]['latitude'];
+// 					lng = d[0]['longitude'];
+// 					var position = new google.maps.LatLng(lat, lng);
+// 		        	bounds.extend(position);
 
-					map1= {
-					  	center:new google.maps.LatLng(lat, lng),
-					  	zoom:15,
-					};
+// 					map1= {
+// 					  	center:new google.maps.LatLng(lat, lng),
+// 					  	zoom:15,
+// 					};
 
-					map1 = new google.maps.Map(document.getElementById("map"), map1);
-					marker = new google.maps.Marker({
-		            position: position,
-		            map:map1,
-		            icon:'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
-		        	});
+// 					map1 = new google.maps.Map(document.getElementById("map"), map1);
+// 					marker = new google.maps.Marker({
+// 		            position: position,
+// 		            map:map1,
+// 		            icon:'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+// 		        	});
 			}
 			else if(d[0]['ref_user_type_id'] == '{{ App\UserType::_TYPE_OPERATOR }}') {
 				$('.modal .modal-dialog .modal-content .modal-body .operator').find('span#operator_assigned_report').text(d[0]['assigned_incidents']);						
 				$('.modal .modal-dialog .modal-content .modal-body .operator').find('span#operator_completed_report').text(d[0]['completed_incidents']);	
-			    lat = d[0]['latitude'];
-				lng = d[0]['longitude'];
-				console.log(d[0]['latitude']+""+d[0]['longitude'])
-				var position = new google.maps.LatLng(lat, lng);
-	        	bounds.extend(position);
+// 			    lat = d[0]['latitude'];
+// 				lng = d[0]['longitude'];
+// 				console.log(d[0]['latitude']+""+d[0]['longitude'])
+// 				var position = new google.maps.LatLng(lat, lng);
+// 	        	bounds.extend(position);
 
-				map1= {
-				  	center:new google.maps.LatLng(lat, lng),
-				  	zoom:15,
-				};
+// 				map1= {
+// 				  	center:new google.maps.LatLng(lat, lng),
+// 				  	zoom:15,
+// 				};
 
-				map1 = new google.maps.Map(document.getElementById("map"), map1);
-				marker = new google.maps.Marker({
-	            position: position,
-	            map:map1,
-	            icon:'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-	        	});
+// 				map1 = new google.maps.Map(document.getElementById("map"), map1);
+// 				marker = new google.maps.Marker({
+// 	            position: position,
+// 	            map:map1,
+// 	            icon:'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+// 	        	});
 			}
+			lat = d[0]['latitude'];
+			lng = d[0]['longitude'];			
 
+			var center = new google.maps.LatLng(lat, lng);
+			_initialize(center, 'map', 15);
+			
+			 var markerArray = [];
+			 markerArray.push([lat, lng, d[0].ref_user_type_id]);
+
+ 			add_markers(markerArray, true);
 					
 			$('#myModal').modal('show');
+			user_live_location(userid);
 		}
 	});
 });
@@ -826,6 +837,97 @@ $(".add-more-divs").on("click", function(e){
 
 	$("#cloned-divs").append(clonedDiv);
 });
+
+
+$(function(){
+	/* Function to do live user tracking, the script will run every 30 seconds and will update map marker position*/
+	
+	var userId = $('input[type="hidden"][name="hidden_user_id"]').val();
+	user_live_location(userId);
+});
+
+function user_live_location(userId){	
+	if(userId !=""){
+    	setInterval( function () {
+    	    $.ajax({
+    			'url':"{{ route('backoffice.live.location') }}",
+    			'data':{"_token": "{{ csrf_token() }}", "user_id":userId},
+    			success : function(response){
+    				if(response.status == true){
+						
+    				}
+    			}
+    		});
+    	}, 30000 );
+	}
+}
+
+
+
+var markers = [];
+/* Initalise map */
+function _initialize(center, mapId, zoom) {
+	
+    var mapOptions = {
+        center: center,
+        zoom : zoom
+    };
+    map = new google.maps.Map(document.getElementById(mapId), mapOptions);	 
+} 
+/* Initalise map */
+
+
+
+/* Add markers to the map */
+
+function add_markers(markerArray, lat, lng)
+{		
+	console.log(markerArray);
+	clear_markers();	
+	for( i = 0; i < markerArray.length; i++ ) 
+	{
+		var position = new google.maps.LatLng(markerArray[i][0], markerArray[i][1]);
+		bounds.extend(position);
+		
+		marker = new google.maps.Marker({
+            position: position,
+            map:map,
+            title: markerArray[i][2]
+    	});
+
+		if(markerArray[i][2] == "3") marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+		else if(markerArray[i][2] == "4")  marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+		
+		var infoWindow = new google.maps.InfoWindow();
+		        
+	    // Allow each marker to have an info window    
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {  
+            return function() {
+                infoWindow.setContent(content[i]);
+                infoWindow.open(map, marker);
+            }
+        })(marker, i));
+
+		markers.push(marker);
+		
+	}
+
+	
+// 	map.fitBounds(bounds);       
+// 	map.panToBounds(bounds);
+// 	map.setZoom(5);
+}
+
+
+function clear_markers() 
+{	
+	for (var i = 0; i < markers.length; i++) 
+	{
+  		markers[i].setMap(null);
+	}
+	
+	markers = [];	
+}
 
 
 </script>

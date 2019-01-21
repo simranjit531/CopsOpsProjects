@@ -245,7 +245,7 @@
             <div class="user__details">
                 <p class="user__name"><%= name %></p>
                 <% if (last_request_at) { %>
-                <p class="user__last_seen"><%= last_request_at %></p>
+                <!--<p class="user__last_seen"><%= last_request_at %></p>-->
                 <% } %>
             </div>
         </div>
@@ -343,7 +343,7 @@
             <div class="user__details">
                 <p class="user__name"><%- user.name %></p>
                 <% if (user.last_request_at) { %>
-                <p class="user__last_seen"><%= user.last_request_at %></p>
+                <!--<p class="user__last_seen"><%= user.last_request_at %></p>-->
                 <% } %>
             </div>
         </div>

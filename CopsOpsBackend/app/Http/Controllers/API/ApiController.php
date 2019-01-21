@@ -27,6 +27,7 @@ use App\UserType;
 use App\CopUserIncidentTempMapping;
 use Edujugon\PushNotification\Facades\PushNotification;
 use App\Notification;
+use App\CopUserLocation;
 
 class ApiController extends Controller
 {
@@ -58,7 +59,7 @@ class ApiController extends Controller
             'phone_number'=>'required|unique:ref_user',
             'email_id'=>'required|unique:ref_user',
             'user_password'=>'required',
-            'ref_user_type_id' =>'required'
+            'ref_user_type_id' =>'required'            
         ];
 
         $result = $this->validate_request($payload, $rules);
@@ -95,8 +96,23 @@ class ApiController extends Controller
             'cops_grade' => 'Grade I'
         );
 
+        $rules = ['profile_image' => 'required'];
+        $result = $this->validate_upload_request($request, $rules);
+        if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
+
         if($payload['ref_user_type_id'] == "Cops")
         {
+            /*
+            $rules  = [ 
+                'id_card1'=>'required', 
+                'id_card2'=>'required',
+                'business_card1'=>'required',
+                'business_card2'=>'required'
+            ];
+
+            $result = $this->validate_upload_request($request, $rules);
+            if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
+            */
             $cardFront = $this->uploadFile($request, 'uploads/id_cards', 'id_card_front');
             if($cardFront['status'] == true)
             {
@@ -121,6 +137,9 @@ class ApiController extends Controller
                 $data['business_card2'] = $businessBack['fileName'];
             }
         }
+        /*
+        if(!$request->file('profile_image')) return $this->sendResponseMessage(['message'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_PROFILE_IMAGE_REQUIRED), 'status'=>true], 200);
+        */
 
         $profileImage = $this->uploadFile($request, 'uploads/profile', 'profile_image');
 
@@ -167,8 +186,8 @@ class ApiController extends Controller
                     });    
                 }   
                 
-                $lat = $payload['incident_lat'];
-                $lng = $payload['incident_lng'];
+                $lat = $payload['reg_latitude'];
+                $lng = $payload['reg_longitude'];
                 
                 $attributes = $this->get_user_profile_attributes($user->id, $lat, $lng);
 
@@ -548,6 +567,31 @@ class ApiController extends Controller
                     'message' => 'A new incident is registerd'
                 ]);
 
+                # Once new incident is registered, send push notification
+                $push = new \Edujugon\PushNotification\PushNotification('fcm');
+                $push->setMessage([
+                    'notification' => [
+                        'title'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS),
+                        'body'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS),
+                        'sound' => 'default'
+                    ]
+                ]);
+                
+                # Get device token of the user
+                $tokenData = UserDeviceMapping::all()->chunk(100);
+
+                if(!$tokenData->isEmpty()){
+                    foreach ($tokenData as $tokens) {
+                        foreach ($tokens as $t)
+                        {
+                            if(empty($t->device_token)) continue;
+                            $push->setDevicesToken($t->device_token);
+                            $push->send();
+                            $push->getFeedback();
+                        }
+                    }    
+                }
+
                 if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS), 'reference'=>$rs->reference, 'qrcode_url'=>asset('uploads/qrcodes').'/'.$referenceNo.'.png', 'helpline_number'=>$helplineNumber],200);
                 return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_FAILURE)],200);
             }
@@ -682,6 +726,7 @@ class ApiController extends Controller
             'incident_lng'=>'required',
         ];
 
+        $user_id = $payload['user_id'];
         $result = $this->validate_request($payload, $rules);
         if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
         $lat = $payload['incident_lat'];
@@ -698,8 +743,14 @@ class ApiController extends Controller
         # Get all non deleted cities
         $cities = City::select('id', 'city_name')->where('is_deleted', 1)->get();
 
-        if(empty($rs)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_NO_INCIDENT_REPORTED)],200);
-        return $this->sendResponseMessage(['status'=>true, 'data'=> $rs, 'cities'=>$cities],200);
+        # Check if incident intervention is already done ?
+        $interventions = CopUserIncidentMapping::where(['ref_user_id'=>$user_id, 'status'=>2])->get();
+        
+        $interventionDone = 1;
+        if($interventions->isEmpty()) $interventionDone = 0; 
+        
+        if(empty($rs)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_NO_INCIDENT_REPORTED), 'pending'=>$interventionDone],200);
+        return $this->sendResponseMessage(['status'=>true, 'data'=> $rs, 'cities'=>$cities, 'pending'=>$interventionDone],200);
     }
 
 
@@ -828,9 +879,15 @@ class ApiController extends Controller
         $res = \DB::select($query);
 			
 		
-        if(empty($res)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        # Check if incident intervention is already done ?
+        $interventions = CopUserIncidentMapping::where(['ref_user_id'=>$copId, 'status'=>2])->get();
+        
+        $interventionDone = 1;
+        if($interventions->isEmpty()) $interventionDone = 0; 
+        
+        if(empty($res)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND), 'pending'=>$interventionDone],200);
 
-        return $this->sendResponseMessage(['status'=>true, 'data'=> $res],200);
+        return $this->sendResponseMessage(['status'=>true, 'data'=> $res, 'pending'=>$interventionDone],200);
 	}
 
 
@@ -936,11 +993,21 @@ class ApiController extends Controller
             ]);
             
             # Get device token of the user
-            $tokenData = UserDeviceMapping::where('ref_user_id', $userId)->get();
-            $push->setDevicesToken($tokenData[0]->device_token);
-            $push->send();
-            $push->getFeedback();
+            $tokenData = UserDeviceMapping::all()->chunk(100);
             
+            if(!$tokenData->isEmpty()){
+                foreach ($tokenData as $tokens) {
+                    foreach ($tokens as $t)
+                    {
+                        if(empty($t->device_token) && ($t->ref_user_id != $userId)){                            
+                            $push->setDevicesToken($t->device_token);
+                            $push->send();
+                            $push->getFeedback(); 
+                        }
+                    }
+                }
+            }
+
             IncidentDetail::where('id', $incidentId)->update(['status'=>2]);
             if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_SUCCESS)],200);
             return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_FAILURE)],200);
@@ -974,7 +1041,10 @@ class ApiController extends Controller
                 'cop_incident_details.other_description', 'cop_incident_details.reference')
                 ->join('cop_incident_details', 'cop_incident_details.id', '=', 'cop_user_incident_mapping.cop_incident_details_id')
                 ->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
-                ->where(['cop_user_incident_mapping.id'=>$assignedIntervention['id']])->get();
+                // ->where(['cop_user_incident_mapping.id'=>$assignedIntervention['id']])
+                ->get();
+
+
             
             return $this->sendResponseMessage(['status'=>true, 'data'=> $res],200);
             
@@ -997,6 +1067,12 @@ class ApiController extends Controller
             return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
         }
         
+        /* Check if intervention was assigned to same user */
+        
+        $incidentMappingData = CopUserIncidentMapping::where(["cop_incident_details_id"=> $payload['incident_id'], "ref_user_id"=>$payload['user_id']])->get();    
+
+        if($incidentMappingData->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_CLOSE_ERROR)], 200);
+
         /* Validation for signature */
         if(!$request->hasFile('signature')) return $this->sendResponseMessage(array('status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_SIGNATURE_REQUIRED)), 200);
 
@@ -1143,6 +1219,38 @@ class ApiController extends Controller
         );
     }
 
+
+    /* Store user's latitude and longitude for current location*/
+    
+    public function store_lat_lng(Request $request)
+    {
+        $payload = $this->get_payload($request);
+        if(isset($payload['status']) && $payload['status'] === false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> $payload['message']],200);
+        }
+        
+        $rules  = [
+            'user_id'=>'required',
+            'latitude'=>'required',
+            'longitude'=>'required'
+        ];
+        
+        $result = $this->validate_request($payload, $rules);
+        if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
+        
+        $rs = CopUserLocation::create([
+            'user_id' => $payload['user_id'], 
+            'latitude' => $payload['latitude'], 
+            'longitude' => $payload['longitude']
+        ]);
+        
+        if($rs) $this->sendResponseMessage(['status'=>true], 200);
+        else $this->sendResponseMessage(['status'=>false], 200);
+    }
+
+
+
     /* Util function for payload processing
      * @accepts encoded json string in request
      * @returns array
@@ -1169,6 +1277,16 @@ class ApiController extends Controller
     public function validate_request($payload, $rules)
     {
         $validator  = Validator::make($payload, $rules);
+        if($validator->fails())
+        {
+            $messages = $validator->messages();
+            return $messages->first();
+        }
+    }
+
+    public function validate_upload_request($request, $rules)
+    {
+        $validator  = Validator::make($request->all(), $rules);
         if($validator->fails())
         {
             $messages = $validator->messages();

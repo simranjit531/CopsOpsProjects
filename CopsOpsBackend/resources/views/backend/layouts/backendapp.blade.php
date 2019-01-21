@@ -38,6 +38,25 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 	href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800"
 	rel="stylesheet">
 </head>
+<style>
+.notification-sec #menu1{position: absolute;
+    left: -155px;
+    height: 250px;
+    overflow-y: scroll;
+    min-width: 12rem;
+}
+.notification-sec a #noticount{
+    position: absolute;
+    left: 7px;
+    background: #5f5f5f;
+    top: -5px;
+    border-radius: 50%;
+    color: #fff;
+    }
+.notification-sec .fa-bell-o{position:relative;}
+.notification-sec{padding-top: 7px;float:right;position:relative;
+    margin: 0 10px;}
+</style>
 <body class="hold-transition sidebar-mini">
 	<div class="wrapper">
 
@@ -50,7 +69,7 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 					href="#"><i class="fa fa-bars"></i></a></li>
 				<li class="pull-right"><a href="{{ route('logout') }}" class="nav-link"><i class="fa fa-sign-out"></i> Logout</a></li>
 				
-				<li role="presentation" class="dropdown pull-right">
+				<li role="presentation" class="dropdown notification-sec">
                   <a href="javascript:void(0);" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="true">
                     <i class="fa fa-bell-o"></i>
                     <span class="badge bg-green" id="noticount">0</span>
@@ -246,7 +265,7 @@ $(document).on('click', '.on-click-change-stat', function(){
 		'data': {'id':id, '_token': '{{ csrf_token() }}'},
 		'type':'post',
 		success : function(response){
-			$this.parents('li').remove();
+			$this.parent('li').remove();
 		}
 	});
 });

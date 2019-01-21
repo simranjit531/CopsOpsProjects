@@ -162,7 +162,7 @@
 
 			<div class="col-sm-12 journal-table mt-2">
 				<div class="row">
-					<div class="table-format col-sm-9">
+					<div class="table-format col-sm-12">
 						<h2>
 							Journal signalments &amp; intervenants <i
 								class="fa fa-map-marker" aria-hidden="true"></i>
@@ -178,12 +178,14 @@
 									<th>First/Last Name</th>
 									<th>Subject</th>
 									<th>Description</th>
+									<th>Other Description</th>
 									<th>Status</th>
 								</tr>
 							</thead>
 							<tbody></tbody>
 						</table>
 					</div>
+					<!--  
 					<div class="col-sm-3 mini-selection chat-right-admin float-right">
 						<h2>Live Chat</h2>
 						<div class="chat-wrapper">
@@ -207,6 +209,7 @@
 							<div class="chat-inner-section"></div>
 						</div>
 					</div>
+					-->
 				</div>
 			</div>
 
@@ -442,6 +445,7 @@
 <script
 	src="https://maps.googleapis.com/maps/api/js?&libraries=places&key={{ env('GOOGLE_MAP_KEY') }}"></script>
 
+<!-- 
 <script src="https://unpkg.com/navigo@4.3.6/lib/navigo.min.js" defer></script>
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"
@@ -456,7 +460,7 @@
 <script src="{{ asset('js/plugins/quickblox/app.js') }}" defer></script>
 <script src="{{ asset('js/plugins/quickblox/login.js') }}" defer></script>
 <script src="{{ asset('js/plugins/quickblox/route.js') }}" defer></script>
-
+ -->
 
 <!-- Lightbox -->
 <link href="{{ asset('js/plugins/lightbox2/src/css/lightbox.css') }}" rel="stylesheet">
@@ -568,7 +572,8 @@ function add_point_of_interest_markers(markerArray)
     				r = confirm("Are you sure you want to remove this point of interest");
     				if(r==true)
     				{
-    		            pin.setMap(null);    		            
+    		            pin.setMap(null);  
+    		            if(markerArray[i][2] == 'history') { refresh_pins(); }  		            
     				}
     			}	
     
@@ -615,7 +620,7 @@ function add_zone_of_interest_circles(circleArray)
     				{
     					zone.setMap(null);    
     					zones.pop(zone);	
-    						            
+    					if(circleArray[i][3] == 'history') { refresh_zones(); }           
     				}
     			}	
     
@@ -623,6 +628,7 @@ function add_zone_of_interest_circles(circleArray)
         })(zone, i));
 
     	zones.push(zone);
+    	console.log(zones);
 	}
 }
 
@@ -714,6 +720,7 @@ function _incidents_list()
 	          { data: 'first_name', name: 'first_name' },
 	          { data: 'sub_category_name', name: 'sub_category_name' }, 
 	          { data: 'incident_description', name: 'incident_description' },
+	          { data: 'other_description', name: 'other_description' },
 	          { data: 'status', name: 'status' },
 	      ],
      	order: [[0, "desc"]]
@@ -1006,6 +1013,45 @@ $('#save-map-activity').on("click", function(){
 	}	
 });
 
+function refresh_zones()
+{
+	var circlesArray = []; 
+	$(zones).each(function(k,v){
+		console.log(v);
+		c = {};
+		c['lat'] = v.center.lat();
+		c['lng'] = v.center.lng();
+		c['radius'] = v.radius;
+
+		circlesArray.push(c);
+	});
+	
+	if(zones.length >= 1 )circlesArray = JSON.stringify(circlesArray);
+	localStorage.setItem('circle', circlesArray);
+	localStorage.setItem('zoom', map.getZoom());
+	localStorage.setItem('lat', map.getCenter().lat());
+	localStorage.setItem('lng', map.getCenter().lng());	
+}
+
+function refresh_pins()
+{
+	var pinsArray = []; 
+	$(pins).each(function(k,v){
+		pin = {};
+		pin['icon'] = v.icon;
+		pin['lat'] = v.position.lat();
+		pin['lng'] = v.position.lng();
+		
+		pinsArray.push(pin);
+	});
+
+	if(pins.length >= 1) pinsArray = JSON.stringify(pinsArray)
+	localStorage.setItem('pins', pinsArray);	
+	localStorage.setItem('zoom', map.getZoom());
+	localStorage.setItem('lat', map.getCenter().lat());
+	localStorage.setItem('lng', map.getCenter().lng());	
+}
+
 $("#remove-map-activity").on("click", function(){
 	r = confirm("Do you want to discard the saved information of the map");
 	if(r == true)
@@ -1017,6 +1063,173 @@ $("#remove-map-activity").on("click", function(){
 		render_pins();			
 	}	
 });
+
+
+//pp 2jan
+$(document).on('click','.view-incident',function(e){  
+   var incidentId = $(this).attr('data-incident-id');
+   var incidentState = $(this).attr('data-state');
+   $.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+   $.ajax({
+		url: '{{ route("backoffice.incidents.view") }}',
+		data: { 'incidentid': incidentId},
+		cache:false,
+		type: 'POST',   
+		dataType: "json",
+		beforeSend : function(data)
+		{
+			$('.loader_a').removeClass('hide');
+		},
+		success: function (response) {
+
+			var d = response.data;
+			console.log(d);
+			$('.loader_a').addClass('hide');
+			
+			$('.modal .modal-dialog .modal-content .modal-body .user-mgm-m7 .row .right-part ul li:eq(0) span').html(d[0]['first_name']+" "+ d[0]['last_name']);
+			$('.modal .modal-dialog .modal-content .modal-body .user-mgm-m7 .row .right-part ul li:eq(1) span').html(d[0]['date_of_birth']);
+			$('.modal .modal-dialog .modal-content .modal-body .user-mgm-m7 .row .right-part ul li:eq(2) span').html(d[0]['email_id']);
+
+			if(d[0]['profile_image'] !="") $('.modal .modal-dialog .modal-content .modal-body').find('img#profile_image').attr('src', d[0]['profile_image']);
+
+			$('.operator').removeClass('hide');
+			$('.citizen ').addClass('hide');
+			
+			if(d[0]['ref_user_type_id'] != '{{ App\UserType::_TYPE_OPERATOR }}'){
+				$('.operator').addClass('hide');
+				$('.citizen ').removeClass('hide');	
+			if(typeof d[0]['report_police'] !== 'undefined')
+			{
+				$('#report_police').html("<h2>Report <br>Police<span >"+d[0]['report_police']+"</span></h2>");
+			}
+			
+			if(typeof d[0]['report_fire'] !== 'undefined')
+			{
+			$('#report_fireman_medical').html("<h2>Report <br> Fireman/medical<span >"+d[0]['report_fire']+"</span></h2>");
+			}
+
+			if(typeof d[0]['report_city'] !== 'undefined')
+			{
+			$('#report_city').html("<h2>Report <br> City<span >"+d[0]['report_city']+"</span></h2>");
+			}
+			
+			if(typeof d[0]['report_handrail'] !== 'undefined')
+			{
+			$('#report_handrail').html("<h2>Handrail<span >"+d[0]['report_handrail']+"</span></h2>");
+			}
+		}
+		else if(d[0]['ref_user_type_id'] == '{{ App\UserType::_TYPE_OPERATOR }}') {
+				$('.operator').removeClass('hide');
+				$('.citizen ').addClass('hide');	
+			if(typeof d[0]['assigned_incidents'] !== 'undefined')
+			{
+			$('#assigned_incidents').html("<h2>Assigned<br>incidents<span >"+d[0]['assigned_incidents']+"</span></h2>");
+			}
+
+			if(typeof d[0]['completed_incidents'] !== 'undefined')
+			{
+			$('#completed_incidents').html("<h2>Completed<br>incidents<span >"+d[0]['completed_incidents']+"</span></h2>");
+			}
+		}
+			$('#incidents_address').val(d[0]['address']);
+			$('#subject_report').html(d[0]['sub_category_name']);
+			$('#incident_description').html(d[0]['incident_description']);
+			$('#other_description').html(d[0]['other_description']);
+			if(d[0]['photo'] != null)
+			{
+				var photo= "{{ url('/uploads/incident_image') }}/"+d[0]['photo'];
+				IMG = $('<a href="'+photo+'" data-lightbox="image-1">')		    	
+		    	.append('<img src="'+photo+'" style="width:200px;"></a>')			
+			
+    			$('#attachmentinc').html(IMG);
+    
+    			//lightbox open:
+    			IMG.click(function(){
+    			    lightbox.start($(this));
+    			    return false;
+    			})
+			}
+			if(d[0]['video'] != null)
+			{
+			var video= "{{ url('/uploads/incident_video') }}/"+d[0]['video'];
+			$('#attachmentvideoinc').html('<a href="'+video+'" traget="_blank">View</a>');
+			}
+
+			if(d[0]['business_card1'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#business_card1').attr('href', d[0]['business_card1']).attr('target','_blank');
+			if(d[0]['business_card2'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#business_card2').attr('href', d[0]['business_card2']).attr('target','_blank');
+
+			if(d[0]['id_card1'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#id_card1').attr('href', d[0]['id_card1']).attr('target','_blank');
+			if(d[0]['id_card2'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#id_card2').attr('href', d[0]['id_card2']).attr('target','_blank');
+
+			$('#incident-state').removeClass('alert-danger');
+			$('#incident-state').removeClass('alert-primary');
+			$('#incident-state').removeClass('alert-success');
+			if(incidentState == "On-Wait")
+			{
+				$('#incident-state').addClass('alert-danger');
+			}
+			else if(incidentState == "Pending")
+			{
+				$('#incident-state').addClass('alert-primary');
+			}
+			else if(incidentState == "Finished")
+			{
+				$('#incident-state').addClass('alert-success');
+			}
+
+			$('#incident-state').html(incidentState);
+			
+			$('#myModal').modal('show');
+			lat = d[0]['latitude'];
+			lng = d[0]['longitude'];
+			var position = new google.maps.LatLng(lat, lng);
+        	bounds.extend(position);
+
+			map1= {
+			  	center:new google.maps.LatLng(lat, lng),
+			  	zoom:15,
+			  	/*zoomControl: false,
+				   zoomControl: false,
+				  scaleControl: false,
+				  scrollwheel: false,*/
+				  //disableDoubleClickZoom: true,
+				  //draggable:false
+			};
+			if(d[0]['ref_user_type_id'] == "3") icon='http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+	        else if(d[0]['ref_user_type_id'] == "4") icon = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+	        
+			map1 = new google.maps.Map(document.getElementById("map1"), map1);
+			marker = new google.maps.Marker({
+            position: position,
+            map:map1,
+            icon: icon,
+        	});
+			
+		}
+	});
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function clear_zones()
 {

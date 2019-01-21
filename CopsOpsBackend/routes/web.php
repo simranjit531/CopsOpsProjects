@@ -75,3 +75,6 @@ Route::post('/list/incidents/citizencops', 'BackendController@listofincidentscit
 # Get notification
 Route::get('/notifications', 'BackendController@pushServerSentEvents')->name('backoffice.notifications');
 Route::post('/notifications/status/update', 'BackendController@updateNotificationStatus')->name('backoffice.update.notifications');
+
+# Get Live location
+Route::get('/live/location', 'BackendController@userLiveLocation')->name('backoffice.live.location');
