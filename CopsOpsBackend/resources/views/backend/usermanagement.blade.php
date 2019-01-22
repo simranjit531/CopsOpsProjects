@@ -1,4 +1,11 @@
 @extends('backend.layouts.backendapp') @section('content')
+<style>
+.image-attachments{
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+}
+</style>
 <div class="tab-div">
 	<ul>
 		<li><a href="{{ url('/usermanagement')}}" class="active">{{
@@ -208,7 +215,7 @@
 					<table class="table table-bordered table-striped" id="table">
 						<thead>
 							<tr>
-								<th></th>
+								<th>Date</th>
 								<th>{{ trans('pages.usermgnt.tables.firstname') }}</th>
 								<th>{{ trans('pages.usermgnt.tables.lastname') }}</th>
 								<th>{{ trans('pages.usermgnt.tables.email') }}</th>
@@ -226,7 +233,7 @@
 					<table class="table table-bordered table-striped" id="userTable">
 						<thead>
 							<tr>
-								<th></th>
+								<th>Date</th>
 								<th>{{ trans('pages.usermgnt.tables.firstname') }}</th>
 								<th>{{ trans('pages.usermgnt.tables.lastname') }}</th>
 								<th>{{ trans('pages.usermgnt.tables.birthdate')}}</th>
@@ -366,14 +373,38 @@
 								<div
 									class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 zoom-left">
 									<h2>Carte professional</h2>
+									<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6" style="padding-left: 45px;">
+										<a href="javascript:void(0);" id="business_card1_a">
+											<img class="img-responsive image-attachments" id="business_card1"/>
+										</a>
+									</div>
+									<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6" style="padding-left: 45px;">
+										<a href="javascript:void(0);" id="business_card2_a">
+											<img class="img-responsive image-attachments" id="business_card2"/>
+										</a>
+									</div>
+									<!-- 
 									<a href="javascript:void(0);" id="business_card1" class="showimage"><i class="fa fa-search-plus showimage" aria-hidden="true"></i></a>
 									<a href="javascript:void(0);" id="business_card2" class="showimage"><i class="fa fa-search-plus showimage" aria-hidden="true"></i></a>
+									 -->
 								</div>
 								<div
 									class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 zoom-left">
 									<h2>Carte professional</h2>
+									<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6" style="padding-left: 45px;">
+										<a href="javascript:void(0);" id="id_card1_a">
+											<img class="img-responsive image-attachments" id="id_card1"/>
+										</a>
+									</div>
+									<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6" style="padding-left: 45px;">
+										<a href="javascript:void(0);" id="id_card2_a">
+											<img class="img-responsive image-attachments" id="id_card2"/>
+										</a>
+									</div>
+									<!-- 
 									<a href="javascript:void(0);" id="id_card1" class="showimage"><i class="fa fa-search-plus showimage" aria-hidden="true"></i></a>
 									<a href="javascript:void(0);" id="id_card2" class="showimage"><i class="fa fa-search-plus showimage" aria-hidden="true"></i></a>
+									 -->
 								</div>
 							</div>
 						</div>
@@ -443,6 +474,9 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 
+<link href="{{ asset('js/plugins/lightbox2/src/css/lightbox.css') }}" rel="stylesheet">
+<script src="{{ asset('js/plugins/lightbox2/src/js/lightbox.js') }}"></script>
+
 <script>
 var oTable, oTableCitizen = "";
 var bounds = new google.maps.LatLngBounds();
@@ -488,7 +522,7 @@ $(function(){
 	          }
 	      },
 	      columns: [
-	          { data: 'action', name: 'action', orderable: false, searchable: false},
+	          { data: 'created_at', name: 'created_at'},
 	          { data: 'first_name', name: 'first_name' },
 	          { data: 'last_name', name: 'last_name' },
 	          { data: 'email_id', name: 'email_id' },
@@ -510,7 +544,7 @@ $(function(){
           }
         },
         columns: [
-                { data: 'action', name: 'action', orderable: false, searchable: false},
+                { data: 'created_at', name: 'created_at'},
                 { data: 'first_name', name: 'first_name' },
                 { data: 'last_name', name: 'last_name' },
                 { data: 'date_of_birth', name: 'date_of_birth' },
@@ -576,11 +610,23 @@ $(document).on('click','#viewCops',function(e){
 
 			$('.modal .modal-dialog .modal-content .modal-body').find('#cop_grade').html(d[0]['cops_grade']);
 						
-			if(d[0]['business_card1'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#business_card1').attr('href', d[0]['business_card1']).attr('target','_blank');
-			if(d[0]['business_card2'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#business_card2').attr('href', d[0]['business_card2']).attr('target','_blank');
+			if(d[0]['business_card1'] !=""){
+				$('.modal .modal-dialog .modal-content .modal-body').find('#business_card1').attr('src', d[0]['business_card1']).attr('target','_blank');
+				$('.modal .modal-dialog .modal-content .modal-body').find('#business_card1_a').attr('href', d[0]['business_card1']).attr('data-lightbox','image-1');
+			}
+			if(d[0]['business_card2'] !=""){
+				$('.modal .modal-dialog .modal-content .modal-body').find('#business_card2').attr('src', d[0]['business_card2']).attr('target','_blank');
+				$('.modal .modal-dialog .modal-content .modal-body').find('#business_card2_a').attr('href', d[0]['business_card2']).attr('data-lightbox','image-1');
+			}
 
-			if(d[0]['id_card1'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#id_card1').attr('href', d[0]['id_card1']).attr('target','_blank');
-			if(d[0]['id_card2'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#id_card2').attr('href', d[0]['id_card2']).attr('target','_blank');
+			if(d[0]['id_card1'] !=""){
+				$('.modal .modal-dialog .modal-content .modal-body').find('#id_card1').attr('src', d[0]['id_card1']).attr('target','_blank');
+				$('.modal .modal-dialog .modal-content .modal-body').find('#id_card1_a').attr('href', d[0]['id_card1']).attr('data-lightbox','image-1');
+			}
+			if(d[0]['id_card2'] !=""){
+				$('.modal .modal-dialog .modal-content .modal-body').find('#id_card2').attr('src', d[0]['id_card2']).attr('target','_blank');
+				$('.modal .modal-dialog .modal-content .modal-body').find('#id_card2_a').attr('href', d[0]['id_card2']).attr('data-lightbox','image-1');
+			}
 			$('.modal .modal-dialog .modal-content .modal-body').find('select[name="access_grade"]').val(d[0]['cops_grade']);
 			$('.modal .modal-dialog .modal-content .modal-body').find('select[name="access_grade"]').attr('data-user', d[0]['id']);
 			$('.modal .modal-dialog .modal-content .modal-body').find('input[type="checkbox"][name="checkbox_freeze_account"]').attr('data-user', d[0]['id']);
@@ -652,6 +698,26 @@ $(document).on('click','#viewCops',function(e){
 					
 			$('#myModal').modal('show');
 			user_live_location(userid);
+
+			$("#business_card1_a").click(function(){
+			    lightbox.start($(this));
+			    return false;
+			});
+
+			$("business_card2_a").click(function(){
+			    lightbox.start($(this));
+			    return false;
+			});
+
+			$("#id_card1_a").click(function(){
+			    lightbox.start($(this));
+			    return false;
+			});
+
+			$("#id_card2_a").click(function(){
+			    lightbox.start($(this));
+			    return false;
+			});
 		}
 	});
 });
@@ -854,11 +920,14 @@ function user_live_location(userId){
     			'data':{"_token": "{{ csrf_token() }}", "user_id":userId},
     			success : function(response){
     				if(response.status == true){
-						
+    					var markerArray = [];
+    					markerArray.push([response.data.latitude, response.data.longitude, response.ref_user_type_id]);
+
+    		 			add_markers(markerArray, true);
     				}
     			}
     		});
-    	}, 30000 );
+    	}, 10000 );
 	}
 }
 
@@ -892,7 +961,7 @@ function add_markers(markerArray, lat, lng)
 		marker = new google.maps.Marker({
             position: position,
             map:map,
-            title: markerArray[i][2]
+//             title: markerArray[i][2]
     	});
 
 		if(markerArray[i][2] == "3") marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');

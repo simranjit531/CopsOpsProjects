@@ -40,15 +40,15 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 </head>
 <style>
 .notification-sec #menu1{position: absolute;
-    left: -155px;
+    left: -200px;
     height: 250px;
     overflow-y: scroll;
-    min-width: 12rem;
+    min-width: 15rem;
 }
 .notification-sec a #noticount{
     position: absolute;
     left: 7px;
-    background: #5f5f5f;
+    background: red;
     top: -5px;
     border-radius: 50%;
     color: #fff;
@@ -58,6 +58,10 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
     margin: 0 10px;}
 </style>
 <body class="hold-transition sidebar-mini">
+	<audio id="myAudio">      
+      <source src="{{ asset('glass_ping.mp3') }}" type="audio/mp3">
+      Your browser does not support the audio element.
+    </audio>
 	<div class="wrapper">
 
 		<!-- Navbar -->
@@ -219,9 +223,17 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 	<script
 		src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 	@yield('after-scripts')
-</body>
-</html>
+
 <script>
+	$(function(){
+// 		playAudio();
+	});
+var x = document.getElementById("myAudio"); 
+
+function playAudio() { 
+  x.play(); 
+} 
+
 $(document).ready(function(){
     $('#language').change(function(){
 		var lang= $(this).val();
@@ -240,10 +252,26 @@ $(document).ready(function(){
     
     source.onmessage = function(event) {        
         res = JSON.parse(event.data)
+        
+        /* Step 1 get notification count*/
+        var notiCount = $("#noticount").html();
+        var notiCount = notiCount == "" ? 0 : parseInt(notiCount);
+
+		console.log($("#noticount").html());
+		if($("#noticount").html() !=""){
+			console.log($("#noticount").html());
+			console.log(res.count);
+    		if(res.count != notiCount){
+    			/* Play Sound */
+    			playAudio();
+    // 			var audio = new Audio('https://interactive-examples.mdn.mozilla.net/media/examples/t-rex-roar.mp3');
+    // 			audio.play();
+    		}        
+		}
     	$("#noticount").html(res.count);		
         var li = '';
     	$(res.data).each(function(k,v){
-			li +='<li style="padding:6px 12px;"><a class="on-click-change-stat" href="javascript:void(0);" data-id="'+v.id+'" data-table="'+v.table+'" data-table-id="'+v.table_id+'"><span class="message" style="font-size:12px;">'+v.message+'</span></a></li>';     
+			li +='<li style="padding:6px 12px;"><a class="on-click-change-stat" href="javascript:void(0);" data-id="'+v.id+'" data-table="'+v.table+'" data-table-id="'+v.table_id+'"><span class="message" style="font-size:12px;">'+v.message+'</span></a><a class="on-click-change-stat" href="javascript:void(0);" style="margin-left: 10px; color: #05adfd;" data-id="'+v.id+'" data-table="'+v.table+'" data-table-id="'+v.table_id+'"><i class="fa fa-times"></i></a></li>';     
         });
 
         $('#menu1').html(li);
@@ -270,3 +298,5 @@ $(document).on('click', '.on-click-change-stat', function(){
 	});
 });
 </script>
+</body>
+</html>

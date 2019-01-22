@@ -29,6 +29,7 @@ use App\Notification;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use function GuzzleHttp\json_encode;
 use App\CopUserLocation;
+use App\CopBackofficeMapInteraction;
 
 class BackendController extends Controller
 {
@@ -135,6 +136,53 @@ class BackendController extends Controller
             return redirect('dailycrew')->with(['type'=>'error', 'message'=>'OOPS !!!']);
         }
         
+    }
+    
+    public function dailycrewfilter(Request $request)
+    {
+        try{
+            $users = User::where([['ref_user_type_id','=',UserType::_TYPE_OPERATOR],['approved','=',1]])->get();
+            
+            $teams = DB::table('cop_crew')
+            ->select('*');
+            
+            if($request->input('fromdatea') != "" && $request->input('todate') != "")
+            {
+                $fromdate = date_format( new DateTime($request->fromdatea), 'Y-m-d');
+                $todate = date_format( new DateTime($request->todate), 'Y-m-d');
+                
+                $teams = $teams->whereBetween(DB::Raw("DATE_FORMAT(created_at, '%Y-%m-%d')"), [$fromdate, $todate]);
+            }
+            
+            if($request->input('crewname') != "")
+            {
+                $crewname = $request->input('crewname');
+                $teams = $teams->where('crew_name', 'like', '%'.$crewname.'%');
+            }
+                        
+            $teams = $teams->groupBy('created_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
+            $response = array();
+            
+            if(!$teams->isEmpty())
+            {                
+                foreach ($teams as $k=>$t)
+                {
+                    $teams[$k]->members = Crew::find($t->id)->get_crew_members->toArray();
+                    $date = Carbon::parse($t->created_at)->format('l d/m/Y');
+                    
+                    $response[$date][] = $teams[$k];
+                }
+            }
+            
+            return view('backend.dailycrew', ['operators'=>$users, 'teams'=>$response]);
+        }
+        catch (QueryException $qe)
+        {
+            return redirect('dailycrew')->with(['type'=>'error', 'message'=>'OOPS !!!']);
+        }
     }
     
     public function crewget(Request $request)
@@ -868,8 +916,28 @@ class BackendController extends Controller
 	    $lastLocation = CopUserLocation::where('user_id', $userId)->orderBy('created_at', 'desc')->first();
 	    
 	    $userData = User::where('id', $userId)->first();
-	    
+// 	    dd($userData);
 	    if(empty($lastLocation)) return response()->json(['status'=>false]);
-	    return response()->json(['status'=>true, 'data'=>$lastLocation, 'ref_user_type_id'=>$userData[0]->ref_user_type_id]);
+	    return response()->json(['status'=>true, 'data'=>$lastLocation, 'ref_user_type_id'=>$userData['ref_user_type_id']]);
+	}
+	
+	public function store_map_data(Request $request)
+	{
+	    $user = Auth::user();
+	    $userId = $user->id;
+	    
+	    # Check if data is available 
+	    
+	    CopBackofficeMapInteraction::create([
+	        'circle_lat' =>$request->input('circle_lat'), 
+	        'circle_lng' =>$request->input('circle_lng'), 
+	        'circle_radius' =>$request->input('circle_radius'), 
+	        'pin_lat' =>$request->input('pin_lat'), 
+	        'pin_lng' =>$request->input('pin_lng'), 
+	        'map_zoom' =>$request->input('map_zoom'), 
+	        'map_lat' =>$request->input('map_lat'), 
+	        'map_lng' =>$request->input('map_lng'),
+	        'created_by' => $userId
+	    ]);
 	}
 }

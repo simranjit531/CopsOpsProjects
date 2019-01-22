@@ -213,7 +213,7 @@ class ApiController extends Controller
                 Notification::create([
                     'table_id' =>$user->id,
                     'table' => 'ref_user', 
-                    'message' => 'A new user is registerd'                    
+                    'message' => $user->first_name.' '.$user->last_name. 'registered to copops'                    
                 ]);
                 
                 return $this->sendResponseMessage([
@@ -560,11 +560,14 @@ class ApiController extends Controller
                     }
                 }
                 
+                $userData = User::find($payload['created_by']);
+                $incidentData = IncidentSubcategory::find($payload['ref_incident_subcategory_id']);
+                
                 # New incident registration notification
                 Notification::create([
                     'table_id' =>$rs->id,
                     'table' => 'cop_incident_details',
-                    'message' => 'A new incident is registerd'
+                    'message' => 'New Report by '.$userData->first_name.' '.$userData->last_name . ' - '.$incidentData->sub_category_name
                 ]);
 
                 # Once new incident is registered, send push notification
@@ -689,12 +692,15 @@ class ApiController extends Controller
 
                 }
                 
-                # New hadrail registration notification
+                $userData = User::find($payload['created_by']);                
+                
+                # New incident registration notification
                 Notification::create([
                     'table_id' =>$rs->id,
-                    'table' => 'cop_handrail',
-                    'message' => 'A new handrail is registerd'
+                    'table' => 'cop_incident_details',
+                    'message' => 'New Report by '.$userData->first_name.' '.$userData->last_name . ' - '.$payload['objects']
                 ]);
+                                
                 
                 if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_HANDRAIL_ADD_SUCCESS), 'reference'=>$referenceNo, 'qrcode_url'=>asset('uploads/qrcodes/').'/'.$referenceNo.'.png'],200);
                 return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_HANDRAIL_ADD_FAILURE)],200);

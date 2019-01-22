@@ -79,8 +79,28 @@
                         <button type="submit" name="btn_create_team" class="submit-btn">Create</button>
                     </form>
                 </div>
-                
-                <div class="caree-left-form col-12 col-sm-7 col-md-7 col-lg-7 col-xl-7" id="crew_data">
+				
+               
+                 <div class="caree-left-form col-12 col-sm-7 col-md-7 col-lg-7 col-xl-7" id="crew_data">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-5">
+                        <form method="post" name="form_date_filter" action="{{ route('crewfilter') }}">
+						@csrf
+                            <div class="col-lg-12">
+                                <label>From Date</label>
+                                <input type="text" class="form-control" name="fromdatea"  id="fromdatea" readonly="readonly">
+                            </div>
+                            <div class="col-lg-12">
+                                <label class="text-center">To Date</label>
+                                <input type="text" class="form-control" name="todate" id="todate" readonly="readonly">
+                            </div>
+                           <div class="col-lg-12">
+                                <label>Name of the crew</label>
+                                <input class="form-control form-control-navbar" type="text" name="crewname" id="crewname" placeholder="Name of the crew" aria-label="Search">
+                            </div>
+                            <input type="submit" id="search-form" class="actual-btn mt-2 mb-2 btn-success" value="Actual">
+                        </form>
+                    </div>
+                                    
                     <ul class="list-heading">
                         <li>Name of the crew </li>
                         <li style="text-align: center; padding-left: 100px;">Effective</li>
@@ -121,6 +141,15 @@
 <script>
 	
 	$(function() {
+		$("#fromdatea").datepicker().on('changeDate', function (ev) {		   
+			$("#todate").val($(this).val());
+			$(this).datepicker('hide');
+		});
+		
+        $("#todate").datepicker().on('changeDate', function (ev) {
+		   $(this).datepicker('hide');;
+        });
+		
 
 		$("#fromdate").datepicker({
 			startDate:new Date()
@@ -170,7 +199,7 @@
 		}
 			
 		$('form[name="form_create_team"]').appendTo('body').submit();
-		 
+		
 	});
 
 	$('.view-team-data').on('click', function(e){
@@ -203,6 +232,31 @@
 					
 					$('#crew_detail').removeClass('hide');
 					$('#crew_data').addClass('hide');
+				}	
+			}
+		});
+	});
+	
+	$('#crewname').on('keyup keypress change blur', function(e){
+		
+		var crewname = $(this).val( );
+	console.log(crewname);
+		
+		$.ajax({
+			'url':"{{ route('crewfilterget') }}",
+			'data':{'_token':'{{ csrf_token() }}', 'crewname':crewname },
+			'type':'post',
+			success:function(response)
+			{
+				console.log(response);
+				if(response.flag == false)
+				{
+					toastr.success(response.message, {timeOut: 10000});
+				}
+				else
+				{
+					
+					
 				}	
 			}
 		});

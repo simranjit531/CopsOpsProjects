@@ -537,13 +537,19 @@ function add_markers(markerArray, lat, lng)
             }
         })(marker, i));
 
-		markers.push(marker);
-		
+		markers.push(marker);		
 	}
 
+	if(lat !="" && lng !=""){
+		console.log(lat);
+		console.log(lng);
+        initialLocation = new google.maps.LatLng(lat, lng);
+        map.setCenter(initialLocation);
+        map.setZoom(12);
+	}
 	
-// 	map.fitBounds(bounds);       
-// 	map.panToBounds(bounds);
+	map.fitBounds(bounds);       
+	map.panToBounds(bounds);
 // 	map.setZoom(5);
 }
 
@@ -581,6 +587,18 @@ function add_point_of_interest_markers(markerArray)
         })(pin, i));
 
         pins.push(pin);
+
+        /*
+        $.ajax({
+    		'url':'{{ route('backoffice.store.zones') }}',
+    		'type':'post',
+    		'data':{'_token':'{{ csrf_token() }}','circle_lat':circleArray[i][0],'circle_lng':circleArray[i][1],'circle_radius':circleArray[i][2]},
+    		'success':function(data)
+    		{
+				
+    		}
+    	});
+    	*/
 	}
 }
 
@@ -629,6 +647,18 @@ function add_zone_of_interest_circles(circleArray)
 
     	zones.push(zone);
     	console.log(zones);
+
+		/*
+    	$.ajax({
+    		'url':'{{ route('backoffice.store.zones') }}',
+    		'type':'post',
+    		'data':{'_token':'{{ csrf_token() }}','circle_lat':circleArray[i][0],'circle_lng':circleArray[i][1],'circle_radius':circleArray[i][2]},
+    		'success':function(data)
+    		{
+				
+    		}
+    	});
+    	*/
 	}
 }
 
@@ -707,7 +737,7 @@ function _incidents_list()
     	          	}
     	          });	
 
-				  if(checkboxes.length == 0) add_markers(markerArray, true);
+				  if(checkboxes.length == 0) add_markers(markerArray, lat, lng);
 	              		
 	              return response;
 	          },
@@ -999,6 +1029,8 @@ $('#save-map-activity').on("click", function(){
 
 			circlesArray.push(c);
 		});
+
+		
 		
 		if(zones.length >= 1 )circlesArray = JSON.stringify(circlesArray);
 		localStorage.setItem('circle', circlesArray);
