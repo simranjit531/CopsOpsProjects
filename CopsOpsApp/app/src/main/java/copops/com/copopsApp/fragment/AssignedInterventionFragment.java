@@ -124,6 +124,7 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
 
             Tvstate.setText("Finished");
             Tvstate.setTextColor(getResources().getColor(R.color.black));
+            Rlintervenue.setVisibility(View.INVISIBLE);
             //  Tvstate.setText("Pending");
             //  Tvstate.setTextColor(getResources().getColor(R.color.black));
         }
@@ -142,24 +143,24 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
 
             case R.id.Rlintervenue:
                 //  Utils.fragmentCall(new CloseIntervationReportFragment(dateString, assignmentListPojo.getData().get(pos).getAddress(), assignmentListPojo.getData().get(pos).getReference(), assignmentListPojo.getData().get(pos).getStatus(), assignmentListPojo.getData().get(pos).getId()), getFragmentManager());
-                Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
-//                if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("1")) {
-//
-//                    if (Utils.checkConnection(getActivity())) {
-//                        IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
-//                        incdentSetPojo.setUser_id(mAppSession.getData("id"));
-//                        incdentSetPojo.setComment(descId.getText().toString().trim());
-//                        incdentSetPojo.setIncident_id(assignmentListPojo.getData().get(pos).getId());
-//                        incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
-//                        Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-//                        RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-//                        getAssignIntervation(mFile);
-//                    } else {
-//                        Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
-//                    }
-//                } else {
-//                   // Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
-//                }
+                //Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
+                if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("1")) {
+
+                    if (Utils.checkConnection(getActivity())) {
+                        IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                        incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                        incdentSetPojo.setComment(descId.getText().toString().trim());
+                        incdentSetPojo.setIncident_id(assignmentListPojo.getData().get(pos).getId());
+                        incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+                        Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                        RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                        getAssignIntervation(mFile);
+                    } else {
+                        Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+                    }
+                } else {
+                   // Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+                }
 
 
                 break;
@@ -196,7 +197,11 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
                             Utils.opendialogcustomdialogClose(getActivity(), commanStatusPojo.getMessage(), mClossPassInterFace);
                         } else {
 
-                            Utils.opendialogcustomdialogClose(getActivity(), commanStatusPojo.getMessage(), mClossPassInterFace);
+                            if(commanStatusPojo.getMessage().equalsIgnoreCase("You can only close interventions assigned to you only")) {
+                                Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
+                            }else {
+                                Utils.opendialogcustomdialogClose(getActivity(), commanStatusPojo.getMessage(), mClossPassInterFace);
+                            }
 
                             // Utils.showAlertAndClick(commanStatusPojo.getMessage(), getContext(), mResetPassInterFace);
 

@@ -5,6 +5,9 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import android.text.InputType;
@@ -16,6 +19,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.iid.InstanceIDListenerService;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -35,6 +39,8 @@ import com.quickblox.users.model.QBUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,6 +59,7 @@ import copops.com.copopsApp.services.Service;
 import copops.com.copopsApp.utils.BackgroundBroadCast;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.AppSession;
+import copops.com.copopsApp.utils.TrackingServices;
 import copops.com.copopsApp.utils.Utils;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -92,10 +99,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     String userTypeRegistation;
     AppSession mAppSession;
 
-
+    double longitude;
+    double latitude;
     QBIncomingMessagesManager incomingMessagesManager;
     private QBUser currentUser;
     ArrayList<QBUser> list;
+
+    LocationManager mLocationManager;
+    private boolean isNetworkEnabled;
+    private boolean isGpsEnabled;
     public LoginFragment(String userType) {
 
         this.userType = userType;
@@ -111,6 +123,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         onClick();
         mContext = getActivity();
         mAppSession = mAppSession.getInstance(mContext);
+
+        progressDialog = new ProgressDialog(mContext);
+        progressDialog.setMessage("loading...");
         if (userType.equalsIgnoreCase("citizen")) {
             userTypeRegistation = "Citizen";
             mAppSession.saveData("type",userTypeRegistation);
@@ -120,7 +135,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             mAppSession.saveData("type",userTypeRegistation);
         }
 
-
+        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (checkPermission() && gpsEnabled()) {
+            if (isNetworkEnabled) {
+                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
+                        10, mLocationListener);
+            } else {
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+                        10, mLocationListener);
+            }
+        }
+        progressDialog.show();
         Log.d("Firebase", "token "+ FirebaseInstanceId.getInstance().getToken());
 
         mAppSession.saveData("fcm_token",FirebaseInstanceId.getInstance().getToken());
@@ -153,13 +178,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
             try {
                 Utils.hideKeyboard(getActivity());
-                progressDialog = new ProgressDialog(mContext);
-                progressDialog.setMessage("loading...");
+
                 LoginPojoSetData loginPojoSetData = new LoginPojoSetData();
                 loginPojoSetData.setEmail_id(etEmail.getText().toString().trim());
                 loginPojoSetData.setUser_password(etPassword.getText().toString());
                 loginPojoSetData.setRef_user_type_id(userTypeRegistation);
                 loginPojoSetData.setDevice_id(Utils.getDeviceId(mContext));
+                loginPojoSetData.setIncident_lat(mAppSession.getData("latitude"));
+                loginPojoSetData.setIncident_lng(mAppSession.getData("longitude"));
+
                 loginPojoSetData.setFcm_token(mAppSession.getData("fcm_token"));
                 Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(loginPojoSetData)));
                 RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(loginPojoSetData)));
@@ -198,6 +225,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 //                                                Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
 //                                            }
                                         }
+                                        getActivity().startService(new Intent(getActivity(),TrackingServices.class));
                                     }else{
 
                                         mAppSession.saveData("Login", "1");
@@ -210,7 +238,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                         mAppSession.saveData("grade", registrationResponse.getGrade());
                                         Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
 
-
+                                        getActivity().startService(new Intent(getActivity(),TrackingServices.class));
 
 
 //                                        Intent alarm = new Intent(getActivity(), BackgroundBroadCast.class);
@@ -365,7 +393,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 //   isProcessingResultInProgress = false;
                 QbDialogHolder.getInstance().addDialog(result);
                 int count= getUnreadMsgCount(result);
-                PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " "+qbChatMessage.getBody()+" "+count, getActivity());
+                PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " "+qbChatMessage.getBody()+"  "+"("+count+" message)", getActivity());
+
             }
 
             @Override
@@ -385,4 +414,76 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             return unreadMessageCount;
         }
     }
+
+
+
+
+    ////Manish
+    private final android.location.LocationListener mLocationListener = new android.location.LocationListener() {
+
+        @Override
+        public void onLocationChanged(final Location location) {
+            if (location != null) {
+                // mCurrentLocation = location;
+                latitude=location.getLatitude();
+                longitude=location.getLongitude();
+
+                mAppSession.saveData("latitude",String.valueOf(latitude));
+                mAppSession.saveData("longitude",String.valueOf(longitude));
+
+                progressDialog.dismiss();
+                //  initMapFragment();
+            } else {
+                Toast.makeText(getActivity(), "Location is not available now", Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
+            }
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+
+
+    private boolean checkPermission() {
+        boolean check = ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        if (!check) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            return false;
+        }
+        return true;
+//    }
+    }
+
+    private boolean gpsEnabled() {
+        isGpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        if (!isGpsEnabled && !isNetworkEnabled) {
+            // displayLocationSettingsRequest(getActivity());
+//    if (!isGpsEnabled) {
+//            Toast.makeText(m_activity, "GPS is not enabled", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
+    public void startService(View view) {
+
+    }
+
+
 }

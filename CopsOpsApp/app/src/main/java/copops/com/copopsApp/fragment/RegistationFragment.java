@@ -64,6 +64,7 @@ import copops.com.copopsApp.services.Service;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.MyDatePickerFragment;
+import copops.com.copopsApp.utils.TrackingServices;
 import copops.com.copopsApp.utils.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -103,6 +104,21 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
 
     @BindView(R.id.IVcamera)
     ImageView ivCamera;
+
+
+    @BindView(R.id.IV_IDcardcoud)
+    ImageView IV_IDcardcoud;
+
+
+    @BindView(R.id.IV_IDcardvideocoud)
+    ImageView IV_IDcardvideocoud;
+
+
+    @BindView(R.id.IV_businesscardcoud)
+    ImageView IV_businesscardcoud;
+
+    @BindView(R.id.IV_businesscardvideocoud)
+    ImageView IV_businesscardvideocoud;
 
     @BindView(R.id.IVgallery)
     ImageView ivGallery;
@@ -199,7 +215,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
     private String userTypeRegistation;
 
     private String data;
-    private String gender="";
+    private String gender = "";
 
     ProgressDialog progressDialog;
 
@@ -245,7 +261,6 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
         progressDialog.setMessage("loading...");
 
 
-
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (checkPermission() && gpsEnabled()) {
             if (isNetworkEnabled) {
@@ -281,6 +296,10 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
         rLNext.setOnClickListener(this);
         femailId.setOnClickListener(this);
         mailIdTv.setOnClickListener(this);
+        IV_IDcardcoud.setOnClickListener(this);
+        IV_IDcardvideocoud.setOnClickListener(this);
+        IV_businesscardcoud.setOnClickListener(this);
+        IV_businesscardvideocoud.setOnClickListener(this);
 
 //        mGenderRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 //            @Override
@@ -314,34 +333,40 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
 
             Utils.showAlert(getActivity().getString(R.string.phone_number), mContext);
 
-        }else if (etPhoneNo.getText().length()<10) {
+        } else if (etPhoneNo.getText().length() < 10) {
 
             Utils.showAlert(getActivity().getString(R.string.phone_number_10), mContext);
 
-        }
-
-        else if (etEmail.getText().toString().equals("")) {
+        } else if (etEmail.getText().toString().equals("")) {
 
             Utils.showAlert(getActivity().getString(R.string.email), mContext);
 
-        }    else if (gender.equals("")) {
+        } else if (gender.equals("")) {
 
             Utils.showAlert(getActivity().getString(R.string.Male_female), mContext);
 
-        }else if (etPassword.getText().toString().equals("")) {
+        } else if (etPassword.getText().toString().equals("")) {
             Utils.showAlert(getActivity().getString(R.string.password), mContext);
 
         } else if (etCPassword.getText().toString().equals("")) {
             Utils.showAlert(getActivity().getString(R.string.con_password), mContext);
-        }
-        else if (!etCPassword.getText().toString().equalsIgnoreCase(etPassword.getText().toString())) {
+        } else if (!etCPassword.getText().toString().equalsIgnoreCase(etPassword.getText().toString())) {
             Utils.showAlert(getActivity().getString(R.string.password_not_same), mContext);
 
-        }else if (!Utils.isValidMail(etEmail.getText().toString())) {
+        } else if (!Utils.isValidMail(etEmail.getText().toString())) {
             Utils.showAlert(getActivity().getString(R.string.valid_email_errer), mContext);
+        }else if (userType.equalsIgnoreCase("Cops") && idCardUri_1==null) {
+            Utils.showAlert(getActivity().getString(R.string.card1), mContext);
+        }else if (userType.equalsIgnoreCase("Cops") && idCardUri_2==null) {
+            Utils.showAlert(getActivity().getString(R.string.card2), mContext);
+        }else if (userType.equalsIgnoreCase("Cops") && idBusinessCardUri_1==null) {
+            Utils.showAlert(getActivity().getString(R.string.bussiness1), mContext);
+        }else if (userType.equalsIgnoreCase("Cops") && idBusinessCardUri_2==null) {
+            Utils.showAlert(getActivity().getString(R.string.bussiness2), mContext);
         } else {
             try {
-
+                mAppSession.saveData("latitude", String.valueOf(latitude));
+                mAppSession.saveData("longitude", String.valueOf(longitude));
 
                 Utils.hideKeyboard(getActivity());
                 RegistationPjoSetData registationPjoSetData = new RegistationPjoSetData();
@@ -353,8 +378,10 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                 registationPjoSetData.setRef_user_type_id(userTypeRegistation);
                 registationPjoSetData.setPhone_number(etPhoneNo.getText().toString().trim());
                 registationPjoSetData.setUser_password(etPassword.getText().toString().trim());
-                registationPjoSetData.setReg_latitude(String.valueOf(latitude));
+                //   registationPjoSetData.setReg_latitude(String.valueOf(latitude));
+
                 registationPjoSetData.setReg_longitude(String.valueOf(longitude));
+                registationPjoSetData.setReg_latitude(String.valueOf(latitude));
                 registationPjoSetData.setUser_password(etPassword.getText().toString().trim());
                 registationPjoSetData.setDevice_id(Utils.getDeviceId(mContext));
 
@@ -409,7 +436,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                         fileToUploadProfileBusCard_2 = MultipartBody.Part.createFormData("business_card_back", file_bus_2.getName(), mFile);
                     }
                     RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(registationPjoSetData)));
-
+                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(registationPjoSetData)));
                     Service uploadImage = ApiUtils.getAPIService();
                     Call<RegistationPojo> fileUpload = uploadImage.registationWithuploadFile(fileToUploadProfile, fileToUploadIdCard_1, fileToUploadIdCard_2, fileToUploadProfileBusCard_1, fileToUploadProfileBusCard_2, mFile);
                     fileUpload.enqueue(new Callback<RegistationPojo>() {
@@ -429,12 +456,13 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                                         mAppSession.saveData("grade", registrationResponse.getGrade());
                                         mAppSession.saveData("profile_qrcode", registrationResponse.getProfile_qrcode());
 
-                                        if(mAppSession.getData("userType").equalsIgnoreCase("Citizen")) {
+                                        if (mAppSession.getData("userType").equalsIgnoreCase("Citizen")) {
                                             Utils.fragmentCall(new AuthenticateCodeFragment(userType, registrationResponse), getFragmentManager());
-                                        }else{
+                                        } else {
                                             Utils.fragmentCall(new LoginFragment(mAppSession.getData("userType")), getFragmentManager());
                                         }
                                     }
+                                    getActivity().startService(new Intent(getActivity(), TrackingServices.class));
                                     progressDialog.dismiss();
 
                                 } else {
@@ -459,7 +487,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                     EasyPermissions.requestPermissions(this, getString(R.string.read_file), Utils.READ_REQUEST_CODE, Manifest.permission.READ_EXTERNAL_STORAGE);
                 }
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 e.getMessage();
                 Utils.showAlert(e.getMessage(), mContext);
@@ -474,23 +502,75 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY) {
+
             if (data != null) {
                 Uri contentURI = data.getData();
                 try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
-                    String profilePicUri1 = Utils.getRealPathFromURIPath(contentURI,getActivity());
-                    File file = new File(profilePicUri1);
-                    OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-                    os.close();
-                    profileUri =Utils.getImageUri(getActivity(), bitmap);
-                    profilePicUri=Utils.getRealPathFromURIPath(profileUri,getActivity());
-                   // Toast.makeText(mContext, "Image Saved!", Toast.LENGTH_SHORT).show();
-                    IVprofilephoto.setImageBitmap(bitmap);
+
+                    if (IDCARD_1 == 1) {
+                        //idCardUri_1 = Utils.getImageUri(mContext, thumbnail);
+
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
+                        String profilePicUri1 = Utils.getRealPathFromURIPath(contentURI, getActivity());
+                        File file = new File(profilePicUri1);
+                        OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                        os.close();
+                        idCardUri_1 = Utils.getImageUri(getActivity(), bitmap);
+                        //  profilePicUri = Utils.getRealPathFromURIPath(profileUri, getActivity());
+                        IDCARD_1 = 0;
+                    } else if (IDCARD_2 == 2) {
+                        //  idCardUri_2 = Utils.getImageUri(mContext, thumbnail);
+
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
+                        String profilePicUri1 = Utils.getRealPathFromURIPath(contentURI, getActivity());
+                        File file = new File(profilePicUri1);
+                        OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                        os.close();
+                        idCardUri_2 = Utils.getImageUri(getActivity(), bitmap);
+                        IDCARD_2 = 0;
+
+                    } else if (IDBUSINESSCARD_1 == 1) {
+                        //   idBusinessCardUri_1 = Utils.getImageUri(mContext, thumbnail);
+
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
+                        String profilePicUri1 = Utils.getRealPathFromURIPath(contentURI, getActivity());
+                        File file = new File(profilePicUri1);
+                        OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                        os.close();
+                        idBusinessCardUri_1 = Utils.getImageUri(getActivity(), bitmap);
+                        IDBUSINESSCARD_1 = 0;
+                    } else if (IDBUSINESSCARD_2 == 2) {
+                        //idBusinessCardUri_2 = Utils.getImageUri(mContext, thumbnail);
+
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
+                        String profilePicUri1 = Utils.getRealPathFromURIPath(contentURI, getActivity());
+                        File file = new File(profilePicUri1);
+                        OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                        os.close();
+                        idBusinessCardUri_2 = Utils.getImageUri(getActivity(), bitmap);
+                        IDBUSINESSCARD_2 = 0;
+                    } else {
+
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
+                        String profilePicUri1 = Utils.getRealPathFromURIPath(contentURI, getActivity());
+                        File file = new File(profilePicUri1);
+                        OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                        os.close();
+                        profileUri = Utils.getImageUri(getActivity(), bitmap);
+                        profilePicUri = Utils.getRealPathFromURIPath(profileUri, getActivity());
+                        // Toast.makeText(mContext, "Image Saved!", Toast.LENGTH_SHORT).show();
+                        IVprofilephoto.setImageBitmap(bitmap);
+
+                    }
 
                 } catch (IOException e) {
                     e.printStackTrace();
-                  //  Toast.makeText(mContext, "Failed!", Toast.LENGTH_SHORT).show();
+                    //  Toast.makeText(mContext, "Failed!", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -516,8 +596,8 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                     } else {
 
                         IVprofilephoto.setImageBitmap(thumbnail);
-                       profileUri =Utils.getImageUri(getActivity(), thumbnail);
-                        profilePicUri = Utils.getRealPathFromURIPath(profileUri,getActivity());
+                        profileUri = Utils.getImageUri(getActivity(), thumbnail);
+                        profilePicUri = Utils.getRealPathFromURIPath(profileUri, getActivity());
                     }
                 }
             } catch (Exception e) {
@@ -595,7 +675,6 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                 break;
 
 
-
             case R.id.mailIdTv:
                 IVgreenmam.setImageResource(R.mipmap.img_green_dot);
                 IVgreenwoman.setImageResource(R.mipmap.img_white_dot);
@@ -634,6 +713,35 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
 
                     choosePhotoFromGallary();
                 }
+
+
+                break;
+            case R.id.IV_IDcardcoud:
+                if (Utils.checkPermission(mContext)) {
+                    if (EasyPermissions.hasPermissions(mContext, Manifest.permission.CAMERA)) {
+                        choosePhotoFromGallary();
+                        IDCARD_1 = 1;
+                    }
+                } else {
+
+                    choosePhotoFromGallary();
+                    IDCARD_1 = 1;
+                }
+
+                break;
+
+            case R.id.IV_IDcardvideocoud:
+                if (Utils.checkPermission(mContext)) {
+                    if (EasyPermissions.hasPermissions(mContext, Manifest.permission.CAMERA)) {
+                        choosePhotoFromGallary();
+                        IDCARD_2 = 2;
+                    }
+                } else {
+
+                    choosePhotoFromGallary();
+                    IDCARD_2 = 2;
+                }
+
                 break;
 
             case R.id.IV_businesscardcamera:
@@ -648,6 +756,30 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                 }
                 break;
 
+            case R.id.IV_businesscardcoud:
+                if (Utils.checkPermission(mContext)) {
+                    if (EasyPermissions.hasPermissions(mContext, Manifest.permission.CAMERA)) {
+                        IDBUSINESSCARD_1 = 1;
+                        choosePhotoFromGallary();
+                    }
+                } else {
+                    IDBUSINESSCARD_1 = 1;
+                    choosePhotoFromGallary();
+                }
+                break;
+
+
+            case R.id.IV_businesscardvideocoud:
+                if (Utils.checkPermission(mContext)) {
+                    if (EasyPermissions.hasPermissions(mContext, Manifest.permission.CAMERA)) {
+                        IDBUSINESSCARD_2 = 2;
+                        choosePhotoFromGallary();
+                    }
+                } else {
+                    IDBUSINESSCARD_2 = 2;
+                    choosePhotoFromGallary();
+                }
+                break;
 
             case R.id.IV_businesscardvideocamera:
                 if (Utils.checkPermission(mContext)) {
@@ -691,16 +823,14 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                 break;
 
             case R.id.RLnext:
-                if(Utils.checkConnection(mContext))
-                validation();
+                if (Utils.checkConnection(mContext))
+                    validation();
                 else
                     Utils.showAlert(getActivity().getString(R.string.internet_conection), mContext);
                 break;
 
         }
     }
-
-
 
 
     private boolean checkPermission() {
@@ -736,8 +866,8 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
         public void onLocationChanged(final Location location) {
             if (location != null) {
                 // mCurrentLocation = location;
-                latitude=location.getLatitude();
-                longitude=location.getLongitude();
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
                 //  initMapFragment();
             } else {
                 Toast.makeText(getActivity(), "Location is not available now", Toast.LENGTH_LONG).show();
@@ -759,9 +889,6 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
 
         }
     };
-
-
-
 
 
 }

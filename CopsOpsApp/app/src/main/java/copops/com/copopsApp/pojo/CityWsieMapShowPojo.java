@@ -3,7 +3,7 @@ package copops.com.copopsApp.pojo;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class CityWsieMapShowPojo {
+public class CityWsieMapShowPojo implements Serializable {
 
     public String getStatus() {
         return status;

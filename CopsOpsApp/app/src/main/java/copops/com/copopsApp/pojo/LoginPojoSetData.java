@@ -1,10 +1,58 @@
 package copops.com.copopsApp.pojo;
 
-public class LoginPojoSetData {
+import java.io.Serializable;
+
+public class LoginPojoSetData implements Serializable {
 
 
     String email_id;
     String otp;
+    String user_id;
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    String    latitude;
+    String  longitude;
+    public String getIncident_lat() {
+        return incident_lat;
+    }
+
+    public void setIncident_lat(String incident_lat) {
+        this.incident_lat = incident_lat;
+    }
+
+    public String getIncident_lng() {
+        return incident_lng;
+    }
+
+    public void setIncident_lng(String incident_lng) {
+        this.incident_lng = incident_lng;
+    }
+
+    String incident_lat;
+    String incident_lng;
 
     public String getFcm_token() {
         return fcm_token;

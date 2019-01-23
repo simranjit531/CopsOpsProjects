@@ -140,8 +140,7 @@
     <style name="LinearAttachWidgetFrame.Left">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginRight">@dimen/padding_common</item>
-        <item name="android:layout_marginLeft">@dimen/padding_big</item>
+        <item name="android:layout_marginLeft">@dimen/padding_common</item>
         <item name="android:layout_alignParentRight">false</item>
     </style>
 

@@ -6,6 +6,13 @@ public class RegistationPojo implements Serializable {
     String status;
     String userid;
     String username;
+    String email_id;
+    String otp;
+    String message;
+    String verified;
+    String profile_url;
+    String level;
+    String profile_percent;
 
     public String getId() {
         return id;
@@ -25,13 +32,7 @@ public class RegistationPojo implements Serializable {
         this.email_id = email_id;
     }
 
-    String email_id;
-    String otp;
-    String message;
-    String verified;
-    String profile_url;
-    String level;
-    String profile_percent;
+
 
     public String getProfile_qrcode() {
         return profile_qrcode;

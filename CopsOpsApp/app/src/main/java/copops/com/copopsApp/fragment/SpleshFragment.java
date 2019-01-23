@@ -1,6 +1,7 @@
 package copops.com.copopsApp.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.utils.AppSession;
+import copops.com.copopsApp.utils.TrackingServices;
 import copops.com.copopsApp.utils.Utils;
 
 /**
@@ -51,9 +53,12 @@ public class SpleshFragment extends Fragment {
 
                                               if(mAppSession.getData("userType").equalsIgnoreCase("Citizen")) {
                                                   Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
+
                                               }else{
                                                   Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
                                               }
+
+                                              getActivity().startService(new Intent(getActivity(),TrackingServices.class));
                                           } else {
                                               Utils.fragmentCall(new HomeFragment(), getFragmentManager());
                                           }

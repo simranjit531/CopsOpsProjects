@@ -1,12 +1,21 @@
 package copops.com.copopsApp.pojo;
 
-public class RegistationPjoSetData {
+import java.io.Serializable;
+
+public class RegistationPjoSetData implements Serializable {
 
     String gender;
     String first_name;
     String last_name;
     String date_of_birth;
-
+    String device_id;
+    String ref_user_type_id;
+    String place_of_birth;
+    String phone_number;
+    String email_id;
+    String user_password;
+    String reg_latitude;
+    String reg_longitude;
     public String getDevice_id() {
         return device_id;
     }
@@ -15,7 +24,7 @@ public class RegistationPjoSetData {
         this.device_id = device_id;
     }
 
-    String device_id;
+
 
     public String getRef_user_type_id() {
         return ref_user_type_id;
@@ -25,7 +34,7 @@ public class RegistationPjoSetData {
         this.ref_user_type_id = ref_user_type_id;
     }
 
-    String ref_user_type_id;
+
 
     public String getGender() {
         return gender;
@@ -91,10 +100,7 @@ public class RegistationPjoSetData {
         this.user_password = user_password;
     }
 
-    String place_of_birth;
-    String phone_number;
-    String email_id;
-    String user_password;
+
 
     public String getReg_latitude() {
         return reg_latitude;
@@ -112,8 +118,7 @@ public class RegistationPjoSetData {
         this.reg_longitude = reg_longitude;
     }
 
-    String reg_latitude;
-    String reg_longitude;
+
 
 //    'gender':'Male',
 //            'first_name:'kailash',

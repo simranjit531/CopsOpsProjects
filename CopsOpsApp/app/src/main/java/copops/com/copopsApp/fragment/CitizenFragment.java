@@ -158,7 +158,7 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
                     .error(R.mipmap.img_profile_photo).
                     .into(IVprofilephoto);*/
         }else {
-            IVprofilephoto.setImageResource(R.mipmap.img_profile_photo);
+            IVprofilephoto.setImageResource(R.mipmap.img_white_dot);
         }
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("loading...");
@@ -168,6 +168,8 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
             IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
             incdentSetPojo.setUser_id(mAppSession.getData("id"));
             incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+            incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+            incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
             Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
             RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
             getAssigmentList(mFile);

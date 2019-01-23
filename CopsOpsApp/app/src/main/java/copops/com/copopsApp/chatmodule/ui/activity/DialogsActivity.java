@@ -199,26 +199,10 @@ else{
     }
 
 
-    private void filter(String text) {
-        //new array list that will hold the filtered data
-        //  filterdNames = new ArrayList<>();
-
-
-        //looping through existing elements
-        for (QBChatDialog s : qbChatDialogArrayList) {
-            //if the existing elements contains the search input
-            if (s.getName().equalsIgnoreCase(text)) {
-                //adding the element to filtered list
-                //   filterdNames.add(s);
-                updateDialogsAdapter();
-            }
-
-        }
-
 
         //calling a method of the adapter class and passing the filtered list
 
-    }
+
 
     @Override
     protected void onResume() {
@@ -420,6 +404,7 @@ else{
                 QBChatDialog selectedDialog = (QBChatDialog) parent.getItemAtPosition(position);
                 if (currentActionMode == null) {
                     ChatActivity.startForResult(DialogsActivity.this, REQUEST_DIALOG_ID_FOR_UPDATE, selectedDialog);
+                    mAppSession.saveData("messagecount","0");
                 } else {
                     dialogsAdapter.toggleSelection(selectedDialog);
                 }
@@ -917,4 +902,5 @@ else{
 
         // userLogout();
     }
+
 }

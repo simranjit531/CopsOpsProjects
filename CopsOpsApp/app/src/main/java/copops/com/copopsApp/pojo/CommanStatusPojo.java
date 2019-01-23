@@ -1,6 +1,8 @@
 package copops.com.copopsApp.pojo;
 
-public class CommanStatusPojo {
+import java.io.Serializable;
+
+public class CommanStatusPojo implements Serializable {
     String status;
 
     public String getAvailable() {

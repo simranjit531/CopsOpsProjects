@@ -3,7 +3,7 @@ package copops.com.copopsApp.pojo;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class AssignmentListPojo {
+public class AssignmentListPojo implements Serializable {
     public String getStatus() {
         return status;
     }
@@ -22,6 +22,16 @@ public class AssignmentListPojo {
 
     String status;
 
+    public String getPending() {
+        return pending;
+    }
+
+    public void setPending(String pending) {
+        this.pending = pending;
+    }
+
+    String pending;
+
     public String getMessage() {
         return message;
     }
@@ -32,6 +42,7 @@ public class AssignmentListPojo {
 
     String message;
     ArrayList<Data> data;
+
 public class Data implements Serializable {
     String incident_description;
     String id;

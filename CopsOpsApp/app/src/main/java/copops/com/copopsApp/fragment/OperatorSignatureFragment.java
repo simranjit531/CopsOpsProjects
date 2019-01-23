@@ -2,28 +2,22 @@ package copops.com.copopsApp.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
 import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.google.gson.Gson;
-
 import java.io.File;
-
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
-import copops.com.copopsApp.pojo.CommanStatusPojo;
 import copops.com.copopsApp.pojo.IncdentSetPojo;
 import copops.com.copopsApp.pojo.IncedentAcceptResponse;
 import copops.com.copopsApp.services.ApiUtils;
@@ -123,7 +117,6 @@ public class OperatorSignatureFragment extends Fragment implements View.OnClickL
                             incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
                             Bitmap signatureBitmap = mSignaturePad.getSignatureBitmap();
                             Uri signature_uri = Utils.getImageUri(getActivity(), signatureBitmap);
-
                             File handrail_image_file;
                             MultipartBody.Part handrail_image_siginature = null;
                             if (signature_uri != null) {
@@ -142,9 +135,7 @@ public class OperatorSignatureFragment extends Fragment implements View.OnClickL
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-
                 break;
-
             case R.id.mClear:
                 mSignaturePad.clear();
                 signatureCreated = false;
@@ -156,14 +147,7 @@ public class OperatorSignatureFragment extends Fragment implements View.OnClickL
                 break;
         }
     }
-
-
-
-
-
-
     private void getCopsCloseStatus(RequestBody Data, MultipartBody.Part handrail_image_siginature) {
-
         try {
             progressDialog.show();
             Service operator = ApiUtils.getAPIService();

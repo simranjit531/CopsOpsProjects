@@ -73,12 +73,19 @@ public class ChatAdapter extends QBMessagesAdapter<QBChatMessage> implements Sti
         holder.timeTextMessageTextView.setVisibility(View.GONE);
 
         TextView opponentNameTextView = holder.itemView.findViewById(R.id.opponent_name_text_view);
+        TextView meiD = holder.itemView.findViewById(R.id.meiD);
         opponentNameTextView.setTextColor(UiUtils.getRandomTextColorById(chatMessage.getSenderId()));
         opponentNameTextView.setText(getSenderName(chatMessage));
 
         TextView customMessageTimeTextView = holder.itemView.findViewById(R.id.custom_msg_text_time_message);
         customMessageTimeTextView.setText(getDate(chatMessage.getDateSent()));
-
+        if(chatMessage.getId().equals(chatMessages.get(position).getId())) {
+            opponentNameTextView.setText(getSenderName(chatMessage));
+            meiD.setVisibility(View.GONE);
+        }else{
+            meiD.setVisibility(View.VISIBLE);
+            opponentNameTextView.setVisibility(View.GONE);
+        }
         super.onBindViewMsgLeftHolder(holder, chatMessage, position);
     }
 
@@ -86,7 +93,8 @@ public class ChatAdapter extends QBMessagesAdapter<QBChatMessage> implements Sti
     protected void onBindViewAttachLeftHolder(ImageAttachHolder holder, QBChatMessage chatMessage, int position) {
         TextView opponentNameTextView = holder.itemView.findViewById(R.id.opponent_name_attach_view);
         opponentNameTextView.setTextColor(UiUtils.getRandomTextColorById(chatMessage.getSenderId()));
-        opponentNameTextView.setText(getSenderName(chatMessage));
+
+
 
         super.onBindViewAttachLeftHolder(holder, chatMessage, position);
     }

@@ -7,15 +7,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Telephony;
-
-import android.text.SpannableString;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -28,12 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.google.gson.Gson;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBIncomingMessagesManager;
@@ -43,29 +33,19 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.messages.services.QBPushManager;
 import com.quickblox.messages.services.SubscribeService;
-import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
-import copops.com.copopsApp.activity.DashboardActivity;
-import copops.com.copopsApp.adapter.AssignmentInsidentListAdapter;
-import copops.com.copopsApp.chat.ChatCopsActivity;
 import copops.com.copopsApp.chatmodule.App;
-import copops.com.copopsApp.chatmodule.ui.activity.AttachmentImageActivity;
-import copops.com.copopsApp.chatmodule.ui.activity.ChatActivity;
 import copops.com.copopsApp.chatmodule.ui.activity.DialogsActivity;
-import copops.com.copopsApp.chatmodule.ui.activity.SplashActivity;
-import copops.com.copopsApp.chatmodule.utils.Consts;
 import copops.com.copopsApp.chatmodule.utils.PushBroadcastReceiver;
 import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
 import copops.com.copopsApp.chatmodule.utils.qb.QbChatDialogMessageListenerImp;
@@ -82,7 +62,6 @@ import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
-
 import copops.com.copopsApp.utils.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -105,6 +84,9 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
     @BindView(R.id.Tvavaiable)
     TextView Tvavaiable;
+
+    @BindView(R.id.chatCountId)
+    TextView chatCountId;
 
     @BindView(R.id.Tvnotavaiable)
     TextView Tvnotavaiable;
@@ -153,6 +135,12 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.IVback)
     ImageView IVback;
 
+    @BindView(R.id.picId)
+    ImageView picId;
+
+    @BindView(R.id.IVpositionofincidents)
+    ImageView IVpositionofincidents;
+
     @BindView(R.id.llintervention)
     LinearLayout llintervention;
 
@@ -175,7 +163,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
     QBIncomingMessagesManager incomingMessagesManager;
     private QBUser currentUser;
-
+    QBChatMessage qbChatMessage1;
     public OperatorFragment() {
 
         // Required empty public constructor
@@ -223,6 +211,11 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     private void initView() {
         IVlogout.setVisibility(View.VISIBLE);
         IVback.setVisibility(View.GONE);
+
+     //   String abb=mAppSession.getData("messagecount");
+
+
+
         TVname.setText(mAppSession.getData("name"));
         if (mAppSession.getData("image_url") != null && !mAppSession.getData("image_url").equals("")) {
             Glide.with(getActivity()).load(mAppSession.getData("image_url")).into(IVprofilephoto);
@@ -263,7 +256,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                     .error(R.mipmap.img_profile_photo).
                     .into(IVprofilephoto);*/
         } else {
-            IVprofilephoto.setImageResource(R.mipmap.img_profile_photo);
+            IVprofilephoto.setImageResource(R.mipmap.img_white_dot);
         }
 
 
@@ -271,16 +264,18 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         progressDialog.setMessage("loading...");
 
 
-        if (Utils.checkConnection(getActivity())) {
-            IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
-            incdentSetPojo.setUser_id(mAppSession.getData("id"));
-            incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
-            Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-            RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-            getCopeStatus(mFile);
-        } else {
-            Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
-        }
+//        if (Utils.checkConnection(getActivity())) {
+//            IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+//            incdentSetPojo.setUser_id(mAppSession.getData("id"));
+//            incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+//            incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+//            incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+//            Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+//            RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+//            getCopeStatus(mFile);
+//        } else {
+//            Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+//        }
 
 
     }
@@ -312,6 +307,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
             case R.id.rlchat:
                 Intent mIntent = new Intent(getActivity(), DialogsActivity.class);
+
                 startActivity(mIntent);
                 break;
 
@@ -350,7 +346,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
             case R.id.llintervention:
 
-//                if (operatorShowAlInfo.getNew_reports().equalsIgnoreCase("1")) {
+//                if (operatorShowAlInfo.getAvailable().equalsIgnoreCase("0")) {
 //                    if (Utils.checkConnection(getActivity())) {
 //                        IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
 //
@@ -379,7 +375,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                         Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
                     }
 
-              //  }
+             //  }
                 break;
 
         }
@@ -462,14 +458,27 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             }
 
 
-                            if (operatorShowAlInfo.getNew_reports().equalsIgnoreCase("0")) {
-                                countId.setVisibility(View.INVISIBLE);
+                            if (operatorShowAlInfo.getAvailable().equalsIgnoreCase("1")){
+                                if (operatorShowAlInfo.getNew_reports().equalsIgnoreCase("0")) {
+                                    countId.setVisibility(View.INVISIBLE);
+                                    picId.setVisibility(View.INVISIBLE);
 
-                            } else {
-                                countId.setVisibility(View.VISIBLE);
+                                } else {
+                                    countId.setVisibility(View.VISIBLE);
+                                    picId.setVisibility(View.INVISIBLE);
 
-                                countId.setText(operatorShowAlInfo.getNew_reports());
+                                    countId.setText(operatorShowAlInfo.getNew_reports());
+                                }
+                            }else{
+                                if(operatorShowAlInfo.getNew_reports().equalsIgnoreCase("0")){
+                                    countId.setVisibility(View.GONE);
+                                }else {
+                                    countId.setVisibility(View.VISIBLE);
+                                    picId.setVisibility(View.VISIBLE);
+                                    countId.setText(operatorShowAlInfo.getNew_reports());
+                                }
                             }
+
 
                             TVprofiledescription.setText(operatorShowAlInfo.getGrade());
 
@@ -610,10 +619,23 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
 
+        String aa = mAppSession.getData("messagecount");
+
+        if(mAppSession.getData("messagecount").equals("")|| mAppSession.getData("messagecount").equals("0")){
+            chatCountId.setVisibility(View.GONE);
+        }else{
+            chatCountId.setVisibility(View.VISIBLE);
+            chatCountId.setText(mAppSession.getData("messagecount"));
+        }
+
+        //loadUpdatedDialog(qbChatMessage1.getDialogId(),qbChatMessage1);
+
         if (Utils.checkConnection(getActivity())) {
             IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
             incdentSetPojo.setUser_id(mAppSession.getData("id"));
             incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+            incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+            incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
             Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
             RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
             getCopeStatus(mFile);
@@ -708,7 +730,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             if (assignmentListPojo_close.getStatus().equals("false")) {
                                 Utils.showAlert(assignmentListPojo_close.getMessage(), getActivity());
                             } else {
-                                Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close), getFragmentManager());
+                              //  Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close), getFragmentManager());
                             }
                             progressDialog.dismiss();
 
@@ -842,6 +864,8 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+
+
     private void loadUpdatedDialog(String dialogId,QBChatMessage qbChatMessage) {
         ChatHelper.getInstance().getDialogById(dialogId, new QbEntityCallbackImpl<QBChatDialog>() {
             @Override
@@ -849,7 +873,19 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
              //   isProcessingResultInProgress = false;
                 QbDialogHolder.getInstance().addDialog(result);
                 int count= getUnreadMsgCount(result);
-                PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " "+qbChatMessage.getBody()+"  "+count, getActivity());
+
+                qbChatMessage1=qbChatMessage;
+                if(count==0){
+                    chatCountId.setVisibility(View.GONE);
+                    mAppSession.saveData("messagecount","0");
+                }else{
+                    chatCountId.setVisibility(View.VISIBLE);
+                    chatCountId.setText(""+count);
+                    mAppSession.saveData("messagecount",""+count);
+                }
+
+
+                PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " "+qbChatMessage.getBody()+"  "+"("+count+" message)", getActivity());
             }
 
             @Override
@@ -869,4 +905,8 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
             return unreadMessageCount;
         }
     }
+
+
+
+
 }

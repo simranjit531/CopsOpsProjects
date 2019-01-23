@@ -64,3 +64,16 @@
 
 -dontwarn org.jivesoftware.smackx.**
 -dontwarn android.support.v4.app.**
+-ignorewarnings
+-keep class * {
+    public private *;
+}
+
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keepattributes Signature
+-keepattributes Exceptions
+
+-keepclasseswithmembers class * {
+    @retrofit2.http.* <methods>;
+}

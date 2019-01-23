@@ -1,6 +1,8 @@
 package copops.com.copopsApp.pojo;
 
-public class IncedentAcceptResponse {
+import java.io.Serializable;
+
+public class IncedentAcceptResponse implements Serializable {
     String status;
 
     public String getStatus() {

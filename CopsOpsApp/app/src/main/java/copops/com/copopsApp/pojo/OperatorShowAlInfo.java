@@ -1,6 +1,8 @@
 package copops.com.copopsApp.pojo;
 
-public class OperatorShowAlInfo {
+import java.io.Serializable;
+
+public class OperatorShowAlInfo implements Serializable {
 
     String grade;
     String available;
