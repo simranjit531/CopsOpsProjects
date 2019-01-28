@@ -92,7 +92,7 @@ public class Frag_Public_Profile_Shown extends Fragment implements View.OnClickL
 
 
         TVprofiledescription.setText(operatorShowAlInfo.getLevel());
-        TVprogressbarreports.setText(operatorShowAlInfo.getCompleted_reports() + " Signalements");
+        TVprogressbarreports.setText(operatorShowAlInfo.getCompleted_reports() + getString(R.string.Signalements));
 
         if (operatorShowAlInfo.getProfile_percent().equalsIgnoreCase("0")) {
 

@@ -18,6 +18,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="TASKS" />
     <permission
         android:name="copops.com.copopsApp.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -93,14 +95,14 @@
             android:name="INTENT_NAME"
             android:value="{YOUR_INTENT_NAME}" />
 
-        <service
-            android:name="com.here.android.mpa.service.MapService"
-            android:exported="false"
-            android:label="{YOUR_LABEL_NAME}">
-            <intent-filter>
-                <action android:name="{YOUR_INTENT_NAME}" />
-            </intent-filter>
-        </service>
+        <!--<service-->
+            <!--android:name="com.here.android.mpa.service.MapService"-->
+            <!--android:exported="false"-->
+            <!--android:label="{YOUR_LABEL_NAME}">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="{YOUR_INTENT_NAME}" />-->
+            <!--</intent-filter>-->
+        <!--</service>-->
         <service android:name=".services.ForegroundService" />
 
         <provider
@@ -226,6 +228,14 @@
         <!-- </intent-filter> -->
         <!-- </service> -->
         <activity android:name=".activity.AssingmentActivity"></activity>
+
+        <service
+            android:name=".shortcut.ShortcutViewService"
+            android:enabled="true"
+            android:exported="false" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="9a662926d6c2eed4a4bd5ad88520ea6ee0ad0329" />
     </application>
 
 </manifest>

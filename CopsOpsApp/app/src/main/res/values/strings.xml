@@ -38,57 +38,11 @@
     <string name="internet_conection">Please check your internet connectivity !!! .</string>
     <string name="intervin">You have already one report to complete, please complete it first .</string>
     <string name="password_not_same">Password and Confirm password must be equal.</string>
-    <string name="citizen">Citizen</string>
+
     <string name="cityName">Please Enter City Name</string>
     <string name="no_find">No Record found</string>
 
-    <string name="validation_msg">The creation of the operator account
-must be validated</string>
-    <string name="home_app_msg">The public account is intended for use
-of the application.
-The Operator account is intended
-in the force of order. </string>
 
-    <!--  Loging Screen -->
-    <string name="security_msg">Security is the first freedom</string>
-    <string name="header_msg">Lorem ipsum dolor sit
-exciting and enjoyable way </string>
-    <string name="email_hint">Email</string>
-    <string name="password_hint">Password</string>
-    <string name="log_in_btn">Log In</string>
-    <string name="forgot_pass">Forgot your password ?</string>
-    <string name="not_registered">Not Registered ? </string>
-
-    <!-- Reset Password Screen-->
-    <string name="reset_pass_header">Reset Password</string>
-    <string name="email_msg">"An email will be sent to you
-     to change your password</string>
-    <string name="your_email_hint">Your Email</string>
-    <string name="send_btn">Send</string>
-
-
-    <!--  Registatin Screen -->
-    <string name="last_name_hint">Last Name</string>
-    <string name="first_name_hint">First Name</string>
-    <string name="dob_hint">dd / mm / yyyy</string>
-    <string name="phone_no_hint">Phone Number</string>
-    <string name="con_pass_hint">Confirm Password</string>
-    <string name="id_card">ID Card</string>
-    <string name="business_id_card">Business Card</string>
-    <string name="front_text">Recto</string>
-    <string name="back_text">Verso</string>
-    <string name="next_btn">Next</string>
-    <string name="handrail">Handrail</string>
-    <string name="object">Object</string>
-
-    <string name="aut_header">Authenticate the device</string>
-    <string name="send_code">Send code</string>
-    <string name="otp_msg">Please fill in below
-the code sent to </string>
-
-    <!--  Signature Screen -->
-    <string name="signature">Signature</string>
-    <string name="signature_obligatory">The signature is obligatory</string>
 
     <!--  Custom Dialog Screen -->
     <string name="yes">YES</string>
@@ -99,25 +53,9 @@ the code sent to </string>
     <string name="logout_message">Are You Sure You Want to Logout ? </string>
     <string name="loading_msg">Please Wait... </string>
     <string name="compress_msg">Please Wait Your video is Processing... </string>
+   <string name="next">Next</string>
 
-    <!--  DashBoard Screen -->
 
-    <string name="sent">| sentinel</string>
-    <string name="report_comp">06/10</string>
-    <string name="progress_propert">06 Reports</string>
-    <string name="navigation">Navigation</string>
-    <string name="report_an_incident">Report an incident</string>
-    <string name="search"> Search</string>
-
-    <string name="next">Next</string>
-    <!-- call screen -->
-    <string name="no_thanks">NO THANKS</string>
-    <string name="call">CALL</string>
-    <!-- Incident screen -->
-    <string name="reason">Reason</string>
-    <string name="other_hint">Other informations (Victims,place description.....</string>
-    <string name="reference">Reference</string>
-    <string name="finish">Finish</string>
 
     <!-- Navigation screen -->
 
@@ -217,4 +155,179 @@ the code sent to </string>
     <string name="error_leave_chat">Error leaving room</string>
 
     <string name="sender_id">1074070354893</string>
+
+
+    <string-array name="select_map_google_waze">
+        <item>Google Maps</item>
+        <item>Waze</item>
+    </string-array>
+
+    <string-array name="select_map_google">
+        <item>Google Maps</item>
+    </string-array>
+
+    <string-array name="select_waze">
+        <item>Waze</item>
+    </string-array>
+
+    <!-- SCREEN TEXT-->
+
+    <string name="whoareyou">Who are you?</string>
+    <string name="home_app_msg">The public account is intended for use
+of the application.
+The Operator account is intended
+in the force of order. </string>
+    <string name="citizen">Citizen</string>
+    <string name="cops">COPS</string>
+    <string name="validation_msg">The creation of the operator account
+must be validated</string>
+    <string name="Copops">COP-OPS</string>
+    <string name="burglary">Burglary</string>
+
+
+
+
+    <!--  Loging Screen -->
+    <string name="security_msg">Security is the first freedom</string>
+    <string name="header_msg">Lorem ipsum dolor sit
+exciting and enjoyable way </string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="log_in_btn">Log In</string>
+    <string name="forgot_pass">Forgot your password ?</string>
+    <string name="not_registered">Not Registered ? </string>
+
+
+    <!--  Registatin Screen -->
+    <string name="last_name_hint">Last Name</string>
+    <string name="first_name_hint">First Name</string>
+    <string name="dob_hint">dd / mm / yyyy</string>
+    <string name="phone_no_hint">Phone Number</string>
+    <string name="Email_hint">Email</string>
+    <string name="con_pass_hint">Confirm Password</string>
+    <string name="id_card">ID Card</string>
+    <string name="business_id_card">Business Card</string>
+    <string name="front_text_Recto">Recto</string>
+    <string name="back_text_Verso">Verso</string>
+    <string name="next_btn">Next</string>
+    <string name="handrail">Handrail</string>
+    <string name="object">Object</string>
+
+    <string name="aut_header">Authenticate the device</string>
+    <string name="send_code">Send code</string>
+    <string name="otp_msg">Please fill in below
+the code sent to </string>
+
+
+    <!-- Reset Password Screen-->
+    <string name="reset_pass_header">Reset Password</string>
+    <string name="email_msg">"An email will be sent to you
+     to change your password</string>
+    <string name="your_email_hint">Your Email</string>
+    <string name="send_btn">Send</string>
+    <string name="man">Man</string>
+    <string name="woman">Woman</string>
+
+    <!--  DashBoard HOME Screen -->
+
+    <string name="sentinel">| sentinel</string>
+    <string name="grade">Grade |</string>
+    <string name="report_comp">06/10</string>
+    <string name="progress_propert">06 Reports</string>
+    <string name="navigation">Navigation</string>
+    <string name="report_an_incident">Report an incident</string>
+    <string name="PositionofInterventions">Position of Interventions</string>
+    <string name="search"> Search</string>
+    <string name="available">Available</string>
+    <string name="messaging">Messaging</string>
+    <string name="Assignedintervention">Assigned intervention</string>
+    <string name="notavailable">Not Available</string>
+    <string name="police">Police</string>
+    <string name="policeincident">Police incident</string>
+
+
+    <!--CALL SCREEN-->
+    <string name="no_thanks">NO THANKS</string>
+    <string name="call">CALL</string>
+    <string name="onwait">On-wait</string>
+    <string name="pending">Pending</string>
+    <string name="finished">Finished</string>
+    <string name="loading">loading...</string>
+    <string name="NoAssigned"> No Assigned Intervention Found  so We can’t have access to the assigning an intervention</string>
+    <string name="pleaseenterotp">Please enter otp</string>
+    <string name="chooseanOption"> Choose an Option</string>
+    <string name="reports"> Reports</string>
+    <string name="Locationisnotavailablenow"> Location is not available now</string>
+    <string name="Signalements"> Signalements</string>
+    <string name="completedinterventions"> completed interventions</string>
+
+
+    <!-- Incident screen -->
+    <string name="reason">Reason</string>
+    <string name="other_hint">Other informations (Victims,place description.....</string>
+    <string name="reference">Reference</string>
+    <string name="finish">Finish</string>
+    <string name="bemorepercise">Be more Precise</string>
+    <string name="describetheincident">Describe the incident</string>
+    <string name="AvertClayton">Avert Clayton</string>
+    <string name="Souhaitez">Souhaitez-vous être mis en relation avec le comissariat de Police ?</string>
+    <string name="Souhaitezvous">Souhaitez-vous être mis en relation avec les Sapeurs Pompiers ?</string>
+
+    <!--Handrail-->
+
+    <string name="handrailedittexthint">Veuillez remplir la main courante</string>
+
+
+    <!--  Signature Screen -->
+    <string name="signature">Signature</string>
+    <string name="signature_obligatory">The signature is obligatory</string>
+
+    <!--Close-intervation-reports-->
+
+    <string name="interventionreport">Intervention Report</string>
+    <string name="CarefullyCompletetheReport">Carefully Complete the Report</string>
+    <string name="datehourstate">Date / hour / State</string>
+    <string name="datehint">25/08/2018</string>
+    <string name="timehint">12:13:40</string>
+    <string name="statehint">Waiting</string>
+    <string name="address">Address</string>
+    <string name="closetheintervention">Close the intervention</string>
+
+    <!--Reports Finish-->
+
+    <string name="Remembertosaveit">Remember to save it</string>
+
+    <!--Position of the incident-->
+
+    <string name="positionoftheincident">Position of the incident</string>
+    <string name="filterbycities">Filter By cities</string>
+
+    <!--Table of Assignments-->
+    <string name="TableofAssignments">Table of Assignments</string>
+    <string name="Attributionslist">Attributions list</string>
+    <string name="date">Date</string>
+    <string name="state">State</string>
+
+    <!--Assigning Intervation-->
+
+    <string name="Asigninganintervention">Asigning an intervention</string>
+    <string name="Waiting">Waiting</string>
+    <string name="Description">Description</string>
+    <string name="Intervene">Intervene</string>
+
+    <!--Profile Screen-->
+
+    <string name="Profile">Profile</string>
+    <string name="Profile_text">Information about your profile</string>
+    <string name="Vehicle">Vehicle</string>
+    <string name="Vehicle_text">Information about your vechile</string>
+    <string name="QR_code">QR code</string>
+    <string name="QR_code_text">QR code saved</string>
+    <string name="Medicalfile">Medical file</string>
+    <string name="Medicalfiletext">Your Medical Condition</string>
+    <string name="FAQ">FAQ</string>
+    <string name="frequentlyaskedquestions">Frequently asked questions</string>
+    <!--Profile Screen-->
+    <string name="RECENTS">RECENTS</string>
+    <string name="Search"> Search</string>
 </resources>

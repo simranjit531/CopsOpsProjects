@@ -61,6 +61,7 @@ import copops.com.copopsApp.pojo.RegistationPjoSetData;
 import copops.com.copopsApp.pojo.RegistationPojo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
+import copops.com.copopsApp.shortcut.ShortcutViewService;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.MyDatePickerFragment;
@@ -258,7 +259,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
         mContext = getActivity();
         mAppSession = mAppSession.getInstance(mContext);
         progressDialog = new ProgressDialog(mContext);
-        progressDialog.setMessage("loading...");
+        progressDialog.setMessage(getString(R.string.loading));
 
 
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -355,15 +356,15 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
 
         } else if (!Utils.isValidMail(etEmail.getText().toString())) {
             Utils.showAlert(getActivity().getString(R.string.valid_email_errer), mContext);
-        }else if (userType.equalsIgnoreCase("Cops") && idCardUri_1==null) {
-            Utils.showAlert(getActivity().getString(R.string.card1), mContext);
-        }else if (userType.equalsIgnoreCase("Cops") && idCardUri_2==null) {
-            Utils.showAlert(getActivity().getString(R.string.card2), mContext);
-        }else if (userType.equalsIgnoreCase("Cops") && idBusinessCardUri_1==null) {
-            Utils.showAlert(getActivity().getString(R.string.bussiness1), mContext);
-        }else if (userType.equalsIgnoreCase("Cops") && idBusinessCardUri_2==null) {
-            Utils.showAlert(getActivity().getString(R.string.bussiness2), mContext);
-        } else {
+        } else if (userType.equalsIgnoreCase("Cops") && idCardUri_1 == null) {
+                Utils.showAlert(getActivity().getString(R.string.card1), mContext);
+            } else if (userType.equalsIgnoreCase("Cops") && idCardUri_2 == null) {
+                Utils.showAlert(getActivity().getString(R.string.card2), mContext);
+            } else if (userType.equalsIgnoreCase("Cops") && idBusinessCardUri_1 == null) {
+                Utils.showAlert(getActivity().getString(R.string.bussiness1), mContext);
+            } else if (userType.equalsIgnoreCase("Cops") && idBusinessCardUri_2 == null) {
+                Utils.showAlert(getActivity().getString(R.string.bussiness2), mContext);
+            }else{
             try {
                 mAppSession.saveData("latitude", String.valueOf(latitude));
                 mAppSession.saveData("longitude", String.valueOf(longitude));

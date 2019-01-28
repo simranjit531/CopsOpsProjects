@@ -54,7 +54,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="10dp"
-            android:text="NO THANKS"
+            android:text="@string/no_thanks"
             android:textStyle="bold"
             android:textSize="@dimen/textsize_16sp"
             android:textColor="@color/blue_shade"/>
@@ -76,7 +76,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginRight="40dp"
             android:layout_marginTop="10dp"
-            android:text="CALL"
+            android:text="@string/call"
             android:textStyle="bold"
             android:textSize="@dimen/textsize_16sp"
             android:textColor="@color/black" />

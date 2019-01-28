@@ -1,10 +1,12 @@
 package copops.com.copopsApp.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
@@ -23,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.quickblox.chat.QBChatService;
@@ -36,8 +39,10 @@ import com.quickblox.messages.services.SubscribeService;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -75,6 +80,9 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
     @BindView(R.id.IVprofilephoto)
     CircleImageView IVprofilephoto;
+
+
+    String[] listItems;
 
     @BindView(R.id.TVname)
     TextView TVname;
@@ -164,6 +172,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     QBIncomingMessagesManager incomingMessagesManager;
     private QBUser currentUser;
     QBChatMessage qbChatMessage1;
+
     public OperatorFragment() {
 
         // Required empty public constructor
@@ -212,8 +221,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         IVlogout.setVisibility(View.VISIBLE);
         IVback.setVisibility(View.GONE);
 
-     //   String abb=mAppSession.getData("messagecount");
-
+        //   String abb=mAppSession.getData("messagecount");
 
 
         TVname.setText(mAppSession.getData("name"));
@@ -261,7 +269,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
 
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("loading...");
+        progressDialog.setMessage(getString(R.string.loading));
 
 
 //        if (Utils.checkConnection(getActivity())) {
@@ -298,7 +306,45 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.RLnavigation:
-                Utils.fragmentCall(new GPSPublicFragment(), getFragmentManager());
+
+                boolean isAppInstalledwaze = appInstalledOrNot("com.waze");
+                boolean isAppInstalledgooglemap = appInstalledOrNot("com.google.android.apps.maps");
+
+                if (isAppInstalledwaze == true && isAppInstalledgooglemap == true) {
+                    listItems = getResources().getStringArray(R.array.select_map_google_waze);
+                } else if (isAppInstalledgooglemap == true) {
+                    listItems = getResources().getStringArray(R.array.select_map_google);
+                } else if (isAppInstalledwaze == true) {
+                    listItems = getResources().getStringArray(R.array.select_waze);
+                }
+
+
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+                mBuilder.setTitle("Choose an Option");
+                mBuilder.setSingleChoiceItems(listItems, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.e("listitemes==", "" + listItems[i]);
+
+                        if (listItems[i].equals("Google Maps")) {
+                            dialogInterface.dismiss();
+                            Intent LaunchIntent = getActivity().getPackageManager()
+                                    .getLaunchIntentForPackage("com.google.android.apps.maps");
+                            startActivity(LaunchIntent);
+                        } else {
+                            dialogInterface.dismiss();
+                            Intent LaunchIntent = getActivity().getPackageManager()
+                                    .getLaunchIntentForPackage("com.waze");
+                            startActivity(LaunchIntent);
+                        }
+
+
+                    }
+                });
+
+                AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+                //  Utils.fragmentCall(new GPSPublicFragment(), getFragmentManager());
                 break;
 
             case R.id.IVlogout:
@@ -361,21 +407,21 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 //
 //
 //                } else {
-                    if (Utils.checkConnection(getActivity())) {
-                        IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                if (Utils.checkConnection(getActivity())) {
+                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
 
-                        incdentSetPojo.setUser_id(mAppSession.getData("id"));
-                        incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
-                        incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
-                        //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
-                        Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                        RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                        getAssigmentList(mFile);
-                    } else {
-                        Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
-                    }
+                    incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                    incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+                    incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                    //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                    RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                    getAssigmentList(mFile);
+                } else {
+                    Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+                }
 
-             //  }
+                //  }
                 break;
 
         }
@@ -417,6 +463,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
 
     private void getCopeStatus(RequestBody Data) {
+
         progressDialog.show();
         Service operator = ApiUtils.getAPIService();
         Call<OperatorShowAlInfo> getallLatLong = operator.getOperotor(Data);
@@ -433,8 +480,10 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             //  Utils.showAlert(registrationResponse.getMessage(), getActivity());
                         } else {
                             TVpsental.setText(operatorShowAlInfo.getLevel());
+                            mAppSession.saveData("operatorgrade", operatorShowAlInfo.getGrade());
+                            Log.e("getgrade==",""+mAppSession.getData("operatorgrade"));
                             TVprogressbarnumber.setText(operatorShowAlInfo.getReport());
-                            TVprogressbarreports.setText(operatorShowAlInfo.getCompleted_reports() + " completed interventions");
+                            TVprogressbarreports.setText(operatorShowAlInfo.getCompleted_reports() + " "+getString(R.string.completedinterventions));
                             TVprogresspercentage.setText(operatorShowAlInfo.getProfile_percent() + "%");
                             progressBar1.setMax(100);
                             progressBar1.setProgress(Integer.valueOf(operatorShowAlInfo.getProfile_percent()));
@@ -458,29 +507,33 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             }
 
 
-                            if (operatorShowAlInfo.getAvailable().equalsIgnoreCase("1")){
+                            if (operatorShowAlInfo.getAvailable().equalsIgnoreCase("1")) {
                                 if (operatorShowAlInfo.getNew_reports().equalsIgnoreCase("0")) {
                                     countId.setVisibility(View.INVISIBLE);
                                     picId.setVisibility(View.INVISIBLE);
-
+                                    mAppSession.saveData("assignedintervationcount","0");
                                 } else {
                                     countId.setVisibility(View.VISIBLE);
                                     picId.setVisibility(View.INVISIBLE);
-
                                     countId.setText(operatorShowAlInfo.getNew_reports());
+                                    mAppSession.saveData("assignedintervationcount",operatorShowAlInfo.getNew_reports());
                                 }
-                            }else{
-                                if(operatorShowAlInfo.getNew_reports().equalsIgnoreCase("0")){
+                            } else {
+                                if (operatorShowAlInfo.getNew_reports().equalsIgnoreCase("0")) {
                                     countId.setVisibility(View.GONE);
-                                }else {
+                                    mAppSession.saveData("assignedintervationcount","0");
+                                } else {
                                     countId.setVisibility(View.VISIBLE);
                                     picId.setVisibility(View.VISIBLE);
                                     countId.setText(operatorShowAlInfo.getNew_reports());
+                                    mAppSession.saveData("assignedintervationcount",operatorShowAlInfo.getNew_reports());
                                 }
                             }
 
 
                             TVprofiledescription.setText(operatorShowAlInfo.getGrade());
+
+                            mAppSession.saveData("operatorlevel", operatorShowAlInfo.getLevel());
 
 
                         }
@@ -621,9 +674,9 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
         String aa = mAppSession.getData("messagecount");
 
-        if(mAppSession.getData("messagecount").equals("")|| mAppSession.getData("messagecount").equals("0")){
+        if (mAppSession.getData("messagecount").equals("") || mAppSession.getData("messagecount").equals("0")) {
             chatCountId.setVisibility(View.GONE);
-        }else{
+        } else {
             chatCountId.setVisibility(View.VISIBLE);
             chatCountId.setText(mAppSession.getData("messagecount"));
         }
@@ -730,7 +783,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             if (assignmentListPojo_close.getStatus().equals("false")) {
                                 Utils.showAlert(assignmentListPojo_close.getMessage(), getActivity());
                             } else {
-                              //  Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close), getFragmentManager());
+                                //  Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close), getFragmentManager());
                             }
                             progressDialog.dismiss();
 
@@ -793,14 +846,14 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
 
     private void buildUsersList() {
-      //  ProgressDialogFragment.show(getActivity().getSupportFragmentManager());
+        //  ProgressDialogFragment.show(getActivity().getSupportFragmentManager());
         List<String> tags = new ArrayList<>();
         tags.add(App.getSampleConfigs().getUsersTag());
         QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> result, Bundle params) {
                 list = result;
-             //   ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
+                //   ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
                 for (int i = 0; i < list.size(); i++) {
                     if (list.get(i).getLogin().equalsIgnoreCase(mAppSession.getData("user_id"))) {
                         QBUser user = list.get(i);
@@ -811,33 +864,34 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                     }
                 }
             }
+
             @Override
             public void onError(QBResponseException e) {
-            //    ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
+                //    ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
             }
         });
     }
 
     private void login(final QBUser user) {
-     //  ProgressDialogFragment.show(getActivity().getSupportFragmentManager(), R.string.dlg_login);
+        //  ProgressDialogFragment.show(getActivity().getSupportFragmentManager(), R.string.dlg_login);
         ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle bundle) {
                 SharedPrefsHelper.getInstance().saveQbUser(user);
-             //   ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
+                //   ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
 
-               try {
-                   currentUser = ChatHelper.getCurrentUser();
-                   incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
-                   incomingMessagesManager.addDialogMessageListener(new OperatorFragment.AllDialogsMessageListener());
-               }catch(Exception e){
-                   e.printStackTrace();
-               }
+                try {
+                    currentUser = ChatHelper.getCurrentUser();
+                    incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
+                    incomingMessagesManager.addDialogMessageListener(new OperatorFragment.AllDialogsMessageListener());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
             public void onError(QBResponseException e) {
-            //   ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
+                //   ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
             }
         });
     }
@@ -847,8 +901,8 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         @Override
         public void processMessage(final String dialogId, final QBChatMessage qbChatMessage, Integer senderId) {
             Log.d("RanjanCheck", "processMessage");
-            QBUser user=null;
-            int sender= qbChatMessage.getSenderId();
+            QBUser user = null;
+            int sender = qbChatMessage.getSenderId();
 //            for (int i = 0; i < list.size(); i++) {
 //                if (list.get(i).getId().equals(sender)) {
 //                     user = list.get(i);
@@ -856,36 +910,39 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 //                    break;
 //                }
 //            }
-           // createDialog(list);
+            // createDialog(list);
 
-            loadUpdatedDialog(qbChatMessage.getDialogId(),qbChatMessage);
+            loadUpdatedDialog(qbChatMessage.getDialogId(), qbChatMessage);
 
 
         }
     }
 
 
-
-    private void loadUpdatedDialog(String dialogId,QBChatMessage qbChatMessage) {
+    private void loadUpdatedDialog(String dialogId, QBChatMessage qbChatMessage) {
         ChatHelper.getInstance().getDialogById(dialogId, new QbEntityCallbackImpl<QBChatDialog>() {
             @Override
             public void onSuccess(QBChatDialog result, Bundle bundle) {
-             //   isProcessingResultInProgress = false;
+                //   isProcessingResultInProgress = false;
                 QbDialogHolder.getInstance().addDialog(result);
-                int count= getUnreadMsgCount(result);
+                int count = getUnreadMsgCount(result);
 
-                qbChatMessage1=qbChatMessage;
-                if(count==0){
+                qbChatMessage1 = qbChatMessage;
+                if (count == 0) {
                     chatCountId.setVisibility(View.GONE);
-                    mAppSession.saveData("messagecount","0");
-                }else{
+                    mAppSession.saveData("messagecount", "0");
+                } else {
                     chatCountId.setVisibility(View.VISIBLE);
-                    chatCountId.setText(""+count);
-                    mAppSession.saveData("messagecount",""+count);
+                    chatCountId.setText("" + count);
+                    mAppSession.saveData("messagecount", "" + count);
                 }
 
+                if (qbChatMessage.getAttachments() != null) {
+                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
+                } else{
+                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + " message)", getActivity());
 
-                PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " "+qbChatMessage.getBody()+"  "+"("+count+" message)", getActivity());
+            }
             }
 
             @Override
@@ -897,7 +954,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    public int getUnreadMsgCount(QBChatDialog chatDialog){
+    public int getUnreadMsgCount(QBChatDialog chatDialog) {
         Integer unreadMessageCount = chatDialog.getUnreadMessageCount();
         if (unreadMessageCount == null) {
             return 0;
@@ -907,6 +964,16 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     }
 
 
+    private boolean appInstalledOrNot(String uri) {
+        PackageManager pm = getActivity().getPackageManager();
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+
+        return false;
+    }
 
 
 }

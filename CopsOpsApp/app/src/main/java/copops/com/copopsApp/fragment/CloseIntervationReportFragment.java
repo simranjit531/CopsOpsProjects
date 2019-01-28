@@ -75,7 +75,7 @@ public class CloseIntervationReportFragment extends Fragment implements View.OnC
 
         mAppSession = mAppSession.getInstance(getActivity());
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("loading...");
+        progressDialog.setMessage(getString(R.string.loading));
 
         mResetPassInterFace = this;
         initView();
@@ -103,7 +103,7 @@ public class CloseIntervationReportFragment extends Fragment implements View.OnC
             Tvdate.setText(date);
             Tvtime.setText(time);
             if (assignmentListPojo_close.getData().get(pos).getStatus().equalsIgnoreCase("2")) {
-                Tvstate.setText("Pending");
+                Tvstate.setText(getString(R.string.pending));
                 Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
             }
         } catch (Exception e) {

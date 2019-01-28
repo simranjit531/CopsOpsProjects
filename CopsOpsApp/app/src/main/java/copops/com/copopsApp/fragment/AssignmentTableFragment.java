@@ -85,7 +85,7 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
 
 
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("loading...");
+        progressDialog.setMessage(getString(R.string.loading));
 
 
 
@@ -232,7 +232,7 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
                          assignmentListPojo = response.body();
 
                         if (assignmentListPojo.getStatus().equalsIgnoreCase("false")) {
-                            Utils.showAlert(" No Assigned Intervention Found  so We can’t have access to the assigning an intervention", getActivity());
+                            Utils.showAlert(getString(R.string.NoAssigned), getActivity());
 
                         } else{
                             mAdapter = new AssignmentInsidentListAdapter(getActivity(), assignmentListPojo, mIncedentInterface);

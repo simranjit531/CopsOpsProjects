@@ -29,7 +29,7 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_horizontal|center_vertical"
-                android:text="    COP-OPS"
+                android:text="@string/Copops"
                 android:textColor="@color/white"
                 android:textSize="@dimen/textsize_20sp" />
 

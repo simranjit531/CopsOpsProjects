@@ -2,6 +2,7 @@ package copops.com.copopsApp.chatmodule;
 
 
 
+import com.crashlytics.android.Crashlytics;
 import com.quickblox.sample.core.CoreApp;
 import com.quickblox.sample.core.utils.ActivityLifecycle;
 
@@ -10,6 +11,7 @@ import java.io.IOException;
 import copops.com.copopsApp.chatmodule.models.SampleConfigs;
 import copops.com.copopsApp.chatmodule.utils.Consts;
 import copops.com.copopsApp.chatmodule.utils.configs.ConfigUtils;
+import io.fabric.sdk.android.Fabric;
 //import io.fabric.sdk.android.Fabric;
 
 public class App extends CoreApp {
@@ -20,6 +22,7 @@ public class App extends CoreApp {
     public void onCreate() {
         super.onCreate();
      //   initFabric();
+        Fabric.with(this, new Crashlytics());
         ActivityLifecycle.init(this);
         initSampleConfigs();
     }

@@ -47,7 +47,7 @@
                 android:layout_below="@id/RLprofileimage"
                 android:layout_margin="5dp"
                 android:gravity="center_horizontal"
-                android:text="Grade ||"
+                android:text="@string/grade"
                 android:textColor="@color/aluminiumcolor"
                 android:textSize="@dimen/textsize_18sp"
                 android:textStyle="bold" />
@@ -60,7 +60,7 @@
                 android:layout_below="@+id/RLprofileimage"
                 android:layout_marginTop="21dp"
                 android:gravity="center_horizontal"
-                android:text="Avert Clayton"
+                android:text="@string/AvertClayton"
                 android:textColor="@color/black"
                 android:textSize="@dimen/textsize_24sp"
                 android:textStyle="bold" />
@@ -72,7 +72,7 @@
                 android:layout_below="@id/TVname"
                 android:layout_margin="5dp"
                 android:gravity="center_horizontal"
-                android:text="| sentinel"
+                android:text="@string/sentinel"
                 android:textColor="@color/sky_blue"
                 android:textSize="@dimen/textsize_18sp"
                 android:textStyle="bold" />
@@ -172,7 +172,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/IVvechile"
-                    android:text="Vehicle"
+                    android:text="@string/Vehicle"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textsize_18sp" />
 
@@ -183,7 +183,7 @@
                     android:layout_marginLeft="13dp"
                     android:layout_marginTop="2dp"
                     android:layout_toRightOf="@+id/IVvechile"
-                    android:text="Information about your vechile"
+                    android:text="@string/Vehicle_text"
                     android:textColor="@color/aluminiumcolor"
                     android:textSize="@dimen/textsize_12sp" />
 
@@ -215,7 +215,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/IVprofile"
-                    android:text="Profile"
+                    android:text="@string/Profile"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textsize_18sp" />
 
@@ -226,7 +226,7 @@
                     android:layout_marginLeft="13dp"
                     android:layout_marginTop="2dp"
                     android:layout_toRightOf="@+id/IVprofile"
-                    android:text="Information about your profile"
+                    android:text="@string/Profile_text"
                     android:textColor="@color/aluminiumcolor"
                     android:textSize="@dimen/textsize_12sp" />
 
@@ -259,7 +259,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/IVqrcodeicon"
-                    android:text="QR code"
+                    android:text="@string/QR_code"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textsize_18sp" />
 
@@ -271,7 +271,7 @@
                     android:layout_marginLeft="13dp"
                     android:layout_marginTop="2dp"
                     android:layout_toRightOf="@+id/IVqrcodeicon"
-                    android:text="QR code saved"
+                    android:text="@string/QR_code_text"
                     android:textColor="@color/aluminiumcolor"
                     android:textSize="@dimen/textsize_12sp" />
 
@@ -303,7 +303,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/IVmedical"
-                    android:text="Medical file"
+                    android:text="@string/Medicalfile"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textsize_18sp" />
 
@@ -314,7 +314,7 @@
                     android:layout_marginLeft="13dp"
                     android:layout_marginTop="2dp"
                     android:layout_toRightOf="@+id/IVmedical"
-                    android:text="Your Medical Condition"
+                    android:text="@string/Medicalfiletext"
                     android:textColor="@color/aluminiumcolor"
                     android:textSize="@dimen/textsize_12sp" />
 
@@ -347,7 +347,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/IVfaq"
-                    android:text="FAQ"
+                    android:text="@string/FAQ"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textsize_20sp" />
 
@@ -358,7 +358,7 @@
                     android:layout_marginLeft="13dp"
                     android:layout_marginTop="2dp"
                     android:layout_toRightOf="@+id/IVfaq"
-                    android:text="Frequently asked questions"
+                    android:text="@string/frequentlyaskedquestions"
                     android:textColor="@color/aluminiumcolor"
                     android:textSize="@dimen/textsize_14sp" />
 

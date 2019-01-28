@@ -17,7 +17,7 @@
         android:layout_below="@+id/RLprofileimage"
         android:layout_marginTop="15dp"
         android:gravity="center_horizontal"
-        android:text="Police"
+        android:text="@string/police"
         android:textColor="@color/black"
         android:textSize="@dimen/textsize_28sp" />
 
@@ -30,7 +30,7 @@
         android:layout_below="@+id/RLprofileimage"
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
-        android:text="Police incident"
+        android:text="@string/policeincident"
         android:textColor="@color/aluminiumcolor"
         android:textSize="@dimen/textsize_18sp" />
 

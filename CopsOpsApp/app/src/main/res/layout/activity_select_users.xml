@@ -26,8 +26,8 @@
             android:maxLength="50"
             android:paddingLeft="10dp"
             android:paddingRight="15dp"
-           android:drawableLeft="@mipmap/outline_search_black_18dp"
-            android:hint=" Search"
+            android:drawableLeft="@mipmap/outline_search_black_18dp"
+            android:hint="@string/Search"
             android:background="@android:color/transparent"
             android:imeOptions="actionDone"
             android:textColor="@color/aluminiumcolor"
@@ -45,7 +45,7 @@
         android:layout_below="@+id/rl"
         android:textSize="@dimen/textsize_20sp"
         android:textColor="@color/blue"
-        android:text="RECENTS"
+        android:text="@string/RECENTS"
         />
     <ListView
         android:id="@+id/list_select_users"

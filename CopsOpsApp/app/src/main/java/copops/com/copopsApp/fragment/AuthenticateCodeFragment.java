@@ -140,7 +140,7 @@ public class AuthenticateCodeFragment extends Fragment implements View.OnClickLi
                         if (mRegistationPojo.getOtp().equalsIgnoreCase(etFirst.getText().toString().trim() + etSecond.getText().toString().trim() + etThird.getText().toString().trim() + etFourth.getText().toString().trim() + etFifth.getText().toString().trim() + etSixth.getText().toString().trim())) {
 
                             progressDialog = new ProgressDialog(mContext);
-                            progressDialog.setMessage("loading...");
+                            progressDialog.setMessage(getString(R.string.loading));
                             progressDialog.show();
                             LoginPojoSetData loginPojoSetData = new LoginPojoSetData();
                             loginPojoSetData.setOtp(mRegistationPojo.getOtp());
@@ -188,7 +188,7 @@ public class AuthenticateCodeFragment extends Fragment implements View.OnClickLi
                             Utils.showAlert(Utils.otpMsg, mContext);
                         }
                     } else {
-                        Utils.showAlert("Please enter otp", mContext);
+                        Utils.showAlert(getString(R.string.pleaseenterotp), mContext);
 
                     }
 

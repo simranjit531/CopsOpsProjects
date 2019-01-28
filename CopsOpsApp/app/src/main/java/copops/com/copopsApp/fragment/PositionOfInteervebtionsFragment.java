@@ -62,6 +62,7 @@ import copops.com.copopsApp.pojo.CityWsieMapShowPojo;
 import copops.com.copopsApp.pojo.IncdentSetPojo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
+import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.Utils;
 import okhttp3.MediaType;
@@ -114,6 +115,7 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
     ArrayList<String> filtercityId = new ArrayList<>();
     BitmapDescriptor icon;
     LatLng toLatLng;
+    AppSession mAppSession;
     public SupportPlaceAutocompleteFragment places = null;
 
     public PositionOfInteervebtionsFragment(Double latitude, Double longitude ) {
@@ -136,7 +138,7 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         Rltoolbar.setOnClickListener(this);
         IVimagesgps.setOnClickListener(this);
 
-
+        mAppSession= mAppSession.getInstance(getActivity());
 
 
         places = (SupportPlaceAutocompleteFragment)getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment_2);
@@ -184,7 +186,7 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
 //            latitude = location.getLatitude();
 //        }
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("loading...");
+        progressDialog.setMessage(getString(R.string.loading));
         mIncedentInterface = this;
 
         mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
@@ -245,6 +247,7 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
         incdentSetPojo.setIncident_lat(String.valueOf(latitude));
         incdentSetPojo.setIncident_lng(String.valueOf(longitude));
+        incdentSetPojo.setUser_id(mAppSession.getData("id"));
 
         Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
         RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
@@ -561,6 +564,7 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
                 IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
                 incdentSetPojo.setIncident_lat(String.valueOf(toLatLng.latitude));
                 incdentSetPojo.setIncident_lng(String.valueOf(toLatLng.longitude));
+                incdentSetPojo.setUser_id(mAppSession.getData("id"));
 
                     RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                     if (Utils.checkConnection(getActivity()))

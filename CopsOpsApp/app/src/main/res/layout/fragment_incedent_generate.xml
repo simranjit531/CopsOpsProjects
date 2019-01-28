@@ -22,12 +22,22 @@
             android:background="@mipmap/img_blue_gradient_background"
             android:orientation="vertical">
 
-            <ImageView
+          <!--  <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="20dp"
-                android:src="@mipmap/img_bemoreprecise" />
+                android:src="@mipmap/img_bemoreprecise" />-->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="25dp"
+                android:gravity="center_horizontal"
+                android:text="@string/bemorepercise"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_20sp"
+                android:textStyle="normal" />
 
         </LinearLayout>
 
@@ -87,7 +97,8 @@
                 android:clickable="false"
                 android:textCursorDrawable="@color/black"
                 android:button="@drawable/checkbox_selector"
-                android:text="     Burglary"
+                android:paddingLeft="10dp"
+                android:text="@string/burglary"
                 android:textSize="@dimen/textsize_14sp"
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/aluminiumcolor" />
@@ -120,14 +131,13 @@
             android:layout_marginTop="20dp"
             android:inputType="textMultiLine"
             android:imeOptions="actionNext"
-
             android:background="@drawable/edittext_background"
             android:textColorHint="@color/aluminiumcolor"
             android:textCursorDrawable="@color/black"
             android:paddingLeft="10dp"
             android:textSize="@dimen/textsize_16sp"
             android:textColor="@color/black"
-            android:hint="Describe the incident"/>
+            android:hint="@string/describetheincident"/>
 
         <EditText
             android:id="@+id/ETotherinfoincident"

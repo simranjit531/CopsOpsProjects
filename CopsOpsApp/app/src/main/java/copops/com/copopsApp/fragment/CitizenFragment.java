@@ -2,9 +2,12 @@ package copops.com.copopsApp.fragment;
 
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -108,6 +111,8 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
     private boolean isNetworkEnabled;
     private boolean isGpsEnabled;
     OperatorShowAlInfo operatorShowAlInfo;
+
+    String[] listItems;
     public CitizenFragment() {
 
         // Required empty public constructor
@@ -161,7 +166,7 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
             IVprofilephoto.setImageResource(R.mipmap.img_white_dot);
         }
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("loading...");
+        progressDialog.setMessage(getString(R.string.loading));
 
 
         if (Utils.checkConnection(getActivity())) {
@@ -195,7 +200,46 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.RLnavigation:
-                Utils.fragmentCall(new GPSPublicFragment(), getFragmentManager());
+                boolean isAppInstalledwaze = appInstalledOrNot("com.waze");
+                boolean isAppInstalledgooglemap = appInstalledOrNot("com.google.android.apps.maps");
+
+                if (isAppInstalledwaze == true && isAppInstalledgooglemap == true) {
+                    listItems = getResources().getStringArray(R.array.select_map_google_waze);
+                } else if (isAppInstalledgooglemap == true) {
+                    listItems = getResources().getStringArray(R.array.select_map_google);
+                } else if (isAppInstalledwaze == true) {
+                    listItems = getResources().getStringArray(R.array.select_waze);
+                }
+
+
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+                mBuilder.setTitle(R.string.chooseanOption);
+                mBuilder.setSingleChoiceItems(listItems, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.e("listitemes==", "" + listItems[i]);
+
+                        if (listItems[i].equals("Google Maps")) {
+                            dialogInterface.dismiss();
+                            Intent LaunchIntent = getActivity().getPackageManager()
+                                    .getLaunchIntentForPackage("com.google.android.apps.maps");
+                            startActivity(LaunchIntent);
+                        } else {
+                            dialogInterface.dismiss();
+                            Intent LaunchIntent = getActivity().getPackageManager()
+                                    .getLaunchIntentForPackage("com.waze");
+                            startActivity(LaunchIntent);
+                        }
+
+
+                    }
+                });
+
+                AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+
+
+               // Utils.fragmentCall(new GPSPublicFragment(), getFragmentManager());
                 break;
 
             case R.id.IVlogout:
@@ -267,7 +311,7 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
                            TVprofiledescription.setText(operatorShowAlInfo.getLevel());
 
                             TVprogressbarnumber.setText(operatorShowAlInfo.getReport());
-                            TVprogressbarreports.setText(operatorShowAlInfo.getTotal_reports()+" Reports");
+                            TVprogressbarreports.setText(operatorShowAlInfo.getTotal_reports()+getString(R.string.reports));
 
                             progressBar1.setMax(100);
                             progressBar1.setProgress(Integer.valueOf(operatorShowAlInfo.getProfile_percent()));
@@ -317,7 +361,7 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
 
                 //  initMapFragment();
             } else {
-                Toast.makeText(getActivity(), "Location is not available now", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getString(R.string.Locationisnotavailablenow), Toast.LENGTH_LONG).show();
             }
         }
 
@@ -363,5 +407,18 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
         }
         return true;
     }
+
+
+    private boolean appInstalledOrNot(String uri) {
+        PackageManager pm = getActivity().getPackageManager();
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+
+        return false;
+    }
+
 
 }

@@ -190,17 +190,26 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
                 break;
             case R.id.Rltoolbar:
 
-                if(screeen=="1"){
 
-                    getFragmentManager().popBackStack(  getFragmentManager().getBackStackEntryAt(  getFragmentManager().getBackStackEntryCount()-2).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                 //   getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    Utils.fragmentCall(new GPSPublicFragment(), getFragmentManager());
 
-                }else{
-                    if (getFragmentManager().getBackStackEntryCount() > 0) {
-                        getFragmentManager().popBackStackImmediate();
-                    }
+                if (getFragmentManager().getBackStackEntryCount() > 0) {
+                    getFragmentManager().popBackStackImmediate();
                 }
+
+//                if(screeen=="1"){
+//
+//                    getFragmentManager().popBackStack(  getFragmentManager().getBackStackEntryAt(  getFragmentManager().getBackStackEntryCount()-2).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//                 //   getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//                   // Utils.fragmentCall(new GPSPublicFragment(), getFragmentManager());
+//
+//
+//
+//
+//                }else{
+//                    if (getFragmentManager().getBackStackEntryCount() > 0) {
+//                        getFragmentManager().popBackStackImmediate();
+//                    }
+//                }
 
                 break;
             case R.id.llcamera:

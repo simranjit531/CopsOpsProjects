@@ -24,9 +24,9 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:layout_margin="30dp"
+            android:layout_margin="25dp"
             android:gravity="center_horizontal|center_vertical"
-            android:text=" Position of the incident"
+            android:text="@string/positionoftheincident"
             android:textColor="@color/white"
             android:textSize="@dimen/textsize_20sp" />
 
@@ -49,7 +49,7 @@
         android:layout_above="@+id/rlbottom"
         android:layout_alignParentRight="true"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="20dp"
         android:src="@mipmap/img_gps_icon"
         android:visibility="visible" />
 
@@ -63,14 +63,14 @@
         <RelativeLayout
             android:id="@+id/RLcontentbackground"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="160dp"
             android:background="@mipmap/img_call_background">
 
 
             <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="30dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="15dp"
                 android:layout_toLeftOf="@+id/Tvfiltertext"
                 android:layout_marginRight="15dp"
                 android:src="@mipmap/img_filter_positionofincidents"/>
@@ -79,17 +79,17 @@
                 android:id="@+id/Tvfiltertext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Filter By cities"
-                android:textSize="@dimen/textsize_18sp"
+                android:text="@string/filterbycities"
+                android:textSize="@dimen/textsize_16sp"
                 android:textColor="@color/black"
                 android:layout_centerHorizontal="true"
                 android:textStyle="bold"
-                android:layout_marginTop="30dp"/>
+                android:layout_marginTop="15dp"/>
 
             <LinearLayout
                 android:id="@+id/searchId"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:layout_below="@+id/mTimeDistanceRL"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
@@ -122,10 +122,9 @@
                 android:focusable="true"
                 android:singleLine="true"
                 android:maxLength="50"
-
                 android:paddingLeft="40dp"
                 android:paddingRight="15dp"
-                android:hint="search"
+                android:hint="@string/search"
                 android:imeOptions="actionDone"
                 android:textColor="@color/aluminiumcolor"
                 android:textSize="@dimen/textsize_12sp"
@@ -148,7 +147,7 @@
                 android:layout_below="@+id/cityList"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="5dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:background="@mipmap/btn_blue_background"
                 android:visibility="visible">
 
@@ -160,7 +159,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="4dp"
                     android:gravity="center_vertical"
-                    android:text="Search"
+                    android:text="@string/search"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textsize_16sp" />
 

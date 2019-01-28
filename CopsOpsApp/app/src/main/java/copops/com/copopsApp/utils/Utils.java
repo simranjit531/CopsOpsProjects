@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -16,6 +17,7 @@ import android.media.MediaScannerConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -43,6 +45,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import copops.com.copopsApp.R;
+import copops.com.copopsApp.shortcut.ShortcutViewService;
 
 
 public class Utils {
@@ -289,6 +292,45 @@ public class Utils {
             public void onClick(View v) {
                 dialog.dismiss();
                 android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(1);
+            }
+        });
+
+        TVrefuse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+
+    public static void opendialogcustomdialogoperator(final Context mContext, String text, String loginstatus, String usertype) {
+
+        final Dialog dialog = new Dialog(mContext, R.style.DialogFragmentTheme);
+        dialog.setContentView(R.layout.custom_dialog);
+        dialog.setCancelable(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        Window window = dialog.getWindow();
+        window.setGravity(Gravity.CENTER);
+
+        TextView TVrefuse = (TextView) dialog.findViewById(R.id.mTvNo);
+        TextView TVallow = (TextView) dialog.findViewById(R.id.mTvYes);
+        TextView TVcustomdescriptiontext = (TextView) dialog.findViewById(R.id.TVcustomdescriptiontext);
+        TVcustomdescriptiontext.setText(text);
+
+        TVallow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                    mContext.startService(new Intent(mContext, ShortcutViewService.class));
+                } else if (Settings.canDrawOverlays(mContext)) {
+                    mContext.startService(new Intent(mContext, ShortcutViewService.class));
+                }
+                // android.os.Process.killProcess(android.os.Process.myPid());
                 System.exit(1);
             }
         });

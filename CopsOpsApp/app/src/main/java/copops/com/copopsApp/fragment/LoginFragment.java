@@ -393,7 +393,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 //   isProcessingResultInProgress = false;
                 QbDialogHolder.getInstance().addDialog(result);
                 int count= getUnreadMsgCount(result);
-                PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " "+qbChatMessage.getBody()+"  "+"("+count+" message)", getActivity());
+
+                if (qbChatMessage.getAttachments() != null) {
+                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
+                } else{
+                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + " message)", getActivity());
+
+                }
+              //  PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " "+qbChatMessage.getBody()+"  "+"("+count+" message)", getActivity());
 
             }
 

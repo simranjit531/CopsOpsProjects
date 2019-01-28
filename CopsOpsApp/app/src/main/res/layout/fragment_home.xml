@@ -24,7 +24,7 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_horizontal|center_vertical"
-                android:text=" Who are you?"
+                android:text="@string/whoareyou"
                 android:textColor="@color/white"
                 android:textSize="@dimen/textsize_20sp" />
 
@@ -77,12 +77,17 @@
                 android:layout_marginTop="20dp"
                 android:src="@mipmap/img_citizen" />
 
-            <ImageView
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/citizen"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
-                android:src="@mipmap/img_citizen_text" />
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:textAllCaps="true"
+                android:textSize="@dimen/textsize_22sp"
+                android:textColor="@color/white"/>
 
 
         </LinearLayout>
@@ -118,12 +123,18 @@
                 android:layout_marginTop="20dp"
                 android:src="@mipmap/img_cops" />
 
-            <ImageView
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/cops"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
-                android:src="@mipmap/img_cops_text" />
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:textAllCaps="true"
+                android:textSize="@dimen/textsize_22sp"
+                android:textColor="@color/white"/>
 
 
         </LinearLayout>

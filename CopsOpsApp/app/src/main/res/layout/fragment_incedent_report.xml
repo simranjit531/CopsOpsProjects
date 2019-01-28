@@ -44,7 +44,7 @@
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:gravity="center_horizontal|center_vertical"
-                    android:text="   Remember to save it"
+                    android:text="@string/Remembertosaveit"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textsize_20sp" />
 

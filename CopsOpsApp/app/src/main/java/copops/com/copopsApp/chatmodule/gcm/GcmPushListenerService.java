@@ -1,6 +1,8 @@
 package copops.com.copopsApp.chatmodule.gcm;
 
 
+import android.util.Log;
+
 import com.quickblox.sample.core.gcm.CoreGcmPushListenerService;
 import com.quickblox.sample.core.utils.NotificationUtils;
 import com.quickblox.sample.core.utils.ResourceUtils;
@@ -13,6 +15,9 @@ public class GcmPushListenerService extends CoreGcmPushListenerService {
 
     @Override
     protected void showNotification(String message) {
+
+        Log.e("chatmessage",""+message);
+
         NotificationUtils.showNotification(this, SplashActivity.class,
                 ResourceUtils.getString(R.string.notification_title), message,
                 R.mipmap.ic_notification, NOTIFICATION_ID);

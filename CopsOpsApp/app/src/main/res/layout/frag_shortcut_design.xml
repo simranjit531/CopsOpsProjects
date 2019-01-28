@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+
+    <RelativeLayout
+        android:id="@+id/relativeLayoutParent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="UselessParent">
+
+        <!-- this is the collapsed layout -->
+        <RelativeLayout
+            android:id="@+id/layoutCollapsed"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/collapsed_iv"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:src="@mipmap/logo_launcher" />
+
+            <ImageView
+                android:id="@+id/buttonClose"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="38dp"
+                android:src="@mipmap/icon_close" />
+        </RelativeLayout>
+
+        <!-- this is the expanded layout -->
+        <RelativeLayout
+            android:id="@+id/layoutExpanded"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/btnmain"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/logo_launcher" />
+
+            <ImageView
+                android:id="@+id/btnreportofincident"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="10dp"
+                android:layout_toLeftOf="@+id/btnmain"
+                android:src="@mipmap/img_operatorheader_gps_icon" />
+
+            <ImageView
+                android:id="@+id/btnassignedintervation"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/btnreportofincident"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_toLeftOf="@+id/btnmain"
+                android:src="@mipmap/img_operatorheader_gps_menu" />
+
+
+            <ImageView
+                android:id="@+id/btnchat"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/btnassignedintervation"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="10dp"
+                android:layout_toLeftOf="@+id/btnmain"
+                android:src="@mipmap/img_operatorheader_chat_icon" />
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+</FrameLayout>

@@ -49,10 +49,10 @@ public class Frag_Call_Number extends Fragment implements View.OnClickListener {
         TVcall.setOnClickListener(this);
 
         if (mAppSession.getData("city").equals("police")){
-            TVcalltext.setText("Souhaitez-vous être mis en relation avec le comissariat de Police ?");
+            TVcalltext.setText(getString(R.string.Souhaitez));
             helpline_number="17";
         }else if (mAppSession.getData("city").equals("medical")){
-            TVcalltext.setText("Souhaitez-vous être mis en relation avec les Sapeurs Pompiers ?");
+            TVcalltext.setText(getString(R.string.Souhaitezvous));
             helpline_number="18";
         }
 

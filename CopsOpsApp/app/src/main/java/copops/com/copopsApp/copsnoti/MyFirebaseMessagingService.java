@@ -27,7 +27,7 @@ import copops.com.copopsApp.utils.AppSession;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-    private static final String TAG = "MyFirebaseMsgService";
+    private static final String TAG = "COPSFirebaseMsgService";
 
     private static NotificationChannel mChannel;
     private static NotificationManager notifManager;
@@ -58,10 +58,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
+        Log.e(TAG, "From: " + remoteMessage.getFrom());
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getNotification().getBody());
+            Log.e(TAG, "Message data payload: " + remoteMessage.getNotification().getBody());
             sendNotification("COPOPS",remoteMessage.getNotification().getBody(),getApplicationContext());
         //   sendNotification(remoteMessage.getNotification().getBody());
             mAppSession.saveData("notification","notify");
@@ -70,6 +72,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            Log.e(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             sendNotification("COPOPS",remoteMessage.getNotification().getBody(),getApplicationContext());
 
           //  sendNotification(remoteMessage.getNotification().getBody());

@@ -91,7 +91,7 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
 
         ButterKnife.bind(this, view);
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("loading...");
+        progressDialog.setMessage(getString(R.string.loading));
         mClossPassInterFace = this;
         mAppSession = mAppSession.getInstance(getActivity());
 
@@ -114,15 +114,15 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
         Tvdate.setText(date);
         Tvtime.setText(time);
         if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("1")) {
-            Tvstate.setText("On-wait");
+            Tvstate.setText(R.string.onwait);
             Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
         }
         else if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("2")) {
-            Tvstate.setText("Pending");
+            Tvstate.setText(R.string.pending);
             Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
         } else {
-
-            Tvstate.setText("Finished");
+            Tvstate.setText(R.string.finished);
+          //  Tvstate.setText("Finished");
             Tvstate.setTextColor(getResources().getColor(R.color.black));
             Rlintervenue.setVisibility(View.INVISIBLE);
             //  Tvstate.setText("Pending");

@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import copops.com.copopsApp.R;
+import copops.com.copopsApp.shortcut.ShortcutViewService;
 import copops.com.copopsApp.utils.AppSession;
-import copops.com.copopsApp.utils.TrackingServices;
 import copops.com.copopsApp.utils.Utils;
 
 /**
@@ -58,7 +58,6 @@ public class SpleshFragment extends Fragment {
                                                   Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
                                               }
 
-                                              getActivity().startService(new Intent(getActivity(),TrackingServices.class));
                                           } else {
                                               Utils.fragmentCall(new HomeFragment(), getFragmentManager());
                                           }

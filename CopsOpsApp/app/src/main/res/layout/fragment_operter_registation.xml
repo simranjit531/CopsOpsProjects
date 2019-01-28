@@ -86,13 +86,22 @@
                         android:src="@mipmap/img_white_dot" />
 
                     <ImageView
-                        android:layout_width="80dp"
+                        android:id="@+id/man"
+                        android:layout_width="40dp"
                         android:layout_height="22dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
                         android:layout_toRightOf="@+id/IVgreenmam"
                         android:src="@mipmap/img_man" />
-
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="18dp"
+                        android:text="@string/man"
+                        android:layout_toRightOf="@+id/man"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/textsize_16sp" />
                 </RelativeLayout>
 
 
@@ -109,25 +118,49 @@
                     android:layout_height="match_parent"
                     android:layout_toRightOf="@+id/viewgender">
 
+                    <!--<ImageView-->
+                        <!--android:id="@+id/IVgreenwoman"-->
+                        <!--android:layout_width="22dp"-->
+                        <!--android:layout_height="22dp"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:layout_marginRight="25dp"-->
+                        <!--android:layout_toLeftOf="@+id/IVwoman"-->
+                        <!--android:src="@mipmap/img_white_dot" />-->
                     <ImageView
                         android:id="@+id/IVgreenwoman"
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="25dp"
-                        android:layout_toLeftOf="@+id/IVwoman"
+                        android:layout_marginLeft="25dp"
                         android:src="@mipmap/img_white_dot" />
 
                     <ImageView
-                        android:id="@+id/IVwoman"
-                        android:layout_width="80dp"
+                        android:id="@+id/woman"
+                        android:layout_width="40dp"
                         android:layout_height="22dp"
-                        android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="25dp"
-                        android:src="@mipmap/img_woman" />
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/IVgreenwoman"
+                        android:src="@mipmap/img_man" />
 
+                    <!--<ImageView-->
+                        <!--android:id="@+id/IVwoman"-->
+                        <!--android:layout_width="40dp"-->
+                        <!--android:layout_height="22dp"-->
+                        <!--android:layout_alignParentRight="true"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:layout_marginRight="25dp"-->
+                        <!--android:src="@mipmap/img_woman" />-->
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="18dp"
+                        android:text="@string/woman"
+                        android:layout_toRightOf="@+id/woman"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/textsize_16sp" />
                 </RelativeLayout>
 
             </RelativeLayout>
@@ -149,7 +182,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight=".50"
                     android:background="@drawable/edittext_lower_background"
-                    android:hint="Last Name"
+                    android:hint="@string/last_name_hint"
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:textColor="@color/black"
@@ -164,7 +197,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight=".50"
                     android:background="@drawable/edittext_lower_background"
-                    android:hint="First Name"
+                    android:hint="@string/first_name_hint"
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:textColor="@color/black"
@@ -184,7 +217,7 @@
                 android:layout_marginRight="10dp"
                 android:paddingTop="@dimen/textsize_10sp"
                 android:background="@drawable/edittext_lower_background"
-                android:hint="dd / mm / yyyy"
+                android:hint="@string/dob_hint"
                 android:imeOptions="actionNext"
                 android:focusable="false"
                 android:inputType="text"
@@ -210,7 +243,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight=".50"
                     android:background="@drawable/edittext_lower_background"
-                    android:hint="Phone Number"
+                    android:hint="@string/phone_no_hint"
                     android:maxLength="15"
                     android:imeOptions="actionNext"
                     android:inputType="number"
@@ -226,7 +259,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight=".50"
                     android:background="@drawable/edittext_lower_background"
-                    android:hint="Email"
+                    android:hint="@string/phone_no_hint"
                     android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
                     android:textColor="@color/black"
@@ -253,7 +286,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight=".50"
                     android:background="@drawable/edittext_lower_background"
-                    android:hint="Password"
+                    android:hint="@string/password_hint"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
                     android:textColor="@color/black"
@@ -268,7 +301,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight=".50"
                     android:background="@drawable/edittext_lower_background"
-                    android:hint="Confirm Password"
+                    android:hint="@string/con_pass_hint"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
                     android:textColor="@color/black"
@@ -303,7 +336,7 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_toRightOf="@+id/IVimgcard"
-                    android:text="ID Card"
+                    android:text="@string/id_card"
                     android:textColor="@color/sky_blue"
                     android:textStyle="bold" />
 
@@ -331,7 +364,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
-                        android:text="Recto" />
+                        android:text="@string/front_text_Recto" />
 
                     <ImageView
                         android:id="@+id/IV_IDcardcamera"
@@ -371,7 +404,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_marginLeft="20dp"
-                        android:text="Verso" />
+                        android:text="@string/back_text_Verso" />
 
                     <ImageView
                         android:id="@+id/IV_IDcardvideocamera"
@@ -429,7 +462,7 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_toRightOf="@+id/IVimgbusinesscard"
-                    android:text="Business Card"
+                    android:text="@string/business_id_card"
                     android:textColor="@color/sky_blue"
                     android:textStyle="bold" />
 
@@ -457,7 +490,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
-                        android:text="Recto" />
+                        android:text="@string/front_text_Recto" />
 
                     <ImageView
                         android:id="@+id/IV_businesscardcamera"
@@ -497,7 +530,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_marginLeft="20dp"
-                        android:text="Verso" />
+                        android:text="@string/back_text_Verso" />
 
                     <ImageView
                         android:id="@+id/IV_businesscardvideocamera"
@@ -557,7 +590,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:gravity="center_vertical|center_horizontal"
-                    android:text="Next"
+                    android:text="@string/next_btn"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textsize_16sp" />
 

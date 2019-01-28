@@ -1,57 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_gravity="center_vertical|center_horizontal"
     android:layout_height="150dp"
+    android:layout_gravity="center_vertical|center_horizontal"
     android:layout_marginLeft="40dp"
     android:layout_marginRight="40dp"
     android:layout_marginTop="40dp"
     android:background="@mipmap/img_call_background">
-    <LinearLayout
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/TVcustomtitletext"
-        android:layout_marginTop="10dp">
-<ImageView
-    android:id="@+id/mIVheader"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="10dp"
-    android:background="@drawable/information"/>
 
-    <TextView
-        android:layout_gravity="center_vertical"
+    <LinearLayout
+        android:id="@+id/TVcustomtitletext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/information"
-        android:textColor="@color/black"
-        android:textSize="@dimen/textsize_18sp" />
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/mIVheader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/information" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/information"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_18sp" />
     </LinearLayout>
+
     <View
-        android:visibility="gone"
         android:id="@+id/mHeaderDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/TVcustomtitletext"
         android:layout_centerHorizontal="true"
-        android:background="@color/aluminiumcolor" />
+        android:background="@color/aluminiumcolor"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/TVcustomdescriptiontext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal"
         android:layout_below="@+id/mHeaderDivider"
+        android:layout_centerHorizontal="true"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
         android:text="@string/exit_message"
         android:textColor="@color/aluminiumcolor"
         android:textSize="@dimen/textsize_16sp" />
-
 
 
     <View
@@ -71,9 +73,9 @@
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="10dp"
-        android:textColor="@color/dodgerblue"
         android:text="@string/no"
-        android:textSize="@dimen/textsize_18sp"/>
+        android:textColor="@color/dodgerblue"
+        android:textSize="@dimen/textsize_18sp" />
 
     <View
         android:layout_width="1dp"
@@ -88,15 +90,15 @@
         android:id="@+id/mTvYes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         android:layout_marginRight="40dp"
         android:layout_marginTop="10dp"
-        android:textColor="@color/black"
         android:text="@string/yes"
-        android:textSize="@dimen/textsize_18sp"/>
+        android:textColor="@color/black"
+        android:textSize="@dimen/textsize_18sp" />
 
 
 </RelativeLayout>

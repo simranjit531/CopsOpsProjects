@@ -53,7 +53,7 @@
                 android:layout_below="@+id/RLprofileimage"
                 android:layout_marginTop="21dp"
                 android:gravity="center_horizontal"
-                android:text="sentinal"
+                android:text="@string/sentinel"
                 android:textColor="@color/black"
                 android:textSize="@dimen/textsize_24sp"
                 android:textStyle="bold" />
@@ -68,7 +68,7 @@
                 android:textSize="@dimen/textsize_18sp"
                 android:textStyle="bold"
                 android:textColor="@color/sky_blue"
-                android:text="@string/sent"/>
+                android:text="@string/sentinel"/>
 
 
             <RelativeLayout
