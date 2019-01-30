@@ -16,6 +16,16 @@ public class RegistationPjoSetData implements Serializable {
     String user_password;
     String reg_latitude;
     String reg_longitude;
+
+    public String getFcm_token() {
+        return fcm_token;
+    }
+
+    public void setFcm_token(String fcm_token) {
+        this.fcm_token = fcm_token;
+    }
+
+    String fcm_token;
     public String getDevice_id() {
         return device_id;
     }

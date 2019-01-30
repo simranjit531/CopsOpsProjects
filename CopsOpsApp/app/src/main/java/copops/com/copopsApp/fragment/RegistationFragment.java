@@ -61,6 +61,7 @@ import copops.com.copopsApp.pojo.RegistationPjoSetData;
 import copops.com.copopsApp.pojo.RegistationPojo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
+import copops.com.copopsApp.shortcut.GPSTracker;
 import copops.com.copopsApp.shortcut.ShortcutViewService;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
@@ -228,6 +229,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
 
     private String userType;
     Service mAPIService;
+    GPSTracker gps;
 
     public RegistationFragment(String userType) {
         this.userType = userType;
@@ -247,6 +249,18 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
 
         mAPIService = ApiUtils.getAPIService();
 
+        gps = new GPSTracker(getActivity());
+        latitude=gps.getLatitude();
+        longitude=gps.getLongitude();
+        mAppSession = mAppSession.getInstance(mContext);
+
+        try {
+            mAppSession.saveData("latitude", String.valueOf(latitude));
+            mAppSession.saveData("longitude", String.valueOf(longitude));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         if (userType.equalsIgnoreCase("citizen")) {
             userTypeRegistation = "Citizen";
             initView();
@@ -257,21 +271,21 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
 
         onClick();
         mContext = getActivity();
-        mAppSession = mAppSession.getInstance(mContext);
+
         progressDialog = new ProgressDialog(mContext);
         progressDialog.setMessage(getString(R.string.loading));
 
 
-        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (checkPermission() && gpsEnabled()) {
-            if (isNetworkEnabled) {
-                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
-                        10, mLocationListener);
-            } else {
-                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-                        10, mLocationListener);
-            }
-        }
+//        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+//        if (checkPermission() && gpsEnabled()) {
+//            if (isNetworkEnabled) {
+//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
+//                        10, mLocationListener);
+//            } else {
+//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+//                        10, mLocationListener);
+//            }
+//        }
         return view;
     }
 
@@ -379,6 +393,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                 registationPjoSetData.setRef_user_type_id(userTypeRegistation);
                 registationPjoSetData.setPhone_number(etPhoneNo.getText().toString().trim());
                 registationPjoSetData.setUser_password(etPassword.getText().toString().trim());
+                registationPjoSetData.setFcm_token(mAppSession.getData("fcm_token"));
                 //   registationPjoSetData.setReg_latitude(String.valueOf(latitude));
 
                 registationPjoSetData.setReg_longitude(String.valueOf(longitude));

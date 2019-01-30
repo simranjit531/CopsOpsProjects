@@ -25,38 +25,38 @@ public interface Service {
 
     @Multipart
     //@POST("/copops/public/api/auth/register")
-    @POST("public/api/auth/register")
+    @POST("api/auth/register")
     Call<RegistationPojo> registationWithuploadFile(@Part MultipartBody.Part profile_image, @Part MultipartBody.Part id_card_front, @Part MultipartBody.Part id_card_back, @Part MultipartBody.Part business_card_front, @Part MultipartBody.Part business_card_back, @Part("data") RequestBody data);
 
 
     @Multipart
     //@POST("/copops/public/api/auth/login")
-    @POST("public/api/auth/login")
+    @POST("api/auth/login")
     Call<RegistationPojo> userLogin(@Part("data") RequestBody data);
     @Multipart
-    @POST("public/api/auth/password/reset")
+    @POST("api/auth/password/reset")
     Call<CommanStatusPojo> userReset(@Part("data") RequestBody data);
 
     @Multipart
-    @POST("public/api/auth/validate/otp")
+    @POST("api/auth/validate/otp")
     Call<CommanStatusPojo> callOtp(@Part("data") RequestBody data);
 
 
     @Multipart
-    @POST("public/api/auth/profile/set/locations")
+    @POST("api/auth/profile/set/locations")
     Call<CommanStatusPojo> getlocations(@Part("data") RequestBody data);
 
 
     @Multipart
-    @POST("public/api/auth/sub/incidents")
+    @POST("api/auth/sub/incidents")
     Call<IncidentSubPojo> getIncedentSubTypeData(@Part("data") RequestBody data);
     @Multipart
-    @POST("public/api/auth/incidents")
+    @POST("api/auth/incidents")
     Call<IncidentTypePojo> incidentType(@Part("data") RequestBody data);
 
 
     @Multipart
-    @POST("public/api/auth/incident/list")
+    @POST("api/auth/incident/list")
     Call<AllLocationAndCityPojo> getMapList(@Part("data") RequestBody data);
 
 
@@ -67,50 +67,50 @@ public interface Service {
 //    Call<AssignmentListPojo> getAssignmentList(@Part("data") RequestBody data);
 
     @Multipart
-    @POST("public/api/auth/copincident/status/list")
+    @POST("api/auth/copincident/status/list")
     Call<AssignmentListPojo> getAssignmentList(@Part("data") RequestBody data);
 
 
     @Multipart
-    @POST("public/api/auth//profile/set/locations")
+    @POST("api/auth//profile/set/locations")
     Call<RegistationPojo> setLocations(@Part("data") RequestBody data);
 
 
     @Multipart
-    @POST("public/public/api/auth/profile/set/availability")
+    @POST("public/api/auth/profile/set/availability")
     Call<CommanStatusPojo> getAvailability(@Part("data") RequestBody data);
 
 
     @Multipart
-    @POST("public/api/auth/registered/incident/close")
+    @POST("api/auth/registered/incident/close")
     Call<IncedentAcceptResponse> close(@Part("data") RequestBody data,@Part MultipartBody.Part signature);
 
 
     @Multipart
-    @POST("public/api/auth/registered/incident/assigned")
+    @POST("api/auth/registered/incident/assigned")
     Call<AssignmentListPojo> assignedData(@Part("data") RequestBody data);
 
 
     @Multipart
-    @POST("public/api/auth/registered/incident/intervent")
+    @POST("api/auth/registered/incident/intervent")
     Call<CommanStatusPojo> acceptInterven(@Part("data") RequestBody data);
 
     @Multipart
-    @POST("public/api/auth/profile/attributes")
+    @POST("api/auth/profile/attributes")
     Call<OperatorShowAlInfo> getOperotor(@Part("data") RequestBody data);
 
 
     @Multipart
-    @POST("public/api/auth/incident/city/list")
+    @POST("api/auth/incident/city/list")
     Call<CityWsieMapShowPojo> getMapListCity(@Part("data") RequestBody data);
 
 
     @Multipart
-    @POST("public/api/auth/register/incident")
+    @POST("api/auth/register/incident")
     Call<IncedentAcceptResponse> generateIncedent(@Part MultipartBody.Part incident_image,@Part MultipartBody.Part incident_video,@Part("data") RequestBody data);
 
     @Multipart
-    @POST("public/api/auth/register/handrail")
+    @POST("api/auth/register/handrail")
     Call<IncedentAcceptResponse> generateHandrailSignature(@Part MultipartBody.Part signature,@Part MultipartBody.Part handrail_image,@Part MultipartBody.Part handrail_video,@Part("data") RequestBody data);
 
 }

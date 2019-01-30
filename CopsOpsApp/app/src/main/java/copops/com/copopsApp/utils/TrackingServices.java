@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import copops.com.copopsApp.pojo.CommanStatusPojo;
 import copops.com.copopsApp.pojo.LoginPojoSetData;
 import copops.com.copopsApp.services.ApiUtils;
+import copops.com.copopsApp.shortcut.GPSTracker;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -33,12 +34,10 @@ import retrofit2.Response;
 public class TrackingServices extends Service {
 
 
-    LocationManager mLocationManager;
-    private boolean isNetworkEnabled;
-    private boolean isGpsEnabled;
     AppSession mAppSession;
     double latitude;
     double longitude;
+    GPSTracker gps;
 
     public static final int notify = 30000;  //interval between two services(Here Service run every 5 seconds)
     int count = 0;  //number of times service is display
@@ -55,7 +54,8 @@ public class TrackingServices extends Service {
 
 
         mAppSession = mAppSession.getInstance(getApplicationContext());
-        mLocationManager = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        gps = new GPSTracker(getApplicationContext());
+       // mLocationManager = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         if (mTimer != null) // Cancel if already existed
             mTimer.cancel();
         else
@@ -79,18 +79,27 @@ public class TrackingServices extends Service {
                 @Override
                 public void run() {
 
-                    if (checkPermission() && gpsEnabled()) {
-                        if (isNetworkEnabled) {
-                            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
-                                    10, mLocationListener);
-                        } else {
-                            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-                                    10, mLocationListener);
-                        }
-                    }
-                    // display toast
 
-                }
+                        latitude=gps.getLatitude();
+                        longitude=gps.getLongitude();
+
+
+                        LoginPojoSetData mLoginPojoSetData = new LoginPojoSetData();
+
+                        Log.e("always","tracking");
+                        Log.e("latitude"," "+latitude);
+                        Log.e("longitude"," "+longitude);
+
+                        mLoginPojoSetData.setUser_id(mAppSession.getData("id"));
+                        mLoginPojoSetData.setLatitude(String.valueOf(latitude));
+                        mLoginPojoSetData.setLongitude(String.valueOf(longitude));
+
+                        Log.e("taackingdata", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
+                        RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
+
+                        getLocation(mFile);
+
+                    }
             });
 
         }
@@ -110,74 +119,6 @@ public class TrackingServices extends Service {
         return true;
 //    }
     }
-
-
-    private boolean gpsEnabled() {
-        isGpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-        if (!isGpsEnabled && !isNetworkEnabled) {
-            // displayLocationSettingsRequest(getActivity());
-//    if (!isGpsEnabled) {
-//            Toast.makeText(m_activity, "GPS is not enabled", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        return true;
-    }
-    ////Manish
-    private final android.location.LocationListener mLocationListener = new android.location.LocationListener() {
-
-        @Override
-        public void onLocationChanged(final Location location) {
-            if (location != null) {
-                // mCurrentLocation = location;
-                latitude=location.getLatitude();
-                longitude=location.getLongitude();
-
-
-                LoginPojoSetData mLoginPojoSetData = new LoginPojoSetData();
-
-                Log.e("always","tracking");
-                Log.e("latitude"," "+latitude);
-                Log.e("longitude"," "+longitude);
-
-                mLoginPojoSetData.setUser_id(mAppSession.getData("id"));
-                mLoginPojoSetData.setLatitude(String.valueOf(latitude));
-                mLoginPojoSetData.setLongitude(String.valueOf(longitude));
-
-                Log.e("taackingdata", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
-                RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
-
-                getLocation(mFile);
-                //   mAppSession.saveData("latitude",String.valueOf(latitude));
-                // mAppSession.saveData("longitude",String.valueOf(longitude));
-
-                //   progressDialog.dismiss();
-                //  initMapFragment();
-            } else {
-                Toast.makeText(getApplicationContext(), "Location is not available now", Toast.LENGTH_LONG).show();
-                // progressDialog.dismiss();
-            }
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
-    };
-
-
-
 
     private void getLocation(RequestBody Data) {
 

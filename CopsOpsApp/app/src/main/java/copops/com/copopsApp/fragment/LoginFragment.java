@@ -56,7 +56,7 @@ import copops.com.copopsApp.pojo.LoginPojoSetData;
 import copops.com.copopsApp.pojo.RegistationPojo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
-import copops.com.copopsApp.utils.BackgroundBroadCast;
+import copops.com.copopsApp.shortcut.GPSTracker;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.TrackingServices;
@@ -104,6 +104,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     QBIncomingMessagesManager incomingMessagesManager;
     private QBUser currentUser;
     ArrayList<QBUser> list;
+    GPSTracker gps;
 
     LocationManager mLocationManager;
     private boolean isNetworkEnabled;
@@ -123,7 +124,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         onClick();
         mContext = getActivity();
         mAppSession = mAppSession.getInstance(mContext);
+        gps = new GPSTracker(getActivity());
+        latitude=gps.getLatitude();
+        longitude=gps.getLongitude();
 
+        mAppSession.saveData("latitude",String.valueOf(latitude));
+        mAppSession.saveData("longitude",String.valueOf(longitude));
         progressDialog = new ProgressDialog(mContext);
         progressDialog.setMessage("loading...");
         if (userType.equalsIgnoreCase("citizen")) {
@@ -134,18 +140,18 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             userTypeRegistation = "Cops";
             mAppSession.saveData("type",userTypeRegistation);
         }
-
-        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (checkPermission() && gpsEnabled()) {
-            if (isNetworkEnabled) {
-                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
-                        10, mLocationListener);
-            } else {
-                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-                        10, mLocationListener);
-            }
-        }
-        progressDialog.show();
+//
+//        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+//        if (checkPermission() && gpsEnabled()) {
+//            if (isNetworkEnabled) {
+//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
+//                        10, mLocationListener);
+//            } else {
+//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+//                        10, mLocationListener);
+//            }
+//        }
+    //    progressDialog.show();
         Log.d("Firebase", "token "+ FirebaseInstanceId.getInstance().getToken());
 
         mAppSession.saveData("fcm_token",FirebaseInstanceId.getInstance().getToken());
@@ -236,7 +242,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                         mAppSession.saveData("image_url", registrationResponse.getProfile_url());
                                         mAppSession.saveData("profile_qrcode", registrationResponse.getProfile_qrcode());
                                         mAppSession.saveData("grade", registrationResponse.getGrade());
-                                        Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
+
 
                                         getActivity().startService(new Intent(getActivity(),TrackingServices.class));
 
@@ -311,8 +317,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> result, Bundle params) {
-
+                ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
                 list = result;
+                String aaa= mAppSession.getData("user_id");
                 for (int i = 0; i < list.size(); i++) {
                     if (list.get(i).getLogin().equalsIgnoreCase(mAppSession.getData("user_id"))) {
                         QBUser user = list.get(i);
@@ -345,6 +352,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
 
                 incomingMessagesManager.addDialogMessageListener(new AllDialogsMessageListener());
+                Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
             }
 
             @Override
@@ -394,10 +402,20 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 QbDialogHolder.getInstance().addDialog(result);
                 int count= getUnreadMsgCount(result);
 
-                if (qbChatMessage.getAttachments() != null) {
-                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
-                } else{
+
+                if (count == 0) {
+
+                    mAppSession.saveData("messagecount", "0");
+                } else {
+                    mAppSession.saveData("messagecount", "" + count);
+                }
+
+
+                if (qbChatMessage.getAttachments().size()==0) {
                     PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + " message)", getActivity());
+
+                } else{
+                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
 
                 }
               //  PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " "+qbChatMessage.getBody()+"  "+"("+count+" message)", getActivity());

@@ -79,12 +79,16 @@ public class ChatAdapter extends QBMessagesAdapter<QBChatMessage> implements Sti
 
         TextView customMessageTimeTextView = holder.itemView.findViewById(R.id.custom_msg_text_time_message);
         customMessageTimeTextView.setText(getDate(chatMessage.getDateSent()));
-        if(chatMessage.getId().equals(chatMessages.get(position).getId())) {
-            opponentNameTextView.setText(getSenderName(chatMessage));
-            meiD.setVisibility(View.GONE);
-        }else{
-            meiD.setVisibility(View.VISIBLE);
-            opponentNameTextView.setVisibility(View.GONE);
+        try {
+            if (chatMessage.getId().equals(chatMessages.get(position).getId())) {
+                opponentNameTextView.setText(getSenderName(chatMessage));
+                meiD.setVisibility(View.GONE);
+            } else {
+                meiD.setVisibility(View.VISIBLE);
+                opponentNameTextView.setVisibility(View.GONE);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
         super.onBindViewMsgLeftHolder(holder, chatMessage, position);
     }

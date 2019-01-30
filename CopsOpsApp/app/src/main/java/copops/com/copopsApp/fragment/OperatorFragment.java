@@ -65,6 +65,8 @@ import copops.com.copopsApp.pojo.OperatorShowAlInfo;
 import copops.com.copopsApp.pojo.RegistationPojo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
+import copops.com.copopsApp.shortcut.GPSTracker;
+import copops.com.copopsApp.shortcut.ShortcutViewService;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.Utils;
@@ -172,7 +174,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     QBIncomingMessagesManager incomingMessagesManager;
     private QBUser currentUser;
     QBChatMessage qbChatMessage1;
-
+    GPSTracker gps;
     public OperatorFragment() {
 
         // Required empty public constructor
@@ -201,18 +203,26 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         rlchat.setOnClickListener(this);
 
         buildUsersList();
-        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (checkPermission() && gpsEnabled()) {
-            if (isNetworkEnabled) {
-                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
-                        10, mLocationListener);
-                progressDialog.show();
-            } else {
-                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-                        10, mLocationListener);
-                progressDialog.show();
-            }
-        }
+
+
+        gps = new GPSTracker(getActivity());
+        latitude=gps.getLatitude();
+        longitude=gps.getLongitude();
+
+        mAppSession.saveData("latitude",String.valueOf(latitude));
+        mAppSession.saveData("longitude",String.valueOf(longitude));
+//        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+//        if (checkPermission() && gpsEnabled()) {
+//            if (isNetworkEnabled) {
+//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
+//                        10, mLocationListener);
+//                progressDialog.show();
+//            } else {
+//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+//                        10, mLocationListener);
+//                progressDialog.show();
+//            }
+//        }
         return view;
     }
 
@@ -293,9 +303,14 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.RLreportanincident:
                 mAppSession.saveData("handrail", "dasd");
-                if (operatorShowAlInfo.getGrade().equalsIgnoreCase("Grade II")) {
-                    Utils.fragmentCall(new PositionOfInteervebtionsFragment(latitude, longitude), getFragmentManager());
+                try {
+                    if (operatorShowAlInfo.getGrade().equalsIgnoreCase("Grade II")) {
+                        Utils.fragmentCall(new PositionOfInteervebtionsFragment(latitude, longitude), getFragmentManager());
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
+
                 break;
 
             case R.id.RLpositionofincidents:
@@ -352,9 +367,13 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.rlchat:
+
+                getActivity().stopService(new Intent(getActivity(), ShortcutViewService.class));
                 Intent mIntent = new Intent(getActivity(), DialogsActivity.class);
 
                 startActivity(mIntent);
+
+
                 break;
 
             case R.id.TVname:
@@ -464,7 +483,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
     private void getCopeStatus(RequestBody Data) {
 
-        progressDialog.show();
+       progressDialog.show();
         Service operator = ApiUtils.getAPIService();
         Call<OperatorShowAlInfo> getallLatLong = operator.getOperotor(Data);
         getallLatLong.enqueue(new Callback<OperatorShowAlInfo>() {
@@ -476,6 +495,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                 try {
                     if (response.body() != null) {
                         operatorShowAlInfo = response.body();
+
                         if (operatorShowAlInfo.getStatus().equals("false")) {
                             //  Utils.showAlert(registrationResponse.getMessage(), getActivity());
                         } else {
@@ -487,8 +507,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             TVprogresspercentage.setText(operatorShowAlInfo.getProfile_percent() + "%");
                             progressBar1.setMax(100);
                             progressBar1.setProgress(Integer.valueOf(operatorShowAlInfo.getProfile_percent()));
-
-
                             if (operatorShowAlInfo.getAvailable().equalsIgnoreCase("0")) {
                                 Tvnotavaiable.setTextColor(getResources().getColor(R.color.sedocolor));
                                 Tvavaiable.setTextColor(getResources().getColor(R.color.black));
@@ -496,7 +514,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                                 viewlineId.setBackgroundResource(R.color.blue_shade);
                                 viewlineId.setVisibility(View.INVISIBLE);
                                 viewline2.setVisibility(View.VISIBLE);
-
                             } else {
                                 Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
                                 Tvnotavaiable.setTextColor(getResources().getColor(R.color.black));
@@ -505,8 +522,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                                 viewlineId.setVisibility(View.VISIBLE);
                                 viewline2.setBackgroundResource(R.color.black);
                             }
-
-
                             if (operatorShowAlInfo.getAvailable().equalsIgnoreCase("1")) {
                                 if (operatorShowAlInfo.getNew_reports().equalsIgnoreCase("0")) {
                                     countId.setVisibility(View.INVISIBLE);
@@ -529,18 +544,14 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                                     mAppSession.saveData("assignedintervationcount",operatorShowAlInfo.getNew_reports());
                                 }
                             }
-
-
                             TVprofiledescription.setText(operatorShowAlInfo.getGrade());
-
                             mAppSession.saveData("operatorlevel", operatorShowAlInfo.getLevel());
-
-
                         }
                         progressDialog.dismiss();
 
                     } else {
                         Utils.showAlert(response.message(), getActivity());
+                        progressDialog.dismiss();
                     }
 
                 } catch (Exception e) {
@@ -563,7 +574,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     private void getCopsAvailabilityStatus(RequestBody Data) {
 
         try {
-            progressDialog.show();
+           // progressDialog.show();
             Service operator = ApiUtils.getAPIService();
             Call<CommanStatusPojo> getallLatLong = operator.getAvailability(Data);
             getallLatLong.enqueue(new Callback<CommanStatusPojo>() {
@@ -628,7 +639,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
 
     private void getAssigmentList(RequestBody Data) {
-        progressDialog.show();
+      //  progressDialog.show();
         Service login = ApiUtils.getAPIService();
         Call<AssignmentListPojo> getallLatLong = login.getAssignmentList(Data);
         getallLatLong.enqueue(new Callback<AssignmentListPojo>() {
@@ -937,12 +948,13 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                     mAppSession.saveData("messagecount", "" + count);
                 }
 
-                if (qbChatMessage.getAttachments() != null) {
-                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
-                } else{
+                if (qbChatMessage.getAttachments().size()==0) {
                     PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + " message)", getActivity());
 
-            }
+                } else{
+                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
+
+                }
             }
 
             @Override

@@ -20,9 +20,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import copops.com.copopsApp.R;
-import copops.com.copopsApp.activity.AssingmentActivity;
 import copops.com.copopsApp.activity.DashboardActivity;
-import copops.com.copopsApp.chatmodule.ui.activity.DialogsActivity;
 import copops.com.copopsApp.utils.AppSession;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -62,11 +60,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getNotification().getBody());
-            Log.e(TAG, "Message data payload: " + remoteMessage.getNotification().getBody());
-            sendNotification("COPOPS",remoteMessage.getNotification().getBody(),getApplicationContext());
-        //   sendNotification(remoteMessage.getNotification().getBody());
-            mAppSession.saveData("notification","notify");
+
+            try{
+            if(remoteMessage.getNotification().getBody()!=null) {
+                Log.d(TAG, "Message data payload: " + remoteMessage.getNotification().getBody());
+                //  Log.e(TAG, "Message data payload: " + remoteMessage.getNotification().getBody());
+                sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
+                //   sendNotification(remoteMessage.getNotification().getBody());
+                mAppSession.saveData("notification", "notify");
+            }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
 
         // Check if message contains a notification payload.

@@ -1,0 +1,312 @@
+<resources>
+    <string name="app_name">CopOps</string>
+    <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>
+    <string name="navigation_drawer_close">Fermer le tiroir de navigation</string>
+    <string name="nav_header_title">Studio Android</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">En-tête de navigation</string>
+    <string name="action_settings">Réglages</string>
+    <string name="GPS_is_settings">GPS est les paramètres.</string>
+    <string name="GPS_is_not_enabled">Le GPS n\' est pas activé. Voulez-vous aller au menu des paramètres?</string>
+    <string name="Cancel">Annuler</string>
+    <string name="Settings">Réglages</string>
+    <string name="no_internet">Pas d\'accès Internet, vérifiez votre connexion Internet.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Bonjour fragment vierge</string>
+    <string name="last_name">S\'il vous plaît entrer le nom de famille</string>
+    <string name="first_name">S\'il vous plaît entrer le prénom</string>
+    <string name="dob">Veuillez entrer votre date de naissance</string>
+    <string name="phone_number">S\'il vous plaît entrer le numéro de téléphone</string>
+    <string name="phone_number_10">S\'il vous plaît entrer le numéro de téléphone minimum 10 chiffres</string>
+    <string name="email">S\'il vous plaît entrer email</string>
+    <string name="Male_female">Veuillez choisir un homme ou une femme</string>
+    <string name="des">S\'il vous plaît ajouter une description</string>
+    <string name="other_des">S\'il vous plaît ajouter une autre description</string>
+    <string name="password">Veuillez entrer le mot de passe</string>
+    <string name="path">Veuillez capturer au moins une vidéo ou une image</string>
+    <string name="objecttext">S\'il vous plaît entrer le sujet des rapports de main courante</string>
+    <string name="validation_signature">S\'il vous plaît créer votre signature.</string>
+
+    <string name="con_password">Veuillez entrer votre mot de passe</string>
+    <string name="valid_email_errer">Email non valide</string>
+    <string name="card1">La carte 1 est requise !</string>
+    <string name="card2">La carte 2 est requise !</string>
+    <string name="bussiness1">Bussiness 1 est requis !</string>
+    <string name="bussiness2">Bussiness 2 est requis !</string>
+    <string name="read_file">Cette application doit accéder à votre stockage de fichiers pour pouvoir lire des photos.</string>
+    <string name="internet_conection">S\'il vous plaît vérifier votre connexion Internet !!! .</string>
+    <string name="intervin">Vous avez déjà un rapport à compléter, veuillez d\'abord le compléter .</string>
+    <string name="password_not_same">Mot de passe et Confirmer le mot de passe doivent être égaux.</string>
+
+    <string name="cityName">S\'il vous plaît entrer le nom de la ville</string>
+    <string name="no_find">Aucun Enregistrement Trouvé</string>
+
+
+
+    <!--  Custom Dialog Screen -->
+    <string name="yes">Oui</string>
+    <string name="no">non</string>
+    <string name="close">Fermer</string>
+    <string name="information">information</string>
+    <string name="exit_message">Êtes-vous sûr de vouloir quitter ? </string>
+    <string name="logout_message">Êtes-vous sûr de vouloir vous déconnecter ? </string>
+    <string name="loading_msg">S\'il vous plaît, attendez... </string>
+    <string name="compress_msg">Veuillez patienter Votre vidéo est en cours de traitement ... </string>
+   <string name="next">Suivant</string>
+
+
+
+    <!-- Navigation screen -->
+
+    <string name="type_police">Type de police</string>
+    <string name="signaler_un_incident">Signaler un incident</string>
+    <string name="medical_fireman">Médical / pompier</string>
+    <string name="type_city">Type Ville</string>
+    <string name="whereareyougoing">  où allez-vous</string>
+    <string name="citySearch">  Recherche de ville</string>
+    <string name="address_hint">36, desnos road, La Rochelle,France</string>
+    <string name="fill_dest">REMPLIR LA DESTINATION</string>
+    <string name="other">Autre</string>
+    <string name="body_accident">Accident corporel</string>
+    <string name="airway_obstruction">Obstruction des voies respiratoires</string>
+    <string name="lighting_out_of_order">Eclairage hors service</string>
+    <string name="hemorrhage_wound">hémorragie, blessure</string>
+    <string name="dirty_place">Sale Place (rue, parc)</string>
+    <string name="tags_onapublicbuilding">Tags sur un bâtiment public</string>
+    <string name="Fire_and_scorch">Feu et roussissement</string>
+    <string name="Heart_attack_and_malaise">Crise cardiaque et malaise</string>
+    <string name="Sexual_violence">Violence sexuelle</string>
+    <string name="Burglary">Cambriolage</string>
+    <string name="Theft">Vol</string>
+    <string name="Attack_violence">Attaque / violence</string>
+    <string name="start">Début</string>
+    <string name="stop">Arrêtez</string>
+    <string name="destination_selection">Veuillez sélectionner votre destination pour la navigation.</string>
+    <!--Chat -->
+
+    <string name="chat_sample">Échantillon de chat</string>
+
+    <string name="menu_new_chat">Nouveau chat</string>
+    <string name="menu_chat_info">Informations de chat</string>
+    <string name="menu_add_users_to_chat">Ajouter des utilisateurs à la discussion</string>
+    <string name="menu_leave_chat">Quitter le chat</string>
+    <string name="menu_delete_chat">Supprimer le chat</string>
+    <string name="menu_dialogs_logout">Connectez - Out</string>
+    <string name="menu_dialogs_delete">Effacer</string>
+    <string name="menu_select_people_done">Terminé</string>
+
+    <string name="dlg_loading">Chargement</string>
+    <string name="dlg_restoring_chat_session">Restauration de la session de discussion…</string>
+    <string name="dlg_restoring_chat_session_logout">Restauration de session et déconnexion</string>
+    <string name="create_chat">Créer un chat…</string>
+    <string name="dlg_login">S\'identifier…</string>
+
+    <string name="placeholder_username_you">% s (vous)</string>
+    <string name="error_recreate_session">Erreur de chat de connexion</string>
+
+    <string name="login_title">@string/chat_sample</string>
+
+    <string name="splash_app_title">@string/chat_sample</string>
+    <string name="splash_create_session_error">Créer des erreurs de session:</string>
+
+    <string name="login_select_user_for_login">Sélectionner un utilisateur pour se connecter au chat</string>
+    <string name="login_cant_obtain_users">Impossible d\'obtenir les erreurs des utilisateurs</string>
+    <string name="login_chat_login_error">Erreur de connexion au chat. S\'il vous plaît reconnecter. Erreur</string>
+
+    <string name="dialogs_logged_in_as">Connecté en tant que% s</string>
+    <string name="dialogs_creation_error">Erreurs de création de dialogue</string>
+    <string name="dialogs_deletion_error">Erreurs de suppression de dialogue</string>
+    <string name="dialogs_list_hint">Sélectionner un dialogue pour discuter</string>
+    <string name="dialogs_get_error">Obtenir des erreurs de dialogues</string>
+
+    <string name="select_users_list_hint">Sélectionnez les utilisateurs que vous voulez discuter</string>
+    <string name="select_users_create_chat">Créer un nouveau chat</string>
+    <string name="select_users_edit_chat">Ajouter des utilisateurs à discuter</string>
+    <string name="select_users_get_users_error">Obtenir les erreurs des utilisateurs</string>
+    <string name="select_users_get_dialog_error">Erreur lors de l\'obtention du dialogue du serveur</string>
+    <string name="select_users_choose_users">Veuillez choisir au moins un participant</string>
+
+    <string name="chat_sticker">Autocollant</string>
+    <string name="chat_send">Envoyer</string>
+    <string name="chat_edit_text_hint">Tapez un message ...</string>
+    <string name="chat_me">Moi</string>
+    <string name="chat_friend">Ami</string>
+    <string name="chat_join_error">Erreur rejoindre le chat en groupe</string>
+    <string name="chat_send_message_error">Impossible d\'envoyer un message</string>
+    <string name="chat_load_history_error">Charger les erreurs de l\'historique du chat</string>
+    <string name="chat_load_users_error">Charger les erreurs des utilisateurs de chat</string>
+    <string name="chat_attachment_error">Impossible de charger le fichier choisi</string>
+    <string name="chat_attachment">Attachement</string>
+    <string name="chat_empty_you_are_alone_here">Vous êtes tout seul ici.</string>
+    <string name="chat_empty_start_new_chat">Commencer un nouveau chat.</string>
+    <string name="chat_unsupported_type">Type de dialogue non pris en charge</string>
+    <string name="chat_wait_for_attachments_to_upload">Attendez que toutes les pièces jointes soient téléchargées</string>
+    <string name="notification_title">Notification de discussion Quickblox</string>
+    <string name="connection_error">La connexion au chat a été abandonnée</string>
+    <string name="reconnect_alert">Reconnexion en% s secondes</string>
+    <string name="write_someting_on_chat">Ecrire quelque chose à envoyer.</string>
+
+    <string name="chat_info">Informations de chat</string>
+    <string name="chat_info_add_people_error">Ajouter des erreurs de personnes</string>
+
+    <string name="group_chat_join_error">Impossible de rejoindre le chat, erreurs:</string>
+    <string name="public_group_chat_cannot_be_deleted">Les discussions de groupe publiques ne peuvent être supprimées que par le propriétaire</string>
+    <string name="error_leave_chat">Erreur en quittant la pièce</string>
+
+    <string name="sender_id">1074070354893</string>
+
+
+    <string-array name="select_map_google_waze">
+        <item>Google Maps</item>
+        <item>Waze</item>
+    </string-array>
+
+    <string-array name="select_map_google">
+        <item>Google Maps</item>
+    </string-array>
+
+    <string-array name="select_waze">
+        <item>Waze</item>
+    </string-array>
+
+    <!-- SCREEN TEXT-->
+
+    <string name="whoareyou">Quel type de compte ?</string>
+    <string name="home_app_msg">Le compte public est destiné à être utilisé de l\'application. Le compte opérateur est destiné dans la force de l\'ordre. </string>
+    <string name="citizen">CITOYEN</string>
+    <string name="citizen_top">Compte public</string>
+    <string name="cops">OPERATEUR</string>
+    <string name="validation_msg">La création du compte opérateur
+doit être validé</string>
+    <string name="Copops">COP-OPS</string>
+    <string name="burglary">Cambriolage</string>
+
+
+
+
+    <!--  Loging Screen -->
+    <string name="security_msg">La sécurité est la première liberté</string>
+    <string name="header_msg">Lorem ipsum dolor sit
+exciting and enjoyable way </string>
+    <string name="email_hint">Identifiant</string>
+    <string name="password_hint">Mot de passe</string>
+    <string name="log_in_btn">Se connecter</string>
+    <string name="forgot_pass">Mot de passe oublié ?</string>
+    <string name="not_registered">Pas encore inscrit ? </string>
+
+
+    <!--  Registatin Screen -->
+    <string name="last_name_hint">Nom de famille</string>
+    <string name="first_name_hint">Prénom</string>
+    <string name="dob_hint">jj / mm / aaaa</string>
+    <string name="phone_no_hint">Numéro de téléphone</string>
+    <string name="Email_hint">Email</string>
+    <string name="con_pass_hint">Confirmez le mot de passe</string>
+    <string name="id_card">Carte d\'identité</string>
+    <string name="business_id_card">Carte de visite</string>
+    <string name="front_text_Recto">Recto</string>
+    <string name="back_text_Verso">Verso</string>
+    <string name="next_btn">Suivant</string>
+    <string name="handrail">Balustrade</string>
+    <string name="object">Objet</string>
+
+    <string name="aut_header">Authentifier l\'appareil</string>
+    <string name="send_code">Envoyer le code</string>
+    <string name="otp_msg">S\'il vous plaît remplir ci-dessous
+le code envoyé à</string>
+
+
+    <!-- Reset Password Screen-->
+    <string name="reset_pass_header">réinitialiser le mot de passe</string>
+    <string name="email_msg">Un email vous sera envoyé
+      pour changer votre mot de passe</string>
+    <string name="your_email_hint">Votre email</string>
+    <string name="send_btn">Envoyer</string>
+
+    <!--  DashBoard HOME Screen -->
+
+    <string name="sentinel">| sentinelle</string>
+    <string name="grade">Grade |</string>
+    <string name="report_comp">06/10</string>
+    <string name="progress_propert">06 rapports</string>
+    <string name="navigation">La navigation</string>
+    <string name="report_an_incident">Signaler un incident</string>
+    <string name="PositionofInterventions">Position des interventions</string>
+    <string name="search"> Chercher</string>
+    <string name="available">Disponible</string>
+    <string name="messaging">Messagerie</string>
+    <string name="Assignedintervention">Intervention assignée</string>
+    <string name="notavailable">Indisponible</string>
+
+
+    <!--CALL SCREEN-->
+    <string name="no_thanks">NON MERCI</string>
+    <string name="call">APPEL</string>
+
+
+    <!-- Incident screen -->
+    <string name="reason">Raison</string>
+    <string name="other_hint">Autres informations (Victimes, description de lieu .....</string>
+    <string name="reference">Référence</string>
+    <string name="finish">terminer</string>
+    <string name="bemorepercise">Soyez plus précis</string>
+    <string name="describetheincident">Décrivez l\'incident</string>
+
+    <!--Handrail-->
+
+    <string name="handrailedittexthint">Veuillez remplir la main courante</string>
+
+
+    <!--  Signature Screen -->
+    <string name="signature">Signature</string>
+    <string name="signature_obligatory">La signature est obligatoire</string>
+
+    <!--Close-intervation-reports-->
+
+    <string name="interventionreport">Rapport d\'intervention</string>
+    <string name="CarefullyCompletetheReport">Complétez soigneusement le rapport</string>
+    <string name="datehourstate">Date / heure / état</string>
+    <string name="datehint">25/08/2018</string>
+    <string name="timehint">12:13:40</string>
+    <string name="statehint">Attendre</string>
+    <string name="address">Adresse</string>
+    <string name="closetheintervention">Fermer l\'intervention</string>
+
+    <!--Reports Finish-->
+
+    <string name="Remembertosaveit">N\'oubliez pas de le sauvegarder</string>
+
+    <!--Position of the incident-->
+
+    <string name="positionoftheincident">Position de l\'incident</string>
+    <string name="filterbycities">Filtrer par villes</string>
+
+    <!--Table of Assignments-->
+    <string name="TableofAssignments">Tableau des affectations</string>
+    <string name="Attributionslist">Liste des attributions</string>
+    <string name="date">Rendez-vous amoureux</string>
+    <string name="state">Etat</string>
+
+    <!--Assigning Intervation-->
+
+    <string name="Asigninganintervention">Attribuer une intervention</string>
+    <string name="Waiting">Attendre</string>
+    <string name="Description">La description</string>
+    <string name="Intervene">Intervenir</string>
+
+    <!--Profile Screen-->
+
+    <string name="Profile">Profil</string>
+    <string name="Profile_text">Informations sur votre profil</string>
+    <string name="Vehicle">Véhicule</string>
+    <string name="Vehicle_text">Informations sur votre vechile</string>
+    <string name="QR_code">QR code</string>
+    <string name="QR_code_text">Code QR enregistré</string>
+    <string name="Medicalfile">Dossier médical</string>
+    <string name="Medicalfiletext">Votre condition médicale</string>
+    <string name="FAQ">FAQ</string>
+    <string name="frequentlyaskedquestions">Questions fréquemment posées</string>
+
+
+</resources>

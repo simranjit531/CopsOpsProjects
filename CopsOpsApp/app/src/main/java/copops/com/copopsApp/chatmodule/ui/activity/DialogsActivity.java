@@ -1,13 +1,16 @@
 package copops.com.copopsApp.chatmodule.ui.activity;
 
+import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -75,6 +78,7 @@ import copops.com.copopsApp.chatmodule.utils.qb.QbChatDialogMessageListenerImp;
 import copops.com.copopsApp.chatmodule.utils.qb.QbDialogHolder;
 import copops.com.copopsApp.chatmodule.utils.qb.callback.QBPushSubscribeListenerImpl;
 import copops.com.copopsApp.chatmodule.utils.qb.callback.QbEntityCallbackImpl;
+import copops.com.copopsApp.shortcut.ShortcutViewService;
 import copops.com.copopsApp.utils.AppSession;
 
 public class DialogsActivity extends BaseActivity implements DialogsManager.ManagingDialogsCallbacks {
@@ -106,7 +110,8 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     ListView dialogsListView;
     @BindView(R.id.chatAdd)
     ImageView chatAdd;
-
+    private Handler handler;
+    private Runnable checkOverlaySetting;
     @BindView(R.id.IVback)
     ImageView IVback;
 
@@ -134,7 +139,21 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         mAppSession = mAppSession.getInstance(this);
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
-
+        checkOverlaySetting = new Runnable() {
+            @Override
+            @TargetApi(23)
+            public void run() {
+                if (Settings.canDrawOverlays(DialogsActivity.this)) {
+                    //You have the permission, re-launch MainActivity
+                    handler.removeCallbacks(checkOverlaySetting);
+                    Intent i = new Intent(DialogsActivity.this, DashboardActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(i);
+                    return;
+                }
+                handler.postDelayed(this, 1000);
+            }
+        };
         pushBroadcastReceiver = new PushBroadcastReceiver();
 
         allDialogsMessagesListener = new AllDialogsMessageListener();
@@ -212,6 +231,17 @@ else{
         loadDialogsFromQb(true, true);
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
                 new IntentFilter(GcmConsts.ACTION_NEW_GCM_EVENT));
+
+        Log.e("copsopsstart", "loginvalid==" + mAppSession.getData("Login") + "==userType==" + mAppSession.getData("userType"));
+
+        String loginvalid = mAppSession.getData("Login");
+        String userType = mAppSession.getData("userType");
+        if (loginvalid.equals("1") && userType.equals("Cops")) {
+            stopService(new Intent(DialogsActivity.this, ShortcutViewService.class));
+
+
+        }
+
     }
 
     @Override
@@ -729,18 +759,24 @@ else{
             //  DialogsActivity.start(this);
             //    finish();
         } else {
-            QBUser currentUser = getUserFromSession();
+
+            try {
+                QBUser currentUser = getUserFromSession();
 
 
-            if (currentUser == null) {
+                if (currentUser == null) {
 
-                //  LoginActivity.start(this);
+                    //  LoginActivity.start(this);
 
-                buildUsersList();
-            } else {
-                // buildUsersList();
-                loginToChat(currentUser);
+                    buildUsersList();
+                } else {
+                    // buildUsersList();
+                    loginToChat(currentUser);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
+
         }
     }
 
@@ -900,7 +936,13 @@ else{
     public void onBackPressed() {
         super.onBackPressed();
 
+
+
+
         // userLogout();
     }
+
+
+
 
 }

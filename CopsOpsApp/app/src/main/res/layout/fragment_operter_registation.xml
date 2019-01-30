@@ -259,7 +259,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight=".50"
                     android:background="@drawable/edittext_lower_background"
-                    android:hint="@string/phone_no_hint"
+                    android:hint="@string/email"
                     android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
                     android:textColor="@color/black"
