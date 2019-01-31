@@ -118,6 +118,9 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
 
     @BindView(R.id.userSearch)
     EditText userSearch;
+
+
+
     private static final int SPLASH_DELAY = 1500;
 
     public static void start(Context context) {
@@ -131,7 +134,9 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         setContentView(R.layout.activity_dialogs);
 
         if (checkConfigsWithSnackebarError()) {
+            stopService(new Intent(this, ShortcutViewService.class));
             proceedToTheNextActivityWithDelay();
+
         }
 
         ButterKnife.bind(this);
@@ -139,21 +144,7 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         mAppSession = mAppSession.getInstance(this);
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
-        checkOverlaySetting = new Runnable() {
-            @Override
-            @TargetApi(23)
-            public void run() {
-                if (Settings.canDrawOverlays(DialogsActivity.this)) {
-                    //You have the permission, re-launch MainActivity
-                    handler.removeCallbacks(checkOverlaySetting);
-                    Intent i = new Intent(DialogsActivity.this, DashboardActivity.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(i);
-                    return;
-                }
-                handler.postDelayed(this, 1000);
-            }
-        };
+        stopService(new Intent(this, ShortcutViewService.class));
         pushBroadcastReceiver = new PushBroadcastReceiver();
 
         allDialogsMessagesListener = new AllDialogsMessageListener();
@@ -231,18 +222,49 @@ else{
         loadDialogsFromQb(true, true);
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
                 new IntentFilter(GcmConsts.ACTION_NEW_GCM_EVENT));
+//
+//        Log.e("copsopsstart", "loginvalid==" + mAppSession.getData("Login") + "==userType==" + mAppSession.getData("userType"));
+//
+//        String loginvalid = mAppSession.getData("Login");
+//        String userType = mAppSession.getData("userType");
+//        if (loginvalid.equals("1") && userType.equals("Cops")) {
+//            stopService(new Intent(DialogsActivity.this, ShortcutViewService.class));
+//
+//
+//        }
 
-        Log.e("copsopsstart", "loginvalid==" + mAppSession.getData("Login") + "==userType==" + mAppSession.getData("userType"));
 
-        String loginvalid = mAppSession.getData("Login");
-        String userType = mAppSession.getData("userType");
-        if (loginvalid.equals("1") && userType.equals("Cops")) {
-            stopService(new Intent(DialogsActivity.this, ShortcutViewService.class));
-
-
-        }
 
     }
+
+//    protected void onStop() {
+//        super.onStop();
+//        Log.e("copsopsstop", "loginvalid==" + mAppSession.getData("Login") + "==userType==" + mAppSession.getData("userType"));
+//
+//        String loginvalid = mAppSession.getData("Login");
+//        String userType = mAppSession.getData("userType");
+//
+//        if (loginvalid.equals("1") && userType.equals("Cops")) {
+//            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+//                stopService(new Intent(DialogsActivity.this, ShortcutViewService.class));
+//            } else if (Settings.canDrawOverlays(DialogsActivity.this)) {
+//                stopService(new Intent(DialogsActivity.this, ShortcutViewService.class));
+//            }
+//        }
+//    }
+//
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        Log.e("copsopsstart", "loginvalid==" + mAppSession.getData("Login") + "==userType==" + mAppSession.getData("userType"));
+//
+//        String loginvalid = mAppSession.getData("Login");
+//        String userType = mAppSession.getData("userType");
+//        if (loginvalid.equals("1") && userType.equals("Cops")) {
+//            stopService(new Intent(DialogsActivity.this, ShortcutViewService.class));
+//        }
+//
+//    }
 
     @Override
     protected void onPause() {
@@ -732,12 +754,14 @@ else{
         mainThreadHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                stopService(new Intent(DialogsActivity.this, ShortcutViewService.class));
                 proceedToTheNextActivity();
             }
         }, SPLASH_DELAY);
     }
 
     protected void proceedToTheNextActivity() {
+        stopService(new Intent(this, ShortcutViewService.class));
         if (checkSignIn()) {
             restoreChatSession();
 

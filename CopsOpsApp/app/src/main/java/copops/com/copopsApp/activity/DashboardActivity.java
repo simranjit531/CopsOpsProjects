@@ -229,7 +229,7 @@ public class DashboardActivity extends AppCompatActivity {
         String userType = mAppSession.getData("userType");
 
         if (loginvalid.equals("1") && userType.equals("Cops")) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 startService(new Intent(DashboardActivity.this, ShortcutViewService.class));
             } else if (Settings.canDrawOverlays(DashboardActivity.this)) {
                 startService(new Intent(DashboardActivity.this, ShortcutViewService.class));

@@ -102,7 +102,7 @@ public class CloseIntervationReportFragment extends Fragment implements View.OnC
             String time = parts[1]; // 034556
             Tvdate.setText(date);
             Tvtime.setText(time);
-            if (assignmentListPojo_close.getData().get(pos).getStatus().equalsIgnoreCase("2")) {
+            if (assignmentListPojo_close.getData().get(pos).getIsAssigned().equalsIgnoreCase("pending")) {
                 Tvstate.setText(getString(R.string.pending));
                 Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
             }

@@ -38,9 +38,11 @@ public class SpleshFragment extends Fragment {
         // Inflate the layout for this fragment
         View v=inflater.inflate(R.layout.fragment_splesh, container, false);
         mAppSession = mAppSession.getInstance(getActivity());
-        Log.d("Firebase", "token "+ FirebaseInstanceId.getInstance().getToken());
+        if(mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
+            Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
 
-        mAppSession.saveData("fcm_token",FirebaseInstanceId.getInstance().getToken());
+            mAppSession.saveData("fcm_token", FirebaseInstanceId.getInstance().getToken());
+        }
        String aaaa = mAppSession.getData("Login");
         if(mAppSession.getData("Login")!=null){
         }else{

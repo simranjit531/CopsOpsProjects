@@ -47,6 +47,9 @@
     <!--  Custom Dialog Screen -->
     <string name="yes">Oui</string>
     <string name="no">non</string>
+    <string name="accept">Accept</string>
+    <string name="accept_message">Are You Sure You Want to Accept this Insident ? </string>
+    <string name="reject">Reject</string>
     <string name="close">Fermer</string>
     <string name="information">information</string>
     <string name="exit_message">Êtes-vous sûr de vouloir quitter ? </string>

@@ -368,7 +368,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
             case R.id.rlchat:
 
-                getActivity().stopService(new Intent(getActivity(), ShortcutViewService.class));
+               // getActivity().stopService(new Intent(getActivity(), ShortcutViewService.class));
                 Intent mIntent = new Intent(getActivity(), DialogsActivity.class);
 
                 startActivity(mIntent);

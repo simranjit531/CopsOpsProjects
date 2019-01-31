@@ -152,9 +152,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 //            }
 //        }
     //    progressDialog.show();
-        Log.d("Firebase", "token "+ FirebaseInstanceId.getInstance().getToken());
 
-        mAppSession.saveData("fcm_token",FirebaseInstanceId.getInstance().getToken());
+        if(mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
+            Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
+
+            mAppSession.saveData("fcm_token", FirebaseInstanceId.getInstance().getToken());
+        }
         return view;
     }
 

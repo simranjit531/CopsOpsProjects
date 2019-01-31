@@ -113,14 +113,18 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
         String time = parts[1]; // 034556
         Tvdate.setText(date);
         Tvtime.setText(time);
-        if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("1")) {
+        if (assignmentListPojo.getData().get(pos).getIsAssigned().equalsIgnoreCase("wait")) {
             Tvstate.setText(R.string.onwait);
             Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
         }
-        else if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("2")) {
+        else if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("pending")) {
             Tvstate.setText(R.string.pending);
             Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
-        } else {
+        }else if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("Assigned")) {
+            Tvstate.setText(R.string.Assigned);
+            Tvstate.setTextColor(getResources().getColor(R.color.black));
+        }
+        else {
             Tvstate.setText(R.string.finished);
           //  Tvstate.setText("Finished");
             Tvstate.setTextColor(getResources().getColor(R.color.black));

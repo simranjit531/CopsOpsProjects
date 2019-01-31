@@ -90,6 +90,10 @@ public interface Service {
     @POST("api/auth/registered/incident/assigned")
     Call<AssignmentListPojo> assignedData(@Part("data") RequestBody data);
 
+    @Multipart
+    @POST("/api/auth/incident/rejected")
+    Call<CommanStatusPojo> rejected(@Part("data") RequestBody data);
+
 
     @Multipart
     @POST("api/auth/registered/incident/intervent")

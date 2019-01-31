@@ -3,14 +3,20 @@ package copops.com.copopsApp.fragment;
 
 import android.annotation.SuppressLint;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 
@@ -25,6 +31,7 @@ import copops.com.copopsApp.R;
 import copops.com.copopsApp.adapter.AssignmentInsidentListAdapter;
 import copops.com.copopsApp.interfaceview.IncedentInterface;
 import copops.com.copopsApp.pojo.AssignmentListPojo;
+import copops.com.copopsApp.pojo.CommanStatusPojo;
 import copops.com.copopsApp.pojo.IncdentSetPojo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
@@ -150,17 +157,19 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
     @Override
     public void clickPosition(int pos) {
 
-        if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("1")) {
+        if (assignmentListPojo.getData().get(pos).getIsAssigned().equalsIgnoreCase("wait")) {
 
             if(assignmentListPojo.getPending().equals("1")){
                 Utils.showAlert(getActivity().getString(R.string.intervin), getActivity());
             }else {
                 Utils.fragmentCall(new AssignedInterventionFragment(pos, assignmentListPojo), getFragmentManager());
             }
-        }else if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("2")) {
+        }else if (assignmentListPojo.getData().get(pos).getIsAssigned().equalsIgnoreCase("pending")) {
 
 
-            Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo,pos), getFragmentManager());
+            rejectcustomdialog(getActivity(),pos);
+
+
 //            if (Utils.checkConnection(getActivity())) {
 //                IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
 //
@@ -172,8 +181,10 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
 //            } else {
 //                Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
 //            }
-        }else if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("3")) {
+        }else if (assignmentListPojo.getData().get(pos).getIsAssigned().equalsIgnoreCase("Finished ")) {
             Utils.fragmentCall(new AssignedInterventionFragment(pos, assignmentListPojo), getFragmentManager());
+        }else if (assignmentListPojo.getData().get(pos).getIsAssigned().equalsIgnoreCase("Assigned ")) {
+          //  Utils.fragmentCall(new AssignedInterventionFragment(pos, assignmentListPojo), getFragmentManager());
         }
     }
 
@@ -262,51 +273,113 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
         });
     }
 
+    public  void rejectcustomdialog(Context mContext,int pos) {
+
+        final Dialog dialog = new Dialog(mContext, R.style.DialogFragmentTheme);
+        dialog.setContentView(R.layout.rejectdilog);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        Window window = dialog.getWindow();
+        window.setGravity(Gravity.CENTER);
+
+        TextView acceptId = (TextView) dialog.findViewById(R.id.acceptId);
+        TextView rejectId = (TextView) dialog.findViewById(R.id.rejectId);
+     //   TextView TVcustomdescriptiontext = (TextView) dialog.findViewById(R.id.TVcustomdescriptiontext);
+      //  TVcustomdescriptiontext.setText(text);
+
+        acceptId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo,pos), getFragmentManager());
+              //  android.os.Process.killProcess(android.os.Process.myPid());
+                //System.exit(1);
+            }
+        });
+
+        rejectId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Utils.checkConnection(getActivity())) {
+                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                    incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                    incdentSetPojo.setIncident_id(assignmentListPojo.getData().get(pos).getId());
+
+                    //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                    RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                    rejected(mFile);
+                } else {
+                    Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+                }
+            //    rejected();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
 
 
 
-//    private void getAssignIntervationData(RequestBody Data) {
-//        try {
-//            progressDialog.show();
-//            Service acceptInterven = ApiUtils.getAPIService();
-//            Call<AssignmentListPojo> acceptIntervenpCall = acceptInterven.assignedData(Data);
-//            acceptIntervenpCall.enqueue(new Callback<AssignmentListPojo>() {
-//                @SuppressLint("ResourceAsColor")
-//                @Override
-//                public void onResponse(Call<AssignmentListPojo> call, Response<AssignmentListPojo> response)
-//
-//                {
-//                    try {
-//                        if (response.body() != null) {
-//                            assignmentListPojo_close = response.body();
-//                            if (assignmentListPojo_close.getStatus().equals("false")) {
-//                                Utils.showAlert(assignmentListPojo_close.getMessage(), getActivity());
-//                            } else {
-//                                Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close,pos), getFragmentManager());
-//                            }
-//                            progressDialog.dismiss();
-//
-//                        } else {
-//                            Utils.showAlert(response.message(), getActivity());
-//                        }
-//
-//                    } catch (Exception e) {
-//                        progressDialog.dismiss();
-//                        e.getMessage();
-//                        Utils.showAlert(e.getMessage(), getActivity());
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<AssignmentListPojo> call, Throwable t) {
-//                    Log.d("TAG", "Error " + t.getMessage());
-//                    progressDialog.dismiss();
-//                    Utils.showAlert(t.getMessage(), getActivity());
-//                }
-//            });
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+  //  user_id,incident_id key
+ //   http://13.233.74.84/api/auth/incident/rejected
+    private void rejected(RequestBody Data) {
+        try {
+            progressDialog.show();
+            Service acceptInterven = ApiUtils.getAPIService();
+            Call<CommanStatusPojo> acceptIntervenpCall = acceptInterven.rejected(Data);
+            acceptIntervenpCall.enqueue(new Callback<CommanStatusPojo>() {
+                @SuppressLint("ResourceAsColor")
+                @Override
+                public void onResponse(Call<CommanStatusPojo> call, Response<CommanStatusPojo> response)
+
+                {
+                    try {
+                        if (response.body() != null) {
+                            CommanStatusPojo  mCommanStatusPojo= response.body();
+                            if (mCommanStatusPojo.getStatus().equals("false")) {
+                                Utils.showAlert(mCommanStatusPojo.getMessage(), getActivity());
+                            } else {
+                                Utils.showAlert(mCommanStatusPojo.getMessage(), getActivity());
+                                if (Utils.checkConnection(getActivity())) {
+                                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                                    incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                                    incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+                                    incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                                    //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+                                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                                    RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                                    getAssigmentListFirst(mFile);
+                                } else {
+                                    Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+                                }
+
+                              //  Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close,pos), getFragmentManager());
+                            }
+                            progressDialog.dismiss();
+
+                        } else {
+                            Utils.showAlert(response.message(), getActivity());
+                        }
+
+                    } catch (Exception e) {
+                        progressDialog.dismiss();
+                        e.getMessage();
+                        Utils.showAlert(e.getMessage(), getActivity());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CommanStatusPojo> call, Throwable t) {
+                    Log.d("TAG", "Error " + t.getMessage());
+                    progressDialog.dismiss();
+                    Utils.showAlert(t.getMessage(), getActivity());
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

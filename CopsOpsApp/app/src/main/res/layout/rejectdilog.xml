@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:layout_gravity="center_vertical|center_horizontal"
+    android:layout_marginLeft="40dp"
+    android:layout_marginRight="40dp"
+    android:background="@mipmap/img_call_background"
+    android:layout_marginTop="40dp">
+
+    <TextView
+        android:id="@+id/TVcustomdescriptiontext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mHeaderDivider"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:text="@string/accept_message"
+        android:textColor="@color/aluminiumcolor"
+        android:textSize="@dimen/textsize_16sp" />
+    <TextView
+        android:id="@+id/acceptId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/accept"
+        android:textColor="@color/black"
+        android:textSize="@dimen/textsize_18sp" />
+
+    <!--<View-->
+        <!--android:layout_width="1dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_below="@+id/viewline"-->
+        <!--android:layout_centerHorizontal="true"-->
+
+        <!--android:background="@color/aluminiumcolor" />-->
+
+
+    <TextView
+        android:id="@+id/rejectId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/reject"
+        android:textColor="@color/black"
+        android:textSize="@dimen/textsize_18sp" />
+
+
+</RelativeLayout>

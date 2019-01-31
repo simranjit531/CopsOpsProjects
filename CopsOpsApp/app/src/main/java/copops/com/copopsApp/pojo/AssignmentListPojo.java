@@ -60,6 +60,16 @@ public class Data implements Serializable {
     String ref_incident_subcategory_id;
     String other_description;
 
+    public String getIsAssigned() {
+        return isAssigned;
+    }
+
+    public void setIsAssigned(String isAssigned) {
+        this.isAssigned = isAssigned;
+    }
+
+    String isAssigned;
+
 
     public String getSub_category_name() {
         return sub_category_name;

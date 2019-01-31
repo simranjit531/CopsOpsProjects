@@ -59,6 +59,7 @@ import copops.com.copopsApp.chatmodule.utils.qb.QbChatDialogMessageListenerImp;
 import copops.com.copopsApp.chatmodule.utils.qb.QbDialogHolder;
 import copops.com.copopsApp.chatmodule.utils.qb.QbDialogUtils;
 import copops.com.copopsApp.chatmodule.utils.qb.VerboseQbChatConnectionListener;
+import copops.com.copopsApp.shortcut.ShortcutViewService;
 
 public class ChatActivity extends BaseActivity implements OnImagePickedListener {
     private static final String TAG = ChatActivity.class.getSimpleName();
@@ -328,7 +329,7 @@ ImageView chatAdd;
     private void initViews() {
       //  actionBar.setDisplayHomeAsUpEnabled(true);
 
-
+        stopService(new Intent(this, ShortcutViewService.class));
         filterId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
