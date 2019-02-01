@@ -46,6 +46,7 @@ class ApiController extends Controller
     public function register(Request $request)
     {
         $payload = $this->get_payload($request);
+		
         if(isset($payload['status']) && $payload['status'] === false)
         {
             return $this->sendResponseMessage(['status'=>false, 'message'=> $payload['message']],200);
@@ -95,7 +96,7 @@ class ApiController extends Controller
             'profile_qrcode'=>$userId.'.png',
             'cops_grade' => 'Grade I'
         );
-
+		
         $rules = ['profile_image' => 'required'];
         $result = $this->validate_upload_request($request, $rules);
         if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
@@ -160,6 +161,7 @@ class ApiController extends Controller
                 $data = array(
                     'ref_user_id'=>$user->id,
                     'device_id'=>$payload['device_id'],
+					'device_token'=>$payload['fcm_token'],
                     'created_on'=>Carbon::now()
                 );
                 try{
@@ -190,9 +192,10 @@ class ApiController extends Controller
                 $lng = $payload['reg_longitude'];
                 
                 $attributes = $this->get_user_profile_attributes($user->id, $lat, $lng);
-
-
+				
+				
                 if($payload['ref_user_type_id'] == "Cops") {
+					
                     $resp = _quickblox_create_session();
                     
                     if($resp['flag'] == 1)
@@ -304,7 +307,7 @@ class ApiController extends Controller
         $result = $this->validate_request($payload, $rules);
         if($result) return $this->sendResponseMessage($result,200);
 
-        $auth = User::where(array('email_id' => $email, 'user_password' => $password, 'ref_user_type_id'=>$type, 'status'=>1))->get();
+        $auth = User::where(array('email_id' => $email, 'user_password' => $password, 'ref_user_type_id'=>$type))->get();
 
         if($auth->isEmpty()) return $this->sendResponseMessage(array(
             'status'=>'false',
@@ -874,15 +877,39 @@ class ApiController extends Controller
                   HAVING `distance` <= 5 ORDER BY status ASC";
         */
         
-        $query = "SELECT ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
+        /*$query = "SELECT (case when cop_incident_details.status =2 and cop_user_incident_mapping.ref_user_id = $copId THEN 'Pending' when cop_incident_details.status =1 THEN 'Wait' When cop_incident_details.status =3 THEN 'Finished' ELSE 'Assigned' END)as isAssigned,ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
                   cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.created_at, ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( latitude ) ) ) ) AS `distance`,
                   cop_incident_details.city, cop_incident_details.address, cop_user_incident_temp_mapping.ref_user_id
                   FROM cop_incident_details 
                   LEFT JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
                   LEFT JOIN cop_user_incident_temp_mapping ON cop_user_incident_temp_mapping.cop_incident_details_id = cop_incident_details.id
-                  GROUP BY cop_incident_details.id HAVING `distance` <= 5 OR cop_user_incident_temp_mapping.ref_user_id = $copId ORDER BY status ASC";     
+				  LEFT JOIN cop_user_incident_mapping ON cop_user_incident_mapping.cop_incident_details_id = cop_incident_details.id
+                  GROUP BY cop_incident_details.id HAVING `distance` <= 5 OR cop_user_incident_temp_mapping.ref_user_id = $copId ORDER BY status ASC";*/
+				  
+		$query ="select * from (
+				 SELECT (case when cop_incident_details.status =2 THEN 'Pending' when cop_incident_details.status =1 THEN 'Wait' When cop_incident_details.status =3 THEN 'Finished' ELSE 'Assigned' END)as isAssigned,ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
+                  cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.created_at, ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( latitude ) ) ) ) AS `distance`,
+                  cop_incident_details.city, cop_incident_details.address, cop_user_incident_temp_mapping.ref_user_id
+                  FROM cop_incident_details 
+                  LEFT JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
+                  LEFT JOIN cop_user_incident_temp_mapping ON cop_user_incident_temp_mapping.cop_incident_details_id = cop_incident_details.id
+	              LEFT JOIN cop_user_incident_mapping ON cop_user_incident_mapping.cop_incident_details_id = cop_incident_details.id
+                  GROUP BY cop_incident_details.id HAVING `distance` <= 5 OR cop_user_incident_temp_mapping.ref_user_id = $copId
+                 union
+                 SELECT (case when cop_incident_details.status =2 THEN 'Pending' when cop_incident_details.status =1 THEN 'Wait' When cop_incident_details.status =3 THEN 'Finished' ELSE 'Assigned' END)as isAssigned,ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
+                 cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.created_at, ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( latitude ) ) ) ) AS `distance`,
+                 cop_incident_details.city, cop_incident_details.address, cop_user_incident_temp_mapping.ref_user_id
+                 FROM cop_incident_details 
+                 LEFT JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
+                 LEFT JOIN cop_user_incident_temp_mapping ON cop_user_incident_temp_mapping.cop_incident_details_id = cop_incident_details.id
+	         LEFT JOIN cop_user_incident_mapping ON cop_user_incident_mapping.cop_incident_details_id = cop_incident_details.id
+                 GROUP BY cop_incident_details.id HAVING `distance` <= 5 and cop_incident_details.id not in 
+                 (select cop_incident_details_id from cop_user_incident_temp_mapping where ref_user_id = $copId))cid order by status ASC";
                  
         $res = \DB::select($query);
+		
+		
+		
 			
 		
         # Check if incident intervention is already done ?
@@ -894,6 +921,32 @@ class ApiController extends Controller
         if(empty($res)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND), 'pending'=>$interventionDone],200);
 
         return $this->sendResponseMessage(['status'=>true, 'data'=> $res, 'pending'=>$interventionDone],200);
+	}
+	
+	
+	public function reject_incident(Request $request)
+	{
+		$payload = $this->get_payload($request);
+		if(isset($payload['status']) && $payload['status'] == false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        }
+		
+		try{
+			$userId = $payload['user_id'];
+			$incidentId = $payload['incident_id'];
+			$rs = IncidentDetail::where(['id'=>$incidentId])->update(['status'=>'1']);
+			//$rsm = CopUserIncidentMapping::where(['cop_incident_details_id'=>$incidentId,'ref_user_id'=>$userId])->update(['status'=>'1']);
+			$rsm = CopUserIncidentMapping::where(['cop_incident_details_id'=>$incidentId,'ref_user_id'=>$userId])->delete();
+			$user_status = User::where(['id'=>$userId])->update(['available'=>'1']);
+			if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_REJECT_SUCCESS)],200);
+			return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_REJECT_FAILURE)],200);
+		}catch (QueryException $e){
+            return $this->sendResponseMessage([
+                'status' => false,
+                'message'=> $e->getMessage()], 200);
+        }
+		
 	}
 
 
@@ -1244,15 +1297,20 @@ class ApiController extends Controller
         
         $result = $this->validate_request($payload, $rules);
         if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
-        
+		
+		$userData = User::where(array('id' => $payload['user_id']))->get();
+        $status =$userData[0]->status;
         $rs = CopUserLocation::create([
             'user_id' => $payload['user_id'], 
             'latitude' => $payload['latitude'], 
             'longitude' => $payload['longitude']
         ]);
         
-        if($rs) $this->sendResponseMessage(['status'=>true], 200);
-        else $this->sendResponseMessage(['status'=>false], 200);
+	
+        if($rs) return $this->sendResponseMessage(['status'=>true, 'isfreeze'=>$status , 'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_FREEZED)], 200);
+		
+		
+        else return $this->sendResponseMessage(['status'=>false], 200);
     }
 
 

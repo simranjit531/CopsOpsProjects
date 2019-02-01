@@ -256,7 +256,7 @@
 			<!-- Modal content-->
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<a class="closeinterval close" data-dismiss="modal">&times;</a>
 
 				</div>
 				<div class="modal-body">
@@ -367,8 +367,39 @@
 								</div>
 							</div>
 						</div>
-
+						
 						<div class="zoom-div mt-4">
+							<div class="row">
+								<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 zoom-left">
+									<ul id="lightgallery" class="list-unstyled row">
+									
+						                <li class="col-xs-6 col-sm-6 col-md-6" id="bus1" data-src="">
+						                    <a href="javascript:void(0);"  id="business_card1_a">
+						                        <img class="img-responsive image-attachments" id="business_card1">
+						                    </a>
+						                </li>
+						                <li class="col-xs-6 col-sm-6 col-md-6" id="bus2" data-src="">
+						                    <a href="javascript:void(0);" id="business_card2_a">
+						                        <img class="img-responsive image-attachments" id="business_card2">
+						                    </a>
+						                </li>
+						               
+									<li class="col-xs-6 col-sm-6 col-md-6" id="bus3" data-src="">
+					                    <a href="javascript:void(0);"  id="id_card1_a">
+					                        <img class="img-responsive image-attachments" id="id_card1"/>
+					                    </a>
+					                </li>
+					                <li class="col-xs-6 col-sm-6 col-md-6"  id="bus4" data-src="">
+					                    <a href="javascript:void(0);" id="id_card2_a">
+					                        <img class="img-responsive image-attachments" id="id_card2"/>
+					                    </a>
+					                </li>
+						            </ul>
+								</div>
+							</div>
+						</div>
+
+						<!--<div class="zoom-div mt-4">
 							<div class="row">
 								<div
 									class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 zoom-left">
@@ -386,7 +417,7 @@
 									<!-- 
 									<a href="javascript:void(0);" id="business_card1" class="showimage"><i class="fa fa-search-plus showimage" aria-hidden="true"></i></a>
 									<a href="javascript:void(0);" id="business_card2" class="showimage"><i class="fa fa-search-plus showimage" aria-hidden="true"></i></a>
-									 -->
+									 --
 								</div>
 								<div
 									class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 zoom-left">
@@ -404,10 +435,10 @@
 									<!-- 
 									<a href="javascript:void(0);" id="id_card1" class="showimage"><i class="fa fa-search-plus showimage" aria-hidden="true"></i></a>
 									<a href="javascript:void(0);" id="id_card2" class="showimage"><i class="fa fa-search-plus showimage" aria-hidden="true"></i></a>
-									 -->
+									 --
 								</div>
 							</div>
-						</div>
+						</div>-->
 
 						<div
 							class="location-div col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 p-0 mt-3">
@@ -458,7 +489,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<a class="closeinterval btn btn-default" data-dismiss="modal">Close</a>
 				</div>
 			</div>
 
@@ -479,6 +510,7 @@
 
 <script>
 var oTable, oTableCitizen = "";
+var intervals = [];
 var bounds = new google.maps.LatLngBounds();
 $(function(){
 
@@ -522,14 +554,14 @@ $(function(){
 	          }
 	      },
 	      columns: [
-	          { data: 'created_at', name: 'created_at'},
+	          { data: 'date', name: 'date'},
 	          { data: 'first_name', name: 'first_name' },
 	          { data: 'last_name', name: 'last_name' },
 	          { data: 'email_id', name: 'email_id' },
 	          { data: 'cops_grade', name: 'cops_grade' }, 
 			  { data: 'view', name : 'view', orderable: false, searchable: false},
 	      ],
-	        order: [[0, "asc"]]
+	        order: [[0, "desc"]]
 	});
 
 	oTableCitizen = $('#userTable').DataTable({
@@ -544,7 +576,7 @@ $(function(){
           }
         },
         columns: [
-                { data: 'created_at', name: 'created_at'},
+                { data: 'date', name: 'date'},
                 { data: 'first_name', name: 'first_name' },
                 { data: 'last_name', name: 'last_name' },
                 { data: 'date_of_birth', name: 'date_of_birth' },
@@ -552,7 +584,7 @@ $(function(){
                 { data: 'total_reports', name: 'total_reports' }, 
 				{ data: 'view', name : 'view', orderable: false, searchable: false},				
           ],
-        order: [[0, "asc"]]
+        order: [[0, "desc"]]
   });
 
 	$('#name').on('keyup', function(e) {
@@ -598,7 +630,7 @@ $(document).on('click','#viewCops',function(e){
 		},
 		success: function (response) {
 			var d = response.data;
-			console.log(d);
+		
 			$('.loader_a').addClass('hide');
 			$('.modal .modal-dialog .modal-content .modal-body .user-mgm-m7 h6').html(d[0]['first_name']+" "+ d[0]['last_name']);
 			$('.modal .modal-dialog .modal-content .modal-body .user-mgm-m7 .row .right-part ul li:eq(0) span').html(d[0]['first_name']+" "+ d[0]['last_name']);
@@ -612,20 +644,24 @@ $(document).on('click','#viewCops',function(e){
 						
 			if(d[0]['business_card1'] !=""){
 				$('.modal .modal-dialog .modal-content .modal-body').find('#business_card1').attr('src', d[0]['business_card1']).attr('target','_blank');
-				$('.modal .modal-dialog .modal-content .modal-body').find('#business_card1_a').attr('href', d[0]['business_card1']).attr('data-lightbox','image-1');
+				//$('.modal .modal-dialog .modal-content .modal-body').find('#business_card1_a').attr('href', d[0]['business_card1']).attr('data-lightbox','image-1');
+				$('#bus1').attr('data-src',d[0]['business_card1']);
 			}
 			if(d[0]['business_card2'] !=""){
 				$('.modal .modal-dialog .modal-content .modal-body').find('#business_card2').attr('src', d[0]['business_card2']).attr('target','_blank');
-				$('.modal .modal-dialog .modal-content .modal-body').find('#business_card2_a').attr('href', d[0]['business_card2']).attr('data-lightbox','image-1');
+				//$('.modal .modal-dialog .modal-content .modal-body').find('#business_card2_a').attr('href', d[0]['business_card2']).attr('data-lightbox','image-1');
+				$('#bus2').attr('data-src',d[0]['business_card2']);
 			}
 
 			if(d[0]['id_card1'] !=""){
 				$('.modal .modal-dialog .modal-content .modal-body').find('#id_card1').attr('src', d[0]['id_card1']).attr('target','_blank');
-				$('.modal .modal-dialog .modal-content .modal-body').find('#id_card1_a').attr('href', d[0]['id_card1']).attr('data-lightbox','image-1');
+				//$('.modal .modal-dialog .modal-content .modal-body').find('#id_card1_a').attr('href', d[0]['id_card1']).attr('data-lightbox','image-1');
+				$('#bus3').attr('data-src',d[0]['id_card1']);
 			}
 			if(d[0]['id_card2'] !=""){
 				$('.modal .modal-dialog .modal-content .modal-body').find('#id_card2').attr('src', d[0]['id_card2']).attr('target','_blank');
-				$('.modal .modal-dialog .modal-content .modal-body').find('#id_card2_a').attr('href', d[0]['id_card2']).attr('data-lightbox','image-1');
+				//$('.modal .modal-dialog .modal-content .modal-body').find('#id_card2_a').attr('href', d[0]['id_card2']).attr('data-lightbox','image-1');
+				$('#bus4').attr('data-src',d[0]['id_card2']);
 			}
 			$('.modal .modal-dialog .modal-content .modal-body').find('select[name="access_grade"]').val(d[0]['cops_grade']);
 			$('.modal .modal-dialog .modal-content .modal-body').find('select[name="access_grade"]').attr('data-user', d[0]['id']);
@@ -685,21 +721,21 @@ $(document).on('click','#viewCops',function(e){
 // 	            icon:'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
 // 	        	});
 			}
-			lat = d[0]['latitude'];
-			lng = d[0]['longitude'];			
+			//lat = d[0]['latitude'];
+			//lng = d[0]['longitude'];			
 
-			var center = new google.maps.LatLng(lat, lng);
-			_initialize(center, 'map', 15);
+			//var center = new google.maps.LatLng(lat, lng);
+			//_initialize(center, 'map', 15);
 			
-			 var markerArray = [];
-			 markerArray.push([lat, lng, d[0].ref_user_type_id]);
+			 //var markerArray = [];
+			// markerArray.push([lat, lng, d[0].ref_user_type_id]);
 
- 			add_markers(markerArray, true);
+ 			//add_markers(markerArray, true);
 					
 			$('#myModal').modal('show');
 			user_live_location(userid);
 
-			$("#business_card1_a").click(function(){
+			/*$("#business_card1_a").click(function(){
 			    lightbox.start($(this));
 			    return false;
 			});
@@ -717,7 +753,7 @@ $(document).on('click','#viewCops',function(e){
 			$("#id_card2_a").click(function(){
 			    lightbox.start($(this));
 			    return false;
-			});
+			});*/
 		}
 	});
 });
@@ -774,7 +810,7 @@ $('.assigner-btn').on('click', function(){
 		if($(this).val() !="") operators.push($(this).val());
 	});
 	var operatorId = operators;
-	//console.log(objectId+'----'+operatorId);
+	console.log(operatorId);
 // 	if(operatorId ==" ") alert("Please select some operators"); return false;
 // 	if(objectId ==" ") alert("Please select Intervention"); return false;
 
@@ -797,6 +833,7 @@ $('.assigner-btn').on('click', function(){
 				oTableCitizen.draw();
 				toastr.success(d.message, {timeOut: 10000});
 				$('#myModal').modal('hide');
+				$(".loactions-out-inner").toggle();
 			}
 			else{
 				toastr.error("Invalid request", {timeOut: 10000});
@@ -909,17 +946,44 @@ $(function(){
 	/* Function to do live user tracking, the script will run every 30 seconds and will update map marker position*/
 	
 	var userId = $('input[type="hidden"][name="hidden_user_id"]').val();
+	console.log(userId);
 	user_live_location(userId);
 });
-
+function clearMyInterval()
+{
+	var lat = 48.864716;
+	var lng = 2.349014;		
+	var center = new google.maps.LatLng(lat, lng);
+	_initialize(center, 'map', 5);
+	if(intervals.length > 0)
+	{
+		for(var i=0; i<intervals.length; i++)
+		{
+			clearInterval(intervals[i]); 
+		}
+	}
+}
+$(document).on('click','.closeinterval',function(){
+	
+	clearMyInterval();
+});
 function user_live_location(userId){	
 	if(userId !=""){
-    	setInterval( function () {
+	if(intervals.length > 0)
+	{
+		clearMyInterval();
+	}
+	var interva = setInterval( function () {
     	    $.ajax({
     			'url':"{{ route('backoffice.live.location') }}",
     			'data':{"_token": "{{ csrf_token() }}", "user_id":userId},
     			success : function(response){
     				if(response.status == true){
+						var lat = response.data.latitude;
+						var lng = response.data.longitude;		
+						var center = new google.maps.LatLng(lat, lng);
+						_initialize(center, 'map', 15);
+						
     					var markerArray = [];
     					markerArray.push([response.data.latitude, response.data.longitude, response.ref_user_type_id]);
 
@@ -928,6 +992,7 @@ function user_live_location(userId){
     			}
     		});
     	}, 10000 );
+		intervals.push(interva);
 	}
 }
 

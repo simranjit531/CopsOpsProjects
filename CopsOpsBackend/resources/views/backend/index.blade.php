@@ -474,7 +474,7 @@ var markers = [], content = [], latLng = [], pins = []; zones = [];
 bounds  = new google.maps.LatLngBounds();
 
 $(function(){
-	_initialize(new google.maps.LatLng(48.864716, 2.349014), 'map', 12);
+	_initialize(new google.maps.LatLng(48.864716, 2.349014), 'map', 12); 
 	
 	_incidents_list();
 // 	_auto_refresh_incidents_lists();
@@ -541,15 +541,13 @@ function add_markers(markerArray, lat, lng)
 	}
 
 	if(lat !="" && lng !=""){
-		console.log(lat);
-		console.log(lng);
         initialLocation = new google.maps.LatLng(lat, lng);
         map.setCenter(initialLocation);
         map.setZoom(12);
 	}
 	
 	map.fitBounds(bounds);       
-	map.panToBounds(bounds);
+    map.panToBounds(bounds);
 // 	map.setZoom(5);
 }
 
@@ -579,6 +577,7 @@ function add_point_of_interest_markers(markerArray)
     				if(r==true)
     				{
     		            pin.setMap(null);  
+						pins.pop(pin);
     		            if(markerArray[i][2] == 'history') { refresh_pins(); }  		            
     				}
     			}	
@@ -587,18 +586,6 @@ function add_point_of_interest_markers(markerArray)
         })(pin, i));
 
         pins.push(pin);
-
-        /*
-        $.ajax({
-    		'url':'{{ route('backoffice.store.zones') }}',
-    		'type':'post',
-    		'data':{'_token':'{{ csrf_token() }}','circle_lat':circleArray[i][0],'circle_lng':circleArray[i][1],'circle_radius':circleArray[i][2]},
-    		'success':function(data)
-    		{
-				
-    		}
-    	});
-    	*/
 	}
 }
 
@@ -636,6 +623,8 @@ function add_zone_of_interest_circles(circleArray)
     				r = confirm("Are you sure you want to remove this point of interest");
     				if(r==true)
     				{
+						localStorage.setItem('pins', '');	
+						localStorage.setItem('zoom', '');
     					zone.setMap(null);    
     					zones.pop(zone);	
     					if(circleArray[i][3] == 'history') { refresh_zones(); }           
@@ -647,18 +636,6 @@ function add_zone_of_interest_circles(circleArray)
 
     	zones.push(zone);
     	console.log(zones);
-
-		/*
-    	$.ajax({
-    		'url':'{{ route('backoffice.store.zones') }}',
-    		'type':'post',
-    		'data':{'_token':'{{ csrf_token() }}','circle_lat':circleArray[i][0],'circle_lng':circleArray[i][1],'circle_radius':circleArray[i][2]},
-    		'success':function(data)
-    		{
-				
-    		}
-    	});
-    	*/
 	}
 }
 
@@ -717,7 +694,7 @@ function _incidents_list()
 	          },
 	          dataFilter: function(response){
 	              // this to see what exactly is being sent back
-	              
+	              console.log(response);
 	              var result = JSON.parse(response);
 
 				  var markerArray = [], latLngArray = [];		
@@ -865,7 +842,10 @@ google.maps.event.addListener(autocomplete, 'place_changed', function () {
     {
     	lat = place.geometry.location.lat();
         lng = place.geometry.location.lng();
-
+		console.log("start");
+		console.log(lat);
+		console.log(lng);
+		console.log("end");
         $('input[type="hidden"][name="hidden_lat"]').val(lat);
         $('input[type="hidden"][name="hidden_lng"]').val(lng);
 
@@ -898,10 +878,10 @@ google.maps.event.addListener(autocomplete, 'place_changed', function () {
     	              	
                   }	
 
-                  lat = $('input[type="hidden"][name="hidden_lat"]').val();
-                  lng = $('input[type="hidden"][name="hidden_lng"]').val();
+                 // lat = $('input[type="hidden"][name="hidden_lat"]').val();
+                 // lng = $('input[type="hidden"][name="hidden_lng"]').val();
     	              
-                  add_markers(markerArray, lat, lng);		  
+                  //add_markers(markerArray, lat, lng);		  
               },
           });  
     }    
@@ -912,7 +892,7 @@ google.maps.event.addListener(autocomplete, 'place_changed', function () {
 
 function render_circles()
 {
-	if (localStorage.getItem("circle") != '') {		
+	if (localStorage.getItem("circle") != '' && localStorage.getItem("circle") != null) {		
 		 var circlesArrray = JSON.parse(localStorage.getItem('circle'));
 		 console.log(circlesArrray);
 		 if(circlesArrray.length >= 1)
@@ -931,14 +911,12 @@ function render_circles()
 			map.setCenter(new google.maps.LatLng(lat, lng));	 		 
 			map.setZoom(parseInt(zoom));				 
 		 }
-		 
-		
 	 }
 }
 
 function render_pins()
 {
-	if (localStorage.getItem("pins") != '') {
+	if (localStorage.getItem("pins") != '' && localStorage.getItem("pins") != null) {
 		 var pinsArrray = JSON.parse(localStorage.getItem('pins'));
 		 if(pinsArrray.length >= 1)
 		 {
@@ -1029,8 +1007,6 @@ $('#save-map-activity').on("click", function(){
 
 			circlesArray.push(c);
 		});
-
-		
 		
 		if(zones.length >= 1 )circlesArray = JSON.stringify(circlesArray);
 		localStorage.setItem('circle', circlesArray);

@@ -73,9 +73,24 @@ $key = '0123456789abcdef'; #Same as in JAVA
 
 /* Report new handrail */
 
-$data = '{        
-        "incident_lat":"28.6027944",
-		"incident_lng":"77.3812645"
+/*$data = '{
+		"gender":"Male",
+		"first_name":"SSimran",
+		"last_name":"Jit",
+		"date_of_birth":"1991-12-01",
+		"phone_number":"5678459625",
+		"email_id":"ssimranjit07111@gmail.com",
+		"user_password":"123",
+		"ref_user_type_id":"Cops",
+		"reg_latitude":"28.6027854",
+		"reg_longitude":"77.3812507",
+		"device_id":"3852b250afbc0180"
+    }';*/
+	
+$data = '{
+		"user_id":"40",
+		"latitude":"28.6027858",
+		"longitude":"77.3812519"
     }';
 
 

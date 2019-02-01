@@ -12,6 +12,7 @@
 <link
 	href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"
 	rel="stylesheet">
+<link href="https://cdn.rawgit.com/sachinchoolur/lightgallery.js/master/dist/css/lightgallery.css" rel="stylesheet">
 <!-- Font Awesome -->
 {{ Html::style('css/plugins/font-awesome/css/font-awesome.min.css') }}
 <!-- Theme style -->
@@ -209,8 +210,21 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 	<!-- Slimscroll -->
 	{!! Html::script('js/plugins/slimScroll/jquery.slimscroll.min.js') !!}
 	<!-- FastClick -->
-	{!! Html::script('js/plugins/fastclick/fastclick.js') !!} {!!
-	Html::script('js/dist/js/adminlte.js') !!} 
+	{!! Html::script('js/plugins/fastclick/fastclick.js') !!} 
+	{!! Html::script('js/dist/js/adminlte.js') !!} 
+	
+	{!! Html::script('js/lightgallery.js') !!} 
+    {!! Html::script('js/lg-pager.js') !!} 
+    {!! Html::script('js/lg-autoplay.js') !!} 
+    {!! Html::script('js/lg-fullscreen.js') !!} 
+    {!! Html::script('js/lg-zoom.js') !!} 
+    {!! Html::script('js/lg-hash.js') !!} 
+    
+    <script>
+        lightGallery(document.getElementById('lightgallery'));
+    </script>
+	
+	
 	
 	<link href="{{ asset('js/dist/js/plugins/switchery/dist/switchery.min.css') }}" rel="stylesheet">
 	<script src="{{ asset('js/dist/js/plugins/switchery/dist/switchery.min.js') }}"></script>
@@ -258,7 +272,7 @@ $(document).ready(function(){
         var notiCount = notiCount == "" ? 0 : parseInt(notiCount);
 
 		console.log($("#noticount").html());
-		if($("#noticount").html() !=""){
+		if($("#noticount").html() !=0){
 			console.log($("#noticount").html());
 			console.log(res.count);
     		if(res.count != notiCount){

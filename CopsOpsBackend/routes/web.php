@@ -23,8 +23,11 @@ Route::get('/dashboard', 'BackendController@index')->name('dashboard');
 Route::get('/usermanagement', 'BackendController@usermanagement')->name('usermanagement');
 Route::get('/dailycrew', 'BackendController@dailycrew')->name('dailycrew');
 Route::post('/dailycrew/create', 'BackendController@dailycrewcreate')->name('dailycrewcreate');
+Route::post('/dailycrew/datefilter', 'BackendController@dailycrewdatefilter')->name('dailycrewdatefilter');
 Route::post('/ajax/crew/get', 'BackendController@crewget')->name('crewget');
+Route::post('/ajax/crewfilter/get', 'BackendController@crewfilterget')->name('crewfilterget');
 Route::post('/dailycrew/filter', 'BackendController@dailycrewfilter')->name('crewfilter');
+
 
 Route::get('/validationofregistrants', 'BackendController@validationofregistrants')->name('validationofregistrants');
 Route::get('/accountrefuses', 'BackendController@accountrefuses')->name('accountrefuses');
@@ -79,6 +82,3 @@ Route::post('/notifications/status/update', 'BackendController@updateNotificatio
 
 # Get Live location
 Route::get('/live/location', 'BackendController@userLiveLocation')->name('backoffice.live.location');
-
-# Store Map Zones and Pins
-Route::post('/store/zones', 'BackendController@store_map_data')->name('backoffice.store.zones');

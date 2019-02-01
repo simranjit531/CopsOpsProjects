@@ -38,6 +38,8 @@ class ResponseMessage
     const _STATUS_REGISTERED_INCIDENT_CLOSED_SUCCESS = 6006;
     const _STATUS_REGISTERED_INCIDENT_CLOSED_FAILURE = 6007;
     const _STATUS_NO_INCIDENT_REPORTED = 6008;
+	const _STATUS_REJECT_SUCCESS = 6015;
+	const _STATUS_REJECT_FAILURE = 6016;
     
     const _STATUS_INTERVENTION_ASSIGNED_SUCCESS = 6009;
     const _STATUS_INTERVENTION_ASSIGNED_FAILURE = 6010;
@@ -47,6 +49,8 @@ class ResponseMessage
     const _STATUS_ACCOUNT_APPROVAL_REFUSED = 60014;
     const _STATUS_PROFILE_IMAGE_REQUIRED = 60015;
     const _STATUS_INTERVENTION_CLOSE_ERROR = 60016;
+	
+	
 
     public static $response = [
         '1' => 'Invalid request, please check',
@@ -55,7 +59,7 @@ class ResponseMessage
         
 //         '9999' => 'Invalid request, data not found, please check again',
 
-        '1000' => 'Registration Successfull',
+        '1000' => 'Registration Successfully',
         '1001' => 'Unable to register, Please try again later !!!',
 
         '2000' => 'Image uploaded successfully',
@@ -89,10 +93,12 @@ class ResponseMessage
         '6010' => 'Something went wrong, please try again',
         '60011' => 'This intervention has been already assigned.',
         '60012' => 'Account approval pending from backoffice.',
-        '60013' => 'Your account has been freezed by admin',
+        '60013' => 'Your account has been freeze. Please contact Backoffice Administrator.',
         '60014' => 'Account refused from backoffice.',
         '60015' => 'Profile Image is required !',
-        '60016' => 'You can only close interventions assigned to you only'
+        '60016' => 'You can only close interventions assigned to you only',
+		'6015' => 'Rejected Successful',
+		'6016' => 'Rejected Failed'
         
     ];
 

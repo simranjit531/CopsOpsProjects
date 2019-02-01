@@ -94,7 +94,7 @@
         <li><span>{{ trans('pages.usermgnt.object') }}</span><input type="text" value="" class="form-control objectinc" readonly="readonly"></li>
         <li><span>Description</span> <textarea class="form-control descriptioninc" readonly="readonly"></textarea></li>
         <li><span>Reference</span><input type="text" value="" class="form-control refrence-input refrence-input-info" readonly="readonly"></li>
-        <li><span>Attachement</span> <div id="attachmentinc"></p><div id="attachmentvideoinc"></p></li>
+        <li><span>Attachement</span> <div id="attachmentinc"></div><div id="attachmentvideoinc"></div></li>
 		<li><span>Signature</span> <div id="signature"></div></li>
         
     </ul>
@@ -207,6 +207,7 @@
                 $('.loader_a').removeClass('hide');
             },
             success: function (d) {
+				console.log(d);
                 $('.loader_a').addClass('hide');
                 $('.rightPart').show();
                 $('#dateinc').html(d.data[0]['updated_on']);
@@ -235,7 +236,7 @@
 				}
 				if(d.data[0]['video'] != null)
 				{
-				var video= "{{ url('/uploads//handrail_video') }}/"+d.data[0]['video'];
+				var video= "{{ url('/uploads/handrail_video') }}/"+d.data[0]['video'];
 				$('#attachmentvideoinc').html('<a href="'+video+'" traget="_blank">View</a>');
 				}
 				if(d.data[0]['signature'] != null)

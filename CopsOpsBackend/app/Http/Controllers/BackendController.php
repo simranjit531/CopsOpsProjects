@@ -26,10 +26,10 @@ use App\Crew;
 use App\CrewUser;
 use App\Util\ResponseMessage;
 use App\Notification;
+use Edujugon\PushNotification\Facades\PushNotification;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use function GuzzleHttp\json_encode;
 use App\CopUserLocation;
-use App\CopBackofficeMapInteraction;
 
 class BackendController extends Controller
 {
@@ -45,7 +45,7 @@ class BackendController extends Controller
 
     public function usermanagement()
     {
-        $operators = User::where(['ref_user_type_id' => UserType::_TYPE_OPERATOR, 'approved'=>1])->get();
+        $operators = User::where(['ref_user_type_id' => UserType::_TYPE_OPERATOR, 'approved'=>1])->get(); //'available'=>1,'status'=>1
 
         $incidents = DB::table('cop_incident_details')->select('cop_incident_details.id', 'ref_incident_subcategory.sub_category_name',
             'cop_incident_details.incident_description')
@@ -95,6 +95,142 @@ class BackendController extends Controller
         
         return view('backend.dailycrew', ['operators'=>$users, 'teams'=>$response]);
     }
+
+    public function dailycrewfilter(Request $request)
+    {
+        try{
+            $users = User::where([['ref_user_type_id','=',UserType::_TYPE_OPERATOR],['approved','=',1]])->get();
+            
+            $teams = DB::table('cop_crew')
+            ->select('*');
+            
+            if($request->input('fromdatea') != "" && $request->input('todate') != "")
+            {
+                $fromdate = date_format( new DateTime($request->fromdatea), 'Y-m-d');
+                $todate = date_format( new DateTime($request->todate), 'Y-m-d');
+                
+                $teams = $teams->whereBetween(DB::Raw("DATE_FORMAT(created_at, '%Y-%m-%d')"), [$fromdate, $todate]);
+            }
+            
+            if($request->input('crewname') != "")
+            {
+                $crewname = $request->input('crewname');
+                $teams = $teams->where('crew_name', 'like', '%'.$crewname.'%');
+            }
+                        
+            $teams = $teams->groupBy('created_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
+            $response = array();
+            
+            if(!$teams->isEmpty())
+            {                
+                foreach ($teams as $k=>$t)
+                {
+                    $teams[$k]->members = Crew::find($t->id)->get_crew_members->toArray();
+                    $date = Carbon::parse($t->created_at)->format('l d/m/Y');
+                    
+                    $response[$date][] = $teams[$k];
+                }
+            }
+            
+            return view('backend.dailycrew', ['operators'=>$users, 'teams'=>$response]);
+            // return back()->with(['operators'=>$users, 'teams'=>$response]);
+        }
+        catch (QueryException $qe)
+        {
+            return redirect('dailycrew')->with(['type'=>'error', 'message'=>'OOPS !!!']);
+        }
+    }
+	
+	public function dailycrewdatefilter(Request $request)
+	{
+		 try{
+			 $users = User::where([['ref_user_type_id','=',UserType::_TYPE_OPERATOR],['approved','=',1]])->get();
+			 if($request->input('fromdatea') != "" && $request->input('todate') != "")
+				{
+					$fromdate = date_format( new DateTime($request->fromdatea), 'Y-m-d');		 
+					$todate = date_format( new DateTime($request->todate), 'Y-m-d');	
+					$teams = DB::table('cop_crew')
+							->select('*')
+							->whereBetween(DB::Raw("DATE_FORMAT(created_at, '%Y-%m-%d')"), [$fromdate, $todate])
+							->groupBy('created_at')
+							->orderBy('created_at', 'desc')
+							->get();
+				}
+				else
+				{
+					$teams = DB::table('cop_crew')
+							->select('*')
+							->groupBy('created_at')
+							->orderBy('created_at', 'desc')
+							->get();
+				}
+				$response = array();
+				
+				if(!$teams->isEmpty()){
+					
+					foreach ($teams as $k=>$t)
+					{   
+						$teams[$k]->members = Crew::find($t->id)->get_crew_members->toArray();
+						$date = Carbon::parse($t->created_at)->format('l d/m/Y');
+						
+						$response[$date][] = $teams[$k];
+					}
+				}
+				
+				return view('backend.dailycrew', ['operators'=>$users, 'teams'=>$response]);
+		 } 
+        catch (QueryException $qe) 
+        {
+            return redirect('dailycrew')->with(['type'=>'error', 'message'=>'OOPS !!!']);
+        }
+	}
+	
+	public function crewfilterget(Request $request)
+	{
+		
+		 try{
+			 $users = User::where([['ref_user_type_id','=',UserType::_TYPE_OPERATOR],['approved','=',1]])->get();
+			 if($request->input('crewname') != "")
+				{
+					$crewname= $request->input('crewname');
+					$teams = DB::table('cop_crew')
+							->select('*')
+							->where('crew_name','like', '%' . $crewname . '%')
+							->groupBy('created_at')
+							->orderBy('created_at', 'desc')
+							->get();
+				}
+				else
+				{
+					$teams = DB::table('cop_crew')
+							->select('*')
+							->groupBy('created_at')
+							->orderBy('created_at', 'desc')
+							->get();
+				}
+				$response = array();
+				
+				if(!$teams->isEmpty()){
+					
+					foreach ($teams as $k=>$t)
+					{   
+						$teams[$k]->members = Crew::find($t->id)->get_crew_members->toArray();
+						$date = Carbon::parse($t->created_at)->format('l d/m/Y');
+						
+						$response[$date][] = $teams[$k];
+					}
+				}
+				return response()->json(['status'=>true, 'data'=>['operators'=>$users, 'teams'=>$response]]);
+				
+		 } 
+        catch (QueryException $qe) 
+        {
+            return redirect('dailycrew')->with(['type'=>'error', 'message'=>'OOPS !!!']);
+        }
+	}
     
     public function dailycrewcreate(Request $request)
     {
@@ -136,53 +272,6 @@ class BackendController extends Controller
             return redirect('dailycrew')->with(['type'=>'error', 'message'=>'OOPS !!!']);
         }
         
-    }
-    
-    public function dailycrewfilter(Request $request)
-    {
-        try{
-            $users = User::where([['ref_user_type_id','=',UserType::_TYPE_OPERATOR],['approved','=',1]])->get();
-            
-            $teams = DB::table('cop_crew')
-            ->select('*');
-            
-            if($request->input('fromdatea') != "" && $request->input('todate') != "")
-            {
-                $fromdate = date_format( new DateTime($request->fromdatea), 'Y-m-d');
-                $todate = date_format( new DateTime($request->todate), 'Y-m-d');
-                
-                $teams = $teams->whereBetween(DB::Raw("DATE_FORMAT(created_at, '%Y-%m-%d')"), [$fromdate, $todate]);
-            }
-            
-            if($request->input('crewname') != "")
-            {
-                $crewname = $request->input('crewname');
-                $teams = $teams->where('crew_name', 'like', '%'.$crewname.'%');
-            }
-                        
-            $teams = $teams->groupBy('created_at')
-            ->orderBy('created_at', 'desc')
-            ->get();
-            
-            $response = array();
-            
-            if(!$teams->isEmpty())
-            {                
-                foreach ($teams as $k=>$t)
-                {
-                    $teams[$k]->members = Crew::find($t->id)->get_crew_members->toArray();
-                    $date = Carbon::parse($t->created_at)->format('l d/m/Y');
-                    
-                    $response[$date][] = $teams[$k];
-                }
-            }
-            
-            return view('backend.dailycrew', ['operators'=>$users, 'teams'=>$response]);
-        }
-        catch (QueryException $qe)
-        {
-            return redirect('dailycrew')->with(['type'=>'error', 'message'=>'OOPS !!!']);
-        }
     }
     
     public function crewget(Request $request)
@@ -424,7 +513,13 @@ class BackendController extends Controller
     	     $users = $users->whereBetween(DB::Raw("DATE_FORMAT(created_at, '%Y-%m-%d')"),[$sdate, $edate]);
     	 }
     	 $users = $users->get(); // Approved User
-//         dd(DB::getQueryLog());
+
+		 foreach($users as $k=>$u)
+		{
+		    $users[$k]->date = Carbon::parse($u->created_at)->format('M d Y H:i a');		    
+		}
+    	
+        // dd(DB::getQueryLog());
         return Datatables::of($users)->addColumn('action', function ($user) {
                 return '<div class="radio"><label><input type="radio" name="optradio"></label></div>';
             })->removeColumn('user_password')
@@ -505,9 +600,12 @@ class BackendController extends Controller
             $users = $users->whereBetween(DB::Raw("DATE_FORMAT(created_at, '%Y-%m-%d')"),[$sdate, $edate]);
         }
         $users = $users->get();
+		
+		
         
         foreach ($users as $k => $v)
-        {
+        {	
+			$users[$k]->date = Carbon::parse($v->created_at)->format('M d Y H:i a');
             $totalReports = IncidentDetail::where('created_by', $v->id)->get();
             $users[$k]->total_reports = count($totalReports);
         }
@@ -552,7 +650,6 @@ class BackendController extends Controller
 	            ->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
 	            ->join('ref_user', 'ref_user.id', '=', 'cop_incident_details.created_by')
 	            ->orderBy('cop_incident_details.updated_at', 'DESC')->get();
-
 	            if($request->input('lat') && $request->input('lng'))
 	            {
 
@@ -575,6 +672,7 @@ class BackendController extends Controller
                 
 	            foreach ($incidents as $k => $v)
 	            {
+
 	                $users = User::where('id', $v->created_by)->get();
 
 	                $reporter = UserType::where('id', $users[0]->ref_user_type_id)->get()[0]->user_type;
@@ -601,6 +699,7 @@ class BackendController extends Controller
 	                
 	                $incidents[$k]->status = $incidents[$k]->status;
 	                $incidents[$k]->state = $incidents[$k]->state;
+					
 	            }
 	            
 	            return Datatables::of($incidents)->editColumn('status', function($incidents){
@@ -699,6 +798,7 @@ class BackendController extends Controller
 	        if(empty($request->input('objectId')) || empty($request->input('operators-id'))) return response()->json(['status'=>false, 'message'=>'Invalid request'], 200);
 	        	
 	        $rs = false;
+	
 	        foreach ($request->input('operators-id') as $o) 
 	        {
 	           $rs = CopUserIncidentTempMapping::create([
@@ -708,6 +808,17 @@ class BackendController extends Controller
 	               'ref_incident_status_id' => 1
 	           ]);
 	           
+			   #user user status change
+			  // User::where('id',$o)->update(['available' => 0]); //pp
+			   
+			   #add entry in COP Mapping PP
+			  /* $inm = CopUserIncidentMapping::create([
+	               'ref_user_id' => $o, 
+	               'cop_incident_details_id' => $request->input('objectId'), 
+	               'created_by' => $userId,
+	               'status' => 2
+	           ]);*/
+			   
 	           # Once intervention is assigned, send push notification
 	           $push = new \Edujugon\PushNotification\PushNotification('fcm');
 	           $push->setMessage([
@@ -727,7 +838,12 @@ class BackendController extends Controller
 	        
 	        if($rs)
 	        {   
-	            
+	               # New user registration notification
+                Notification::create([
+                    'table_id' =>$userId,
+                    'table' => 'cop_user_incident_mapping', 
+                    'message' => 'intervention assigned'                    
+                ]);
 	            #IncidentDetail::where('id', $request->input('objectId'))->update(['status'=>2]);
 	            return response()->json(['status'=>true, 'message'=>'Intervention assigned successfully'], 200);
 	        }
@@ -885,7 +1001,7 @@ class BackendController extends Controller
 	    $response->headers->set('Cache-Control', 'no-cache');
 	    $response->setCallback(
 	        function() {
-	            $notifications = Notification::where('status', 0)->get();
+	            $notifications = Notification::where('status', 0)->orderBy('created_at', 'desc')->get();
 	            
 	            if($notifications->isEmpty()) {
 	                
@@ -909,7 +1025,7 @@ class BackendController extends Controller
 	        return Notification::where('id', $request->input('id'))->update(['status'=>1]);	        
 	    }
 	}
-	
+
 	public function userLiveLocation(Request $request)
 	{
 	    $userId = $request->input('user_id');
@@ -919,25 +1035,5 @@ class BackendController extends Controller
 // 	    dd($userData);
 	    if(empty($lastLocation)) return response()->json(['status'=>false]);
 	    return response()->json(['status'=>true, 'data'=>$lastLocation, 'ref_user_type_id'=>$userData['ref_user_type_id']]);
-	}
-	
-	public function store_map_data(Request $request)
-	{
-	    $user = Auth::user();
-	    $userId = $user->id;
-	    
-	    # Check if data is available 
-	    
-	    CopBackofficeMapInteraction::create([
-	        'circle_lat' =>$request->input('circle_lat'), 
-	        'circle_lng' =>$request->input('circle_lng'), 
-	        'circle_radius' =>$request->input('circle_radius'), 
-	        'pin_lat' =>$request->input('pin_lat'), 
-	        'pin_lng' =>$request->input('pin_lng'), 
-	        'map_zoom' =>$request->input('map_zoom'), 
-	        'map_lat' =>$request->input('map_lat'), 
-	        'map_lng' =>$request->input('map_lng'),
-	        'created_by' => $userId
-	    ]);
 	}
 }

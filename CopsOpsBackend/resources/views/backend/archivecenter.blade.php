@@ -187,6 +187,10 @@
       $('.rightPart').hide();
       $('.rightReportPart').show();
     })
+	
+	$('#name').on('keyup', function(e) {
+            oTable.draw();   
+         });
 
     $(document).on('click','.informationArchiveInc',function(e)
     {
