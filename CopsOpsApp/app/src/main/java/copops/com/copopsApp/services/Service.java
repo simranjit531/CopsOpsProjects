@@ -99,6 +99,11 @@ public interface Service {
     @POST("api/auth/registered/incident/intervent")
     Call<CommanStatusPojo> acceptInterven(@Part("data") RequestBody data);
 
+   // http://13.233.74.84/api/auth/check/freeze
+    @Multipart
+    @POST("api/auth/check/freeze")
+    Call<CommanStatusPojo> freeze(@Part("data") RequestBody data);
+
     @Multipart
     @POST("api/auth/profile/attributes")
     Call<OperatorShowAlInfo> getOperotor(@Part("data") RequestBody data);

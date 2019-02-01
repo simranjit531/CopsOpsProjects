@@ -15,16 +15,30 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.quickblox.messages.services.QBPushManager;
+import com.quickblox.messages.services.SubscribeService;
+import com.quickblox.sample.core.utils.SharedPrefsHelper;
+import com.quickblox.users.QBUsers;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import copops.com.copopsApp.activity.DashboardActivity;
+import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
+import copops.com.copopsApp.chatmodule.utils.qb.QbDialogHolder;
+import copops.com.copopsApp.chatmodule.utils.qb.callback.QBPushSubscribeListenerImpl;
+import copops.com.copopsApp.fragment.Frag_Public_Profile_Shown;
+import copops.com.copopsApp.fragment.HomeFragment;
+import copops.com.copopsApp.fragment.LoginFragment;
 import copops.com.copopsApp.pojo.CommanStatusPojo;
 import copops.com.copopsApp.pojo.LoginPojoSetData;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.shortcut.GPSTracker;
+import copops.com.copopsApp.shortcut.ShortcutViewService;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -39,7 +53,10 @@ public class TrackingServices extends Service {
     double longitude;
     GPSTracker gps;
 
-    public static final int notify = 30000;  //interval between two services(Here Service run every 5 seconds)
+
+
+    //public static final int notify = 30000;  //interval between two services(Here Service run every 5 seconds)
+    public static final int notify = 5000;  //interval between two services(Here Service run every 5 seconds)
     int count = 0;  //number of times service is display
     private Handler mHandler = new Handler();   //run on another Thread to avoid crash
     private Timer mTimer = null;    //timer handling
@@ -67,7 +84,7 @@ public class TrackingServices extends Service {
     public void onDestroy() {
         super.onDestroy();
         mTimer.cancel();    //For Cancel Timer
-        Toast.makeText(this, "Service is Destroyed", Toast.LENGTH_SHORT).show();
+     //   Toast.makeText(this, "Service is Destroyed", Toast.LENGTH_SHORT).show();
     }
 
     //class TimeDisplay for handling task
@@ -135,12 +152,33 @@ public class TrackingServices extends Service {
                     try {
                         if (response.body() != null) {
                             CommanStatusPojo commanStatusPojo = response.body();
+
                             if (commanStatusPojo.getStatus().equals("false")) {
 
 
                             } else {
 
 
+                                Log.e("isfreeze",""+commanStatusPojo.getIsfreeze());
+                                Log.e("@@isfreeze",""+commanStatusPojo.getMessage());
+
+ if(commanStatusPojo.getIsfreeze().equalsIgnoreCase("0")){
+     mAppSession.saveData("Login", "0");
+     userLogout();
+
+     mAppSession.saveData("freez","0");
+     stopService(new Intent(getBaseContext(), TrackingServices.class));
+   //  stopService(new Intent(getBaseContext(), TrackingServices.class));
+
+   // Utils.fragmentCall(new HomeFragment(), getFragmentManager());
+     Intent intent = new Intent(getBaseContext(),DashboardActivity.class);
+     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+     getApplication().startActivity(intent);
+ }else{
+    // mAppSession.saveData("freez","1");
+
+    //
+ }
                             }
 
 
@@ -167,4 +205,35 @@ public class TrackingServices extends Service {
 
     }
 
+    public void userLogout() {
+        ChatHelper.getInstance().destroy();
+        logout();
+        SharedPrefsHelper.getInstance().removeQbUser();
+
+        //  finish();
+        //  LoginActivity.start(DialogsActivity.this);
+        //   Intent mIntent = new Intent(DialogsActivity.this,DashboardActivity.class);
+        //   startActivity(mIntent);
+        QbDialogHolder.getInstance().clear();
+        //  ProgressDialogFragment.hide(getSupportFragmentManager());
+        //  finish();
+    }
+    private void logout() {
+        if (QBPushManager.getInstance().isSubscribedToPushes()) {
+            QBPushManager.getInstance().addListener(new QBPushSubscribeListenerImpl() {
+                @Override
+                public void onSubscriptionDeleted(boolean success) {
+                    logoutREST();
+                    QBPushManager.getInstance().removeListener(this);
+                }
+            });
+            SubscribeService.unSubscribeFromPushes(getApplicationContext());
+        } else {
+            logoutREST();
+        }
+    }
+
+    private void logoutREST() {
+        QBUsers.signOut().performAsync(null);
+    }
 }

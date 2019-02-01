@@ -52,6 +52,7 @@ import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
 import copops.com.copopsApp.chatmodule.utils.qb.QbChatDialogMessageListenerImp;
 import copops.com.copopsApp.chatmodule.utils.qb.QbDialogHolder;
 import copops.com.copopsApp.chatmodule.utils.qb.callback.QbEntityCallbackImpl;
+import copops.com.copopsApp.pojo.CommanStatusPojo;
 import copops.com.copopsApp.pojo.LoginPojoSetData;
 import copops.com.copopsApp.pojo.RegistationPojo;
 import copops.com.copopsApp.services.ApiUtils;
@@ -132,6 +133,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         mAppSession.saveData("longitude",String.valueOf(longitude));
         progressDialog = new ProgressDialog(mContext);
         progressDialog.setMessage("loading...");
+
+        String sdadsa = mAppSession.getData("freez");
+
+
         if (userType.equalsIgnoreCase("citizen")) {
             userTypeRegistation = "Citizen";
             mAppSession.saveData("type",userTypeRegistation);
@@ -228,6 +233,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                             mAppSession.saveData("profile_qrcode", registrationResponse.getProfile_qrcode());
                                             mAppSession.saveData("grade", registrationResponse.getGrade());
                                             Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
+
+                                            mAppSession.saveData("freez","1");
 //                                            if (userType.equalsIgnoreCase("Citizen")) {
 //                                                Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
 //                                            } else {
@@ -236,7 +243,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                         }
                                         getActivity().startService(new Intent(getActivity(),TrackingServices.class));
                                     }else{
-
+                                        mAppSession.saveData("freez","1");
                                         mAppSession.saveData("Login", "1");
                                         mAppSession.saveData("id", registrationResponse.getId());
                                         mAppSession.saveData("name", registrationResponse.getUsername());

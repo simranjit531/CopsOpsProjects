@@ -277,7 +277,7 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
 
         final Dialog dialog = new Dialog(mContext, R.style.DialogFragmentTheme);
         dialog.setContentView(R.layout.rejectdilog);
-        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(false);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         Window window = dialog.getWindow();
         window.setGravity(Gravity.CENTER);
@@ -292,8 +292,6 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
             public void onClick(View v) {
                 dialog.dismiss();
                 Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo,pos), getFragmentManager());
-              //  android.os.Process.killProcess(android.os.Process.myPid());
-                //System.exit(1);
             }
         });
 

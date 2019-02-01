@@ -5,6 +5,16 @@ import java.io.Serializable;
 public class CommanStatusPojo implements Serializable {
     String status;
 
+    public String getIsfreeze() {
+        return isfreeze;
+    }
+
+    public void setIsfreeze(String isfreeze) {
+        this.isfreeze = isfreeze;
+    }
+
+    String isfreeze;
+
     public String getAvailable() {
         return available;
     }
