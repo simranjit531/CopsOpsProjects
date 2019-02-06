@@ -9,7 +9,8 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="#">{{ trans('pages.home')
+						}}</a></li>
               <li class="breadcrumb-item active">{{ trans('pages.discussion') }}</li>
               <input type="hidden" name="hidden_user_id" value="{{ Auth::user()->user_id }}"/>
               <input type="hidden" name="hidden_user_full_name" value="{{ Auth::user()->first_name.' '.Auth::user()->last_name }}"/>
@@ -141,12 +142,12 @@
 
     <script  type="text/template" id="tpl_welcome">
         <div class="content__title j-content__title j-welcome">
-            Welcome to Copops chat support!
+            {{ trans('pages.welcomecopopschat')}}
         </div>
         <div class="notifications j-notifications hidden"></div>
         <div class="content__inner j-content__inner">
             <div class="welcome__message">
-                <p>Please select you opponent to start chatting.</p>
+                <p>{{ trans('pages.startchating')}}</p>
             </div>
         </div>
     </script>

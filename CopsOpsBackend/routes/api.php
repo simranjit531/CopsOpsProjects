@@ -49,6 +49,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/registered/incident/close', 'API\ApiController@close_registered_incident');
 	
 	Route::post('/incident/rejected','API\ApiController@reject_incident'); //pp
+	Route::post('/check/freeze','API\ApiController@check_user_freeze'); //pp
 });
 
 //Route::middleware('auth:api')->get('/user', function (Request $request) {

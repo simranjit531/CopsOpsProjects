@@ -15,7 +15,8 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="#">{{ trans('pages.home')
+						}}</a></li>
               <li class="breadcrumb-item active">{{ trans('pages.archiveCenter') }}</li>
             </ol>
           </div><!-- /.col -->
@@ -32,15 +33,15 @@
                     <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-5 left-form p-0">
                         <form>
                             <div class="col-lg-12">
-                                <label>From Date</label>
+                                <label>{{ trans('pages.fromdate')}}</label>
                                 <input type="text" class="form-control" name="fromdate"  id="fromdate" readonly="readonly">
                             </div>
                             <div class="col-lg-12">
-                                <label class="text-center">To Date</label>
+                                <label class="text-center">{{ trans('pages.todate')}}</label>
                                 <input type="text" class="form-control" name="todate" id="todate" readonly="readonly">
                             </div>
                            
-                            <button type="button" id="search-form" class="actual-btn mt-2 mb-2">Actual</button>
+                            <button type="button" id="search-form" class="actual-btn mt-2 mb-2">{{ trans('pages.Actual')}}</button>
                         </form>
                     </div>
                     
@@ -64,7 +65,7 @@
                      <table class="table table-bordered table-striped" id="archivedata">
                     <thead>
                         <tr>
-                            <th>Date/ Time</th>
+                            <th>{{ trans('pages.datatime') }}</th>
                             <th>{{ trans('pages.usermgnt.tables.firstname') }} / {{ trans('pages.usermgnt.tables.lastname') }}</th>  							
   							<th>{{ trans('pages.usermgnt.object') }}</th>
   							<th>{{ trans('pages.archive.interventionAddress') }}</th>
@@ -93,11 +94,11 @@
                     <h4><span class="float-right" id="dateinc"></span> <span class="text-center" id="objectinc"></span> <span class="float-right" id="firstlastinc"></span> </h4>
                     
                     <ul>
-                        <li><span>Address</span> <input type="text" value="" class="form-control addressinc" readonly="readonly"></li>
+                        <li><span>{{ trans('pages.usermgnt.address')}}</span> <input type="text" value="" class="form-control addressinc" readonly="readonly"></li>
                         <li><span>{{ trans('pages.usermgnt.object') }}</span><input type="text" value="" class="form-control objectinc" readonly="readonly"></li>
                         <li><span>Description</span> <textarea class="form-control descriptioninc" readonly="readonly"></textarea></li>
-                        <li><span>Reference</span><input type="text" value="" class="form-control refrence-input refrence-input-info" readonly="readonly"></li>
-                         <li><span>Attachement</span> <p id="attachmentinc"></p><p id="attachmentvideoinc"></p></li>
+                        <li><span>{{ trans('pages.Reference') }}</span><input type="text" value="" class="form-control refrence-input refrence-input-info" readonly="readonly"></li>
+                         <li><span>{{ trans('pages.Attachement') }}</span> <p id="attachmentinc"></p><p id="attachmentvideoinc"></p></li>
 <!--                          <li><span>Signature</span> <p id="signature"></p></li> -->
                         
 <!--                         <li><span>Signature</span><div id="reportsignature"></div></li> -->
@@ -117,10 +118,10 @@
                     <h4><span class="float-right" id="dateincreport"></span> <span class="text-center" id="objectincreport"></span> <span class="float-right" id="firstlastincreport"></span> </h4>
                     
                     <ul>
-                        <li><span>Address</span> <input type="text" value="" class="form-control addressinc" readonly="readonly"></li>
+                        <li><span>{{ trans('pages.usermgnt.address')}}</span> <input type="text" value="" class="form-control addressinc" readonly="readonly"></li>
                         <li><span>{{ trans('pages.usermgnt.object') }}</span><input type="text" value="" class="form-control objectinc" readonly="readonly"></li>
                         <li><span>Description</span> <textarea class="form-control commentreport" readonly="readonly"></textarea></li>
-                        <li><span>Reference</span><input type="text" value="" id="referencereport" class="form-control refrence-input refrence-input-report" readonly="readonly"></li>
+                        <li><span>{{ trans('pages.Reference') }}</span><input type="text" value="" id="referencereport" class="form-control refrence-input refrence-input-report" readonly="readonly"></li>
                         <li><span>Signature</span><div id="reportsignature_1"></div></li>
                     </ul>
                 </div>

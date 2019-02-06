@@ -503,7 +503,7 @@ class BackendController extends Controller
 	
     public function userdata(Request $request)
     {
-        \DB::enableQueryLog();
+        //\DB::enableQueryLog();
     	 $users = User::where([['ref_user_type_id','=',UserType::_TYPE_OPERATOR],['approved','=',1]]);
     	 if($request->registration_start_date !="" && $request->registration_end_date){
 //     	     $users = $users->where(DB::Raw("DATE_FORMAT('created_at', '%Y-%m-%d')"), Carbon::parse($request->registration_date)->format('Y-m-d'));
@@ -593,7 +593,7 @@ class BackendController extends Controller
 	
     public function userdatacitizen(Request $request)
     {
-        $users = User::where('ref_user_type_id','=',UserType::_TYPE_CITIZEN);
+        $users = User::where('ref_user_type_id','=',UserType::_TYPE_CITIZEN)->orderBy('created_at', 'desc');
         if($request->registration_start_date !="" && $request->registration_start_date !=""){
             $sdate = Carbon::parse($request->registration_start_date)->format('Y-m-d');
             $edate = Carbon::parse($request->registration_end_date)->format('Y-m-d');
@@ -826,11 +826,14 @@ class BackendController extends Controller
 	                   'title'=>'A new intervention has been assigned to you',
 	                   'body'=>'A new intervention has been assigned to you',
 	                   'sound' => 'default'
+	               ],
+	               'data' => [
+	                   'new_reports' => '100'	                   
 	               ]
 	           ]);
 	           
 	           # Get device token of the user
-	           $tokenData = UserDeviceMapping::where('ref_user_id', $o)->get();
+	           $tokenData = UserDeviceMapping::where('ref_user_id', $o)->get();	           
 	           $push->setDevicesToken($tokenData[0]->device_token);
 	           $push->send();
 	           $push->getFeedback();
@@ -1029,11 +1032,12 @@ class BackendController extends Controller
 	public function userLiveLocation(Request $request)
 	{
 	    $userId = $request->input('user_id');
-	    $lastLocation = CopUserLocation::where('user_id', $userId)->orderBy('created_at', 'desc')->first();
-	    
+	    \DB::enableQueryLog();
+	    $lastLocation = CopUserLocation::select(DB::Raw('distinct latitude'), 'longitude', DB::Raw('date(created_at) created_at'))->where(['user_id'=> $userId])->whereDate('created_at', '=', Carbon::now()->format('Y-m-d'))->orderBy('created_at', 'desc')->get();
+	    // dd(\DB::getQueryLog());
 	    $userData = User::where('id', $userId)->first();
 // 	    dd($userData);
-	    if(empty($lastLocation)) return response()->json(['status'=>false]);
-	    return response()->json(['status'=>true, 'data'=>$lastLocation, 'ref_user_type_id'=>$userData['ref_user_type_id']]);
+	    if($lastLocation->isEmpty()) return response()->json(['status'=>false]);
+	    return response()->json(['status'=>true, 'data'=>$lastLocation->toArray(), 'ref_user_type_id'=>$userData['ref_user_type_id']]);
 	}
 }

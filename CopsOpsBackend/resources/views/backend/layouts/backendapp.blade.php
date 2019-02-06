@@ -72,7 +72,7 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 			<ul class="navbar-nav">
 				<li class="nav-item"><a class="nav-link" data-widget="pushmenu"
 					href="#"><i class="fa fa-bars"></i></a></li>
-				<li class="pull-right"><a href="{{ route('logout') }}" class="nav-link"><i class="fa fa-sign-out"></i> Logout</a></li>
+				<li class="pull-right"><a href="{{ route('logout') }}" class="nav-link"><i class="fa fa-sign-out"></i>{{ trans('pages.logout') }} </a></li>
 				
 				<li role="presentation" class="dropdown notification-sec">
                   <a href="javascript:void(0);" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="true">
@@ -86,8 +86,8 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 				
 				<li class="language-drop"><select id="language">
 						<option value="" selected>Language</option>
-						<option value="en">Eng</option>
 						<option value="fr">France</option>
+						<option value="en">ANG</option>
 				</select></li>
 
 			</ul>
@@ -170,8 +170,7 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 		<!-- Content of main page -->
 
 		<footer class="main-footer">
-			<strong>Copyright &copy; 2018-19</strong> <a href="" class="cop-copy">COP
-				OPS</a> All rights reserved.
+			<strong>{{ trans('pages.copyright') }}
 			<div class="float-right d-none d-sm-inline-block"></div>
 		</footer>
 

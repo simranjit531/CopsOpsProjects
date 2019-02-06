@@ -28,7 +28,8 @@
 			<!-- /.col -->
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Home</a></li>
+					<li class="breadcrumb-item"><a href="#">{{ trans('pages.home')
+						}}</a></li>
 					<li class="breadcrumb-item active">{{ trans('pages.userManagement')
 						}}</li>
 				</ol>
@@ -154,7 +155,7 @@
 							<i class="fa fa-calendar"></i>
 						</button>
 					</div>
-					<input class="form-control form-control-navbar" type="text" name="registration_start_date" id="registration_start_date" placeholder="Select Registration Date" aria-label="Search">
+					<input class="form-control form-control-navbar" type="text" name="registration_start_date" id="registration_start_date" placeholder="{{ trans('pages.selectregdate') }}" aria-label="Search">
 				</div>
 				
 				<div class="input-group input-group-sm">
@@ -163,7 +164,7 @@
 							<i class="fa fa-calendar"></i>
 						</button>
 					</div>
-					<input class="form-control form-control-navbar" type="text" name="registration_end_date" id="registration_end_date" placeholder="Select Registration Date" aria-label="Search">
+					<input class="form-control form-control-navbar" type="text" name="registration_end_date" id="registration_end_date" placeholder="{{ trans('pages.selectregdate') }}" aria-label="Search">
 				</div>
 				
 			</div>
@@ -190,7 +191,7 @@
 							<i class="fa fa-calendar"></i>
 						</button>
 					</div>
-					<input class="form-control form-control-navbar" type="text" name="citizen_registration_start_date" id="citizen_registration_start_date" placeholder="Select Registration Date" aria-label="Search">
+					<input class="form-control form-control-navbar" type="text" name="citizen_registration_start_date" id="citizen_registration_start_date" placeholder="{{ trans('pages.selectregdate') }}" aria-label="Search">
 				</div>
 				
 				<div class="input-group input-group-sm">
@@ -199,7 +200,7 @@
 							<i class="fa fa-calendar"></i>
 						</button>
 					</div>
-					<input class="form-control form-control-navbar" type="text" name="citizen_registration_end_date" id="citizen_registration_end_date" placeholder="Select Registration Date" aria-label="Search">
+					<input class="form-control form-control-navbar" type="text" name="citizen_registration_end_date" id="citizen_registration_end_date" placeholder="{{ trans('pages.selectregdate') }}" aria-label="Search">
 				</div>
 			</div>
 		</div>
@@ -561,7 +562,7 @@ $(function(){
 	          { data: 'cops_grade', name: 'cops_grade' }, 
 			  { data: 'view', name : 'view', orderable: false, searchable: false},
 	      ],
-	        order: [[0, "desc"]]
+	        //order: [[0, "desc"]]
 	});
 
 	oTableCitizen = $('#userTable').DataTable({
@@ -584,7 +585,7 @@ $(function(){
                 { data: 'total_reports', name: 'total_reports' }, 
 				{ data: 'view', name : 'view', orderable: false, searchable: false},				
           ],
-        order: [[0, "desc"]]
+        //order: [[0, "desc"]]
   });
 
 	$('#name').on('keyup', function(e) {
@@ -973,25 +974,35 @@ function user_live_location(userId){
 	{
 		clearMyInterval();
 	}
-	var interva = setInterval( function () {
+	// var interva = setInterval( function () {
     	    $.ajax({
     			'url':"{{ route('backoffice.live.location') }}",
     			'data':{"_token": "{{ csrf_token() }}", "user_id":userId},
     			success : function(response){
     				if(response.status == true){
-						var lat = response.data.latitude;
-						var lng = response.data.longitude;		
+						var lat = response.data[0].latitude;
+						var lng = response.data[0].longitude;		
 						var center = new google.maps.LatLng(lat, lng);
 						_initialize(center, 'map', 15);
 						
     					var markerArray = [];
-    					markerArray.push([response.data.latitude, response.data.longitude, response.ref_user_type_id]);
+    					var flightPlanCoordinates =[];
+    					$(response.data).each(function(k,v){
+    						t = {};
+    						t['lat'] = parseFloat(v.latitude);
+    						t['lng'] = parseFloat(v.longitude);
+    						// t['ref_user_type_id'] = v.ref_user_type_id;    						
+    						markerArray.push([v.latitude, v.longitude, response.ref_user_type_id]);
+
+    						flightPlanCoordinates.push(t);
+    					});
 
     		 			add_markers(markerArray, true);
+    		 			draw_route(flightPlanCoordinates);
     				}
     			}
     		});
-    	}, 10000 );
+    	// }, 5000 );
 		intervals.push(interva);
 	}
 }
@@ -1016,12 +1027,12 @@ function _initialize(center, mapId, zoom) {
 
 function add_markers(markerArray, lat, lng)
 {		
-	console.log(markerArray);
-	clear_markers();	
+	// console.log(markerArray);
+	// clear_markers();	
 	for( i = 0; i < markerArray.length; i++ ) 
 	{
+		console.log(markerArray[i][0], markerArray[i][1]);
 		var position = new google.maps.LatLng(markerArray[i][0], markerArray[i][1]);
-		bounds.extend(position);
 		
 		marker = new google.maps.Marker({
             position: position,
@@ -1029,27 +1040,14 @@ function add_markers(markerArray, lat, lng)
 //             title: markerArray[i][2]
     	});
 
-		if(markerArray[i][2] == "3") marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
-		else if(markerArray[i][2] == "4")  marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
-		
-		var infoWindow = new google.maps.InfoWindow();
-		        
-	    // Allow each marker to have an info window    
-        google.maps.event.addListener(marker, 'click', (function(marker, i) {  
-            return function() {
-                infoWindow.setContent(content[i]);
-                infoWindow.open(map, marker);
-            }
-        })(marker, i));
-
 		markers.push(marker);
 		
 	}
 
 	
-// 	map.fitBounds(bounds);       
-// 	map.panToBounds(bounds);
-// 	map.setZoom(5);
+	// map.fitBounds(bounds);       
+	// map.panToBounds(bounds);
+	// map.setZoom(5);
 }
 
 
@@ -1063,6 +1061,19 @@ function clear_markers()
 	markers = [];	
 }
 
+
+function draw_route(flightPlanCoordinates)
+{	        
+    var flightPath = new google.maps.Polyline({
+	    path: flightPlanCoordinates,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+    });
+
+    flightPath.setMap(map);
+}
 
 </script>
 @endsection

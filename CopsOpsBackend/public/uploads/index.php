@@ -88,9 +88,7 @@ $key = '0123456789abcdef'; #Same as in JAVA
     }';*/
 	
 $data = '{
-		"user_id":"40",
-		"latitude":"28.6027858",
-		"longitude":"77.3812519"
+		"user_id":"40"
     }';
 
 

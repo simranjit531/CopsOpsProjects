@@ -584,18 +584,25 @@ class ApiController extends Controller
                 ]);
                 
                 # Get device token of the user
-                $tokenData = UserDeviceMapping::all()->chunk(100);
+                #$tokenData = UserDeviceMapping::all()->chunk(100);
 
-                if(!$tokenData->isEmpty()){
-                    foreach ($tokenData as $tokens) {
-                        foreach ($tokens as $t)
-                        {
-                            if(empty($t->device_token)) continue;
-                            $push->setDevicesToken($t->device_token);
-                            $push->send();
-                            $push->getFeedback();
+                try{                    
+                    $tokenData = UserDeviceMapping::all()->chunk(100);
+                    
+                    if(!$tokenData->isEmpty()){
+                        foreach ($tokenData as $tokens) {
+                            foreach ($tokens as $t)
+                            {
+                                if(empty($t->device_token) && $t->ref_user_id == $payload['created_by']) continue;
+                                $push->setDevicesToken($t->device_token);
+                                $push->send();
+                                $push->getFeedback();
+                            }
                         }
-                    }    
+                    }
+                }
+                catch (\Exception $e){
+                    file_put_contents('uploads/test.txt', $e->getMessage());                    
                 }
 
                 if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS), 'reference'=>$rs->reference, 'qrcode_url'=>asset('uploads/qrcodes').'/'.$referenceNo.'.png', 'helpline_number'=>$helplineNumber],200);
@@ -887,24 +894,25 @@ class ApiController extends Controller
                   GROUP BY cop_incident_details.id HAVING `distance` <= 5 OR cop_user_incident_temp_mapping.ref_user_id = $copId ORDER BY status ASC";*/
 				  
 		$query ="select * from (
-				 SELECT (case when cop_incident_details.status =2 THEN 'Pending' when cop_incident_details.status =1 THEN 'Wait' When cop_incident_details.status =3 THEN 'Finished' ELSE 'Assigned' END)as isAssigned,ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
+                 SELECT (case when cop_incident_details.status =2 THEN 'Pending' when cop_incident_details.status =1 THEN 'Wait' When cop_incident_details.status =3 THEN 'Finished' ELSE 'Assigned' END)as isAssigned,ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
                   cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.created_at, ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( latitude ) ) ) ) AS `distance`,
-                  cop_incident_details.city, cop_incident_details.address, cop_user_incident_temp_mapping.ref_user_id
+                  cop_incident_details.city, cop_incident_details.address, cop_user_incident_temp_mapping.ref_user_id, cop_user_incident_mapping.ref_user_id as user_id
                   FROM cop_incident_details 
                   LEFT JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
                   LEFT JOIN cop_user_incident_temp_mapping ON cop_user_incident_temp_mapping.cop_incident_details_id = cop_incident_details.id
-	              LEFT JOIN cop_user_incident_mapping ON cop_user_incident_mapping.cop_incident_details_id = cop_incident_details.id
-                  GROUP BY cop_incident_details.id HAVING `distance` <= 5 OR cop_user_incident_temp_mapping.ref_user_id = $copId
+                  LEFT JOIN cop_user_incident_mapping ON cop_user_incident_mapping.cop_incident_details_id = cop_incident_details.id                 
+                  GROUP BY cop_incident_details.id HAVING `distance` <= 5 
                  union
                  SELECT (case when cop_incident_details.status =2 THEN 'Pending' when cop_incident_details.status =1 THEN 'Wait' When cop_incident_details.status =3 THEN 'Finished' ELSE 'Assigned' END)as isAssigned,ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
                  cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.created_at, ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( latitude ) ) ) ) AS `distance`,
-                 cop_incident_details.city, cop_incident_details.address, cop_user_incident_temp_mapping.ref_user_id
+                 cop_incident_details.city, cop_incident_details.address, cop_user_incident_temp_mapping.ref_user_id, cop_user_incident_mapping.ref_user_id as user_id
                  FROM cop_incident_details 
                  LEFT JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
                  LEFT JOIN cop_user_incident_temp_mapping ON cop_user_incident_temp_mapping.cop_incident_details_id = cop_incident_details.id
-	         LEFT JOIN cop_user_incident_mapping ON cop_user_incident_mapping.cop_incident_details_id = cop_incident_details.id
-                 GROUP BY cop_incident_details.id HAVING `distance` <= 5 and cop_incident_details.id not in 
-                 (select cop_incident_details_id from cop_user_incident_temp_mapping where ref_user_id = $copId))cid order by status ASC";
+             LEFT JOIN cop_user_incident_mapping ON cop_user_incident_mapping.cop_incident_details_id = cop_incident_details.id
+                 WHERE cop_incident_details.id in 
+                 (select cop_incident_details_id from cop_user_incident_temp_mapping where ref_user_id = $copId) GROUP BY cop_incident_details.id )cid 				 
+                 order by created_at desc";
                  
         $res = \DB::select($query);
 		
@@ -919,6 +927,14 @@ class ApiController extends Controller
         if($interventions->isEmpty()) $interventionDone = 0; 
         
         if(empty($res)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND), 'pending'=>$interventionDone],200);
+
+        if(!empty($res)){
+        	foreach ($res as $key => $value) 
+        	{
+        		$date = Carbon::parse($res[$key]->created_at)->format('d/m/y H:i:s');
+        		$res[$key]->created_at = $date;
+        	}
+        }
 
         return $this->sendResponseMessage(['status'=>true, 'data'=> $res, 'pending'=>$interventionDone],200);
 	}
@@ -1245,14 +1261,44 @@ class ApiController extends Controller
         $report = $pending.'/4';        
         $quotient = ceil(count($incidentData)/4); 
 //         $newReport = count(CopUserIncidentMapping::where(['ref_user_id'=>$userId, 'status'=>2])->orderBy('created_at', 'desc')->first());
+        
+        /*
         $query = "SELECT ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
                   cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.created_at, ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( latitude ) ) ) ) AS `distance`,
                   cop_incident_details.city, cop_incident_details.address, cop_user_incident_temp_mapping.ref_user_id
                   FROM cop_incident_details
                   LEFT JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
                   LEFT JOIN cop_user_incident_temp_mapping ON cop_user_incident_temp_mapping.cop_incident_details_id = cop_incident_details.id
-                  GROUP BY cop_incident_details.id HAVING `distance` <= 5 and cop_incident_details.status=1  ORDER BY status ASC";
-        
+                  GROUP BY cop_incident_details.id HAVING `distance` <= 5 and cop_incident_details.status=1
+				  union
+				SELECT ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
+								  cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.created_at, ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( latitude ) ) *
+				 cos( radians( longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( latitude ) ) ) ) AS `distance`,
+                  cop_incident_details.city, cop_incident_details.address, cop_user_incident_temp_mapping.ref_user_id
+                  FROM cop_incident_details
+                  LEFT JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
+                  LEFT JOIN cop_user_incident_temp_mapping ON cop_user_incident_temp_mapping.cop_incident_details_id = cop_incident_details.id
+                  GROUP BY cop_incident_details.id HAVING cop_user_incident_temp_mapping.ref_user_id = $userId ORDER BY status ASC";
+       */
+
+        $query = "SELECT ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
+                  cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.created_at, ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( latitude ) ) ) ) AS `distance`,
+                  cop_incident_details.city, cop_incident_details.address, cop_user_incident_temp_mapping.ref_user_id
+                  FROM cop_incident_details
+                  LEFT JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
+                  LEFT JOIN cop_user_incident_temp_mapping ON cop_user_incident_temp_mapping.cop_incident_details_id = cop_incident_details.id
+                  GROUP BY cop_incident_details.id HAVING `distance` <= 5 and cop_incident_details.status=1
+				  union
+				SELECT ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
+								  cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.created_at, ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( latitude ) ) *
+				 cos( radians( longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( latitude ) ) ) ) AS `distance`,
+                  cop_incident_details.city, cop_incident_details.address, cop_user_incident_temp_mapping.ref_user_id
+                  FROM cop_incident_details
+                  LEFT JOIN ref_incident_subcategory ON ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id
+                  LEFT JOIN cop_user_incident_temp_mapping ON cop_user_incident_temp_mapping.cop_incident_details_id = cop_incident_details.id
+                  GROUP BY cop_incident_details.id HAVING cop_user_incident_temp_mapping.ref_user_id = $userId and cop_incident_details.status=1 ORDER BY status ASC";
+       
+
         $res = \DB::select($query);
         $newReport = count($res);
         
@@ -1311,6 +1357,32 @@ class ApiController extends Controller
 		
 		
         else return $this->sendResponseMessage(['status'=>false], 200);
+    }
+	
+	/* Check User Freeze or Not */
+	
+	public function check_user_freeze(Request $request)
+    {
+        $payload = $this->get_payload($request);
+        if(isset($payload['status']) && $payload['status'] === false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> $payload['message']],200);
+        }
+        
+        $rules  = [
+            'user_id'=>'required',
+        ];
+        
+        $result = $this->validate_request($payload, $rules);
+        if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
+		
+		$userData = User::where(array('id' => $payload['user_id']))->get();
+        $status =$userData[0]->status;
+    
+        if($status) return $this->sendResponseMessage(['status'=>true, 'isfreeze'=>$status , 'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_FREEZED)], 200);
+		
+		
+        else return $this->sendResponseMessage(['status'=>false,'isfreeze'=>$status , 'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_FREEZED)], 200);
     }
 
 

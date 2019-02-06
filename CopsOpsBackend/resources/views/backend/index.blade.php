@@ -62,9 +62,9 @@
 			<!-- /.col -->
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">Home</a></li>
-					<li class="breadcrumb-item active">{{ trans('pages.controlCenter')
-						}}</li>
+					<li class="breadcrumb-item"><a href="#">{{ trans('pages.home')
+						}}</a></li>
+					<li class="breadcrumb-item active">{{ trans('pages.controlCenter')}}</li>
 
 					<input type="hidden" name="hidden_user_id"
 						value="{{ Auth::user()->user_id }}" />
@@ -88,7 +88,7 @@
 							</button>
 						</div>
 						<input class="form-control form-control-navbar" type="search"
-							placeholder="Porte" aria-label="Search" id="search_places">
+							placeholder="{{ trans('pages.PORTE')}}" aria-label="Search" id="search_places">
 
 					</div>
 
@@ -103,30 +103,30 @@
 						</select>
 						 -->
 						 <div class="dropdown">
-                         	<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Select
+                         	<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">{{ trans('pages.SELECT')}}
                           	<span class="caret"></span></button>
                           	<ul class="dropdown-menu dropdown-menu-form">
                             	<li>                            	
                         			<div class="round">
-                            			<input type="checkbox" id="checkbox_1" value="4"/> Citizen 
+                            			<input type="checkbox" id="checkbox_1" value="4"/>{{ trans('pages.Citizen')}}  
                             			<label for="checkbox_1"></label>
                           			</div>                            		
                             	</li> 
                             	<li>                            	
                         			<div class="round">
-                            			<input type="checkbox" id="checkbox_2" value="3"/> Operator
+                            			<input type="checkbox" id="checkbox_2" value="3"/>{{ trans('pages.usermgnt.operator')}}
                             			<label for="checkbox_2"></label>
                           			</div>                            		
                             	</li> 
                             	<li>                            	
                         			<div class="round">
-                            			<input type="checkbox" id="checkbox_3" value="Zone-of-Interest"/> Zone of Interest
+                            			<input type="checkbox" id="checkbox_3" value="Zone-of-Interest"/>{{ trans('pages.ZoneofInterest')}} 
                             			<label for="checkbox_3"></label>
                           			</div>                            		
                             	</li> 
                             	<li>                            	
                         			<div class="round">
-                            			<input type="checkbox" id="checkbox_4" value="Point-of-Interest"/> Point of Interest
+                            			<input type="checkbox" id="checkbox_4" value="Point-of-Interest"/>{{ trans('pages.PointofInterest')}} 
                             			<label for="checkbox_4"></label>
                           			</div>                            		
                             	</li>                            	
@@ -147,7 +147,7 @@
 				</form>
 				
 				<div>
-					<a href="javascript:void(0)"; class="btn btn-success btn-sm" id="save-map-activity">Save</a>
+					<a href="javascript:void(0)"; class="btn btn-success btn-sm" id="save-map-activity">{{ trans('pages.save')}} </a>
 <!-- 					<a href="javascript:void(0)"; class="btn btn-danger btn-sm" id="remove-map-activity">Remove</a> -->
 				</div>
 			</div>
@@ -172,14 +172,15 @@
 							<input type="hidden" name="hidden_lng" />
 							<thead>
 								<tr>
-									<th>Date/ Time</th>
-									<th>Address</th>
-									<th>Reporter</th>
-									<th>First/Last Name</th>
-									<th>Subject</th>
+									<th>{{ trans('pages.datatime')}}</th>
+									<th>{{ trans('pages.usermgnt.address')}}</th>
+									<th>{{ trans('pages.Reporter')}}</th>
+									<th>{{ trans('pages.usermgnt.tables.firstname')}} / {{
+										trans('pages.usermgnt.tables.lastname')}}</th>
+									<th>{{ trans('pages.Subject')}}</th>
 									<th>Description</th>
-									<th>Other Description</th>
-									<th>Status</th>
+									<th>{{ trans('pages.other')}} Descriptions</th>
+									<th>{{ trans('pages.archive.status')}}</th>
 								</tr>
 							</thead>
 							<tbody></tbody>
