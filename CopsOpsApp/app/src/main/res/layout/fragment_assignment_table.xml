@@ -80,7 +80,7 @@
             android:layout_weight=".32"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="State"
+            android:text="@string/state"
             android:textSize="@dimen/textsize_18sp"
             android:textColor="@color/white"
             android:layout_marginLeft="5dp"

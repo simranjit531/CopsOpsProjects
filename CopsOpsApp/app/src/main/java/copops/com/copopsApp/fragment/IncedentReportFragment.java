@@ -14,15 +14,26 @@ import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 
 
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
+import copops.com.copopsApp.pojo.IncdentSetPojo;
 import copops.com.copopsApp.pojo.IncedentAcceptResponse;
+import copops.com.copopsApp.pojo.OperatorShowAlInfo;
+import copops.com.copopsApp.services.ApiUtils;
+import copops.com.copopsApp.services.Service;
 import copops.com.copopsApp.utils.AppSession;
+import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.Utils;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -108,6 +119,20 @@ public class IncedentReportFragment extends Fragment implements View.OnClickList
                         Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
                     }else{
                         Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
+
+                        if (Utils.checkConnection(getActivity())) {
+                            IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                            incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                            incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+                            incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+                            incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                            incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+                            Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                            RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                            getCopeStatus(mFile);
+                        } else {
+                            Utils.showAlert( getActivity().getString(R.string.internet_conection), getActivity());
+                        }
                     }
                  //   if(mAppSession.getData("userType").equalsIgnoreCase("userType")){
                    // Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
@@ -135,5 +160,49 @@ public class IncedentReportFragment extends Fragment implements View.OnClickList
         }
 
 
+    }
+
+
+    private void getCopeStatus(RequestBody Data) {
+
+        //   progressDialog.show();
+        Service operator = ApiUtils.getAPIService();
+        Call<OperatorShowAlInfo> getallLatLong = operator.getOperotor(Data);
+        getallLatLong.enqueue(new Callback<OperatorShowAlInfo>() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onResponse(Call<OperatorShowAlInfo> call, Response<OperatorShowAlInfo> response)
+
+            {
+                try {
+                    if (response.body() != null) {
+                        OperatorShowAlInfo operatorShowAlInfo = response.body();
+
+                        if (operatorShowAlInfo.getStatus().equals("false")) {
+                            //  Utils.showAlert(registrationResponse.getMessage(), getActivity());
+                        } else {
+
+
+                            String new_reports =operatorShowAlInfo.getNew_reports();
+                            mAppSession.saveData("new_reports",new_reports);
+
+
+
+                        }
+
+                    }} catch (Exception e) {
+
+                    e.getMessage();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OperatorShowAlInfo> call, Throwable t) {
+                Log.d("TAG", "Error " + t.getMessage());
+
+
+            }
+        });
     }
 }

@@ -9,10 +9,10 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.3.0'
       //  classpath 'com.android.tools.build:gradle:3.0.0'
-        classpath 'com.google.gms:google-services:4.1.0'
-        classpath 'com.jakewharton:butterknife-gradle-plugin:9.0.0-rc3'
+        classpath 'com.google.gms:google-services:4.2.0'
+        classpath 'com.jakewharton:butterknife-gradle-plugin:10.0.0'
 
         
 
@@ -28,7 +28,7 @@ allprojects {
         maven {
             url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
         }
-
+        mavenCentral()
         maven {
             url "https://maven.google.com"
         }

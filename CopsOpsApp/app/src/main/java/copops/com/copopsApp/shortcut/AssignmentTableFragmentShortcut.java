@@ -103,6 +103,7 @@ public class AssignmentTableFragmentShortcut extends Fragment implements View.On
             incdentSetPojo.setUser_id(mAppSession.getData("id"));
             incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
             incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+            incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
             //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
             Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
             RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
@@ -119,6 +120,7 @@ public class AssignmentTableFragmentShortcut extends Fragment implements View.On
                     incdentSetPojo.setUser_id(mAppSession.getData("id"));
                     incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
                     incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                    incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
                     //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
                     Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                     RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));

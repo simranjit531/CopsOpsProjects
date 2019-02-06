@@ -259,7 +259,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight=".50"
                     android:background="@drawable/edittext_lower_background"
-                    android:hint="@string/email"
+                    android:hint="@string/Email_hint"
                     android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
                     android:textColor="@color/black"
@@ -378,7 +378,8 @@
                         android:id="@+id/IV_IDcardcoud"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginRight="20dp"
+
                         android:layout_toLeftOf="@+id/IV_IDcardcamera"
                         android:src="@mipmap/img_cloud" />
 
@@ -418,7 +419,7 @@
                         android:id="@+id/IV_IDcardvideocoud"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginRight="22dp"
                         android:layout_toLeftOf="@+id/IV_IDcardvideocamera"
                         android:src="@mipmap/img_cloud" />
 
@@ -504,7 +505,7 @@
                         android:id="@+id/IV_businesscardcoud"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginRight="20dp"
                         android:layout_toLeftOf="@+id/IV_businesscardcamera"
                         android:src="@mipmap/img_cloud" />
 
@@ -544,7 +545,7 @@
                         android:id="@+id/IV_businesscardvideocoud"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginRight="22dp"
                         android:layout_toLeftOf="@+id/IV_businesscardvideocamera"
                         android:src="@mipmap/img_cloud" />
 

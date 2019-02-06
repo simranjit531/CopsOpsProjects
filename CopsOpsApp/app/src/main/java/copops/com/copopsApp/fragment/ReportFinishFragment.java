@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 
-
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,12 +38,13 @@ public class ReportFinishFragment extends Fragment implements View.OnClickListen
     @BindView(R.id.barId)
     ImageView barId;
 
-AppSession mAppSession;
+    AppSession mAppSession;
     IncedentAcceptResponse incedentAcceptResponse;
+
     public ReportFinishFragment(IncedentAcceptResponse incedentAcceptResponse) {
         // Required empty public constructor
 
-        this.incedentAcceptResponse=incedentAcceptResponse;
+        this.incedentAcceptResponse = incedentAcceptResponse;
     }
 
 
@@ -53,10 +53,10 @@ AppSession mAppSession;
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        View view= inflater.inflate(R.layout.fragment_report_finish, container, false);
+        View view = inflater.inflate(R.layout.fragment_report_finish, container, false);
 
-      //  mAppSession=mAppSession.getInstance(getActivity());
-        ButterKnife.bind(this,view);
+        //  mAppSession=mAppSession.getInstance(getActivity());
+        ButterKnife.bind(this, view);
         initView();
         return view;
     }
@@ -64,11 +64,12 @@ AppSession mAppSession;
 
     private void initView() {
 
-        mAppSession=mAppSession.getInstance(getActivity());
-        Log.e("incedentAcceptResponse",""+incedentAcceptResponse);
-        if(incedentAcceptResponse.getReference()!=null) {
+        mAppSession = mAppSession.getInstance(getActivity());
+        Log.e("incedentAcceptResponse", "" + incedentAcceptResponse);
+        if (incedentAcceptResponse.getReference() != null) {
             TVreferencenumber.setText(incedentAcceptResponse.getReference());
-        } if(incedentAcceptResponse.getQrcode_url()!=null){
+        }
+        if (incedentAcceptResponse.getQrcode_url() != null) {
             //  Glide.with(this).load(incedentAcceptResponse.getQrcode_url()).into(barId);
 
 
@@ -94,7 +95,7 @@ AppSession mAppSession;
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.RLfinish:
 
                 Utils.fragmentCall(new OperatorFragment(), getFragmentManager());

@@ -42,7 +42,10 @@ public class PushBroadcastReceiver {
             notifManager = (NotificationManager) context.getSystemService
                     (Context.NOTIFICATION_SERVICE);
         }
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try{
             NotificationCompat.Builder builder;
             Intent intent = new Intent(context, DialogsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -73,27 +76,33 @@ public class PushBroadcastReceiver {
                             (RingtoneManager.TYPE_NOTIFICATION));
             Notification notification = builder.build();
             notifManager.notify(0, notification);
+        }catch (Exception e){
+                e.printStackTrace();
+            }
         } else {
+            try {
+                Intent intent = new Intent(context, DialogsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                PendingIntent pendingIntent = null;
 
-            Intent intent = new Intent(context, DialogsActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent pendingIntent = null;
+                pendingIntent = PendingIntent.getActivity(context, 1251, intent, PendingIntent.FLAG_ONE_SHOT);
 
-            pendingIntent = PendingIntent.getActivity(context, 1251, intent, PendingIntent.FLAG_ONE_SHOT);
+                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
+                        .setContentTitle(title)
+                        .setContentText(description)
+                        .setAutoCancel(true)
+                        .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                        .setSound(defaultSoundUri)
+                        .setSmallIcon(getNotificationIcon())
+                        .setContentIntent(pendingIntent)
+                        .setStyle(new NotificationCompat.BigTextStyle().setBigContentTitle(title).bigText(description));
 
-            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
-                    .setContentTitle(title)
-                    .setContentText(description)
-                    .setAutoCancel(true)
-                    .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                    .setSound(defaultSoundUri)
-                    .setSmallIcon(getNotificationIcon())
-                    .setContentIntent(pendingIntent)
-                    .setStyle(new NotificationCompat.BigTextStyle().setBigContentTitle(title).bigText(description));
-
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(1251, notificationBuilder.build());
+                NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(1251, notificationBuilder.build());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 

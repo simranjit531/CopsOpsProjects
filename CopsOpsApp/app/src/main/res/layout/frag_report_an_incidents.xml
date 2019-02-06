@@ -28,7 +28,7 @@
         android:layout_below="@+id/RLprofileimage"
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
-        android:text="@string/report_an_incident"
+        android:text="@string/report_an_incident_bottom_text"
         android:textColor="@color/aluminiumcolor"
         android:textSize="@dimen/textsize_18sp" />
 

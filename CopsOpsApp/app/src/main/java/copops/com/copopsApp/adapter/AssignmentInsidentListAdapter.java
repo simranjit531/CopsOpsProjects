@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -44,13 +45,12 @@ public class AssignmentInsidentListAdapter extends RecyclerView.Adapter<Assignme
 
         if (assignmentListPojo.getData().get(i).getIsAssigned().equalsIgnoreCase("wait")) {
             viewHolder.stateId.setText(R.string.onwait);
-
-            viewHolder.stateId.setTextColor(context.getResources().getColor(R.color.black));
+            viewHolder.stateId.setTextColor(context.getResources().getColor(R.color.orange));
         } else if (assignmentListPojo.getData().get(i).getIsAssigned().equalsIgnoreCase("pending")) {
             viewHolder.stateId.setText(R.string.pending);
             viewHolder.stateId.setTextColor(context.getResources().getColor(R.color.btntextcolort));
         } else if(assignmentListPojo.getData().get(i).getIsAssigned().equalsIgnoreCase("finished")) {
-            viewHolder.stateId.setTextColor(context.getResources().getColor(R.color.black));
+            viewHolder.stateId.setTextColor(context.getResources().getColor(R.color.green));
             viewHolder.stateId.setText(R.string.finished);
         } else {
             viewHolder.stateId.setTextColor(context.getResources().getColor(R.color.black));
@@ -58,7 +58,14 @@ public class AssignmentInsidentListAdapter extends RecyclerView.Adapter<Assignme
         }
 
 
-        viewHolder.stateId.setOnClickListener(new View.OnClickListener() {
+      /*  viewHolder.stateId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mIncedentInterface.clickPosition(i);
+            }
+        });*/
+
+        viewHolder.Ivarrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mIncedentInterface.clickPosition(i);
@@ -73,6 +80,7 @@ public class AssignmentInsidentListAdapter extends RecyclerView.Adapter<Assignme
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView dateTv, objectId, stateId;
+        private ImageView Ivarrow;
 
 
         public ViewHolder(View view) {
@@ -80,6 +88,7 @@ public class AssignmentInsidentListAdapter extends RecyclerView.Adapter<Assignme
             dateTv = (TextView) view.findViewById(R.id.dateTv);
             objectId = (TextView) view.findViewById(R.id.objectId);
             stateId = (TextView) view.findViewById(R.id.stateId);
+            Ivarrow = (ImageView) view.findViewById(R.id.Ivarrow);
         }
     }
 

@@ -110,6 +110,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     LocationManager mLocationManager;
     private boolean isNetworkEnabled;
     private boolean isGpsEnabled;
+
     public LoginFragment(String userType) {
 
         this.userType = userType;
@@ -126,11 +127,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         mContext = getActivity();
         mAppSession = mAppSession.getInstance(mContext);
         gps = new GPSTracker(getActivity());
-        latitude=gps.getLatitude();
-        longitude=gps.getLongitude();
+        latitude = gps.getLatitude();
+        longitude = gps.getLongitude();
 
-        mAppSession.saveData("latitude",String.valueOf(latitude));
-        mAppSession.saveData("longitude",String.valueOf(longitude));
+        mAppSession.saveData("latitude", String.valueOf(latitude));
+        mAppSession.saveData("longitude", String.valueOf(longitude));
         progressDialog = new ProgressDialog(mContext);
         progressDialog.setMessage("loading...");
 
@@ -139,11 +140,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         if (userType.equalsIgnoreCase("citizen")) {
             userTypeRegistation = "Citizen";
-            mAppSession.saveData("type",userTypeRegistation);
+            mAppSession.saveData("type", userTypeRegistation);
 
         } else {
             userTypeRegistation = "Cops";
-            mAppSession.saveData("type",userTypeRegistation);
+            mAppSession.saveData("type", userTypeRegistation);
         }
 //
 //        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -156,9 +157,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 //                        10, mLocationListener);
 //            }
 //        }
-    //    progressDialog.show();
+        //    progressDialog.show();
 
-        if(mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
+        if (mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
             Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
 
             mAppSession.saveData("fcm_token", FirebaseInstanceId.getInstance().getToken());
@@ -171,7 +172,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         rLlogin.setOnClickListener(this);
         Tvregister.setOnClickListener(this);
         tvFargatPass.setOnClickListener(this);
-     //   etEmail.setCursorVisible(false);
+        //   etEmail.setCursorVisible(false);
 
         etEmail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,6 +201,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 loginPojoSetData.setDevice_id(Utils.getDeviceId(mContext));
                 loginPojoSetData.setIncident_lat(mAppSession.getData("latitude"));
                 loginPojoSetData.setIncident_lng(mAppSession.getData("longitude"));
+                loginPojoSetData.setdevice_language(mAppSession.getData("devicelanguage"));
 
                 loginPojoSetData.setFcm_token(mAppSession.getData("fcm_token"));
                 Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(loginPojoSetData)));
@@ -219,7 +221,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
                                 } else {
 
-                                    if(userType.equalsIgnoreCase("Citizen")) {
+                                    if (userType.equalsIgnoreCase("Citizen")) {
                                         if (registrationResponse.getVerified().equals("0")) {
 
                                             Utils.fragmentCall(new AuthenticateCodeFragment(userType, registrationResponse), getFragmentManager());
@@ -234,16 +236,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                             mAppSession.saveData("grade", registrationResponse.getGrade());
                                             Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
 
-                                            mAppSession.saveData("freez","1");
+                                            mAppSession.saveData("freez", "1");
 //                                            if (userType.equalsIgnoreCase("Citizen")) {
 //                                                Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
 //                                            } else {
 //                                                Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
 //                                            }
                                         }
-                                        getActivity().startService(new Intent(getActivity(),TrackingServices.class));
-                                    }else{
-                                        mAppSession.saveData("freez","1");
+                                        getActivity().startService(new Intent(getActivity(), TrackingServices.class));
+                                    } else {
+                                        mAppSession.saveData("freez", "1");
                                         mAppSession.saveData("Login", "1");
                                         mAppSession.saveData("id", registrationResponse.getId());
                                         mAppSession.saveData("name", registrationResponse.getUsername());
@@ -254,7 +256,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                         mAppSession.saveData("grade", registrationResponse.getGrade());
 
 
-                                        getActivity().startService(new Intent(getActivity(),TrackingServices.class));
+                                        getActivity().startService(new Intent(getActivity(), TrackingServices.class));
 
 
 //                                        Intent alarm = new Intent(getActivity(), BackgroundBroadCast.class);
@@ -264,7 +266,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                 }
                                 progressDialog.dismiss();
 
-                            }else{
+                            } else {
                                 Utils.showAlert(response.message(), mContext);
                             }
 
@@ -281,7 +283,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         progressDialog.dismiss();
                     }
                 });
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 Utils.showAlert(e.getMessage(), mContext);
             }
@@ -315,27 +317,26 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
 
-
-
-
     private void buildUsersList() {
 
-       ProgressDialogFragment.show(getActivity().getSupportFragmentManager());
+        ProgressDialogFragment.show(getActivity().getSupportFragmentManager());
         List<String> tags = new ArrayList<>();
         tags.add(App.getSampleConfigs().getUsersTag());
 
         QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
             @Override
             public void onSuccess(ArrayList<QBUser> result, Bundle params) {
-                ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
+          //      ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
                 list = result;
-                String aaa= mAppSession.getData("user_id");
+                String aaa = mAppSession.getData("user_id");
                 for (int i = 0; i < list.size(); i++) {
                     if (list.get(i).getLogin().equalsIgnoreCase(mAppSession.getData("user_id"))) {
                         QBUser user = list.get(i);
                         user.setPassword(App.getSampleConfigs().getUsersPassword());
                         //user.setPassword(mAppSession.getData("user_id"));
                         login(user);
+
+
                         break;
                     }
                 }
@@ -349,7 +350,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private void login(final QBUser user) {
-       ProgressDialogFragment.show(getActivity().getSupportFragmentManager(), R.string.dlg_login);
+        ProgressDialogFragment.show(getActivity().getSupportFragmentManager(), R.string.dlg_login);
         ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle bundle) {
@@ -357,12 +358,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
                 currentUser = ChatHelper.getCurrentUser();
 
-
+                Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
                 incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
 
 
                 incomingMessagesManager.addDialogMessageListener(new AllDialogsMessageListener());
-                Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
+
             }
 
             @Override
@@ -371,7 +372,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
-
 
 
     private class AllDialogsMessageListener extends QbChatDialogMessageListenerImp {
@@ -383,8 +383,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             Log.d("RanjanCheck", "processMessage");
 
 
-            QBUser user=null;
-            int sender= qbChatMessage.getSenderId();
+            QBUser user = null;
+            int sender = qbChatMessage.getSenderId();
 //            for (int i = 0; i < list.size(); i++) {
 //                if (list.get(i).getId().equals(sender)) {
 //                    user = list.get(i);
@@ -393,24 +393,22 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 //                }
 //            }
 
-            loadUpdatedDialog(qbChatMessage.getDialogId(),qbChatMessage);
+            loadUpdatedDialog(qbChatMessage.getDialogId(), qbChatMessage);
 
 
-          //  PushBroadcastReceiver.displayCustomNotificationForOrders(user.getFullName(), " "+qbChatMessage.getBody(), getActivity());
-         //   PushBroadcastReceiver.displayCustomNotificationForOrders("COPOPS", " "+qbChatMessage.getBody(), getActivity());
+            //  PushBroadcastReceiver.displayCustomNotificationForOrders(user.getFullName(), " "+qbChatMessage.getBody(), getActivity());
+            //   PushBroadcastReceiver.displayCustomNotificationForOrders("COPOPS", " "+qbChatMessage.getBody(), getActivity());
         }
     }
 
 
-
-
-    private void loadUpdatedDialog(String dialogId,QBChatMessage qbChatMessage) {
+    private void loadUpdatedDialog(String dialogId, QBChatMessage qbChatMessage) {
         ChatHelper.getInstance().getDialogById(dialogId, new QbEntityCallbackImpl<QBChatDialog>() {
             @Override
             public void onSuccess(QBChatDialog result, Bundle bundle) {
                 //   isProcessingResultInProgress = false;
                 QbDialogHolder.getInstance().addDialog(result);
-                int count= getUnreadMsgCount(result);
+                int count = getUnreadMsgCount(result);
 
 
                 if (count == 0) {
@@ -421,14 +419,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 }
 
 
-                if (qbChatMessage.getAttachments().size()==0) {
+                if (qbChatMessage.getAttachments().size() == 0) {
                     PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + " message)", getActivity());
 
-                } else{
+                } else {
                     PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
 
                 }
-              //  PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " "+qbChatMessage.getBody()+"  "+"("+count+" message)", getActivity());
+                //  PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " "+qbChatMessage.getBody()+"  "+"("+count+" message)", getActivity());
 
             }
 
@@ -441,7 +439,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    public int getUnreadMsgCount(QBChatDialog chatDialog){
+    public int getUnreadMsgCount(QBChatDialog chatDialog) {
         Integer unreadMessageCount = chatDialog.getUnreadMessageCount();
         if (unreadMessageCount == null) {
             return 0;
@@ -451,8 +449,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
 
-
-
     ////Manish
     private final android.location.LocationListener mLocationListener = new android.location.LocationListener() {
 
@@ -460,11 +456,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         public void onLocationChanged(final Location location) {
             if (location != null) {
                 // mCurrentLocation = location;
-                latitude=location.getLatitude();
-                longitude=location.getLongitude();
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
 
-                mAppSession.saveData("latitude",String.valueOf(latitude));
-                mAppSession.saveData("longitude",String.valueOf(longitude));
+                mAppSession.saveData("latitude", String.valueOf(latitude));
+                mAppSession.saveData("longitude", String.valueOf(longitude));
 
                 progressDialog.dismiss();
                 //  initMapFragment();

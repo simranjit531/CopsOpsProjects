@@ -50,7 +50,7 @@ android {
 
 repositories {
 
-    mavenCentral()
+
     google()
     flatDir {
         dirs 'libs'
@@ -58,6 +58,7 @@ repositories {
     maven {
         url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
     }
+    mavenCentral()
 //    maven { url 'https://maven.fabric.io/public' }
 }
 
@@ -98,13 +99,12 @@ dependencies {
     implementation 'com.timehop.stickyheadersrecyclerview:library:0.4.2@aar'
     implementation 'com.github.orangegangsters:swipy:1.2.3'
     implementation 'com.google.guava:guava:25.0-android'
-    implementation 'com.jakewharton:butterknife:9.0.0-rc3'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-rc3'
     implementation 'com.google.firebase:firebase-core:16.0.5'
     implementation 'com.squareup.okhttp3:okhttp:3.9.0'
     implementation 'com.google.firebase:firebase-messaging:16.0.0'
     implementation 'com.android.support:appcompat-v7:28.0.0-alpha1'
-
+    implementation 'com.jakewharton:butterknife:10.0.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
 
 }
 

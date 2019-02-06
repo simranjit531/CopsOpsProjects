@@ -179,7 +179,7 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
         if (ETobjects.getText().toString().trim().equalsIgnoreCase("")) {
             Utils.showAlert(getActivity().getString(R.string.objecttext), getActivity());
         } else if (ETotherinfoincident.getText().toString().trim().equalsIgnoreCase("")) {
-            Utils.showAlert(getActivity().getString(R.string.des), getActivity());
+            Utils.showAlert(getActivity().getString(R.string.objecttextdes), getActivity());
         }/*else if (filePathImage == null && filePathVideo == null) {
             Utils.showAlert(getActivity().getString(R.string.path), getActivity());
         }*/ else {
@@ -193,6 +193,7 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
                 mIncdentSetPojo.setHandrail_lat(String.valueOf(latitude));
                 mIncdentSetPojo.setHandrail_lng(String.valueOf(longitude));
                 mIncdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+                mIncdentSetPojo.setdevice_language(Utils.getDeviceId(getActivity()));
 
 
                 if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {

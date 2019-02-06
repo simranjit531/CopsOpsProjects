@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class IncidentSetPojo implements Serializable {
 
     String incident_id;
+    String device_language;
 
     public String getIncident_id() {
         return incident_id;
@@ -23,4 +24,12 @@ public class IncidentSetPojo implements Serializable {
     }
 
     String device_id;
+
+    public void setdevice_language(String device_language) {
+        this.device_language = device_language;
+    }
+
+    public String getdevice_language() {
+        return device_language;
+    }
 }

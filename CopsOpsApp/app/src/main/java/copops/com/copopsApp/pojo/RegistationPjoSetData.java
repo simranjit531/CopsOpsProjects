@@ -16,6 +16,7 @@ public class RegistationPjoSetData implements Serializable {
     String user_password;
     String reg_latitude;
     String reg_longitude;
+    String device_language;
 
     public String getFcm_token() {
         return fcm_token;
@@ -129,6 +130,13 @@ public class RegistationPjoSetData implements Serializable {
     }
 
 
+    public String getdevice_language() {
+        return device_language;
+    }
+
+    public void setdevice_language(String device_language) {
+        this.device_language = device_language;
+    }
 
 //    'gender':'Male',
 //            'first_name:'kailash',

@@ -95,13 +95,12 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
         progressDialog.setMessage(getString(R.string.loading));
 
 
-
-
         if (Utils.checkConnection(getActivity())) {
             IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
             incdentSetPojo.setUser_id(mAppSession.getData("id"));
             incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
             incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+            incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
             //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
             Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
             RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
@@ -118,6 +117,7 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
                     incdentSetPojo.setUser_id(mAppSession.getData("id"));
                     incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
                     incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                    incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
                     //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
                     Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                     RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
@@ -137,9 +137,6 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
     }
 
 
-
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -157,17 +154,29 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
     @Override
     public void clickPosition(int pos) {
 
+        Log.e("getIsAssigned==", "" + assignmentListPojo.getData().get(pos).getIsAssigned());
+        Log.e("status==", "" + assignmentListPojo.getData().get(pos).getStatus());
+        Log.e("getCreated_at==", "" + assignmentListPojo.getData().get(pos).getCreated_at());
+        Log.e("getCreated_by==", "" + assignmentListPojo.getData().get(pos).getCreated_by());
+
         if (assignmentListPojo.getData().get(pos).getIsAssigned().equalsIgnoreCase("wait")) {
 
-            if(assignmentListPojo.getPending().equals("1")){
+            if (assignmentListPojo.getPending().equals("1")) {
                 Utils.showAlert(getActivity().getString(R.string.intervin), getActivity());
-            }else {
+            } else {
                 Utils.fragmentCall(new AssignedInterventionFragment(pos, assignmentListPojo), getFragmentManager());
             }
-        }else if (assignmentListPojo.getData().get(pos).getIsAssigned().equalsIgnoreCase("pending")) {
+        } else if (assignmentListPojo.getData().get(pos).getIsAssigned().equalsIgnoreCase("pending")) {
 
+            String sadada =  mAppSession.getData("id");
 
-            rejectcustomdialog(getActivity(),pos);
+            if(assignmentListPojo.getData().get(pos).getUser_id().equalsIgnoreCase(mAppSession.getData("id"))) {
+                //   rejectcustomdialog(getActivity(), pos);
+             // String sadada =  mAppSession.getData("user_id");
+                Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo, pos), getFragmentManager());
+            }else{
+                Utils.fragmentCall(new AssignedInterventionFragment(pos, assignmentListPojo), getFragmentManager());
+            }
 
 
 //            if (Utils.checkConnection(getActivity())) {
@@ -181,10 +190,10 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
 //            } else {
 //                Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
 //            }
-        }else if (assignmentListPojo.getData().get(pos).getIsAssigned().equalsIgnoreCase("Finished ")) {
+        } else if (assignmentListPojo.getData().get(pos).getIsAssigned().equalsIgnoreCase("Finished ")) {
             Utils.fragmentCall(new AssignedInterventionFragment(pos, assignmentListPojo), getFragmentManager());
-        }else if (assignmentListPojo.getData().get(pos).getIsAssigned().equalsIgnoreCase("Assigned ")) {
-          //  Utils.fragmentCall(new AssignedInterventionFragment(pos, assignmentListPojo), getFragmentManager());
+        } else if (assignmentListPojo.getData().get(pos).getIsAssigned().equalsIgnoreCase("Assigned ")) {
+            //  Utils.fragmentCall(new AssignedInterventionFragment(pos, assignmentListPojo), getFragmentManager());
         }
     }
 
@@ -228,7 +237,6 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
     }
 
 
-
     private void getAssigmentListFirst(RequestBody Data) {
         //  progressDialog.show();
         Service login = ApiUtils.getAPIService();
@@ -240,12 +248,12 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
             {
                 try {
                     if (response.body() != null) {
-                         assignmentListPojo = response.body();
+                        assignmentListPojo = response.body();
 
                         if (assignmentListPojo.getStatus().equalsIgnoreCase("false")) {
                             Utils.showAlert(getString(R.string.NoAssigned), getActivity());
 
-                        } else{
+                        } else {
                             mAdapter = new AssignmentInsidentListAdapter(getActivity(), assignmentListPojo, mIncedentInterface);
                             lvtableofassignments.setHasFixedSize(true);
                             lvtableofassignments.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -273,7 +281,7 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
         });
     }
 
-    public  void rejectcustomdialog(Context mContext,int pos) {
+    public void rejectcustomdialog(Context mContext, int pos) {
 
         final Dialog dialog = new Dialog(mContext, R.style.DialogFragmentTheme);
         dialog.setContentView(R.layout.rejectdilog);
@@ -284,14 +292,14 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
 
         TextView acceptId = (TextView) dialog.findViewById(R.id.acceptId);
         TextView rejectId = (TextView) dialog.findViewById(R.id.rejectId);
-     //   TextView TVcustomdescriptiontext = (TextView) dialog.findViewById(R.id.TVcustomdescriptiontext);
-      //  TVcustomdescriptiontext.setText(text);
+        //   TextView TVcustomdescriptiontext = (TextView) dialog.findViewById(R.id.TVcustomdescriptiontext);
+        //  TVcustomdescriptiontext.setText(text);
 
         acceptId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo,pos), getFragmentManager());
+                Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo, pos), getFragmentManager());
             }
         });
 
@@ -302,6 +310,7 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
                     IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
                     incdentSetPojo.setUser_id(mAppSession.getData("id"));
                     incdentSetPojo.setIncident_id(assignmentListPojo.getData().get(pos).getId());
+                    incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
 
                     //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
                     Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
@@ -310,7 +319,7 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
                 } else {
                     Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
                 }
-            //    rejected();
+                //    rejected();
                 dialog.dismiss();
             }
         });
@@ -319,9 +328,8 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
     }
 
 
-
-  //  user_id,incident_id key
- //   http://13.233.74.84/api/auth/incident/rejected
+    //  user_id,incident_id key
+    //   http://13.233.74.84/api/auth/incident/rejected
     private void rejected(RequestBody Data) {
         try {
             progressDialog.show();
@@ -335,7 +343,7 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
                 {
                     try {
                         if (response.body() != null) {
-                            CommanStatusPojo  mCommanStatusPojo= response.body();
+                            CommanStatusPojo mCommanStatusPojo = response.body();
                             if (mCommanStatusPojo.getStatus().equals("false")) {
                                 Utils.showAlert(mCommanStatusPojo.getMessage(), getActivity());
                             } else {
@@ -345,6 +353,7 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
                                     incdentSetPojo.setUser_id(mAppSession.getData("id"));
                                     incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
                                     incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                                    incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
                                     //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
                                     Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                                     RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
@@ -353,7 +362,7 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
                                     Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
                                 }
 
-                              //  Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close,pos), getFragmentManager());
+                                //  Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close,pos), getFragmentManager());
                             }
                             progressDialog.dismiss();
 

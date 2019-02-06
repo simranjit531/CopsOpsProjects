@@ -26,6 +26,8 @@
     <string name="password">Please enter password</string>
     <string name="path">Please capture at least video or image</string>
     <string name="objecttext">Please enter the subject of the handrail reports</string>
+    <string name="objecttextdes">Please enter the Description.  </string>
+    <string name="incidentdes">Please enter the Description.  </string>
     <string name="validation_signature">Please Create Your Signature.</string>
 
     <string name="con_password">Please enter confirm password</string>
@@ -43,7 +45,6 @@
     <string name="no_find">No Record found</string>
 
 
-
     <!--  Custom Dialog Screen -->
     <string name="accept">Accept</string>
     <string name="yes">YES</string>
@@ -56,8 +57,7 @@
     <string name="logout_message">Are You Sure You Want to Logout ? </string>
     <string name="loading_msg">Please Wait... </string>
     <string name="compress_msg">Please Wait Your video is Processing... </string>
-   <string name="next">Next</string>
-
+    <string name="next">Next</string>
 
 
     <!-- Navigation screen -->
@@ -181,13 +181,12 @@ of the application.
 The Operator account is intended
 in the force of order. </string>
     <string name="citizen">Citizen</string>
+    <string name="citizen_top">Citizen</string>
     <string name="cops">COPS</string>
     <string name="validation_msg">The creation of the operator account
 must be validated</string>
     <string name="Copops">COP-OPS</string>
     <string name="burglary">Burglary</string>
-
-
 
 
     <!--  Loging Screen -->
@@ -239,9 +238,11 @@ the code sent to </string>
     <string name="progress_propert">06 Reports</string>
     <string name="navigation">Navigation</string>
     <string name="report_an_incident">Report an incident</string>
+    <string name="report_an_incident_bottom_text">Report an incident</string>
     <string name="PositionofInterventions">Position of Interventions</string>
     <string name="search"> Search</string>
     <string name="available">Available</string>
+    <string name="not_available">Not Available</string>
     <string name="messaging">Messaging</string>
     <string name="Assignedintervention">Assigned intervention</string>
     <string name="notavailable">Not Available</string>
@@ -260,6 +261,7 @@ the code sent to </string>
     <string name="NoAssigned"> No Assigned Intervention Found  so We can’t have access to the assigning an intervention</string>
     <string name="pleaseenterotp">Please enter otp</string>
     <string name="chooseanOption"> Choose an Option</string>
+    <string name="report"> Report</string>
     <string name="reports"> Reports</string>
     <string name="Locationisnotavailablenow"> Location is not available now</string>
     <string name="Signalements"> Signalements</string>

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
@@ -60,7 +61,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         ButterKnife.bind(this, view);
 
 
-
+        FirebaseApp.initializeApp(getContext());
         mAppSession=mAppSession.getInstance(getActivity());
         onClick();
 
@@ -71,6 +72,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
             LoginPojoSetData mLoginPojoSetData = new LoginPojoSetData();
             mLoginPojoSetData.setUser_id(mAppSession.getData("id"));
+            mLoginPojoSetData.setdevice_language(mAppSession.getData("devicelanguage"));
             Log.e("taackingdata", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
             RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
 
@@ -78,7 +80,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
             //freeze()
 
         }
-        Log.d("Firebase", "token "+ FirebaseInstanceId.getInstance().getToken());
+       // Log.d("Firebase", "token "+ FirebaseInstanceId.getInstance().getToken());
 
         mAppSession.saveData("fcm_token",FirebaseInstanceId.getInstance().getToken());
         return view;

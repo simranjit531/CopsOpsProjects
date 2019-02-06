@@ -24,6 +24,7 @@ import copops.com.copopsApp.R;
 import copops.com.copopsApp.adapter.IncidentTypeAdapter;
 import copops.com.copopsApp.interfaceview.IncedentInterface;
 import copops.com.copopsApp.pojo.IncidentTypePojo;
+import copops.com.copopsApp.pojo.LoginPojoSetData;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
 import copops.com.copopsApp.utils.AppSession;
@@ -39,7 +40,7 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 @SuppressLint("ValidFragment")
-public class IncidentFragment extends Fragment implements View.OnClickListener,IncedentInterface {
+public class IncidentFragment extends Fragment implements View.OnClickListener, IncedentInterface {
 
     @BindView(R.id.mRecyclerview)
     RecyclerView mRecyclerview;
@@ -54,8 +55,9 @@ public class IncidentFragment extends Fragment implements View.OnClickListener,I
     IncidentTypePojo incidentTypeResponse;
     String userId;
     AppSession mAppSession;
+
     public IncidentFragment(String userId) {
-   this.userId=userId;
+        this.userId = userId;
     }
 
 
@@ -65,8 +67,8 @@ public class IncidentFragment extends Fragment implements View.OnClickListener,I
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.frag_report_an_incidents, container, false);
         ButterKnife.bind(this, view);
-        mIncedentInterface=this;
-        mAppSession= mAppSession.getInstance(getActivity());
+        mIncedentInterface = this;
+        mAppSession = mAppSession.getInstance(getActivity());
         onClick();
 
         mContext = getActivity();
@@ -82,14 +84,19 @@ public class IncidentFragment extends Fragment implements View.OnClickListener,I
     public void getIncidentType() {
         try {
 
-
+            LoginPojoSetData mLoginPojoSetData = new LoginPojoSetData();
             progressDialog = new ProgressDialog(mContext);
             progressDialog.setMessage(getActivity().getString(R.string.loading_msg));
             progressDialog.show();
 
+
+            mLoginPojoSetData.setDevice_id(Utils.getDeviceId(mContext));
+            mLoginPojoSetData.setdevice_language(mAppSession.getData("devicelanguage"));
+
             Service incidentType = ApiUtils.getAPIService();
 
-            RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(Utils.getDeviceId(mContext))));
+            //  RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(Utils.getDeviceId(mContext))));
+            RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
             Call<IncidentTypePojo> fileUpload = incidentType.incidentType(mFile);
             fileUpload.enqueue(new Callback<IncidentTypePojo>() {
                 @Override
@@ -121,12 +128,12 @@ public class IncidentFragment extends Fragment implements View.OnClickListener,I
                     progressDialog.dismiss();
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             e.getMessage();
             Utils.showAlert(e.getMessage(), mContext);
         }
-        }
+    }
 
 
     /////All click listners
@@ -145,16 +152,16 @@ public class IncidentFragment extends Fragment implements View.OnClickListener,I
     @Override
     public void clickPosition(int pos) {
 
-        if(pos==0){
-            Utils.fragmentCall(new IncidentTypeFragment(incidentTypeResponse,pos,userId), getFragmentManager());
-            mAppSession.saveData("city","police");
-        }else if(pos==1){
-            Utils.fragmentCall(new IncidentTypeFragment(incidentTypeResponse,pos,userId), getFragmentManager());
-            mAppSession.saveData("city","medical");
-        }else{
-            mAppSession.saveData("city","city");
+        if (pos == 0) {
+            Utils.fragmentCall(new IncidentTypeFragment(incidentTypeResponse, pos, userId), getFragmentManager());
+            mAppSession.saveData("city", "police");
+        } else if (pos == 1) {
+            Utils.fragmentCall(new IncidentTypeFragment(incidentTypeResponse, pos, userId), getFragmentManager());
+            mAppSession.saveData("city", "medical");
+        } else {
+            mAppSession.saveData("city", "city");
 
-            Utils.fragmentCall(new IncidentTypeFragment(incidentTypeResponse,pos,userId), getFragmentManager());
+            Utils.fragmentCall(new IncidentTypeFragment(incidentTypeResponse, pos, userId), getFragmentManager());
         }
 
 

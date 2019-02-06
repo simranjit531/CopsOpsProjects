@@ -120,5 +120,12 @@ public class LoginPojoSetData implements Serializable {
 
     String user_password;
     String type;
+    String device_language;
 
+    public void setdevice_language(String device_language) {
+        this.device_language = device_language;
+    }
+    public String getdevice_language() {
+        return device_language;
+    }
 }

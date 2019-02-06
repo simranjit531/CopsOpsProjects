@@ -5,8 +5,8 @@ public class ApiUtils {
     private ApiUtils() {}
 
    // private static final String BASE_URL = "http://192.168.121.22";
-  // private static final String BASE_URL = "http://13.233.74.84/";
-  private static final String BASE_URL = "http://appinn-project2.com/copops/public/";
+   private static final String BASE_URL = "http://13.233.74.84/";
+ // private static final String BASE_URL = "http://appinn-project2.com/copops/public/";
 
     public static Service getAPIService() {
 

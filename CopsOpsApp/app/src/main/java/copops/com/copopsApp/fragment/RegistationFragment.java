@@ -394,6 +394,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                 registationPjoSetData.setPhone_number(etPhoneNo.getText().toString().trim());
                 registationPjoSetData.setUser_password(etPassword.getText().toString().trim());
                 registationPjoSetData.setFcm_token(mAppSession.getData("fcm_token"));
+                registationPjoSetData.setdevice_language(mAppSession.getData("devicelanguage"));
                 //   registationPjoSetData.setReg_latitude(String.valueOf(latitude));
 
                 registationPjoSetData.setReg_longitude(String.valueOf(longitude));

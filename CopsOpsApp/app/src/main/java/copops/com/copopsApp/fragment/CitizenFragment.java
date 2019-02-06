@@ -103,7 +103,6 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
     ProgressDialog progressDialog;
 
 
-
     double longitude;
     double latitude;
 
@@ -113,6 +112,7 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
     OperatorShowAlInfo operatorShowAlInfo;
 
     String[] listItems;
+
     public CitizenFragment() {
 
         // Required empty public constructor
@@ -141,7 +141,7 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
         if (checkPermission() && gpsEnabled()) {
             if (isNetworkEnabled) {
 
-               progressDialog.show();
+                progressDialog.show();
                 mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
                         10, mLocationListener);
             } else {
@@ -157,12 +157,12 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
         IVlogout.setVisibility(View.VISIBLE);
         IVback.setVisibility(View.GONE);
         TVname.setText(mAppSession.getData("name"));
-        if (mAppSession.getData("image_url") != null&&!mAppSession.getData("image_url").equals("")) {
+        if (mAppSession.getData("image_url") != null && !mAppSession.getData("image_url").equals("")) {
             Glide.with(getActivity()).load(mAppSession.getData("image_url")).into(IVprofilephoto);
          /*   Glide.with(this).load(mAppSession.getData("image_url"))
                     .error(R.mipmap.img_profile_photo).
                     .into(IVprofilephoto);*/
-        }else {
+        } else {
             IVprofilephoto.setImageResource(R.mipmap.img_white_dot);
         }
         progressDialog = new ProgressDialog(getActivity());
@@ -175,11 +175,11 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
             incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
             incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
             incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+            incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
             Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
             RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
             getAssigmentList(mFile);
-        }
-        else {
+        } else {
             Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
         }
 
@@ -190,13 +190,13 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.RLreportanincident:
                 Utils.fragmentCall(new IncidentFragment(mAppSession.getData("id")), getFragmentManager());
-                mAppSession.saveData("operatorScreenBack","1");
-                mAppSession.saveData("handrail","dasd");
+                mAppSession.saveData("operatorScreenBack", "1");
+                mAppSession.saveData("handrail", "dasd");
                 break;
 
             case R.id.RLhandrail:
                 Utils.fragmentCall(new HandrailFragment(), getFragmentManager());
-                mAppSession.saveData("handrail","handrail");
+                mAppSession.saveData("handrail", "handrail");
                 break;
 
             case R.id.RLnavigation:
@@ -239,7 +239,7 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
                 mDialog.show();
 
 
-               // Utils.fragmentCall(new GPSPublicFragment(), getFragmentManager());
+                // Utils.fragmentCall(new GPSPublicFragment(), getFragmentManager());
                 break;
 
             case R.id.IVlogout:
@@ -287,8 +287,7 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
     }
 
 
-
-    private void getAssigmentList(RequestBody Data){
+    private void getAssigmentList(RequestBody Data) {
 
 
         progressDialog.show();
@@ -308,20 +307,26 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
 
                         } else {
 
-                           TVprofiledescription.setText(operatorShowAlInfo.getLevel());
+                            TVprofiledescription.setText(operatorShowAlInfo.getLevel());
 
                             TVprogressbarnumber.setText(operatorShowAlInfo.getReport());
-                            TVprogressbarreports.setText(operatorShowAlInfo.getTotal_reports()+getString(R.string.reports));
+                            Log.e("gettotalreports==", "" + operatorShowAlInfo.getTotal_reports());
+                            if (operatorShowAlInfo.getTotal_reports().equals("1")) {
+                                TVprogressbarreports.setText(operatorShowAlInfo.getTotal_reports() + " " + getString(R.string.report));
+                            } else {
+                                TVprogressbarreports.setText(operatorShowAlInfo.getTotal_reports() + " " + getString(R.string.reports));
+                            }
+
 
                             progressBar1.setMax(100);
                             progressBar1.setProgress(Integer.valueOf(operatorShowAlInfo.getProfile_percent()));
 
-                            TVprogresspercentage.setText(operatorShowAlInfo.getProfile_percent()+"%");
+                            TVprogresspercentage.setText(operatorShowAlInfo.getProfile_percent() + "%");
 
                         }
                         progressDialog.dismiss();
 
-                    }else{
+                    } else {
                         Utils.showAlert(response.message(), getActivity());
                     }
 
@@ -342,7 +347,6 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
     }
 
 
-
     ////Manish
     private final android.location.LocationListener mLocationListener = new android.location.LocationListener() {
 
@@ -350,14 +354,14 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
         public void onLocationChanged(final Location location) {
             if (location != null) {
                 // mCurrentLocation = location;
-                latitude=location.getLatitude();
-                longitude=location.getLongitude();
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
                 progressDialog.dismiss();
-                mAppSession.saveData("latitude",String.valueOf(latitude));
-                mAppSession.saveData("longitude",String.valueOf(longitude));
+                mAppSession.saveData("latitude", String.valueOf(latitude));
+                mAppSession.saveData("longitude", String.valueOf(longitude));
 
-                Log.e("latitude",String.valueOf(latitude));
-                Log.e("longitude",String.valueOf(longitude));
+                Log.e("latitude", String.valueOf(latitude));
+                Log.e("longitude", String.valueOf(longitude));
 
                 //  initMapFragment();
             } else {
@@ -380,7 +384,6 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
 
         }
     };
-
 
 
     private boolean checkPermission() {

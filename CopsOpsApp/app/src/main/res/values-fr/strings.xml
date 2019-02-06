@@ -25,7 +25,9 @@
     <string name="other_des">S\'il vous plaît ajouter une autre description</string>
     <string name="password">Veuillez entrer le mot de passe</string>
     <string name="path">Veuillez capturer au moins une vidéo ou une image</string>
-    <string name="objecttext">S\'il vous plaît entrer le sujet des rapports de main courante</string>
+    <string name="objecttext">Veuillez renseigner l\'objet de la main courante. </string>
+    <string name="objecttextdes">Veuillez décrire la main courante. </string>
+    <string name="incidentdes">Veuillez décrire l\'incident</string>
     <string name="validation_signature">S\'il vous plaît créer votre signature.</string>
 
     <string name="con_password">Veuillez entrer votre mot de passe</string>
@@ -175,13 +177,13 @@
 
     <!-- SCREEN TEXT-->
 
-    <string name="whoareyou">Quel type de compte ?</string>
-    <string name="home_app_msg">Le compte public est destiné à être utilisé de l\'application. Le compte opérateur est destiné dans la force de l\'ordre. </string>
+    <string name="whoareyou">De quel côté êtes vous ?</string>
+    <string name="home_app_msg">Le compte public est destiné a l\'utilisation de l\'application. Le compte Operateur est destiné au force de l\'ordre.</string>
     <string name="citizen">CITOYEN</string>
     <string name="citizen_top">Compte public</string>
     <string name="cops">OPERATEUR</string>
-    <string name="validation_msg">La création du compte opérateur
-doit être validé</string>
+    <string name="validation_msg">La création du compte operateur
+est soumis à une validation</string>
     <string name="Copops">COP-OPS</string>
     <string name="burglary">Cambriolage</string>
 
@@ -200,7 +202,7 @@ exciting and enjoyable way </string>
 
 
     <!--  Registatin Screen -->
-    <string name="last_name_hint">Nom de famille</string>
+    <string name="last_name_hint">Nom </string>
     <string name="first_name_hint">Prénom</string>
     <string name="dob_hint">jj / mm / aaaa</string>
     <string name="phone_no_hint">Numéro de téléphone</string>
@@ -211,12 +213,12 @@ exciting and enjoyable way </string>
     <string name="front_text_Recto">Recto</string>
     <string name="back_text_Verso">Verso</string>
     <string name="next_btn">Suivant</string>
-    <string name="handrail">Balustrade</string>
+    <string name="handrail">Main courante</string>
     <string name="object">Objet</string>
 
     <string name="aut_header">Authentifier l\'appareil</string>
     <string name="send_code">Envoyer le code</string>
-    <string name="otp_msg">S\'il vous plaît remplir ci-dessous
+    <string name="otp_msg">Merci de renseigner ci-dessous
 le code envoyé à</string>
 
 
@@ -224,21 +226,25 @@ le code envoyé à</string>
     <string name="reset_pass_header">réinitialiser le mot de passe</string>
     <string name="email_msg">Un email vous sera envoyé
       pour changer votre mot de passe</string>
-    <string name="your_email_hint">Votre email</string>
+    <string name="your_email_hint">Renseignez votre email</string>
     <string name="send_btn">Envoyer</string>
+    <string name="man">Homme</string>
+    <string name="woman">Femme</string>
 
     <!--  DashBoard HOME Screen -->
 
     <string name="sentinel">| sentinelle</string>
     <string name="grade">Grade |</string>
     <string name="report_comp">06/10</string>
-    <string name="progress_propert">06 rapports</string>
-    <string name="navigation">La navigation</string>
+    <string name="progress_propert">06 signalements</string>
+    <string name="navigation">Navigation </string>
     <string name="report_an_incident">Signaler un incident</string>
+    <string name="report_an_incident_bottom_text">Quelle est la nature de l\'incident</string>
     <string name="PositionofInterventions">Position des interventions</string>
     <string name="search"> Chercher</string>
-    <string name="available">Disponible</string>
-    <string name="messaging">Messagerie</string>
+    <string name="available">Mobilisable</string>
+    <string name="not_available">Non Mobilisable</string>
+    <string name="messaging">Chat</string>
     <string name="Assignedintervention">Intervention assignée</string>
     <string name="notavailable">Indisponible</string>
 
@@ -246,20 +252,35 @@ le code envoyé à</string>
     <!--CALL SCREEN-->
     <string name="no_thanks">NON MERCI</string>
     <string name="call">APPEL</string>
+    <string name="onwait">en attente</string>
+    <string name="pending">en cours</string>
+    <string name="finished">terminer</string>
+    <string name="Assigned">Attribué</string>
+    <string name="loading">chargement...</string>
+    <string name="NoAssigned"> Aucune intervention affectée n\'a été trouvée, nous ne pouvons donc pas accéder à l\'attribution d\'une intervention.</string>
+    <string name="pleaseenterotp">S\'il vous plaît entrer otp</string>
+    <string name="chooseanOption">Basculez vers le GPS de votre choix </string>
+    <string name="reports">signalements</string>
+    <string name="report">signalement</string>
+    <string name="Locationisnotavailablenow"> L\'emplacement n\'est pas disponible maintenant</string>
+    <string name="Signalements"> Signalements</string>
+    <string name="completedinterventions"> interventions terminées</string>
 
 
     <!-- Incident screen -->
-    <string name="reason">Raison</string>
+    <string name="reason">Motif</string>
     <string name="other_hint">Autres informations (Victimes, description de lieu .....</string>
     <string name="reference">Référence</string>
-    <string name="finish">terminer</string>
-    <string name="bemorepercise">Soyez plus précis</string>
+    <string name="finish">Terminer</string>
+    <string name="bemorepercise">Soyez au plus précis</string>
     <string name="describetheincident">Décrivez l\'incident</string>
+    <string name="AvertClayton">Avert Clayton</string>
+    <string name="Souhaitez">Souhaitez-vous être mis en relation avec le comissariat de Police ?</string>
+    <string name="Souhaitezvous">Souhaitez-vous être mis en relation avec les Sapeurs Pompiers ?</string>
 
     <!--Handrail-->
 
-    <string name="handrailedittexthint">Veuillez remplir la main courante</string>
-
+    <string name="handrailedittexthint">Veuillez décrire la main courante.</string>
 
     <!--  Signature Screen -->
     <string name="signature">Signature</string>
@@ -278,17 +299,17 @@ le code envoyé à</string>
 
     <!--Reports Finish-->
 
-    <string name="Remembertosaveit">N\'oubliez pas de le sauvegarder</string>
+    <string name="Remembertosaveit">Pensez à enregistrer la référence ou capturer le QR code</string>
 
     <!--Position of the incident-->
 
-    <string name="positionoftheincident">Position de l\'incident</string>
-    <string name="filterbycities">Filtrer par villes</string>
+    <string name="positionoftheincident">Position des incidents</string>
+    <string name="filterbycities">Filtrer par ville</string>
 
     <!--Table of Assignments-->
     <string name="TableofAssignments">Tableau des affectations</string>
     <string name="Attributionslist">Liste des attributions</string>
-    <string name="date">Rendez-vous amoureux</string>
+    <string name="date">Date</string>
     <string name="state">Etat</string>
 
     <!--Assigning Intervation-->
@@ -301,13 +322,13 @@ le code envoyé à</string>
     <!--Profile Screen-->
 
     <string name="Profile">Profil</string>
-    <string name="Profile_text">Informations sur votre profil</string>
+    <string name="Profile_text">Informations des votre profil</string>
     <string name="Vehicle">Véhicule</string>
     <string name="Vehicle_text">Informations sur votre vechile</string>
     <string name="QR_code">QR code</string>
-    <string name="QR_code_text">Code QR enregistré</string>
+    <string name="QR_code_text">QR Code enregistré</string>
     <string name="Medicalfile">Dossier médical</string>
-    <string name="Medicalfiletext">Votre condition médicale</string>
+    <string name="Medicalfiletext">Votre etat médicale</string>
     <string name="FAQ">FAQ</string>
     <string name="frequentlyaskedquestions">Questions fréquemment posées</string>
 

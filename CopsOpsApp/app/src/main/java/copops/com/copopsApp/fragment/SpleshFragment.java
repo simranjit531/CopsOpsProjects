@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.File;
@@ -38,8 +39,12 @@ public class SpleshFragment extends Fragment {
         // Inflate the layout for this fragment
         View v=inflater.inflate(R.layout.fragment_splesh, container, false);
         mAppSession = mAppSession.getInstance(getActivity());
+
+
         if(mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
-            Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
+
+            FirebaseApp.initializeApp(getContext());
+         ///   Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
 
             mAppSession.saveData("fcm_token", FirebaseInstanceId.getInstance().getToken());
         }

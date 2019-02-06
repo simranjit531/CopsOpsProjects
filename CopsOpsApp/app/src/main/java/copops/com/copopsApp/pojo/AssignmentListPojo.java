@@ -60,6 +60,15 @@ public class Data implements Serializable {
     String ref_incident_subcategory_id;
     String other_description;
 
+    String user_id;
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
     public String getIsAssigned() {
         return isAssigned;
     }
@@ -87,6 +96,9 @@ public class Data implements Serializable {
     String longitude;
     String address;
     String city;
+
+
+
 
     public String getIncident_description() {
         return incident_description;

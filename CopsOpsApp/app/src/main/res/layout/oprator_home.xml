@@ -172,7 +172,7 @@
 
                 <TextView
                     android:id="@+id/Tvavaiable"
-                    android:layout_width="80dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
@@ -187,10 +187,9 @@
                     android:id="@+id/viewlineId"
                     android:layout_width="80dp"
                     android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_alignLeft="@+id/Tvavaiable"
+                    android:layout_alignStart="@+id/Tvavaiable"
+                    android:layout_alignTop="@+id/viewline2"
                     android:background="@color/blue_shade" />
 
 
@@ -210,7 +209,7 @@
                     android:layout_marginRight="30sp"
                     android:gravity="center_vertical"
                     android:singleLine="true"
-                    android:text="Not Available"
+                    android:text="@string/not_available"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textsize_14sp" />
 
@@ -542,6 +541,7 @@
                         android:src="@mipmap/img_chat_icon" />
 
                     <TextView
+                        android:id="@+id/Tvchattext"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_below="@+id/IVchat"

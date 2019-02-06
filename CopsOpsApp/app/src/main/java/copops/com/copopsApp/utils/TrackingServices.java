@@ -54,7 +54,6 @@ public class TrackingServices extends Service {
     GPSTracker gps;
 
 
-
     //public static final int notify = 30000;  //interval between two services(Here Service run every 5 seconds)
     public static final int notify = 5000;  //interval between two services(Here Service run every 5 seconds)
     int count = 0;  //number of times service is display
@@ -72,7 +71,7 @@ public class TrackingServices extends Service {
 
         mAppSession = mAppSession.getInstance(getApplicationContext());
         gps = new GPSTracker(getApplicationContext());
-       // mLocationManager = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        // mLocationManager = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         if (mTimer != null) // Cancel if already existed
             mTimer.cancel();
         else
@@ -84,7 +83,7 @@ public class TrackingServices extends Service {
     public void onDestroy() {
         super.onDestroy();
         mTimer.cancel();    //For Cancel Timer
-     //   Toast.makeText(this, "Service is Destroyed", Toast.LENGTH_SHORT).show();
+        //   Toast.makeText(this, "Service is Destroyed", Toast.LENGTH_SHORT).show();
     }
 
     //class TimeDisplay for handling task
@@ -97,26 +96,28 @@ public class TrackingServices extends Service {
                 public void run() {
 
 
-                        latitude=gps.getLatitude();
-                        longitude=gps.getLongitude();
+                    latitude = gps.getLatitude();
+                    longitude = gps.getLongitude();
 
 
-                        LoginPojoSetData mLoginPojoSetData = new LoginPojoSetData();
+                    LoginPojoSetData mLoginPojoSetData = new LoginPojoSetData();
 
-                        Log.e("always","tracking");
-                        Log.e("latitude"," "+latitude);
-                        Log.e("longitude"," "+longitude);
+                    Log.e("always", "tracking");
+                    Log.e("latitude", " " + latitude);
+                    Log.e("longitude", " " + longitude);
 
-                        mLoginPojoSetData.setUser_id(mAppSession.getData("id"));
-                        mLoginPojoSetData.setLatitude(String.valueOf(latitude));
-                        mLoginPojoSetData.setLongitude(String.valueOf(longitude));
+                    mLoginPojoSetData.setUser_id(mAppSession.getData("id"));
+                    mLoginPojoSetData.setLatitude(String.valueOf(latitude));
+                    mLoginPojoSetData.setLongitude(String.valueOf(longitude));
+                    mLoginPojoSetData.setdevice_language(mAppSession.getData("devicelanguage"));
 
-                        Log.e("taackingdata", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
-                        RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
 
-                        getLocation(mFile);
+                    Log.e("taackingdata", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
+                    RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
 
-                    }
+                    getLocation(mFile);
+
+                }
             });
 
         }
@@ -124,13 +125,11 @@ public class TrackingServices extends Service {
     }
 
 
-
-
     private boolean checkPermission() {
         boolean check = ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
         if (!check) {
-            ActivityCompat.requestPermissions((Activity) getApplicationContext(),new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            ActivityCompat.requestPermissions((Activity) getApplicationContext(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
             return false;
         }
         return true;
@@ -159,26 +158,26 @@ public class TrackingServices extends Service {
                             } else {
 
 
-                                Log.e("isfreeze",""+commanStatusPojo.getIsfreeze());
-                                Log.e("@@isfreeze",""+commanStatusPojo.getMessage());
+                                Log.e("isfreeze", "" + commanStatusPojo.getIsfreeze());
+                                Log.e("@@isfreeze", "" + commanStatusPojo.getMessage());
 
- if(commanStatusPojo.getIsfreeze().equalsIgnoreCase("0")){
-     mAppSession.saveData("Login", "0");
-     userLogout();
+                                if (commanStatusPojo.getIsfreeze().equalsIgnoreCase("0")) {
+                                    mAppSession.saveData("Login", "0");
+                                    userLogout();
 
-     mAppSession.saveData("freez","0");
-     stopService(new Intent(getBaseContext(), TrackingServices.class));
-   //  stopService(new Intent(getBaseContext(), TrackingServices.class));
+                                    mAppSession.saveData("freez", "0");
+                                    stopService(new Intent(getBaseContext(), TrackingServices.class));
+                                    //  stopService(new Intent(getBaseContext(), TrackingServices.class));
 
-   // Utils.fragmentCall(new HomeFragment(), getFragmentManager());
-     Intent intent = new Intent(getBaseContext(),DashboardActivity.class);
-     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-     getApplication().startActivity(intent);
- }else{
-    // mAppSession.saveData("freez","1");
+                                    // Utils.fragmentCall(new HomeFragment(), getFragmentManager());
+                                    Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    getApplication().startActivity(intent);
+                                } else {
+                                    // mAppSession.saveData("freez","1");
 
-    //
- }
+                                    //
+                                }
                             }
 
 
@@ -218,6 +217,7 @@ public class TrackingServices extends Service {
         //  ProgressDialogFragment.hide(getSupportFragmentManager());
         //  finish();
     }
+
     private void logout() {
         if (QBPushManager.getInstance().isSubscribedToPushes()) {
             QBPushManager.getInstance().addListener(new QBPushSubscribeListenerImpl() {

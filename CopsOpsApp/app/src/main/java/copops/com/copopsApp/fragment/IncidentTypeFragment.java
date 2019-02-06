@@ -1,4 +1,5 @@
 package copops.com.copopsApp.fragment;
+
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -43,7 +44,7 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 @SuppressLint("ValidFragment")
-public class IncidentTypeFragment extends Fragment implements View.OnClickListener,IncedentInterface {
+public class IncidentTypeFragment extends Fragment implements View.OnClickListener, IncedentInterface {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -68,10 +69,11 @@ public class IncidentTypeFragment extends Fragment implements View.OnClickListen
     AppSession mAppSession;
     String incedentTypeId;
     String userId;
-    public IncidentTypeFragment(IncidentTypePojo mIncidentTypeResponse,int pos,String userId) {
-    this.mIncidentTypeResponse=mIncidentTypeResponse;
-    this.pos=pos;
-    this.userId=userId;
+
+    public IncidentTypeFragment(IncidentTypePojo mIncidentTypeResponse, int pos, String userId) {
+        this.mIncidentTypeResponse = mIncidentTypeResponse;
+        this.pos = pos;
+        this.userId = userId;
     }
 
 
@@ -82,8 +84,8 @@ public class IncidentTypeFragment extends Fragment implements View.OnClickListen
         View view = inflater.inflate(R.layout.frag_reporting_common, container, false);
         ButterKnife.bind(this, view);
         mContext = getActivity();
-        mIncedentInterface=this;
-        mAppSession=mAppSession.getInstance(getActivity());
+        mIncedentInterface = this;
+        mAppSession = mAppSession.getInstance(getActivity());
         onClick();
         mHeader.setText(mIncidentTypeResponse.getData().get(pos).getIncident_name());
         mSubHeader.setText(mIncidentTypeResponse.getData().get(pos).getIncident_description());
@@ -92,8 +94,8 @@ public class IncidentTypeFragment extends Fragment implements View.OnClickListen
     }
 
     private void onClick() {
-        incedentTypeId=mIncidentTypeResponse.getData().get(pos).getIncident_id();
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),2);
+        incedentTypeId = mIncidentTypeResponse.getData().get(pos).getIncident_id();
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(gridLayoutManager); // set LayoutManager to RecyclerView
         Rltoolbar.setOnClickListener(this);
 
@@ -107,44 +109,43 @@ public class IncidentTypeFragment extends Fragment implements View.OnClickListen
         try {
 
             progressDialog = new ProgressDialog(mContext);
-        progressDialog.setMessage(getActivity().getString(R.string.loading_msg));
-        progressDialog.show();
-        IncidentSetPojo incidentSetPojo = new IncidentSetPojo();
+            progressDialog.setMessage(getActivity().getString(R.string.loading_msg));
+            progressDialog.show();
+            IncidentSetPojo incidentSetPojo = new IncidentSetPojo();
 
-        incidentSetPojo.setIncident_id(mIncidentTypeResponse.getData().get(pos).getIncident_id());
-        incidentSetPojo.setDevice_id(Utils.getDeviceId(mContext));
+            incidentSetPojo.setIncident_id(mIncidentTypeResponse.getData().get(pos).getIncident_id());
+            incidentSetPojo.setDevice_id(Utils.getDeviceId(mContext));
+            incidentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
 
             Service incedentTypeData = ApiUtils.getAPIService();
-        RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incidentSetPojo)));
-      //  RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"),  "6ofmYMOSHsnj+NTBDXo6107Iqzaw+Rx0X2brlpHmVYk=:ZmVkY2JhOTg3NjU0MzIxMA==");
+            RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incidentSetPojo)));
+            //  RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"),  "6ofmYMOSHsnj+NTBDXo6107Iqzaw+Rx0X2brlpHmVYk=:ZmVkY2JhOTg3NjU0MzIxMA==");
 
-        Call<IncidentSubPojo> fileUpload = incedentTypeData.getIncedentSubTypeData(mFile);
+            Call<IncidentSubPojo> fileUpload = incedentTypeData.getIncedentSubTypeData(mFile);
 
             fileUpload.enqueue(new Callback<IncidentSubPojo>() {
                 @Override
-                public void onResponse(Call<IncidentSubPojo> call, Response<IncidentSubPojo> response)
-                {
+                public void onResponse(Call<IncidentSubPojo> call, Response<IncidentSubPojo> response) {
                     try {
-                        if (response.body() != null){
-                           incidentSubPojo = response.body();
+                        if (response.body() != null) {
+                            incidentSubPojo = response.body();
                             progressDialog.dismiss();
-                            if(incidentSubPojo.getStatus().equals("false")){
+                            if (incidentSubPojo.getStatus().equals("false")) {
                                 progressDialog.dismiss();
-                            }else{
+                            } else {
 
                                 progressDialog.dismiss();
-                                IncidentSubTypeAdapter adapter = new IncidentSubTypeAdapter(mContext, incidentSubPojo,mIncedentInterface);
+                                IncidentSubTypeAdapter adapter = new IncidentSubTypeAdapter(mContext, incidentSubPojo, mIncedentInterface);
                                 recyclerView.setAdapter(adapter);
                                 @SuppressLint("WrongConstant") GridLayoutManager manager = new GridLayoutManager(mContext, 2, GridLayoutManager.VERTICAL, false);
                                 recyclerView.setLayoutManager(manager);
                             }
                         }
 
-                    } catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         progressDialog.dismiss();
                         e.getMessage();
-                        Utils.showAlert(e.getMessage(),mContext);
+                        Utils.showAlert(e.getMessage(), mContext);
                     }
                 }
 
@@ -154,9 +155,9 @@ public class IncidentTypeFragment extends Fragment implements View.OnClickListen
                     progressDialog.dismiss();
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            Utils.showAlert(e.getMessage(),mContext);
+            Utils.showAlert(e.getMessage(), mContext);
         }
 
     }
@@ -178,8 +179,8 @@ public class IncidentTypeFragment extends Fragment implements View.OnClickListen
     public void clickPosition(int pos) {
 
 
-        mAppSession.saveData("screen","0");
+        mAppSession.saveData("screen", "0");
 
-        Utils.fragmentCall(new IncedentGenerateFragment(incedentTypeId,incidentSubPojo,pos,userId,    mAppSession.getData("screen")), getFragmentManager());
+        Utils.fragmentCall(new IncedentGenerateFragment(incedentTypeId, incidentSubPojo, pos, userId, mAppSession.getData("screen")), getFragmentManager());
     }
 }

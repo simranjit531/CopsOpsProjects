@@ -115,6 +115,7 @@ public class OperatorSignatureFragment extends Fragment implements View.OnClickL
                             incdentSetPojo.setComment(desc);
                             incdentSetPojo.setIncident_id(insidentId);
                             incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+                            incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
                             Bitmap signatureBitmap = mSignaturePad.getSignatureBitmap();
                             Uri signature_uri = Utils.getImageUri(getActivity(), signatureBitmap);
                             File handrail_image_file;

@@ -54,7 +54,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="2dp"
-            android:text="@string/citizen"
+            android:text="@string/citizen_top"
             android:textColor="@color/black"
             android:textSize="@dimen/textsize_18sp"
             android:textStyle="bold" />

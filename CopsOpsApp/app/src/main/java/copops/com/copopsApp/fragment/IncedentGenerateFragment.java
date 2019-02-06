@@ -94,7 +94,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
     IncidentSubPojo incidentSubPojo;
     String incedentTypeId;
 
-    LocationManager  mLocationManager;
+    LocationManager mLocationManager;
     int pos;
     Context mContext;
     String userId;
@@ -105,7 +105,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
     Uri capturedUri = null;
     Uri compressUri = null;
     String screeen;
-    String strparentname="";
+    String strparentname = "";
     private boolean isNetworkEnabled;
     private boolean isGpsEnabled;
     double longitude;
@@ -113,7 +113,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
 
     AppSession mAppSession;
 
-    public IncedentGenerateFragment(String incedentTypeId, IncidentSubPojo incidentSubPojo, int pos,String userId,String screeen) {
+    public IncedentGenerateFragment(String incedentTypeId, IncidentSubPojo incidentSubPojo, int pos, String userId, String screeen) {
         this.incedentTypeId = incedentTypeId;
         this.incidentSubPojo = incidentSubPojo;
         this.pos = pos;
@@ -129,8 +129,8 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
 
         View v = inflater.inflate(R.layout.fragment_incedent_generate, container, false);
         ButterKnife.bind(this, v);
-        mContext=getActivity();
-        mAppSession=mAppSession.getInstance(getActivity());
+        mContext = getActivity();
+        mAppSession = mAppSession.getInstance(getActivity());
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (checkPermission() && gpsEnabled()) {
             if (isNetworkEnabled) {
@@ -156,14 +156,14 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
 //        longitude = location.getLongitude();
 //        latitude = location.getLatitude();
 
-        Log.e("parent ID",""+ incidentSubPojo.getData().get(pos).getIncident_parent_id());
+        Log.e("parent ID", "" + incidentSubPojo.getData().get(pos).getIncident_parent_id());
 
-        if (Integer.parseInt(incidentSubPojo.getData().get(pos).getIncident_parent_id())==1){
-            strparentname="police";
-        }else if (Integer.parseInt(incidentSubPojo.getData().get(pos).getIncident_parent_id())==2){
-            strparentname="medical";
-        }else if (Integer.parseInt(incidentSubPojo.getData().get(pos).getIncident_parent_id())==3){
-            strparentname="city";
+        if (Integer.parseInt(incidentSubPojo.getData().get(pos).getIncident_parent_id()) == 1) {
+            strparentname = "police";
+        } else if (Integer.parseInt(incidentSubPojo.getData().get(pos).getIncident_parent_id()) == 2) {
+            strparentname = "medical";
+        } else if (Integer.parseInt(incidentSubPojo.getData().get(pos).getIncident_parent_id()) == 3) {
+            strparentname = "city";
         }
 
 
@@ -172,7 +172,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
         return v;
     }
 
-    private void  onClick(){
+    private void onClick() {
         RLenvoyer.setOnClickListener(this);
         llcamera.setOnClickListener(this);
         llvideo.setOnClickListener(this);
@@ -189,7 +189,6 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
                     Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
                 break;
             case R.id.Rltoolbar:
-
 
 
                 if (getFragmentManager().getBackStackEntryCount() > 0) {
@@ -237,15 +236,12 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
 
     public void validation() {
         if (ETdescribetheincident.getText().toString().trim().equalsIgnoreCase("")) {
-            Utils.showAlert(getActivity().getString(R.string.des), getActivity());
+            Utils.showAlert(getActivity().getString(R.string.incidentdes), getActivity());
         }/* else if (ETotherinfoincident.getText().toString().trim().equalsIgnoreCase("")) {
             Utils.showAlert(getActivity().getString(R.string.other_des), getActivity());
         }else if (filePathImage == null && filePathVideo == null) {
             Utils.showAlert(getActivity().getString(R.string.path), getActivity());
-        }*/
-
-        else {
-
+        }*/ else {
             initDialog(getActivity().getString(R.string.loading_msg));
             progressDialog.show();
             Utils.hideKeyboard(getActivity());
@@ -257,10 +253,11 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
             mIncdentSetPojo.setCreated_by(userId);
             mIncdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
             mIncdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
-         //   mIncdentSetPojo.setIncident_lng(String.valueOf(longitude));
+            mIncdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+            //   mIncdentSetPojo.setIncident_lng(String.valueOf(longitude));
             mIncdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
             if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
-               // progressDialog.show();
+                // progressDialog.show();
                 File incedint_image_file;
                 File incedint_video_file;
                 MultipartBody.Part incedint_image = null;
@@ -277,50 +274,50 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
                     incedint_video = MultipartBody.Part.createFormData("incident_video", incedint_video_file.getName(), mFile);
                 }
 
-                Log.e("nmnd",EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mIncdentSetPojo)));
+                Log.e("nmnd", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mIncdentSetPojo)));
                 RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mIncdentSetPojo)));
 
                 Service uploadIncedentGenerate = ApiUtils.getAPIService();
-                Call<IncedentAcceptResponse> fileUpload = uploadIncedentGenerate.generateIncedent(incedint_image,incedint_video,mFile);
+                Call<IncedentAcceptResponse> fileUpload = uploadIncedentGenerate.generateIncedent(incedint_image, incedint_video, mFile);
                 fileUpload.enqueue(new Callback<IncedentAcceptResponse>() {
                     @Override
                     public void onResponse(Call<IncedentAcceptResponse> call, Response<IncedentAcceptResponse> response) {
                         try {
-                            if (response.body() != null){
+                            if (response.body() != null) {
                                 IncedentAcceptResponse incedentAcceptResponse = response.body();
-                                if(incedentAcceptResponse.getStatus().equals("false")){
-                                    Utils.showAlert(incedentAcceptResponse.getMessage(),mContext);
-                                }else{
+                                if (incedentAcceptResponse.getStatus().equals("false")) {
+                                    Utils.showAlert(incedentAcceptResponse.getMessage(), mContext);
+                                } else {
 
-                                    Utils.fragmentCall(new IncedentReportFragment(incedentAcceptResponse,"incidentreports",strparentname), getFragmentManager());
-                                    if(mCurrentPhotoPath!=null) {
+                                    Utils.fragmentCall(new IncedentReportFragment(incedentAcceptResponse, "incidentreports", strparentname), getFragmentManager());
+                                    if (mCurrentPhotoPath != null) {
                                         File mCurrentPhotodelete = new File(mCurrentPhotoPath);
                                         if (mCurrentPhotodelete.exists()) {
                                             if (mCurrentPhotodelete.delete()) {
 
-                                              //  Log.e("current file Deleted :", mCurrentPhotoPath);
+                                                //  Log.e("current file Deleted :", mCurrentPhotoPath);
                                             } else {
 
-                                              //  Log.e("currentf not Deleted :", mCurrentPhotoPath);
+                                                //  Log.e("currentf not Deleted :", mCurrentPhotoPath);
                                             }
                                         }
                                     }
 
 
-                                    if(mCurrentVideoPath!=null) {
+                                    if (mCurrentVideoPath != null) {
                                         File mCurrentPhotodeletedeletevideo = new File(mCurrentVideoPath);
                                         if (mCurrentPhotodeletedeletevideo.exists()) {
                                             if (mCurrentPhotodeletedeletevideo.delete()) {
-                                             //   Log.e("fileelete Dd :", mCurrentVideoPath);
+                                                //   Log.e("fileelete Dd :", mCurrentVideoPath);
 
                                             } else {
-                                             //   Log.e("currentf not Deleted :", mCurrentVideoPath);
+                                                //   Log.e("currentf not Deleted :", mCurrentVideoPath);
 
                                             }
                                         }
                                     }
 
-                                    if(filePathImage!=null) {
+                                    if (filePathImage != null) {
                                         File fdelete = new File(filePathImage);
                                         if (fdelete.exists()) {
                                             if (fdelete.delete()) {
@@ -330,7 +327,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
                                             }
                                         }
                                     }
-                                    if(filePathVideo!=null) {
+                                    if (filePathVideo != null) {
                                         File fdeletevideo = new File(filePathVideo);
                                         if (fdeletevideo.exists()) {
                                             if (fdeletevideo.delete()) {
@@ -343,23 +340,22 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
                                 }
                                 progressDialog.dismiss();
 
-                            }else{
+                            } else {
                                 progressDialog.dismiss();
-                                Utils.showAlert(response.message(),mContext);
+                                Utils.showAlert(response.message(), mContext);
                             }
-                        } catch (Exception e)
-                        {
+                        } catch (Exception e) {
                             progressDialog.dismiss();
                             e.getMessage();
-                            Utils.showAlert(e.getMessage(),mContext);
+                            Utils.showAlert(e.getMessage(), mContext);
                         }
                     }
 
                     @Override
                     public void onFailure(Call<IncedentAcceptResponse> call, Throwable t) {
-                       // Log.d(TAG, "Error " + t.getMessage());
+                        // Log.d(TAG, "Error " + t.getMessage());
                         progressDialog.dismiss();
-                        Utils.showAlert(t.getMessage(),mContext);
+                        Utils.showAlert(t.getMessage(), mContext);
                     }
                 });
             } else {
@@ -367,7 +363,8 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
             }
         }
 
-        }
+    }
+
     private void dispatchTakePictureIntent() {
         /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");*/
@@ -414,27 +411,26 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
         //verify if the image was gotten successfully
         if (requestCode == Utils.REQUEST_TAKE_CAMERA_PHOTO && resultCode == RESULT_OK) {
 
-                new ImageCompressionAsyncTask(mContext).execute(mCurrentPhotoPath,
+            new ImageCompressionAsyncTask(mContext).execute(mCurrentPhotoPath,
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/CopOps/images");
 
-        }
+        } else if (requestCode == Utils.REQUEST_TAKE_VIDEO && resultCode == RESULT_OK) {
+            //  Uri uri=data.getData();
 
-        else if (requestCode == Utils.REQUEST_TAKE_VIDEO && resultCode == RESULT_OK) {
-          //  Uri uri=data.getData();
-
-          //  if (uri != null) {
-                //create destination directory
-                File f = new File( Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES) + "/CopOps/videos");
-                if (f.mkdirs() || f.isDirectory())
+            //  if (uri != null) {
+            //create destination directory
+            File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES) + "/CopOps/videos");
+            if (f.mkdirs() || f.isDirectory())
 
 
-                    //compress and output new video specs
-                    new VideoCompressAsyncTask(mContext).execute(mCurrentVideoPath, f.getPath());
+                //compress and output new video specs
+                new VideoCompressAsyncTask(mContext).execute(mCurrentVideoPath, f.getPath());
 
-         //   }
+            //   }
         }
 
     }
+
     private void dispatchTakeVideoIntent() {
         Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         takeVideoIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -467,21 +463,21 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
         String fileName;
         File file;
         File storageDir;
-        if(type==Utils.TYPE_IMAGE) {
-             fileName ="JPEG_" + timeStamp + "_";
-        }else{
-            fileName ="VID_" + timeStamp + "_";
+        if (type == Utils.TYPE_IMAGE) {
+            fileName = "JPEG_" + timeStamp + "_";
+        } else {
+            fileName = "VID_" + timeStamp + "_";
         }
-        if(type==1) {
-             storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        if (type == 1) {
+            storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
-            file = File.createTempFile(fileName,  ".jpg" ,storageDir      /* directory */);
+            file = File.createTempFile(fileName, ".jpg", storageDir      /* directory */);
             mCurrentPhotoPath = file.getAbsolutePath();
-        }else{
+        } else {
 
             storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
 
-            file = File.createTempFile(fileName,  ".mp4" ,storageDir      /* directory */);
+            file = File.createTempFile(fileName, ".mp4", storageDir      /* directory */);
             mCurrentVideoPath = file.getAbsolutePath();
 
         }
@@ -491,6 +487,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
 
     class VideoCompressAsyncTask extends AsyncTask<String, String, String> {
         Context mContext;
+
         public VideoCompressAsyncTask(Context context) {
             mContext = context;
         }
@@ -534,7 +531,6 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
     }
 
 
-
     class ImageCompressionAsyncTask extends AsyncTask<String, Void, String> {
 
         Context mContext;
@@ -548,7 +544,6 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
 
             filePathImage = SiliCompressor.with(mContext).compress(params[0], new File(params[1]));
             return filePathImage;
-
 
 
         }
@@ -572,8 +567,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
         }
     }
 
-    public void initDialog(String msg)
-    {
+    public void initDialog(String msg) {
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(msg);
     }
@@ -603,6 +597,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
         }
         return true;
     }
+
     ////Manish
     private final android.location.LocationListener mLocationListener = new android.location.LocationListener() {
 
@@ -610,11 +605,11 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
         public void onLocationChanged(final Location location) {
             if (location != null) {
                 // mCurrentLocation = location;
-                latitude=location.getLatitude();
-                longitude=location.getLongitude();
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
 
-                mAppSession.saveData("latitude",String.valueOf(latitude));
-                mAppSession.saveData("longitude",String.valueOf(longitude));
+                mAppSession.saveData("latitude", String.valueOf(latitude));
+                mAppSession.saveData("longitude", String.valueOf(longitude));
                 //  initMapFragment();
             } else {
                 Toast.makeText(getActivity(), "Location is not available now", Toast.LENGTH_LONG).show();

@@ -24,6 +24,7 @@ import copops.com.copopsApp.pojo.LoginPojoSetData;
 import copops.com.copopsApp.pojo.RegistationPojo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
+import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.Utils;
 import okhttp3.MediaType;
@@ -55,6 +56,7 @@ public class ResetPasswordFragment extends Fragment implements View.OnClickListe
     String userTypeRegistation;
     Utils.resetPassInterFace mResetPassInterFace;
     ProgressDialog progressDialog;
+    AppSession mAppSession;
 
     public ResetPasswordFragment(String userType) {
         this.userType=userType;
@@ -71,6 +73,8 @@ public class ResetPasswordFragment extends Fragment implements View.OnClickListe
         ButterKnife.bind(this, view);
         mContext = getActivity();
         mResetPassInterFace=this;
+        mAppSession=AppSession.getInstance(getActivity());
+
         onClick();
         return view;
     }
@@ -105,6 +109,7 @@ public class ResetPasswordFragment extends Fragment implements View.OnClickListe
                 loginPojoSetData.setEmail_id(etEmail.getText().toString().trim());
                 loginPojoSetData.setRef_user_type_id(userTypeRegistation);
                 loginPojoSetData.setDevice_id(Utils.getDeviceId(mContext));
+                loginPojoSetData.setdevice_language(mAppSession.getData("devicelanguage"));
                 RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(loginPojoSetData)));
                 Service login = ApiUtils.getAPIService();
                 Call<CommanStatusPojo> fileUpload = login.userReset(mFile);

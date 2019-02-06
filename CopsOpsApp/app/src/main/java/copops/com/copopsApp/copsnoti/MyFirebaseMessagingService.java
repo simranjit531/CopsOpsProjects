@@ -12,16 +12,30 @@ import android.net.Uri;
 
 import android.os.Build;
 import android.util.Log;
+import android.view.View;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
 
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.activity.DashboardActivity;
+import copops.com.copopsApp.fragment.OperatorFragment;
+import copops.com.copopsApp.pojo.IncdentSetPojo;
+import copops.com.copopsApp.pojo.OperatorShowAlInfo;
+import copops.com.copopsApp.services.ApiUtils;
+import copops.com.copopsApp.services.Service;
 import copops.com.copopsApp.utils.AppSession;
+import copops.com.copopsApp.utils.EncryptUtils;
+import copops.com.copopsApp.utils.Utils;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -31,7 +45,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static NotificationManager notifManager;
 
     AppSession mAppSession;
+interface updateInterface{
+   public void update();
+}
 
+    updateInterface mUpdateInterface;
     /**
      * Called when message is received.
      *
@@ -43,6 +61,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
         mAppSession= mAppSession.getInstance(getApplicationContext());
+
+
         // [START_EXCLUDE]
         // There are two types of messages data messages and notification messages. Data messages are handled
         // here in onMessageReceived whether the app is in the foreground or background. Data messages are the type
@@ -59,18 +79,39 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.e(TAG, "From: " + remoteMessage.getFrom());
 
         // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
 
-            try{
-            if(remoteMessage.getNotification().getBody()!=null) {
-                Log.d(TAG, "Message data payload: " + remoteMessage.getNotification().getBody());
-                //  Log.e(TAG, "Message data payload: " + remoteMessage.getNotification().getBody());
-                sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
-                //   sendNotification(remoteMessage.getNotification().getBody());
-                mAppSession.saveData("notification", "notify");
-            }
-            }catch (Exception e){
-                e.printStackTrace();
+        if(remoteMessage.getNotification() != null) {
+            if (remoteMessage.getData().size() > 0) {
+
+                try {
+                    if (remoteMessage.getNotification().getBody() != null) {
+                        Log.d(TAG, "Message data payload: " + remoteMessage.getNotification().getBody());
+                        //  Log.e(TAG, "Message data payload: " + remoteMessage.getNotification().getBody());
+                        sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
+                        if (Utils.checkConnection(getApplicationContext())) {
+                            IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                            incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                            incdentSetPojo.setDevice_id(Utils.getDeviceId(getApplicationContext()));
+                            incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+                            incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                            incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+                            Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                            RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                            getCopeStatus(mFile);
+                        } else {
+                            Utils.showAlert(getApplicationContext().getString(R.string.internet_conection), getApplicationContext());
+                        }
+
+                     //   String new_reports =remoteMessage.getData().get("new_reports");
+                       // mAppSession.saveData("new_reports",new_reports);
+
+
+                        //   sendNotification(remoteMessage.getNotification().getBody());
+                        mAppSession.saveData("notification", "notify");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -79,7 +120,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             Log.e(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             sendNotification("COPOPS",remoteMessage.getNotification().getBody(),getApplicationContext());
-
+          //  String new_reports =remoteMessage.getData().get("new_reports");
+            if (Utils.checkConnection(getApplicationContext())) {
+                IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                incdentSetPojo.setDevice_id(Utils.getDeviceId(getApplicationContext()));
+                incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+                incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+                Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                getCopeStatus(mFile);
+            } else {
+                Utils.showAlert( getApplicationContext().getString(R.string.internet_conection), getApplicationContext());
+            }
+      //      mAppSession.saveData("new_reports",new_reports);
           //  sendNotification(remoteMessage.getNotification().getBody());
             mAppSession.saveData("notification","notify");
         }
@@ -128,9 +183,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //                    .setLargeIcon(BitmapFactory.decodeResource
 //                            (context.getResources(), R.mipmap.logo_launcher))
                     .setBadgeIconType(R.mipmap.logo_launcher)
-                    .setContentIntent(pendingIntent)
-                    .setSound(RingtoneManager.getDefaultUri
-                            (RingtoneManager.TYPE_NOTIFICATION));
+                    .setContentIntent(pendingIntent);
+//                    .setSound(RingtoneManager.getDefaultUri
+//                            (RingtoneManager.TYPE_NOTIFICATION));
             Notification notification = builder.build();
             notifManager.notify(0, notification);
         } else {
@@ -191,5 +246,50 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static int getNotificationIcon() {
         boolean useWhiteIcon = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
         return useWhiteIcon ? R.mipmap.logo_launcher : R.mipmap.logo_launcher;
+    }
+
+
+
+    private void getCopeStatus(RequestBody Data) {
+
+     //   progressDialog.show();
+        Service operator = ApiUtils.getAPIService();
+        Call<OperatorShowAlInfo> getallLatLong = operator.getOperotor(Data);
+        getallLatLong.enqueue(new Callback<OperatorShowAlInfo>() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onResponse(Call<OperatorShowAlInfo> call, Response<OperatorShowAlInfo> response)
+
+            {
+                try {
+                    if (response.body() != null) {
+                        OperatorShowAlInfo operatorShowAlInfo = response.body();
+
+                        if (operatorShowAlInfo.getStatus().equals("false")) {
+                            //  Utils.showAlert(registrationResponse.getMessage(), getActivity());
+                        } else {
+
+
+                             String new_reports =operatorShowAlInfo.getNew_reports();
+                             mAppSession.saveData("new_reports",new_reports);
+
+
+
+                    }
+
+                }} catch (Exception e) {
+
+                    e.getMessage();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OperatorShowAlInfo> call, Throwable t) {
+                Log.d("TAG", "Error " + t.getMessage());
+
+
+            }
+        });
     }
 }

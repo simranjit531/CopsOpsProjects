@@ -177,4 +177,12 @@ public class IncdentSetPojo implements Serializable {
     String other_description;
     String created_by;
     String objects;
+    String device_language;
+
+    public void setdevice_language(String device_language) {
+        this.device_language = device_language;
+    }
+    public String getdevice_language() {
+        return device_language;
+    }
 }

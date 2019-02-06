@@ -42,7 +42,7 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 @SuppressLint("ValidFragment")
-public class AuthenticateCodeFragment extends Fragment implements View.OnClickListener,View.OnKeyListener,Utils.resetPassInterFace {
+public class AuthenticateCodeFragment extends Fragment implements View.OnClickListener, View.OnKeyListener, Utils.resetPassInterFace {
 
     @BindView(R.id.ETfirst)
     EditText etFirst;
@@ -68,7 +68,7 @@ public class AuthenticateCodeFragment extends Fragment implements View.OnClickLi
 
     RegistationPojo mRegistationPojo;
     View view;
- String userType;
+    String userType;
     AppSession mAppSession;
     String messageText = "123456";
 //    TextWatcher textWatcher;
@@ -77,8 +77,8 @@ public class AuthenticateCodeFragment extends Fragment implements View.OnClickLi
     ProgressDialog progressDialog;
 
     public AuthenticateCodeFragment(String userType, RegistationPojo mRegistationPojo) {
-        this.userType=userType;
-        this.mRegistationPojo=mRegistationPojo;
+        this.userType = userType;
+        this.mRegistationPojo = mRegistationPojo;
         // Required empty public constructor
     }
 
@@ -90,9 +90,9 @@ public class AuthenticateCodeFragment extends Fragment implements View.OnClickLi
         view = inflater.inflate(R.layout.fragment_authenticate_code, container, false);
         ButterKnife.bind(this, view);
         mContext = getActivity();
-        mResetPassInterFace=this;
+        mResetPassInterFace = this;
         mAppSession = mAppSession.getInstance(mContext);
-        tv_id.setText(getActivity().getString(R.string.otp_msg)+" "+mRegistationPojo.getEmail_id());
+        tv_id.setText(getActivity().getString(R.string.otp_msg) + " " + mRegistationPojo.getEmail_id());
         onClick();
         etFirst.addTextChangedListener(new GenericTextWatcher(etFirst));
         etSecond.addTextChangedListener(new GenericTextWatcher(etSecond));
@@ -126,7 +126,7 @@ public class AuthenticateCodeFragment extends Fragment implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.Rltoolbar:
                 if (getFragmentManager().getBackStackEntryCount() > 0) {
                     getFragmentManager().popBackStackImmediate();
@@ -146,6 +146,7 @@ public class AuthenticateCodeFragment extends Fragment implements View.OnClickLi
                             loginPojoSetData.setOtp(mRegistationPojo.getOtp());
                             loginPojoSetData.setEmail_id(mRegistationPojo.getEmail_id());
                             loginPojoSetData.setDevice_id(Utils.getDeviceId(mContext));
+                            loginPojoSetData.setdevice_language(mAppSession.getData("devicelanguage"));
                             RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(loginPojoSetData)));
                             Service otp = ApiUtils.getAPIService();
                             Call<CommanStatusPojo> fileUpload = otp.callOtp(mFile);
@@ -193,7 +194,7 @@ public class AuthenticateCodeFragment extends Fragment implements View.OnClickLi
                     }
 
                     break;
-                }else {
+                } else {
                     Utils.showAlert(getActivity().getString(R.string.internet_conection), mContext);
                 }
         }
@@ -201,33 +202,31 @@ public class AuthenticateCodeFragment extends Fragment implements View.OnClickLi
 
     @Override
     public void onClick(int id) {
-        if(id ==1){
+        if (id == 1) {
 
             mAppSession.saveData("Login", "1");
 
-            if(userType.equalsIgnoreCase("Citizen")) {
+            if (userType.equalsIgnoreCase("Citizen")) {
                 Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
-            }else{
+            } else {
                 Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
             }
-        //    Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
+            //    Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
         }
     }
 
 
-    public class GenericTextWatcher implements TextWatcher
-    {
+    public class GenericTextWatcher implements TextWatcher {
         private View view;
-        private GenericTextWatcher(View view)
-        {
+
+        private GenericTextWatcher(View view) {
             this.view = view;
         }
 
         @Override
         public void afterTextChanged(Editable s) {
             // TODO Auto-generated method stub
-            switch(view.getId())
-            {
+            switch (view.getId()) {
 
                 case R.id.ETfirst:
                     if (s.length() == 1)
@@ -258,7 +257,7 @@ public class AuthenticateCodeFragment extends Fragment implements View.OnClickLi
                 case R.id.ETsixth:
                     if (s.length() == 1)
                         etSixth.clearFocus();
-                        Utils.hideKeyboard(getActivity());
+                    Utils.hideKeyboard(getActivity());
                     break;
             }
         }
@@ -273,6 +272,7 @@ public class AuthenticateCodeFragment extends Fragment implements View.OnClickLi
             // TODO Auto-generated method stub
         }
     }
+
     @Override
     public boolean onKey(View v, int i, KeyEvent keyEvent) {
         switch (v.getId()) {
@@ -302,7 +302,7 @@ public class AuthenticateCodeFragment extends Fragment implements View.OnClickLi
                     etFifth.requestFocus();
                 break;
         }
-            return false;
+        return false;
     }
 
 

@@ -248,6 +248,8 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         incdentSetPojo.setIncident_lat(String.valueOf(latitude));
         incdentSetPojo.setIncident_lng(String.valueOf(longitude));
         incdentSetPojo.setUser_id(mAppSession.getData("id"));
+        incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+
 
         Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
         RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
@@ -565,6 +567,7 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
                 incdentSetPojo.setIncident_lat(String.valueOf(toLatLng.latitude));
                 incdentSetPojo.setIncident_lng(String.valueOf(toLatLng.longitude));
                 incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
 
                     RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                     if (Utils.checkConnection(getActivity()))

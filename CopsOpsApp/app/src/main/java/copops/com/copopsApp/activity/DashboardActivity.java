@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBIncomingMessagesManager;
@@ -30,6 +31,7 @@ import com.quickblox.users.model.QBUser;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -71,21 +73,19 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-      //  Log.d("Firebase", "token "+ FirebaseInstanceId.getInstance().getToken());
-        //   buildUsersList();
-
-
-
-        //   QBSettings.getInstance().setStoringMehanism(StoringMechanism.UNSECURED); //call before init method for QBSettings
-
+        mAppSession = mAppSession.getInstance(this);
         mAppSession = mAppSession.getInstance(this);
 
+        FirebaseApp.initializeApp(this);
+
+        String devicelanguage = Locale.getDefault().getDisplayLanguage();
+        Log.e("devicelanguage===", "" + devicelanguage);
+        mAppSession.saveData("devicelanguage",devicelanguage);
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new
                     StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-
         handler = new Handler();
         checkOverlaySetting = new Runnable() {
             @Override
@@ -133,8 +133,6 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void fragmentContener() {
-        // Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
-
         Log.e("shortcutscreentype==", mAppSession.getData("shortcutscreentype"));
 
         if (mAppSession.getData("shortcutscreentype").equals("reportanincident")) {
@@ -148,7 +146,10 @@ public class DashboardActivity extends AppCompatActivity {
             if(intent==null) {
                 Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
             }else{
+
+                stopService(new Intent(DashboardActivity.this, ShortcutViewService.class));
                 Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
+
             }
         }
 

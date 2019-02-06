@@ -27,6 +27,7 @@ import copops.com.copopsApp.activity.DashboardActivity;
 import copops.com.copopsApp.pojo.AssignmentListPojo;
 import copops.com.copopsApp.pojo.CommanStatusPojo;
 import copops.com.copopsApp.pojo.IncdentSetPojo;
+import copops.com.copopsApp.pojo.OperatorShowAlInfo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
 import copops.com.copopsApp.utils.AppSession;
@@ -55,6 +56,8 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
 
     @BindView(R.id.TVreferencenumber)
     TextView TVreferencenumber;
+  @BindView(R.id.tvid)
+    TextView tvid;
 
     @BindView(R.id.etAddressId)
     EditText etAddressId;
@@ -101,6 +104,14 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
 
     private void initView() {
 
+
+if(assignmentListPojo.getData().get(pos).getUser_id()==null){
+    tvid.setText(R.string.Intervene);
+}
+      else{
+            tvid.setText(R.string.close);
+        }
+
         Rltoolbar.setOnClickListener(this);
         Rlintervenue.setOnClickListener(this);
         etAddressId.setText(assignmentListPojo.getData().get(pos).getAddress());
@@ -115,7 +126,7 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
         Tvtime.setText(time);
         if (assignmentListPojo.getData().get(pos).getIsAssigned().equalsIgnoreCase("wait")) {
             Tvstate.setText(R.string.onwait);
-            Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
+            Tvstate.setTextColor(getResources().getColor(R.color.orange));
         }
         else if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("pending")) {
             Tvstate.setText(R.string.pending);
@@ -127,8 +138,8 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
         else {
             Tvstate.setText(R.string.finished);
           //  Tvstate.setText("Finished");
-            Tvstate.setTextColor(getResources().getColor(R.color.black));
-            Rlintervenue.setVisibility(View.INVISIBLE);
+            Tvstate.setTextColor(getResources().getColor(R.color.green));
+          //  Rlintervenue.setVisibility(View.INVISIBLE);
             //  Tvstate.setText("Pending");
             //  Tvstate.setTextColor(getResources().getColor(R.color.black));
         }
@@ -148,7 +159,7 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
             case R.id.Rlintervenue:
                 //  Utils.fragmentCall(new CloseIntervationReportFragment(dateString, assignmentListPojo.getData().get(pos).getAddress(), assignmentListPojo.getData().get(pos).getReference(), assignmentListPojo.getData().get(pos).getStatus(), assignmentListPojo.getData().get(pos).getId()), getFragmentManager());
                 //Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
-                if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("1")) {
+                if (assignmentListPojo.getData().get(pos).getUser_id()==null) {
 
                     if (Utils.checkConnection(getActivity())) {
                         IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
@@ -156,6 +167,7 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
                         incdentSetPojo.setComment(descId.getText().toString().trim());
                         incdentSetPojo.setIncident_id(assignmentListPojo.getData().get(pos).getId());
                         incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+                        incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
                         Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                         RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                         getAssignIntervation(mFile);
@@ -163,7 +175,7 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
                         Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
                     }
                 } else {
-                   // Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+                    Utils.fragmentCall(new AssignmentTableFragment(), getFragmentManager());
                 }
 
 
@@ -175,8 +187,22 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
     public void onClick() {
         //   Utils.fragmentCall(new CloseIntervationReportFragment(dateString, assignmentListPojo.getData().get(pos).getAddress(), assignmentListPojo.getData().get(pos).getReference(), assignmentListPojo.getData().get(pos).getStatus(), assignmentListPojo.getData().get(pos).getId()), getFragmentManager());
 
-        if (commanStatusPojo.getStatus().equalsIgnoreCase("true"))
+        if (commanStatusPojo.getStatus().equalsIgnoreCase("true")) {
             Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
+            if (Utils.checkConnection(getActivity())) {
+                IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+                incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+                incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+                Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                getCopeStatus(mFile);
+            } else {
+                Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+            }
+        }
         else if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStackImmediate();
         }
@@ -228,6 +254,49 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
                 Log.d("TAG", "Error " + t.getMessage());
                 progressDialog.dismiss();
                 Utils.showAlert(t.getMessage(), getActivity());
+            }
+        });
+    }
+
+    private void getCopeStatus(RequestBody Data) {
+
+        //   progressDialog.show();
+        Service operator = ApiUtils.getAPIService();
+        Call<OperatorShowAlInfo> getallLatLong = operator.getOperotor(Data);
+        getallLatLong.enqueue(new Callback<OperatorShowAlInfo>() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onResponse(Call<OperatorShowAlInfo> call, Response<OperatorShowAlInfo> response)
+
+            {
+                try {
+                    if (response.body() != null) {
+                        OperatorShowAlInfo operatorShowAlInfo = response.body();
+
+                        if (operatorShowAlInfo.getStatus().equals("false")) {
+                            //  Utils.showAlert(registrationResponse.getMessage(), getActivity());
+                        } else {
+
+
+                            String new_reports =operatorShowAlInfo.getNew_reports();
+                            mAppSession.saveData("new_reports",new_reports);
+
+
+
+                        }
+
+                    }} catch (Exception e) {
+
+                    e.getMessage();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OperatorShowAlInfo> call, Throwable t) {
+                Log.d("TAG", "Error " + t.getMessage());
+
+
             }
         });
     }
