@@ -28,6 +28,7 @@ use App\CopUserIncidentTempMapping;
 use Edujugon\PushNotification\Facades\PushNotification;
 use App\Notification;
 use App\CopUserLocation;
+use App\ApplicationWaitNotification;
 
 class ApiController extends Controller
 {
@@ -229,7 +230,7 @@ class ApiController extends Controller
                     'verified'=>0,
                     'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_REGISTRATION_SUCCESS),
                     'profile_url' => empty($user->profile_image) ? '' : asset('uploads/profile').'/'.$user->profile_image,
-                    'grade'=>$user->cops_grade,
+                    'grade'=>str_replace('Grade', '', $user->cops_grade),
                     'available'=>$user->available,
                     'level'=>1,
                     'profile_percent'=>$attributes['profile_percent'],
@@ -341,7 +342,7 @@ class ApiController extends Controller
             'otp' => $auth[0]->otp,
             'profile_url' => empty($auth[0]->profile_image) ? '' : asset('uploads/profile').'/'.$auth[0]->profile_image,
             'verified' => $auth[0]->verified,
-            'grade'=>$auth[0]->cops_grade,
+            'grade'=>str_replace('Grade', '', $auth[0]->cops_grade),
             'available'=>$auth[0]->available,
             'level'=>1,
             'profile_percent'=>$attributes['profile_percent'],
@@ -414,7 +415,11 @@ class ApiController extends Controller
             return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
         }
 
-        $incidents = IncidentCategory::all();
+        // $incidents = IncidentCategory::all();
+
+        /* Get Language of device from api */
+        $lang = strtolower($payload['device_language']);  
+        $incidents = IncidentCategory::where(['lang'=>$lang])->get();
 
         if($incidents->isEmpty()) return $this->sendResponseMessage(['flag'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
 
@@ -449,8 +454,11 @@ class ApiController extends Controller
             return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
         }
 
+        /* Get Language of device from api */
+        $lang = strtolower($payload['device_language']);  
+        
         $incidentId = $payload['incident_id'];
-        $subIncidents = IncidentSubcategory::where(['ref_incident_category_id'=>$incidentId])->get();
+        $subIncidents = IncidentSubcategory::where(['ref_incident_category_id'=>$incidentId, 'lang'=>$lang])->get();
 
         if($subIncidents->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
 
@@ -912,7 +920,7 @@ class ApiController extends Controller
              LEFT JOIN cop_user_incident_mapping ON cop_user_incident_mapping.cop_incident_details_id = cop_incident_details.id
                  WHERE cop_incident_details.id in 
                  (select cop_incident_details_id from cop_user_incident_temp_mapping where ref_user_id = $copId) GROUP BY cop_incident_details.id )cid 				 
-                 order by created_at desc";
+                 order by status ASC, created_at desc";
                  
         $res = \DB::select($query);
 		
@@ -931,8 +939,16 @@ class ApiController extends Controller
         if(!empty($res)){
         	foreach ($res as $key => $value) 
         	{
+                $rs = ApplicationWaitNotification::where(['ref_incident_id'=>$value->id])->get();
         		$date = Carbon::parse($res[$key]->created_at)->format('d/m/y H:i:s');
         		$res[$key]->created_at = $date;
+
+                switch ($res[$key]->isAssigned) {
+                    case "Finished": $res[$key]->seen = 3; break;
+                    case "Pending": $res[$key]->seen = 2; break;
+                    case "Wait": $res[$key]->seen = (!$rs->isEmpty()) ? 1 : 0; break;                    
+                }         		
+                // $res[$key]->seen = $res[$key]->isAssigned == "Finished" ? 3 : $res[$key]->isAssigned == "Pending" ? 2 : ($res[$key]->isAssigned == "Wait" && !$rs->isEmpty()) ? 1 : 0;
         	}
         }
 
@@ -987,7 +1003,7 @@ class ApiController extends Controller
             if($user->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
             return $this->sendResponseMessage([
                 'status'=>true,
-                'grade'=>$user[0]->cops_grade,
+                'grade'=>str_replace('Grade', '', $user[0]->cops_grade),
                 'available'=>$user[0]->available,
                 'level'=>$attributes['level'],
                 'report'=>$attributes['report'],
@@ -1084,8 +1100,8 @@ class ApiController extends Controller
             }
 
             IncidentDetail::where('id', $incidentId)->update(['status'=>2]);
-            if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_SUCCESS)],200);
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_FAILURE)],200);
+            if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_SUCCESS, strtolower($payload['device_language']))],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_FAILURE, strtolower($payload['device_language']))],200);
         }
         catch (QueryException $e)
         {
@@ -1313,14 +1329,23 @@ class ApiController extends Controller
             case 4 : $percentage = 100; break;
         }
 
-        if($closedIncidentDataCount == 0) $percentage = 0;
+        if($closedIncidentDataCount == 0) $percentage = 0; $count = 0; $incidentIdArr = array();
+        if(!empty($res)){            
+            foreach ($res as $key => $value){
+                array_push($incidentIdArr, $value->id);
+            } 
+        }
+        $rs = ApplicationWaitNotification::whereIn('ref_incident_id', $incidentIdArr)->where(['ref_user_id'=> $userId])->get();        
+        $count = count($rs);
+        // print_r($count);
+
         return array(
-            'level'=>'Level '.$quotient,
+            'level'=>$quotient,
             'report'=>$report,
             'profile_percent'=>$percentage,
             'total_reports'=>$incidentDataCount,
             'completed_reports'=>count($closedIncidentData),
-            'new_reports'=> $newReport
+            'new_reports'=> ($count > 0) ? ($newReport - $count) : $newReport
         );
     }
 
@@ -1386,6 +1411,30 @@ class ApiController extends Controller
     }
 
 
+    /* Update wait status for notification */
+    
+    public function update_notification_status(Request $request)
+    {
+        $payload = $this->get_payload($request);
+        if(isset($payload['status']) && $payload['status'] === false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> $payload['message']],200);
+        }
+        
+        $rules  = [
+            'user_id'=>'required',
+            'incident_id' => 'required'            
+        ];
+        
+        $result = $this->validate_request($payload, $rules);
+        if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
+        
+        ApplicationWaitNotification::create([
+            'ref_user_id' => $payload['user_id'], 
+            'ref_incident_id' => $payload['incident_id'],
+        ]);
+    }
+
 
     /* Util function for payload processing
      * @accepts encoded json string in request
@@ -1397,10 +1446,11 @@ class ApiController extends Controller
         file_put_contents('uploads/test.txt',$payload);
 
         try
-        {
+        {            
             if(!isset($payload['data'])) return array('status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INVALID_REQUEST));
             $payload = json_decode($this->decrypt($this->key, $payload['data']), true);
             if($payload === null) return array('status'=> false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INVALID_JSON));
+
             return $payload;
         }
         catch (\Exception $e)

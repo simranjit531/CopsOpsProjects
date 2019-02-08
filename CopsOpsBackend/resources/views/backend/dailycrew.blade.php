@@ -29,7 +29,7 @@
 	 <div class="caree-form col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
             <div class="row">
                 <div class="caree-left-form col-12 col-sm-5 col-md-5 col-lg-5 col-xl-5">
-                    <h2>Create A Team</h2>
+                    <h2>{{ trans('pages.createteam') }}</h2>
                     <form method="post" name="form_create_team" action="{{ route('dailycrewcreate') }}">
                     	@csrf
                     	<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-3">
@@ -38,14 +38,14 @@
                         </div>
                         
                         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-3">
-                            <label>Team Name</label>
+                            <label>{{ trans('pages.teamname')}}</label>
                             <input type="text" class="form-control" name="team_name">
                         </div>
                         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-3">
-                            <label>Operator 1</label>
+                            <label>{{trans('pages.usermgnt.operator')}} 1</label>
                             <select class="form-control  operator_name" name="operator_name[]">
                             	@if($operators)
-                            		<option value="">Select</option>
+                            		<option value="">{{ trans('pages.SELECT')}}</option>
                             		@foreach($operators as $o)
                             		<option value="{{ $o->id }}">{{ $o->first_name.' '.$o->last_name }}</option>
                             		@endforeach
@@ -53,10 +53,10 @@
                             </select>                            
                         </div>
                         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-3">
-                            <label>Operator 2</label>
+                            <label>{{trans('pages.usermgnt.operator')}} 2</label>
                             <select class="form-control  operator_name" name="operator_name[]">
                             	@if($operators)
-                            		<option value="">Select</option>
+                            		<option value="">{{ trans('pages.SELECT')}}</option>
                             		@foreach($operators as $o)
                             		<option value="{{ $o->id }}">{{ $o->first_name.' '.$o->last_name }}</option>
                             		@endforeach
@@ -64,10 +64,10 @@
                             </select>  
                         </div>
                         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-3 operator-div">
-                            <label>Operator 3</label>
+                            <label>{{trans('pages.usermgnt.operator')}} 3</label>
                             <select class="form-control operator_name" name=operator_name[]">
                             	@if($operators)
-                            		<option value="">Select</option>
+                            		<option value="">{{ trans('pages.SELECT')}}</option>
                             		@foreach($operators as $o)
                             		<option value="{{ $o->id }}">{{ $o->first_name.' '.$o->last_name }}</option>
                             		@endforeach
@@ -75,9 +75,9 @@
                             </select>  
                         </div> 
                         <div id="cloned-div-area"></div>
-                        <a href="javascript:void(0);" class="new-add mt-2"><i class="fa fa-plus-circle" aria-hidden="true"></i> Add New</a>
+                        <a href="javascript:void(0);" class="new-add mt-2"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ trans('pages.Addnew')}}</a>
                         <div class="clearfix"></div>
-                        <button type="submit" name="btn_create_team" class="submit-btn">Create</button>
+                        <button type="submit" name="btn_create_team" class="submit-btn">{{trans('pages.create')}}</button>
                     </form>
                 </div>
 				
@@ -87,24 +87,24 @@
                         <form method="post" name="form_date_filter" action="{{ route('crewfilter') }}">
 						@csrf
                             <div class="col-lg-12">
-                                <label>From Date</label>
+                                <label>{{ trans('pages.fromdate') }}</label>
                                 <input type="text" class="form-control" name="fromdatea"  id="fromdatea" readonly="readonly">
                             </div>
                             <div class="col-lg-12">
-                                <label class="text-center">To Date</label>
+                                <label class="text-center">{{ trans('pages.todate') }}</label>
                                 <input type="text" class="form-control" name="todate" id="todate" readonly="readonly">
                             </div>
                            <div class="col-lg-12">
-                                <label>Name of the crew</label>
-                                <input class="form-control form-control-navbar" type="text" name="crewname" id="crewname" placeholder="Name of the crew" aria-label="Search">
+                                <label>{{ trans('pages.namecrew') }}</label>
+                                <input class="form-control form-control-navbar" type="text" name="crewname" id="crewname" placeholder="{{ trans('pages.namecrew') }}" aria-label="Search">
                             </div>
-                            <input type="submit" id="search-form" class="actual-btn mt-2 mb-2 btn-success" value="Actual">
+                            <input type="submit" id="search-form" class="actual-btn mt-2 mb-2 btn-success" value="{{ trans('pages.Actual')}}">
                         </form>
                     </div>
                                     
                     <ul class="list-heading">
-                        <li>Name of the crew </li>
-                        <li style="text-align: center; padding-left: 100px;">Effective</li>
+                        <li>{{ trans('pages.namecrew') }} </li>
+                        <li style="text-align: center; padding-left: 100px;">{{ trans('pages.Effective')}}</li>
                     </ul>
                     @if($teams)
                     	@foreach($teams as $k=>$t)
@@ -125,7 +125,7 @@
                     <div class="text-center">
                     	<h3 id="date"></h3>
                     	<p><b>Details</b></p>
-                    	<p><b>Name of the crew</b></p>
+                    	<p><b>{{ trans('pages.namecrew') }}</b></p>
                     	<p id="crew_name"></p>
                     	<p><b>Name of the crew Members</b></p>
                     	<div id="crew_member"></div>

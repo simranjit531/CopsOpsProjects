@@ -78,7 +78,8 @@
                                 <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                                     <div class="panel-body">
                                         <div class="col-sm-12 input-field mb-4">
-                    						<label>First/Last Name </label> 
+                    						<label>{{ trans('pages.usermgnt.tables.firstname')}} / {{
+															trans('pages.usermgnt.tables.lastname')}}</label> 
                     						<select class="form-control js-example-basic-single" name="_operators[]" style="width: 100%">
                     							<option value="">{{trans('pages.usermgnt.operator')}}</option>
                     							@if($operators) @foreach($operators as $o)
@@ -88,7 +89,8 @@
                     					</div>
                     					
                     					<div class="col-sm-12 input-field mb-4">
-                    						<label>First/Last Name </label> 
+                    						<label>{{ trans('pages.usermgnt.tables.firstname')}} / {{
+															trans('pages.usermgnt.tables.lastname')}} </label> 
                     						<select class="form-control js-example-basic-single" name="_operators[]" style="width: 100%">
                     							<option value="">{{trans('pages.usermgnt.operator')}}</option>
                     							@if($operators) @foreach($operators as $o)
@@ -98,7 +100,8 @@
                     					</div>
                     					
                     					<div class="col-sm-12 input-field mb-4" id="cloneDiv">
-                    						<label>First/Last Name </label> 
+                    						<label>{{ trans('pages.usermgnt.tables.firstname')}} / {{
+															trans('pages.usermgnt.tables.lastname')}} </label> 
                     						<select class="form-control js-example-basic-single" name="_operators[]" style="width: 100%">
                     							<option value="">{{trans('pages.usermgnt.operator')}}</option>
                     							@if($operators) @foreach($operators as $o)
@@ -110,7 +113,7 @@
                     					<div id="cloned-divs"></div>
                     					
                     					<div class="col-sm-12 input-field mb-4">
-                    						<label><a href="javascript:void(0);">add more <i class="fa fa-plus add-more-divs"></i></a> </label>
+                    						<label><a href="javascript:void(0);">{{ trans('pages.addmore')}} <i class="fa fa-plus add-more-divs"></i></a> </label>
                     					</div>
                     					
                     					
@@ -297,7 +300,7 @@
 								<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
 									<div class="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
 										<h2>
-											{{ trans('pages.usermgnt.intervention')}} <br> {{
+											{{ trans('pages.reporting')}} <br> {{
 											trans('pages.usermgnt.attributed')}}
 										</h2>
 									</div>
@@ -322,8 +325,7 @@
 								<div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3">
 									<div class="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
 										<h2>
-											{{ trans('pages.usermgnt.intervention')}} <br> {{
-											trans('pages.usermgnt.attributed')}}
+											{{ trans('pages.reporting')}} <br> police
 										</h2>
 									</div>
 									<div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
@@ -334,8 +336,8 @@
 								<div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3">
 									<div class="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
 										<h2>
-											{{ trans('pages.usermgnt.intervention')}} <br> {{
-											trans('pages.usermgnt.attributed')}}
+											{{ trans('pages.reporting')}} <br> {{
+											trans('pages.Fireman')}}/Medical
 										</h2>
 									</div>
 									<div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
@@ -346,8 +348,8 @@
 								<div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3">
 									<div class="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
 										<h2>
-											{{ trans('pages.usermgnt.intervention')}} <br> {{
-											trans('pages.usermgnt.attributed')}}
+											{{ trans('pages.reporting')}} <br> {{
+											trans('pages.City')}}
 										</h2>
 									</div>
 									<div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
@@ -358,8 +360,7 @@
 								<div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3">
 									<div class="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
 										<h2>
-											{{ trans('pages.usermgnt.intervention')}} <br> {{
-											trans('pages.usermgnt.attributed')}}
+											{{ trans('pages.handrail')}} 
 										</h2>
 									</div>
 									<div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
@@ -490,7 +491,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<a class="closeinterval btn btn-default" data-dismiss="modal">Close</a>
+					<a class="closeinterval btn btn-default" data-dismiss="modal">{{ trans('pages.Close')}}</a>
 				</div>
 			</div>
 
@@ -562,7 +563,7 @@ $(function(){
 	          { data: 'cops_grade', name: 'cops_grade' }, 
 			  { data: 'view', name : 'view', orderable: false, searchable: false},
 	      ],
-	        //order: [[0, "desc"]]
+	        order: [[0, "desc"]]
 	});
 
 	oTableCitizen = $('#userTable').DataTable({
@@ -952,10 +953,12 @@ $(function(){
 });
 function clearMyInterval()
 {
+	/*
 	var lat = 48.864716;
 	var lng = 2.349014;		
 	var center = new google.maps.LatLng(lat, lng);
 	_initialize(center, 'map', 5);
+	**/
 	if(intervals.length > 0)
 	{
 		for(var i=0; i<intervals.length; i++)
@@ -968,13 +971,14 @@ $(document).on('click','.closeinterval',function(){
 	
 	clearMyInterval();
 });
+let i =1;
 function user_live_location(userId){	
 	if(userId !=""){
 	if(intervals.length > 0)
 	{
 		clearMyInterval();
 	}
-	// var interva = setInterval( function () {
+	var interva = setInterval( function () {
     	    $.ajax({
     			'url':"{{ route('backoffice.live.location') }}",
     			'data':{"_token": "{{ csrf_token() }}", "user_id":userId},
@@ -983,8 +987,8 @@ function user_live_location(userId){
 						var lat = response.data[0].latitude;
 						var lng = response.data[0].longitude;		
 						var center = new google.maps.LatLng(lat, lng);
-						_initialize(center, 'map', 15);
-						
+						if(i == 1) _initialize(center, 'map', 15);
+						i++;
     					var markerArray = [];
     					var flightPlanCoordinates =[];
     					$(response.data).each(function(k,v){
@@ -1002,7 +1006,7 @@ function user_live_location(userId){
     				}
     			}
     		});
-    	// }, 5000 );
+    	}, 5000 );
 		intervals.push(interva);
 	}
 }
@@ -1074,6 +1078,15 @@ function draw_route(flightPlanCoordinates)
 
     flightPath.setMap(map);
 }
+
+if("{{ app()->getLocale() }}" == 'fr')
+ {
+$.extend(true, $.fn.dataTable.defaults, {
+		language: {
+			url : '//cdn.datatables.net/plug-ins/1.10.10/i18n/French.json'
+		}
+	});
+ }
 
 </script>
 @endsection

@@ -50,6 +50,8 @@ Route::group(['prefix' => 'auth'], function () {
 	
 	Route::post('/incident/rejected','API\ApiController@reject_incident'); //pp
 	Route::post('/check/freeze','API\ApiController@check_user_freeze'); //pp
+
+    Route::post('/notification/update','API\ApiController@update_notification_status');
 });
 
 //Route::middleware('auth:api')->get('/user', function (Request $request) {

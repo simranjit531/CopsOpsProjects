@@ -38,8 +38,8 @@ class ResponseMessage
     const _STATUS_REGISTERED_INCIDENT_CLOSED_SUCCESS = 6006;
     const _STATUS_REGISTERED_INCIDENT_CLOSED_FAILURE = 6007;
     const _STATUS_NO_INCIDENT_REPORTED = 6008;
-    const _STATUS_REJECT_SUCCESS = 6015;
-    const _STATUS_REJECT_FAILURE = 6016;
+	const _STATUS_REJECT_SUCCESS = 6015;
+	const _STATUS_REJECT_FAILURE = 6016;
     
     const _STATUS_INTERVENTION_ASSIGNED_SUCCESS = 6009;
     const _STATUS_INTERVENTION_ASSIGNED_FAILURE = 6010;
@@ -49,8 +49,8 @@ class ResponseMessage
     const _STATUS_ACCOUNT_APPROVAL_REFUSED = 60014;
     const _STATUS_PROFILE_IMAGE_REQUIRED = 60015;
     const _STATUS_INTERVENTION_CLOSE_ERROR = 60016;
-    
-    public static $lang = 'en';
+	
+	
 
     public static $response = [
         '1' => 'Invalid request, please check',
@@ -91,70 +91,19 @@ class ResponseMessage
         '6008' => 'No Incident reported at this location',
         '6009' => 'The intervention has been assigned to you',
         '6010' => 'Something went wrong, please try again',
-        '60011' => 'The intervention has been already assigned.',
+        '60011' => 'This intervention has been already assigned.',
         '60012' => 'Account approval pending from backoffice.',
         '60013' => 'Your account has been freeze. Please contact Backoffice Administrator.',
         '60014' => 'Account refused from backoffice.',
         '60015' => 'Profile Image is required !',
         '60016' => 'You can only close interventions assigned to you only',
-        '6015' => 'Rejected Successful',
-        '6016' => 'Rejected Failed'
-        
-    ];
-    
-    public static $responseFrench = [
-        '1' => 'Votre demande n’est pas valide, veuillez verifier',
-        '2' => 'Aucune information n’a été retrouvée',
-        '3' => 'Le Fils J-son est Invalide',
-        
-        //         '9999' => 'Invalid request, data not found, please check again',
-        
-        '1000' => 'Inscris avec succées',
-        '1001' => 'Impossible de s’inscrire, Veuillez réessayer!!!',
-        
-        '2000' => 'Image téléchargée avec succès',
-        '2001' => 'Un souci est survenu, incapable de télécharger l’image, Veuillez reessayer plus tard',
-        
-        '3000' => 'Identifiants Invalids',
-        
-        '4000' => 'Connexion réussie',
-        
-        '5000' => 'Le mot de passe a été envoyé sur votre adresse couriel avec succès.',
-        '5001' => 'Impossible d’envoyer le mot de passe, veuillez réessayer plus tard',
-        '5002' => 'Aucun utilisateur existant sous cette adresse courriel !!!',
-        '5003' => 'l’OTP à été vérifié avec succès',
-        '5004' => 'Invalide OTP, veuillez réessayer plus tard',
-        '5005' => 'Aucun utilisateur existant dans notre DB',
-        '5006' => 'Type d’utilisateur invalide',
-        '5007' => "Opération invalide, veuillez réessayer plus tard",
-        '5008' => "Statut de disponibilité est à  disponible",
-        '5009' => "Statut de disponibilité défini sur disponible",
-        
-        '6000' => 'Un nouvel incident a été ajouter  au système avec success',
-        '6001' => 'OOPS!! ! Impossible d’ajouter un nouvel incident au système, Veuillez réessayer  plus tard',
-        '6002' => 'une main courante a été ajoutée au système avec succès',
-        '6003' => 'OOPS!!! Impossible d’ajouter une main courante au système, veuillez réessayer plus tard',
-        '6004' => 'Une vidéo ou une image est requise',
-        '6005' => 'Une Signature est requise',
-        '6006' => 'L’incident est cloturé avec succé',
-        '6007' => 'Un problème est survenue, impossible de fermer l\'incident, veuillez réessayer plus tard.',
-        '6008' => 'Aucun incident n’a été signalé à cet endroit',
-        '6009' => 'L\'intervention vous a été assignée',
-        '6010' => ' Une erreur s\'est produite. Veuillez réessayer',
-        '60011' => 'L\'interevention Vous a été assigner',
-        '60012' => 'L’acceptation du compte en attente du backoffice.',
-        '60013' => 'Votre compte a été figé. Veuillez contacter l\'administrateur du Backoffice.',
-        '60014' => 'Le compte a été refuse depuis le Backoffice',
-        '60015' => 'Une photo de profil est requise',
-        '60016' => 'Vous ne pouvez fermer que les interventions qui vous ont été assignées',
-        '6015' => 'Rejeter avec succé',
-        '6016' => 'Echeque de rejet'
+		'6015' => 'Rejected Successful',
+		'6016' => 'Rejected Failed'
         
     ];
 
-    public static function statusResponses($responseKey, $lang=null)
+    public static function statusResponses($responseKey)
     {
-        if($lang == "fr") return static::$responseFrench[$responseKey];
         return static::$response[$responseKey];
     }
 }

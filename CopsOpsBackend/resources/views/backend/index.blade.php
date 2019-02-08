@@ -137,9 +137,9 @@
 
 					<div class="col-12 col-sm-4 col-md-4 location-zone ml-3">
 						<ul>
-							<li><a href="javascript:void(0);" id="add-zone-of-interest">Zone <br>d'internet
+							<li><a href="javascript:void(0);" id="add-zone-of-interest">{{ trans('pages.ZoneofInterest')}}
 									<i class="fa fa-map-marker" aria-hidden="true"></i></a></li>
-							<li><a href="javascript:void(0);" id="add-point-of-interest">Point <br>d'internet
+							<li><a href="javascript:void(0);" id="add-point-of-interest">{{ trans('pages.PointofInterest')}} 
 									<i class="fa fa-arrows-v" aria-hidden="true"></i></a></li>
 						</ul>
 					</div>
@@ -258,10 +258,10 @@
 											</div>
 
 											<div class="col-md-6 text-right">
-												<p>State</p>
+												<p>{{ trans('pages.State')}}</p>
 												<div style="float: right;">
 													<p class="alert-success" id="incident-state"
-														style="padding: 6px 12px;">Pending</p>
+														style="padding: 6px 12px;">{{ trans('pages.Pending')}}</p>
 												</div>
 											</div>
 
@@ -311,7 +311,7 @@
 						</div>
                          -->
 								<p>
-									<b>Information of the report</b>
+									<b>{{ trans('pages.inforeport')}}</b>
 								</p>
 								<p>
 									<b>Localisation</b>
@@ -323,7 +323,7 @@
 
 								<div
 									class="form-group col-12 col-sm-4 col-md-4 col-lg-4 col-xl-5 mt-2 pl-0">
-									<label class="w-100">Address</label>
+									<label class="w-100">{{ trans('pages.usermgnt.address')}}</label>
 								</div>
 
 								<div
@@ -333,26 +333,26 @@
 
 								<div
 									class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 mt-2 pl-0">
-									<label class="">Subject of the report</label> <span
+									<label class="">{{ trans('pages.Subjectofthereport')}}</label> <span
 										id="subject_report"></span>
 								</div>
 
 								<div
 									class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 pl-0">
-									<label class="w-100">Description</label>
+									<label class="w-100">{{ trans('pages.description')}}</label>
 									<textarea class="form-control"
 										style="resize: none; width: 100%;" id="incident_description"></textarea>
 								</div>
 
 								<div
 									class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 pl-0">
-									<label class="w-100">Other Information</label>
+									<label class="w-100">{{ trans('pages.otherinfo')}}</label>
 									<textarea class="form-control"
 										style="resize: none; width: 100%;" id="other_description"></textarea>
 								</div>
 								<div
 									class="form-group col-12 col-sm-4 col-md-4 col-lg-4 col-xl-5 mt-2 pl-0">
-									<label class="w-100">Attachment</label>
+									<label class="w-100">{{ trans('pages.Attachement')}}</label>
 									<p id="attachmentinc"></p>
 									<div id="attachmentvideoinc"></div>
 								</div>
@@ -487,6 +487,7 @@ $(function(){
 	      event.preventDefault();
 	      $('#search_places').blur();
 	      var address = document.getElementById( 'search_places' ).value;
+		  
 	      codeAddress(address);
 	      return false;
 	    }
@@ -820,12 +821,13 @@ function codeAddress(address)
             //In this case it creates a marker, but you can get the lat and lng from the location.LatLng
             var lat = results[0].geometry.location.lat();
             var lng = results[0].geometry.location.lng();
-            
+			
             $('input[type="hidden"][name="hidden_lat"]').val(lat);
             $('input[type="hidden"][name="hidden_lng"]').val(lng);
             
             map.setCenter( results[0].geometry.location );
             map.setZoom(12);
+			
             
         } else {
             alert( 'Geocode was not successful for the following reason: ' + status );
@@ -1113,22 +1115,22 @@ $(document).on('click','.view-incident',function(e){
 				$('.citizen ').removeClass('hide');	
 			if(typeof d[0]['report_police'] !== 'undefined')
 			{
-				$('#report_police').html("<h2>Report <br>Police<span >"+d[0]['report_police']+"</span></h2>");
+				$('#report_police').html("<h2>{{ trans('pages.archive.report')}} <br>Police<span >"+d[0]['report_police']+"</span></h2>");
 			}
 			
 			if(typeof d[0]['report_fire'] !== 'undefined')
 			{
-			$('#report_fireman_medical').html("<h2>Report <br> Fireman/medical<span >"+d[0]['report_fire']+"</span></h2>");
+			$('#report_fireman_medical').html("<h2>{{ trans('pages.archive.report')}} <br> {{ trans('pages.Fireman')}}/medical<span >"+d[0]['report_fire']+"</span></h2>");
 			}
 
 			if(typeof d[0]['report_city'] !== 'undefined')
 			{
-			$('#report_city').html("<h2>Report <br> City<span >"+d[0]['report_city']+"</span></h2>");
+			$('#report_city').html("<h2>{{ trans('pages.archive.report')}} <br>{{ trans('pages.City')}}<span >"+d[0]['report_city']+"</span></h2>");
 			}
 			
 			if(typeof d[0]['report_handrail'] !== 'undefined')
 			{
-			$('#report_handrail').html("<h2>Handrail<span >"+d[0]['report_handrail']+"</span></h2>");
+			$('#report_handrail').html("<h2>{{ trans('pages.handrail')}}<span >"+d[0]['report_handrail']+"</span></h2>");
 			}
 		}
 		else if(d[0]['ref_user_type_id'] == '{{ App\UserType::_TYPE_OPERATOR }}') {
@@ -1136,12 +1138,12 @@ $(document).on('click','.view-incident',function(e){
 				$('.citizen ').addClass('hide');	
 			if(typeof d[0]['assigned_incidents'] !== 'undefined')
 			{
-			$('#assigned_incidents').html("<h2>Assigned<br>incidents<span >"+d[0]['assigned_incidents']+"</span></h2>");
+			$('#assigned_incidents').html("<h2>{{ trans('pages.Assigned')}}<br> Interventions<span >"+d[0]['assigned_incidents']+"</span></h2>");
 			}
 
 			if(typeof d[0]['completed_incidents'] !== 'undefined')
 			{
-			$('#completed_incidents').html("<h2>Completed<br>incidents<span >"+d[0]['completed_incidents']+"</span></h2>");
+			$('#completed_incidents').html("<h2>{{ trans('pages.Completed')}}<br>incidents<span >"+d[0]['completed_incidents']+"</span></h2>");
 			}
 		}
 			$('#incidents_address').val(d[0]['address']);
@@ -1177,15 +1179,15 @@ $(document).on('click','.view-incident',function(e){
 			$('#incident-state').removeClass('alert-danger');
 			$('#incident-state').removeClass('alert-primary');
 			$('#incident-state').removeClass('alert-success');
-			if(incidentState == "On-Wait")
+			if((incidentState == "On-Wait") || (incidentState == "En attente"))
 			{
 				$('#incident-state').addClass('alert-danger');
 			}
-			else if(incidentState == "Pending")
+			else if((incidentState == "Pending") || (incidentState == "En cours"))
 			{
 				$('#incident-state').addClass('alert-primary');
 			}
-			else if(incidentState == "Finished")
+			else if((incidentState == "Finished") || (incidentState == "Terminé"))
 			{
 				$('#incident-state').addClass('alert-success');
 			}
@@ -1227,9 +1229,14 @@ $(document).on('click','.view-incident',function(e){
 
 
 
-
-
-
+ if("{{ app()->getLocale() }}" == 'fr')
+	 {
+	  $.extend(true, $.fn.dataTable.defaults, {
+			language: {
+				url : '//cdn.datatables.net/plug-ins/1.10.10/i18n/French.json'
+			}
+		});
+	 }
 
 
 

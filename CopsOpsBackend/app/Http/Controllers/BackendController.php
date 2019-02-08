@@ -30,6 +30,8 @@ use Edujugon\PushNotification\Facades\PushNotification;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use function GuzzleHttp\json_encode;
 use App\CopUserLocation;
+use Session;
+use Lang; 
 
 class BackendController extends Controller
 {
@@ -327,7 +329,7 @@ class BackendController extends Controller
             'cop_incident_details.incident_description', 'cop_incident_details.created_at')
 		->join('cop_incident_details','cop_incident_details.id','=','cop_user_incidents_closed.cop_incident_details_id')
 		->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
-		->join('ref_user','ref_user.id','=','cop_incident_details.created_by');
+		->join('ref_user','ref_user.id','=','cop_incident_details.created_by')->where('cop_incident_details.status',3);
 		
 		if($request->fromdate != "" && $request->todate != "" )
 		{		    
@@ -341,7 +343,7 @@ class BackendController extends Controller
 			
 		foreach($users as $k=>$u)
 		{
-		    $users[$k]->date = Carbon::parse($u->created_at)->format('M d Y H:i a');		    
+		    $users[$k]->date = Carbon::parse($u->created_at)->format('d/m/y H:i a');		    
 		}
 		
 		return Datatables::of($users)->addColumn('firstlast', function($row){
@@ -349,10 +351,10 @@ class BackendController extends Controller
 		})
 		 ->addColumn('statuss',function($rows){ 
 		 	//echo $rows->status; die;
-		 	if ($rows->status == 0) { return 'On-wait'; }
-		 	else if($rows->status == 1){ return 'Pending'; }
-		 	else if($rows->status == 2){ return 'Finished'; }
-		 	else { return 'Finished'; }
+		 	if ($rows->status == 1) { return Lang::get("pages.Onwait"); }
+		 	else if($rows->status == 2){ return Lang::get("pages.Pending"); }
+		 	else if($rows->status == 3){ return Lang::get("pages.Finished"); }
+		 	else { return Lang::get("pages.Finished"); }
 		 })
 		 ->addColumn('view', function($userview){
 				return '<a href="javascript:void(0)" id="viewIncident" rel="'.$userview->id.'" data-toggle="modal" data-target="#myModal"><i class="fa fa-angle-right" aria-hidden="true"></i></a>';
@@ -437,7 +439,7 @@ class BackendController extends Controller
 			{
 			    foreach ($users as $k=>$u)
 			    {
-			        $users[$k]->date = Carbon::parse($u->created_at)->format('M d Y H:i a');
+			        $users[$k]->date = Carbon::parse($u->created_at)->format('d/m/y H:i a');
 			    }
 			}
 			 return Datatables::of($users) ->addColumn('firstlast', function($row){
@@ -445,10 +447,10 @@ class BackendController extends Controller
 			})
 			 ->addColumn('statuss',function($rows){ 
 			 	//echo $rows->status; die;
-			 	if ($rows->status == 0) { return 'On-wait'; }
-			 	else if($rows->status == 1){ return 'Pending'; }
-			 	else if($rows->status == 2){ return 'Finished'; }
-			 	else { return 'Finished'; }
+			 	if ($rows->status == 1) { return Lang::get("pages.Onwait"); }
+			 	else if($rows->status == 2){ return Lang::get("pages.Pending"); }
+			 	else if($rows->status == 3){ return Lang::get("pages.Finished"); }
+			 	else { return Lang::get("pages.Finished"); }
 			 })
 			 ->addColumn('view', function($userview){
 					return '<a href="javascript:void(0)" id="viewhandrail" rel="'.$userview->id.'" data-toggle="modal" data-target="#myModal"><i class="fa fa-angle-right" aria-hidden="true"></i></a>';
@@ -516,7 +518,7 @@ class BackendController extends Controller
 
 		 foreach($users as $k=>$u)
 		{
-		    $users[$k]->date = Carbon::parse($u->created_at)->format('M d Y H:i a');		    
+		    $users[$k]->date = Carbon::parse($u->created_at)->format('d/m/y H:i a');		    
 		}
     	
         // dd(DB::getQueryLog());
@@ -605,7 +607,7 @@ class BackendController extends Controller
         
         foreach ($users as $k => $v)
         {	
-			$users[$k]->date = Carbon::parse($v->created_at)->format('M d Y H:i a');
+			$users[$k]->date = Carbon::parse($v->created_at)->format('d/m/y H:i a');
             $totalReports = IncidentDetail::where('created_by', $v->id)->get();
             $users[$k]->total_reports = count($totalReports);
         }
@@ -652,7 +654,6 @@ class BackendController extends Controller
 	            ->orderBy('cop_incident_details.updated_at', 'DESC')->get();
 	            if($request->input('lat') && $request->input('lng'))
 	            {
-
 	                $lat = $request->input('lat');
 	                $lng = $request->input('lng');
 	                $query = "SELECT ref_incident_subcategory.sub_category_name,
@@ -672,28 +673,26 @@ class BackendController extends Controller
                 
 	            foreach ($incidents as $k => $v)
 	            {
-
 	                $users = User::where('id', $v->created_by)->get();
-
 	                $reporter = UserType::where('id', $users[0]->ref_user_type_id)->get()[0]->user_type;
 	                
-	                $incidents[$k]->reporter = $reporter;
-	                $incidents[$k]->date = Carbon::parse($v->created_at)->format('M d Y H:i a');
-	                $incidents[$k]->status = '<span class="text-danger">On-Wait</span>';
-	                $incidents[$k]->state = 'On-Wait';
+	                $incidents[$k]->reporter = Lang::get("pages.$reporter");
+	                $incidents[$k]->date = Carbon::parse($v->created_at)->format('d/m/y H:i a');
+	                $incidents[$k]->status = '<span class="text-danger">'.Lang::get("pages.Onwait").'</span>';
+	                $incidents[$k]->state = Lang::get("pages.Onwait");
 	                
 	                # Validate if incident has relavent entry in mapping table
 	                $incidentMapping = CopUserIncidentMapping::where('cop_incident_details_id', $v->id)->get();
 	                if(!$incidentMapping->isEmpty())
 	                {
-	                    $incidents[$k]->status = '<span class="text-primary">Pending</span>';
-	                    $incidents[$k]->state = 'Pending';
+	                    $incidents[$k]->status = '<span class="text-primary">'.Lang::get("pages.Pending").'</span>';
+	                    $incidents[$k]->state = Lang::get("pages.Pending");
 	                    # Incident has mapping available, Check if incident is closed ?
                         
 	                    $incidentClosedMapping = CopUserIncidentClosed::where('cop_incident_details_id', $v->id)->get();
 	                    if(!$incidentClosedMapping->isEmpty())  {
-	                        $incidents[$k]->status = '<span class="text-success">Finised</span>';
-	                        $incidents[$k]->state = 'Finished';
+	                        $incidents[$k]->status = '<span class="text-success">'.Lang::get("pages.Finished").'</span>';
+	                        $incidents[$k]->state = Lang::get("pages.Finished");
 	                    }
 	                }	                
 	                

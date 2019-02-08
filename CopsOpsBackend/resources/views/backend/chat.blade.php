@@ -386,7 +386,7 @@
         <div class="loading__wrapper">
             <div class="loading_inner">
                 <img class="loading__logo" src="{{ asset('img/loader2.gif') }}" alt="QB_logo">
-                <p class="loading__description">Loading...</p>
+                <p class="loading__description">{{ trans("pages.Loading")}}.....</p>
             </div>
         </div>
     </script>

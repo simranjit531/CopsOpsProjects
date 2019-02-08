@@ -85,8 +85,8 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
                 </li>
 				
 				<li class="language-drop"><select id="language">
-						<option value="" selected>Language</option>
-						<option value="fr">France</option>
+						<option value=''>{{ trans('pages.language')}}</option>
+						<option value="fr">FR</option>
 						<option value="en">ANG</option>
 				</select></li>
 
@@ -284,6 +284,21 @@ $(document).ready(function(){
     	$("#noticount").html(res.count);		
         var li = '';
     	$(res.data).each(function(k,v){
+			if("{{ app()->getLocale() }}" == 'fr')
+			{
+			if(v.message == 'intervention assigned'){ v.message = 'Interventions Assignées'}
+			if(v.message.match(/New Report by.*/)){ 
+			var newdate= v.message;
+			newdate= newdate.split('by');
+			v.message = 'Nouveau rapport de'+newdate[1];
+			}
+			if(v.message.match(/registered to copops*/))
+			{
+			var date= v.message;
+			date= date.split('registered');
+			v.message = date[0]+' enregistré à copops';
+			}
+			}
 			li +='<li style="padding:6px 12px;"><a class="on-click-change-stat" href="javascript:void(0);" data-id="'+v.id+'" data-table="'+v.table+'" data-table-id="'+v.table_id+'"><span class="message" style="font-size:12px;">'+v.message+'</span></a><a class="on-click-change-stat" href="javascript:void(0);" style="margin-left: 10px; color: #05adfd;" data-id="'+v.id+'" data-table="'+v.table+'" data-table-id="'+v.table_id+'"><i class="fa fa-times"></i></a></li>';     
         });
 
