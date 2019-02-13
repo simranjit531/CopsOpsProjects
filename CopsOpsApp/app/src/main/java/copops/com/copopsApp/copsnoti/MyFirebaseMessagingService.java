@@ -87,19 +87,44 @@ interface updateInterface{
                     if (remoteMessage.getNotification().getBody() != null) {
                         Log.d(TAG, "Message data payload: " + remoteMessage.getNotification().getBody());
                         //  Log.e(TAG, "Message data payload: " + remoteMessage.getNotification().getBody());
-                        sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
-                        if (Utils.checkConnection(getApplicationContext())) {
-                            IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
-                            incdentSetPojo.setUser_id(mAppSession.getData("id"));
-                            incdentSetPojo.setDevice_id(Utils.getDeviceId(getApplicationContext()));
-                            incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
-                            incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
-                            incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
-                            Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                            RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                            getCopeStatus(mFile);
-                        } else {
-                            Utils.showAlert(getApplicationContext().getString(R.string.internet_conection), getApplicationContext());
+
+                        if(remoteMessage.getNotification().getBody().equalsIgnoreCase("intervention assigned")) {
+                            if(mAppSession.getData("devicelanguage").equalsIgnoreCase("fr")) {
+                                sendNotification("COPOPS", "Interventions Assignées", getApplicationContext());
+
+                            }else{
+                                sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
+                            }
+                                sendNotification("COPOPS", "Interventions Assignées", getApplicationContext());
+                                if (Utils.checkConnection(getApplicationContext())) {
+                                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                                    incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                                    incdentSetPojo.setDevice_id(Utils.getDeviceId(getApplicationContext()));
+                                    incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+                                    incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                                    incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+                                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                                    RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                                    getCopeStatus(mFile);
+                                } else {
+                                    Utils.showAlert(getApplicationContext().getString(R.string.internet_conection), getApplicationContext());
+                                }
+
+                        }else{
+                            sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
+                            if (Utils.checkConnection(getApplicationContext())) {
+                                IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                                incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                                incdentSetPojo.setDevice_id(Utils.getDeviceId(getApplicationContext()));
+                                incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+                                incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                                incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+                                Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                                RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                                getCopeStatus(mFile);
+                            } else {
+                                Utils.showAlert(getApplicationContext().getString(R.string.internet_conection), getApplicationContext());
+                            }
                         }
 
                      //   String new_reports =remoteMessage.getData().get("new_reports");
@@ -119,20 +144,46 @@ interface updateInterface{
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             Log.e(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            sendNotification("COPOPS",remoteMessage.getNotification().getBody(),getApplicationContext());
-          //  String new_reports =remoteMessage.getData().get("new_reports");
-            if (Utils.checkConnection(getApplicationContext())) {
-                IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
-                incdentSetPojo.setUser_id(mAppSession.getData("id"));
-                incdentSetPojo.setDevice_id(Utils.getDeviceId(getApplicationContext()));
-                incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
-                incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
-                incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
-                Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                getCopeStatus(mFile);
-            } else {
-                Utils.showAlert( getApplicationContext().getString(R.string.internet_conection), getApplicationContext());
+
+
+            if(remoteMessage.getNotification().getBody().equalsIgnoreCase("intervention assigned")) {
+
+                if(mAppSession.getData("devicelanguage").equalsIgnoreCase("fr")) {
+                    sendNotification("COPOPS", "Interventions Assignées", getApplicationContext());
+
+                    }else{
+                    sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
+                }
+                //  String new_reports =remoteMessage.getData().get("new_reports");
+                if (Utils.checkConnection(getApplicationContext())) {
+                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                    incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                    incdentSetPojo.setDevice_id(Utils.getDeviceId(getApplicationContext()));
+                    incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+                    incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                    incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                    RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                    getCopeStatus(mFile);
+                } else {
+                    Utils.showAlert(getApplicationContext().getString(R.string.internet_conection), getApplicationContext());
+                }
+            }else{
+                sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
+                //  String new_reports =remoteMessage.getData().get("new_reports");
+                if (Utils.checkConnection(getApplicationContext())) {
+                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                    incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                    incdentSetPojo.setDevice_id(Utils.getDeviceId(getApplicationContext()));
+                    incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+                    incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                    incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                    RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                    getCopeStatus(mFile);
+                } else {
+                    Utils.showAlert(getApplicationContext().getString(R.string.internet_conection), getApplicationContext());
+                }
             }
       //      mAppSession.saveData("new_reports",new_reports);
           //  sendNotification(remoteMessage.getNotification().getBody());

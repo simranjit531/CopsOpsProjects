@@ -411,8 +411,11 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
         //verify if the image was gotten successfully
         if (requestCode == Utils.REQUEST_TAKE_CAMERA_PHOTO && resultCode == RESULT_OK) {
 
-            new ImageCompressionAsyncTask(mContext).execute(mCurrentPhotoPath,
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/CopOps/images");
+            filePathImage =mCurrentPhotoPath;
+         //   File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/CopOps/images");
+
+//            new ImageCompressionAsyncTask(mContext).execute(mCurrentPhotoPath,
+//                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/CopOps/images");
 
         } else if (requestCode == Utils.REQUEST_TAKE_VIDEO && resultCode == RESULT_OK) {
             //  Uri uri=data.getData();

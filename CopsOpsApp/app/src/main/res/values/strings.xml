@@ -214,6 +214,9 @@ exciting and enjoyable way </string>
     <string name="next_btn">Next</string>
     <string name="handrail">Handrail</string>
     <string name="object">Object</string>
+    <string name="Information">Information</string>
+    <string name="ok">OK</string>
+    <string name="police">Police</string>
 
     <string name="aut_header">Authenticate the device</string>
     <string name="send_code">Send code</string>
@@ -232,23 +235,20 @@ the code sent to </string>
 
     <!--  DashBoard HOME Screen -->
 
-    <string name="sentinel">| sentinel</string>
-    <string name="grade">Grade |</string>
+    <string name="sentinel">Level</string>
+    <string name="grade">Grade </string>
     <string name="report_comp">06/10</string>
     <string name="progress_propert">06 Reports</string>
     <string name="navigation">Navigation</string>
     <string name="report_an_incident">Report an incident</string>
     <string name="report_an_incident_bottom_text">Report an incident</string>
     <string name="PositionofInterventions">Position of Interventions</string>
-    <string name="search"> Search</string>
+    <string name="chat_search"> Search</string>
     <string name="available">Available</string>
     <string name="not_available">Not Available</string>
     <string name="messaging">Messaging</string>
     <string name="Assignedintervention">Assigned intervention</string>
     <string name="notavailable">Not Available</string>
-    <string name="police">Police</string>
-    <string name="policeincident">Police incident</string>
-
 
     <!--CALL SCREEN-->
     <string name="no_thanks">NO THANKS</string>
@@ -264,8 +264,11 @@ the code sent to </string>
     <string name="report"> Report</string>
     <string name="reports"> Reports</string>
     <string name="Locationisnotavailablenow"> Location is not available now</string>
-    <string name="Signalements"> Signalements</string>
+    <string name="Signalements">Signalements</string>
     <string name="completedinterventions"> completed interventions</string>
+    <string name="Notfound"> Not found</string>
+    <string name="youcan">You can only close interventions assigned to you only</string>
+
 
 
     <!-- Incident screen -->
@@ -334,6 +337,6 @@ the code sent to </string>
     <string name="FAQ">FAQ</string>
     <string name="frequentlyaskedquestions">Frequently asked questions</string>
     <!--Profile Screen-->
-    <string name="RECENTS">RECENTS</string>
-    <string name="Search"> Search</string>
+    <string name="recent">RECENTS</string>
+    <string name="search">Search</string>
 </resources>

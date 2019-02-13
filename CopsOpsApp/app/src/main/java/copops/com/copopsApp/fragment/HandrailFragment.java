@@ -42,6 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.pojo.IncdentSetPojo;
+import copops.com.copopsApp.shortcut.ShortcutViewService_Citizen;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.Utils;
@@ -103,6 +104,9 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
         ButterKnife.bind(this, view);
         mContext = getActivity();
         mAppSession = mAppSession.getInstance(mContext);
+        mAppSession.saveData("shortcutscreentype", "");
+        getActivity().stopService(new Intent(getActivity(), ShortcutViewService_Citizen.class));
+
         Rlnext.setOnClickListener(this);
         llcamera.setOnClickListener(this);
         llvideo.setOnClickListener(this);
@@ -166,9 +170,12 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.Rltoolbar:
-                if (getFragmentManager().getBackStackEntryCount() > 0) {
+               /* if (getFragmentManager().getBackStackEntryCount() > 0) {
                     getFragmentManager().popBackStackImmediate();
-                }
+                }*/
+                getFragmentManager().popBackStackImmediate();
+                Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
+
                 break;
 
         }
@@ -265,9 +272,9 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
 
         //verify if the image was gotten successfully
         if (requestCode == Utils.REQUEST_TAKE_CAMERA_PHOTO && resultCode == RESULT_OK) {
-
-            new ImageCompressionAsyncTask(mContext).execute(mCurrentPhotoPath,
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/CopOps/images");
+            filePathImage=mCurrentPhotoPath;
+//            new ImageCompressionAsyncTask(mContext).execute(mCurrentPhotoPath,
+//                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/CopOps/images");
 
         } else if (requestCode == Utils.REQUEST_TAKE_VIDEO && resultCode == RESULT_OK) {
         //    if (data.getData() != null) {

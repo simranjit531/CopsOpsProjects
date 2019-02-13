@@ -173,7 +173,8 @@ public class OperatorSignatureFragment extends Fragment implements View.OnClickL
                             progressDialog.dismiss();
 
                         } else {
-                            Utils.showAlert(response.message(), getActivity());
+                          //  Utils.showAlert(getString(R.string.Notfound), getActivity());
+                            Utils.showAlert(getString(R.string.Notfound), getActivity());
                         }
 
                     } catch (Exception e) {

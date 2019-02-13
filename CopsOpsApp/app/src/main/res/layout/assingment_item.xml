@@ -3,9 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp"
+
     android:orientation="horizontal"
     >
+
+    <LinearLayout
+        android:id="@+id/changeColor"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:orientation="horizontal"
+        >
     <TextView
         android:id="@+id/dateTv"
         android:layout_weight=".32"
@@ -46,5 +55,12 @@
         android:layout_height="25dp"
         android:src="@mipmap/ic_arrow_right"/>
 
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/white">
+
+    </View>
 
 </LinearLayout>

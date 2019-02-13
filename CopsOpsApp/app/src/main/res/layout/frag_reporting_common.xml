@@ -30,7 +30,7 @@
         android:layout_below="@+id/RLprofileimage"
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
-        android:text="@string/policeincident"
+        android:text=""
         android:textColor="@color/aluminiumcolor"
         android:textSize="@dimen/textsize_18sp" />
 

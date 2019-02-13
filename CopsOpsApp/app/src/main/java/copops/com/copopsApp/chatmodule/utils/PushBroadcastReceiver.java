@@ -62,18 +62,18 @@ public class PushBroadcastReceiver {
 
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            pendingIntent = PendingIntent.getActivity(context, 1251, intent, PendingIntent.FLAG_ONE_SHOT);
+            pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
             builder.setContentTitle(title)
                     .setSmallIcon(getNotificationIcon()) // required
                     .setContentText(description)  // required
                     .setDefaults(Notification.DEFAULT_ALL)
                     .setAutoCancel(true)
-//                    .setLargeIcon(BitmapFactory.decodeResource
-//                            (context.getResources(), R.mipmap.logo_launcher))
+                    .setLargeIcon(BitmapFactory.decodeResource
+                            (context.getResources(), R.mipmap.logo_launcher))
                     .setBadgeIconType(R.mipmap.logo_launcher)
-                    .setContentIntent(pendingIntent)
-                    .setSound(RingtoneManager.getDefaultUri
-                            (RingtoneManager.TYPE_NOTIFICATION));
+                    .setContentIntent(pendingIntent);
+//                    .setSound(RingtoneManager.getDefaultUri
+//                            (RingtoneManager.TYPE_NOTIFICATION));
             Notification notification = builder.build();
             notifManager.notify(0, notification);
         }catch (Exception e){
@@ -87,7 +87,7 @@ public class PushBroadcastReceiver {
 
                 pendingIntent = PendingIntent.getActivity(context, 1251, intent, PendingIntent.FLAG_ONE_SHOT);
 
-                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
                 NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
                         .setContentTitle(title)
                         .setContentText(description)

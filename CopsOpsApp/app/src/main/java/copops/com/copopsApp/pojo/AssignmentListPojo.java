@@ -56,6 +56,16 @@ public class Data implements Serializable {
     }
 
     String status;
+
+    public String getSeen() {
+        return seen;
+    }
+
+    public void setSeen(String seen) {
+        this.seen = seen;
+    }
+
+    String seen;
     String ref_incident_category_id;
     String ref_incident_subcategory_id;
     String other_description;

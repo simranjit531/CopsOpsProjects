@@ -307,7 +307,7 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
 
                         } else {
 
-                            TVprofiledescription.setText(operatorShowAlInfo.getLevel());
+                            TVprofiledescription.setText(getString(R.string.sentinel)+" "+operatorShowAlInfo.getLevel());
 
                             TVprogressbarnumber.setText(operatorShowAlInfo.getReport());
                             Log.e("gettotalreports==", "" + operatorShowAlInfo.getTotal_reports());
@@ -327,7 +327,8 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
                         progressDialog.dismiss();
 
                     } else {
-                        Utils.showAlert(response.message(), getActivity());
+                       // Utils.showAlert(getString(R.string.Notfound), getActivity());
+                        Utils.showAlert(getString(R.string.Notfound), getActivity());
                     }
 
                 } catch (Exception e) {

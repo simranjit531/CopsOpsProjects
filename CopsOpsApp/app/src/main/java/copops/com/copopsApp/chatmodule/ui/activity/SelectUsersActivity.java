@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
@@ -233,10 +234,20 @@ public class SelectUsersActivity extends BaseActivity implements UsersAdapter.cl
             public void onSuccess(ArrayList<QBUser> usersByTags, Bundle params) {
                 users = usersByTags;
 
+
+                QBUser  currentUser= QBChatService.getInstance().getUser();
+                for(int i=0;i<users.size();i++){
+                    if(users.get(i).getId().equals(currentUser.getId())){
+                        users.remove(i);
+                    }
+
+                }
+
                 if (qbChatDialog != null) {
                     // update occupants list form server
                     getDialog();
                 } else {
+
                     updateUsersAdapter();
                 }
             }
@@ -278,6 +289,8 @@ public class SelectUsersActivity extends BaseActivity implements UsersAdapter.cl
     }
 
     private void updateUsersAdapter() {
+
+
         usersAdapter = new CheckboxUsersAdapter(this, users,mClickPos);
         if (qbChatDialog != null) {
             usersAdapter.addSelectedUsers(qbChatDialog.getOccupants());

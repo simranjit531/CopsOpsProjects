@@ -46,6 +46,11 @@ public interface Service {
     @POST("api/auth/profile/set/locations")
     Call<CommanStatusPojo> getlocations(@Part("data") RequestBody data);
 
+  //  13.233.74.84/api/auth/notification/update
+    @Multipart
+    @POST("/api/auth/notification/update")
+    Call<CommanStatusPojo> getupdate(@Part("data") RequestBody data);
+
 
     @Multipart
     @POST("api/auth/sub/incidents")

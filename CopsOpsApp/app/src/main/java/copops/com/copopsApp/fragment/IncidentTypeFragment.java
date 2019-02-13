@@ -116,6 +116,7 @@ public class IncidentTypeFragment extends Fragment implements View.OnClickListen
             incidentSetPojo.setIncident_id(mIncidentTypeResponse.getData().get(pos).getIncident_id());
             incidentSetPojo.setDevice_id(Utils.getDeviceId(mContext));
             incidentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+            Log.e("###", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incidentSetPojo)));
 
             Service incedentTypeData = ApiUtils.getAPIService();
             RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incidentSetPojo)));

@@ -198,7 +198,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 //                progressDialog.show();
 //            }
 //        }
-        if (mAppSession.getData("devicelanguage").equals("français")) {
+        if (mAppSession.getData("devicelanguage").equals("Fr")) {
             Tvchattext.setText("     " + getString(R.string.messaging));
         } else {
             Tvchattext.setText(getString(R.string.messaging));
@@ -269,8 +269,11 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
             case R.id.RLreportanincident:
                 mAppSession.saveData("handrail", "dasd");
                 try {
-                    if (operatorShowAlInfo.getGrade().equalsIgnoreCase("Grade II")) {
+                    if (operatorShowAlInfo.getGrade().equalsIgnoreCase(" II")) {
                         Utils.fragmentCall(new PositionOfInteervebtionsFragment(latitude, longitude), getFragmentManager());
+
+                        if (mTimer != null) // Cancel if already existed
+                            mTimer.cancel();
 
 //                        if (mTimer != null) // Cancel if already existed
 //                            mTimer.cancel();
@@ -285,6 +288,9 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                 mAppSession.saveData("handrail", "dasd");
                 Utils.fragmentCall(new IncidentFragment(mAppSession.getData("id")), getFragmentManager());
                 mAppSession.saveData("operatorScreenBack", "1");
+
+                if (mTimer != null) // Cancel if already existed
+                    mTimer.cancel();
 //                if (mTimer != null) // Cancel if already existed
 //                    mTimer.cancel();
                 break;
@@ -458,7 +464,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                                 mTimer = new Timer();   //recreate new
                                 mTimer.scheduleAtFixedRate(new TimeDisplay(), 0, notify);   //Schedule task
                             }
-                            TVpsental.setText(operatorShowAlInfo.getLevel());
+                            TVpsental.setText(getString(R.string.sentinel)+" "+operatorShowAlInfo.getLevel());
                             mAppSession.saveData("operatorgrade", operatorShowAlInfo.getGrade());
                             Log.e("getgrade==", "" + mAppSession.getData("operatorgrade"));
                             TVprogressbarnumber.setText(operatorShowAlInfo.getReport());
@@ -503,13 +509,15 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                                     mAppSession.saveData("assignedintervationcount", operatorShowAlInfo.getNew_reports());
                                 }
                             }
-                            TVprofiledescription.setText(operatorShowAlInfo.getGrade());
+                            TVprofiledescription.setText(getString(R.string.grade)+" "+operatorShowAlInfo.getGrade());
                             mAppSession.saveData("operatorlevel", operatorShowAlInfo.getLevel());
                         }
                         progressDialog.dismiss();
 
                     } else {
-                        Utils.showAlert(response.message(), getActivity());
+                       // Utils.showAlert(getString(R.string.Notfound), getActivity());
+
+                        Utils.showAlert(getString(R.string.Notfound), getActivity());
                         progressDialog.dismiss();
                     }
 
@@ -571,7 +579,8 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             progressDialog.dismiss();
 
                         } else {
-                            Utils.showAlert(response.message(), getActivity());
+                          //  Utils.showAlert(getString(R.string.Notfound), getActivity());
+                            Utils.showAlert(getString(R.string.Notfound), getActivity());
                         }
 
                     } catch (Exception e) {
@@ -615,7 +624,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                         progressDialog.dismiss();
 
                     } else {
-                        Utils.showAlert(response.message(), getActivity());
+                        Utils.showAlert(getString(R.string.Notfound), getActivity());
                     }
 
                 } catch (Exception e) {
@@ -753,7 +762,8 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             progressDialog.dismiss();
 
                         } else {
-                            Utils.showAlert(response.message(), getActivity());
+                          //  Utils.showAlert(getString(R.string.Notfound), getActivity());
+                            Utils.showAlert(getString(R.string.Notfound), getActivity());
                         }
 
                     } catch (Exception e) {
@@ -900,13 +910,34 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                     chatCountId.setVisibility(View.VISIBLE);
                     chatCountId.setText("" + count);
                     mAppSession.saveData("messagecount", "" + count);
+
+
                 }
 
+
+
+                int sender = qbChatMessage.getSenderId();
+
                 if (qbChatMessage.getAttachments().size() == 0) {
-                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + " message)", getActivity());
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getId().equals(sender)) {
+                            //  user = list.get(i);
+                            PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + getString(R.string.messaging )+")", getActivity());
+                            break;
+                        }
+                    }
+
 
                 } else {
-                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
+
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getId().equals(sender)) {
+                            //  user = list.get(i);
+                            PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + getString(R.string.messaging )+")", getActivity());
+                            break;
+                        }
+                    }
+
 
                 }
             }
@@ -955,6 +986,8 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                 }else{
                     countId.setVisibility(View.VISIBLE);
                     countId.setText(mAppSession.getData("new_reports"));
+
+                    Log.e("saa",mAppSession.getData("new_reports"));
                 }
 
                 picId.setVisibility(View.INVISIBLE);

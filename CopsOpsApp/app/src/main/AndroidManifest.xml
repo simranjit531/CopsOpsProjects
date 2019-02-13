@@ -225,6 +225,12 @@
             android:name=".shortcut.ShortcutViewService"
             android:enabled="true"
             android:exported="false" />
+
+        <service
+            android:name=".shortcut.ShortcutViewService_Citizen"
+            android:enabled="true"
+            android:exported="false" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="9a662926d6c2eed4a4bd5ad88520ea6ee0ad0329" />

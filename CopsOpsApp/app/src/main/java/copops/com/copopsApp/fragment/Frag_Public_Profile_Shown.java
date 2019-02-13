@@ -87,12 +87,12 @@ public class Frag_Public_Profile_Shown extends Fragment implements View.OnClickL
             grade.setVisibility(View.GONE);
         }else{
             grade.setVisibility(View.VISIBLE);
-            grade.setText(operatorShowAlInfo.getGrade());
+            grade.setText(getString(R.string.grade)+" "+operatorShowAlInfo.getGrade());
         }
 
 
-        TVprofiledescription.setText(operatorShowAlInfo.getLevel());
-        TVprogressbarreports.setText(operatorShowAlInfo.getCompleted_reports() + getString(R.string.Signalements));
+        TVprofiledescription.setText(getString(R.string.sentinel)+" "+operatorShowAlInfo.getLevel());
+        TVprogressbarreports.setText(operatorShowAlInfo.getCompleted_reports()+" " +  getString(R.string.Signalements));
 
         if (operatorShowAlInfo.getProfile_percent().equalsIgnoreCase("0")) {
 

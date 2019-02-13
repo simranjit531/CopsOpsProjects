@@ -44,7 +44,7 @@ public class SpleshFragment extends Fragment {
         if(mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
 
             FirebaseApp.initializeApp(getContext());
-         ///   Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
+            Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
 
             mAppSession.saveData("fcm_token", FirebaseInstanceId.getInstance().getToken());
         }

@@ -4,6 +4,7 @@ package copops.com.copopsApp.fragment;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -27,6 +28,7 @@ import copops.com.copopsApp.pojo.IncidentTypePojo;
 import copops.com.copopsApp.pojo.LoginPojoSetData;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
+import copops.com.copopsApp.shortcut.ShortcutViewService_Citizen;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.Utils;
@@ -69,6 +71,9 @@ public class IncidentFragment extends Fragment implements View.OnClickListener, 
         ButterKnife.bind(this, view);
         mIncedentInterface = this;
         mAppSession = mAppSession.getInstance(getActivity());
+        mAppSession.saveData("shortcutscreentype", "");
+        getActivity().stopService(new Intent(getActivity(), ShortcutViewService_Citizen.class));
+
         onClick();
 
         mContext = getActivity();
@@ -92,7 +97,7 @@ public class IncidentFragment extends Fragment implements View.OnClickListener, 
 
             mLoginPojoSetData.setDevice_id(Utils.getDeviceId(mContext));
             mLoginPojoSetData.setdevice_language(mAppSession.getData("devicelanguage"));
-
+            Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
             Service incidentType = ApiUtils.getAPIService();
 
             //  RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(Utils.getDeviceId(mContext))));
@@ -141,9 +146,23 @@ public class IncidentFragment extends Fragment implements View.OnClickListener, 
 
         switch (v.getId()) {
             case R.id.Rltoolbar:
-                if (getFragmentManager().getBackStackEntryCount() > 0) {
+              /*  if (getFragmentManager().getBackStackEntryCount() > 0) {
                     getFragmentManager().popBackStackImmediate();
+                }*/
+
+                /*if (getFragmentManager().getBackStackEntryCount() > 0) {
+                    getFragmentManager().popBackStackImmediate();
+                }*/
+                String loginvalid = mAppSession.getData("Login");
+                String userType = mAppSession.getData("userType");
+                if (loginvalid.equals("1") && userType.equals("Cops")) {
+                    getFragmentManager().popBackStackImmediate();
+                    Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
+                }else if (loginvalid.equals("1") && userType.equals("citizen")){
+                    getFragmentManager().popBackStackImmediate();
+                    Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
                 }
+
                 break;
 
         }

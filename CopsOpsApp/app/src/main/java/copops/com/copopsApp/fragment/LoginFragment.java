@@ -158,7 +158,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 //            }
 //        }
         //    progressDialog.show();
-
+        String SDSADSAD= mAppSession.getData("devicelanguage");
         if (mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
             Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
 
@@ -417,15 +417,38 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 } else {
                     mAppSession.saveData("messagecount", "" + count);
                 }
-
+                int sender = qbChatMessage.getSenderId();
 
                 if (qbChatMessage.getAttachments().size() == 0) {
-                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + " message)", getActivity());
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getId().equals(sender)) {
+                            //  user = list.get(i);
+                          //  PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + " message)", getActivity());
+                            break;
+                        }
+                    }
+
 
                 } else {
-                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
+
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getId().equals(sender)) {
+                            //  user = list.get(i);
+                  //          PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
+                            break;
+                        }
+                    }
+
 
                 }
+
+//                if (qbChatMessage.getAttachments().size() == 0) {
+//                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + " message)", getActivity());
+//
+//                } else {
+//                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
+//
+//                }
                 //  PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " "+qbChatMessage.getBody()+"  "+"("+count+" message)", getActivity());
 
             }

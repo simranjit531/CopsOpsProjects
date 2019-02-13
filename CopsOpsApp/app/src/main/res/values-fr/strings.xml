@@ -19,26 +19,26 @@
     <string name="dob">Veuillez entrer votre date de naissance</string>
     <string name="phone_number">S\'il vous plaît entrer le numéro de téléphone</string>
     <string name="phone_number_10">S\'il vous plaît entrer le numéro de téléphone minimum 10 chiffres</string>
-    <string name="email">S\'il vous plaît entrer email</string>
-    <string name="Male_female">Veuillez choisir un homme ou une femme</string>
+    <string name="email">Veuillez enterrer votre adresse mail</string>
+    <string name="Male_female">Veuillez choisir un  Homme/ Femme</string>
     <string name="des">S\'il vous plaît ajouter une description</string>
     <string name="other_des">S\'il vous plaît ajouter une autre description</string>
-    <string name="password">Veuillez entrer le mot de passe</string>
+    <string name="password">Veuillez entrer un mot de passe</string>
     <string name="path">Veuillez capturer au moins une vidéo ou une image</string>
     <string name="objecttext">Veuillez renseigner l\'objet de la main courante. </string>
     <string name="objecttextdes">Veuillez décrire la main courante. </string>
     <string name="incidentdes">Veuillez décrire l\'incident</string>
     <string name="validation_signature">S\'il vous plaît créer votre signature.</string>
 
-    <string name="con_password">Veuillez entrer votre mot de passe</string>
-    <string name="valid_email_errer">Email non valide</string>
-    <string name="card1">La carte 1 est requise !</string>
-    <string name="card2">La carte 2 est requise !</string>
-    <string name="bussiness1">Bussiness 1 est requis !</string>
-    <string name="bussiness2">Bussiness 2 est requis !</string>
+    <string name="con_password">Veuillez confirmer votre mot de passe</string>
+    <string name="valid_email_errer">l\'adresse mail est invalide</string>
+    <string name="card1">Carte identité 1 requise !</string>
+    <string name="card2">Carte identité 2 requise !</string>
+    <string name="bussiness1">Carte professionnelle 1 requise !</string>
+    <string name="bussiness2">Carte professionnelle 2 requise !</string>
     <string name="read_file">Cette application doit accéder à votre stockage de fichiers pour pouvoir lire des photos.</string>
     <string name="internet_conection">S\'il vous plaît vérifier votre connexion Internet !!! .</string>
-    <string name="intervin">Vous avez déjà un rapport à compléter, veuillez d\'abord le compléter .</string>
+    <string name="intervin">Vous avez déjà un rapport en cours. Veuillez déjà le compléter .</string>
     <string name="password_not_same">Mot de passe et Confirmer le mot de passe doivent être égaux.</string>
 
     <string name="cityName">S\'il vous plaît entrer le nom de la ville</string>
@@ -59,6 +59,7 @@
     <string name="loading_msg">S\'il vous plaît, attendez... </string>
     <string name="compress_msg">Veuillez patienter Votre vidéo est en cours de traitement ... </string>
    <string name="next">Suivant</string>
+   <string name="message">message</string>
 
 
 
@@ -209,12 +210,13 @@ exciting and enjoyable way </string>
     <string name="Email_hint">Email</string>
     <string name="con_pass_hint">Confirmez le mot de passe</string>
     <string name="id_card">Carte d\'identité</string>
-    <string name="business_id_card">Carte de visite</string>
+    <string name="business_id_card">Carte professionnelle</string>
     <string name="front_text_Recto">Recto</string>
     <string name="back_text_Verso">Verso</string>
     <string name="next_btn">Suivant</string>
     <string name="handrail">Main courante</string>
     <string name="object">Objet</string>
+    <string name="Information">Information</string>
 
     <string name="aut_header">Authentifier l\'appareil</string>
     <string name="send_code">Envoyer le code</string>
@@ -233,18 +235,18 @@ le code envoyé à</string>
 
     <!--  DashBoard HOME Screen -->
 
-    <string name="sentinel">| sentinelle</string>
-    <string name="grade">Grade |</string>
+    <string name="sentinel">niveau</string>
+    <string name="grade">Grade</string>
     <string name="report_comp">06/10</string>
     <string name="progress_propert">06 signalements</string>
     <string name="navigation">Navigation </string>
     <string name="report_an_incident">Signaler un incident</string>
     <string name="report_an_incident_bottom_text">Quelle est la nature de l\'incident</string>
     <string name="PositionofInterventions">Position des interventions</string>
-    <string name="search"> Chercher</string>
+    <string name="search"> Recherche</string>
     <string name="available">Mobilisable</string>
     <string name="not_available">Non Mobilisable</string>
-    <string name="messaging">Chat</string>
+    <string name="messaging">Messagerie</string>
     <string name="Assignedintervention">Intervention assignée</string>
     <string name="notavailable">Indisponible</string>
 
@@ -263,9 +265,10 @@ le code envoyé à</string>
     <string name="reports">signalements</string>
     <string name="report">signalement</string>
     <string name="Locationisnotavailablenow"> L\'emplacement n\'est pas disponible maintenant</string>
-    <string name="Signalements"> Signalements</string>
+    <string name="Signalements">Signalements</string>
     <string name="completedinterventions"> interventions terminées</string>
-
+    <string name="Notfound"> Pas trouvé</string>
+    <string name="youcan">L\'interevention Vous a été assigner</string>
 
     <!-- Incident screen -->
     <string name="reason">Motif</string>
@@ -295,6 +298,9 @@ le code envoyé à</string>
     <string name="timehint">12:13:40</string>
     <string name="statehint">Attendre</string>
     <string name="address">Adresse</string>
+    <string name="ok">Ok</string>
+    <string name="police">Police</string>
+
     <string name="closetheintervention">Fermer l\'intervention</string>
 
     <!--Reports Finish-->
@@ -307,7 +313,7 @@ le code envoyé à</string>
     <string name="filterbycities">Filtrer par ville</string>
 
     <!--Table of Assignments-->
-    <string name="TableofAssignments">Tableau des affectations</string>
+    <string name="TableofAssignments">Tableau des interventions</string>
     <string name="Attributionslist">Liste des attributions</string>
     <string name="date">Date</string>
     <string name="state">Etat</string>
@@ -318,19 +324,20 @@ le code envoyé à</string>
     <string name="Waiting">Attendre</string>
     <string name="Description">La description</string>
     <string name="Intervene">Intervenir</string>
+    <string name="chat_search">Recherche</string>
 
     <!--Profile Screen-->
 
     <string name="Profile">Profil</string>
-    <string name="Profile_text">Informations des votre profil</string>
+    <string name="Profile_text">Informations de votre profil</string>
     <string name="Vehicle">Véhicule</string>
-    <string name="Vehicle_text">Informations sur votre vechile</string>
+    <string name="Vehicle_text">Informations sur votre véhicule</string>
     <string name="QR_code">QR code</string>
     <string name="QR_code_text">QR Code enregistré</string>
     <string name="Medicalfile">Dossier médical</string>
-    <string name="Medicalfiletext">Votre etat médicale</string>
+    <string name="Medicalfiletext">Votre état médical</string>
     <string name="FAQ">FAQ</string>
     <string name="frequentlyaskedquestions">Questions fréquemment posées</string>
-
+    <string name="recent">Récents</string>
 
 </resources>

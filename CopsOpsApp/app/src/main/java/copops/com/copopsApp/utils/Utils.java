@@ -46,6 +46,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.shortcut.ShortcutViewService;
+import copops.com.copopsApp.shortcut.ShortcutViewService_Citizen;
 
 
 public class Utils {
@@ -87,10 +88,10 @@ public class Utils {
 
     public static void showAlert(String mgs, Context context) {
         new AlertDialog.Builder(context, R.style.AlertDialogTheme)
-                .setTitle("Information")
+                .setTitle(R.string.Information)
                 .setMessage(mgs)
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
@@ -102,10 +103,10 @@ public class Utils {
 
     public static void showAlertAndClick(String mgs, Context context, final resetPassInterFace mResetPassInterFace) {
         new AlertDialog.Builder(context, R.style.AlertDialogTheme)
-                .setTitle("Information")
+                .setTitle(R.string.Information)
                 .setMessage(mgs)
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         mResetPassInterFace.onClick(1);
                     }
@@ -178,8 +179,8 @@ public class Utils {
     public static void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener, Context mContext) {
         new AlertDialog.Builder(mContext, R.style.AlertDialogTheme)
                 .setMessage(message)
-                .setPositiveButton("OK", okListener)
-                .setNegativeButton("Cancel", null)
+                .setPositiveButton(R.string.ok, okListener)
+                .setNegativeButton(R.string.Cancel, null)
                 .create()
                 .show();
     }
@@ -332,6 +333,45 @@ public class Utils {
                     mContext.startService(new Intent(mContext, ShortcutViewService.class));
                 }
                 // android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(1);
+            }
+        });
+
+        TVrefuse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+
+    public static void opendialogcustomdialogcitizen(final Context mContext, String text, String loginstatus, String usertype) {
+
+        final Dialog dialog = new Dialog(mContext, R.style.DialogFragmentTheme);
+        dialog.setContentView(R.layout.custom_dialog);
+        dialog.setCancelable(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        Window window = dialog.getWindow();
+        window.setGravity(Gravity.CENTER);
+
+        TextView TVrefuse = (TextView) dialog.findViewById(R.id.mTvNo);
+        TextView TVallow = (TextView) dialog.findViewById(R.id.mTvYes);
+        TextView TVcustomdescriptiontext = (TextView) dialog.findViewById(R.id.TVcustomdescriptiontext);
+        TVcustomdescriptiontext.setText(text);
+
+        TVallow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                    mContext.startService(new Intent(mContext, ShortcutViewService_Citizen.class));
+                } else if (Settings.canDrawOverlays(mContext)) {
+                    mContext.startService(new Intent(mContext, ShortcutViewService_Citizen.class));
+                }
+                //android.os.Process.killProcess(android.os.Process.myPid());
                 System.exit(1);
             }
         });

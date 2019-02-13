@@ -520,7 +520,7 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
                             progressDialog.dismiss();
 
                         } else {
-                            Utils.showAlert(response.message(), getActivity());
+                            Utils.showAlert(getString(R.string.Notfound), getActivity());
                         }
 
                     } catch (Exception e) {
@@ -622,7 +622,7 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
 
                         } else {
                             progressDialog.dismiss();
-                            Utils.showAlert(response.message(), getActivity());
+                            Utils.showAlert(getString(R.string.Notfound), getActivity());
                         }
 
                     } catch (Exception e) {

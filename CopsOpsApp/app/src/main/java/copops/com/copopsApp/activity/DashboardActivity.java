@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,25 +13,7 @@ import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
-
-
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.quickblox.chat.QBChatService;
-import com.quickblox.chat.QBIncomingMessagesManager;
-import com.quickblox.chat.model.QBChatMessage;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
-import com.quickblox.sample.core.utils.ErrorUtils;
-import com.quickblox.sample.core.utils.SharedPrefsHelper;
-import com.quickblox.users.QBUsers;
-import com.quickblox.users.model.QBUser;
-
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,23 +21,22 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import copops.com.copopsApp.R;
-import copops.com.copopsApp.chatmodule.App;
-import copops.com.copopsApp.chatmodule.ui.activity.DialogsActivity;
-import copops.com.copopsApp.chatmodule.utils.PushBroadcastReceiver;
-import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
-import copops.com.copopsApp.chatmodule.utils.qb.QbChatDialogMessageListenerImp;
+
 import copops.com.copopsApp.fragment.AssignmentTableFragment;
 import copops.com.copopsApp.fragment.AuthenticateCodeFragment;
 import copops.com.copopsApp.fragment.CitizenFragment;
 import copops.com.copopsApp.fragment.Frag_Call_Number;
+import copops.com.copopsApp.fragment.HandrailFragment;
 import copops.com.copopsApp.fragment.HomeFragment;
 import copops.com.copopsApp.fragment.IncedentGenerateFragment;
 import copops.com.copopsApp.fragment.IncedentReportFragment;
+import copops.com.copopsApp.fragment.IncidentFragment;
 import copops.com.copopsApp.fragment.OperatorFragment;
 import copops.com.copopsApp.fragment.SpleshFragment;
 import copops.com.copopsApp.shortcut.AssignmentTableFragmentShortcut;
 import copops.com.copopsApp.shortcut.PositionOfInteervebtionsFragmentShortcut;
 import copops.com.copopsApp.shortcut.ShortcutViewService;
+import copops.com.copopsApp.shortcut.ShortcutViewService_Citizen;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.Utils;
 
@@ -72,20 +54,33 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_dashboard);
+
+        Locale locale = new Locale("fr");
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config,
+                getBaseContext().getResources().getDisplayMetrics());
+
+
         setContentView(R.layout.activity_dashboard);
-        mAppSession = mAppSession.getInstance(this);
+
+        // FirebaseApp.initializeApp(this);
         mAppSession = mAppSession.getInstance(this);
 
-        FirebaseApp.initializeApp(this);
 
-        String devicelanguage = Locale.getDefault().getDisplayLanguage();
-        Log.e("devicelanguage===", "" + devicelanguage);
-        mAppSession.saveData("devicelanguage",devicelanguage);
+        // String devicelanguage = Locale.getDefault().getDisplayLanguage();
+        //  Log.e("devicelanguage===", "" + devicelanguage);
+
+        mAppSession.saveData("devicelanguage", "Fr");
+        // mAppSession.saveData("devicelanguage","En");
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new
                     StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
+
         handler = new Handler();
         checkOverlaySetting = new Runnable() {
             @Override
@@ -139,17 +134,22 @@ public class DashboardActivity extends AppCompatActivity {
             Utils.fragmentCall(new PositionOfInteervebtionsFragmentShortcut(), getSupportFragmentManager());
         } else if (mAppSession.getData("shortcutscreentype").equals("assignedintervation")) {
             Utils.fragmentCall(new AssignmentTableFragmentShortcut(), getSupportFragmentManager());
+        }else if (mAppSession.getData("shortcutscreentype").equals("citizenhandrail")) {
+            Utils.fragmentCall(new HandrailFragment(), getSupportFragmentManager());
+            mAppSession.saveData("handrail", "handrail");
+        } else if (mAppSession.getData("shortcutscreentype").equals("citizenreportanincident")) {
+            Utils.fragmentCall(new IncidentFragment(mAppSession.getData("id")), getSupportFragmentManager());
+            mAppSession.saveData("operatorScreenBack", "1");
+            mAppSession.saveData("handrail", "dasd");
         } else {
-            String intent= getIntent().getStringExtra("notification");
+            String intent = getIntent().getStringExtra("notification");
 
             //  String notification = mAppSession.getData("notification");
-            if(intent==null) {
+            if (intent == null) {
                 Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
-            }else{
-
+            } else {
                 stopService(new Intent(DashboardActivity.this, ShortcutViewService.class));
                 Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
-
             }
         }
 
@@ -161,7 +161,8 @@ public class DashboardActivity extends AppCompatActivity {
 
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.content_frame);
         if (f instanceof CitizenFragment) {//the fragment on which you want to handle your back press
-            Utils.opendialogcustomdialog(DashboardActivity.this, DashboardActivity.this.getString(R.string.exit_message));
+            //     Utils.opendialogcustomdialog(DashboardActivity.this, DashboardActivity.this.getString(R.string.exit_message));
+            Utils.opendialogcustomdialogcitizen(DashboardActivity.this, DashboardActivity.this.getString(R.string.exit_message), mAppSession.getData("Login"), mAppSession.getData("userType"));
         } else if (f instanceof HomeFragment) {//the fragment on which you want to handle your back press
             Utils.opendialogcustomdialog(DashboardActivity.this, DashboardActivity.this.getString(R.string.exit_message));
         } else if (f instanceof OperatorFragment) {//the fragment on which you want to handle your back press
@@ -176,7 +177,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         } else if (f instanceof AuthenticateCodeFragment) {//the fragment on which you want to handle your back press
 
-        }else if (f instanceof AssignmentTableFragment) {//the fragment on which you want to handle your back press
+        } else if (f instanceof AssignmentTableFragment) {//the fragment on which you want to handle your back press
             Utils.fragmentCall(new OperatorFragment(), getSupportFragmentManager());
         } else if (f instanceof Frag_Call_Number) {//the fragment on which you want to handle your back press
 
@@ -215,8 +216,36 @@ public class DashboardActivity extends AppCompatActivity {
             Utils.fragmentCall(new OperatorFragment(), getSupportFragmentManager());
         } else if (f instanceof PositionOfInteervebtionsFragmentShortcut) {//the fragment on which you want to handle your back press
             Utils.fragmentCall(new OperatorFragment(), getSupportFragmentManager());
-        } else {
+        }else if (f instanceof IncidentFragment) {//the fragment on which you want to handle your back press
+            String loginvalid = mAppSession.getData("Login");
+            String userType = mAppSession.getData("userType");
+            if (loginvalid.equals("1") && userType.equals("Cops")) {
+                getSupportFragmentManager().popBackStackImmediate();
+                Utils.fragmentCall(new OperatorFragment(), getSupportFragmentManager());
+            }else if (loginvalid.equals("1") && userType.equals("citizen")){
+                getSupportFragmentManager().popBackStackImmediate();
+                Utils.fragmentCall(new CitizenFragment(), getSupportFragmentManager());
+            }
+        }else if (f instanceof HandrailFragment) {//the fragment on which you want to handle your back press
+            getSupportFragmentManager().popBackStackImmediate();
+            Utils.fragmentCall(new CitizenFragment(), getSupportFragmentManager());
+        }  else {
             super.onBackPressed();
+        }
+
+    }
+
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        String loginvalid = mAppSession.getData("Login");
+        String userType = mAppSession.getData("userType");
+        if (loginvalid.equals("1") && userType.equals("Cops")) {
+            stopService(new Intent(DashboardActivity.this, ShortcutViewService.class));
+        }else if (loginvalid.equals("1") && userType.equals("citizen")){
+            stopService(new Intent(DashboardActivity.this, ShortcutViewService_Citizen.class));
         }
 
     }
@@ -235,6 +264,12 @@ public class DashboardActivity extends AppCompatActivity {
             } else if (Settings.canDrawOverlays(DashboardActivity.this)) {
                 startService(new Intent(DashboardActivity.this, ShortcutViewService.class));
             }
+        }else if (loginvalid.equals("1") && userType.equals("citizen")){
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                startService(new Intent(DashboardActivity.this, ShortcutViewService_Citizen.class));
+            } else if (Settings.canDrawOverlays(DashboardActivity.this)) {
+                startService(new Intent(DashboardActivity.this, ShortcutViewService_Citizen.class));
+            }
         }
     }
 
@@ -247,6 +282,8 @@ public class DashboardActivity extends AppCompatActivity {
         String userType = mAppSession.getData("userType");
         if (loginvalid.equals("1") && userType.equals("Cops")) {
             stopService(new Intent(DashboardActivity.this, ShortcutViewService.class));
+        }else if (loginvalid.equals("1") && userType.equals("citizen")){
+            stopService(new Intent(DashboardActivity.this, ShortcutViewService_Citizen.class));
         }
 
     }
@@ -279,7 +316,9 @@ public class DashboardActivity extends AppCompatActivity {
         try {
             File dir = context.getCacheDir();
             deleteDir(dir);
-        } catch (Exception e) { e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static boolean deleteDir(File dir) {
@@ -292,7 +331,7 @@ public class DashboardActivity extends AppCompatActivity {
                 }
             }
             return dir.delete();
-        } else if(dir!= null && dir.isFile()) {
+        } else if (dir != null && dir.isFile()) {
             return dir.delete();
         } else {
             return false;

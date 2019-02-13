@@ -529,7 +529,7 @@ public class PositionOfInteervebtionsFragmentShortcut extends Fragment implement
                             progressDialog.dismiss();
 
                         } else {
-                            Utils.showAlert(response.message(), getActivity());
+                            Utils.showAlert(getString(R.string.Notfound), getActivity());
                         }
 
                     } catch (Exception e) {
@@ -630,7 +630,7 @@ public class PositionOfInteervebtionsFragmentShortcut extends Fragment implement
 
                         } else {
                             progressDialog.dismiss();
-                            Utils.showAlert(response.message(), getActivity());
+                            Utils.showAlert(getString(R.string.Notfound), getActivity());
                         }
 
                     } catch (Exception e) {

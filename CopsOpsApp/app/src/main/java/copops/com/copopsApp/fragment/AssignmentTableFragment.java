@@ -215,7 +215,7 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
                         mAdapter.notifyDataSetChanged();
 
                     } else {
-                        Utils.showAlert(response.message(), getActivity());
+                        Utils.showAlert(getString(R.string.Notfound), getActivity());
                     }
 
                 } catch (Exception e) {
@@ -262,7 +262,7 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
                         }
 
                     } else {
-                        Utils.showAlert(response.message(), getActivity());
+                        Utils.showAlert(getString(R.string.Notfound), getActivity());
                     }
 
                 } catch (Exception e) {
@@ -367,7 +367,7 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
                             progressDialog.dismiss();
 
                         } else {
-                            Utils.showAlert(response.message(), getActivity());
+                            Utils.showAlert(getString(R.string.Notfound), getActivity());
                         }
 
                     } catch (Exception e) {

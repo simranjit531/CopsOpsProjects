@@ -4,6 +4,7 @@ package copops.com.copopsApp.fragment;
 import android.annotation.SuppressLint;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -32,6 +33,7 @@ import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
+import copops.com.copopsApp.utils.TrackingServices;
 import copops.com.copopsApp.utils.Utils;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -103,8 +105,20 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
     }
 
     private void initView() {
-
-
+        if (Utils.checkConnection(getActivity())) {
+            IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+            incdentSetPojo.setUser_id(mAppSession.getData("id"));
+           // incdentSetPojo.setComment(descId.getText().toString().trim());
+            incdentSetPojo.setIncident_id(assignmentListPojo.getData().get(pos).getId());
+            incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+            incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+            Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+            RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+            getUpdate(mFile);
+        } else {
+            Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+        }
+       // getUpdate();
 if(assignmentListPojo.getData().get(pos).getUser_id()==null){
     tvid.setText(R.string.Intervene);
 }
@@ -227,7 +241,7 @@ if(assignmentListPojo.getData().get(pos).getUser_id()==null){
                             Utils.opendialogcustomdialogClose(getActivity(), commanStatusPojo.getMessage(), mClossPassInterFace);
                         } else {
 
-                            if(commanStatusPojo.getMessage().equalsIgnoreCase("You can only close interventions assigned to you only")) {
+                            if(commanStatusPojo.getMessage().equalsIgnoreCase(getString(R.string.youcan))) {
                                 Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
                             }else {
                                 Utils.opendialogcustomdialogClose(getActivity(), commanStatusPojo.getMessage(), mClossPassInterFace);
@@ -239,7 +253,7 @@ if(assignmentListPojo.getData().get(pos).getUser_id()==null){
                         progressDialog.dismiss();
 
                     } else {
-                        Utils.showAlert(response.message(), getActivity());
+                        Utils.showAlert(getString(R.string.Notfound), getActivity());
                     }
 
                 } catch (Exception e) {
@@ -299,5 +313,57 @@ if(assignmentListPojo.getData().get(pos).getUser_id()==null){
 
             }
         });
+    }
+
+
+
+    private void getUpdate(RequestBody Data) {
+
+        try {
+
+            copops.com.copopsApp.services.Service operator = ApiUtils.getAPIService();
+            Call<CommanStatusPojo> getallLatLong = operator.getupdate(Data);
+            getallLatLong.enqueue(new Callback<CommanStatusPojo>() {
+                @SuppressLint("ResourceAsColor")
+                @Override
+                public void onResponse(Call<CommanStatusPojo> call, Response<CommanStatusPojo> response)
+
+                {
+                    try {
+                        if (response.body() != null) {
+                            CommanStatusPojo commanStatusPojo = response.body();
+
+                            if (commanStatusPojo.getStatus().equals("false")) {
+
+
+                            } else {
+
+
+
+
+                            }
+
+
+                        } else {
+
+                        }
+
+                    } catch (Exception e) {
+
+                        e.getMessage();
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CommanStatusPojo> call, Throwable t) {
+                    Log.d("TAG", "Error " + t.getMessage());
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

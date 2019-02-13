@@ -206,7 +206,7 @@ public class AssignmentTableFragmentShortcut extends Fragment implements View.On
                         mAdapter.notifyDataSetChanged();
 
                     } else {
-                        Utils.showAlert(response.message(), getActivity());
+                        Utils.showAlert(getString(R.string.Notfound), getActivity());
                     }
 
                 } catch (Exception e) {
@@ -254,7 +254,7 @@ public class AssignmentTableFragmentShortcut extends Fragment implements View.On
                         }
 
                     } else {
-                        Utils.showAlert(response.message(), getActivity());
+                        Utils.showAlert(getString(R.string.Notfound), getActivity());
                     }
 
                 } catch (Exception e) {
@@ -298,7 +298,7 @@ public class AssignmentTableFragmentShortcut extends Fragment implements View.On
 //                            progressDialog.dismiss();
 //
 //                        } else {
-//                            Utils.showAlert(response.message(), getActivity());
+//                            Utils.showAlert(getString(R.string.Notfound), getActivity());
 //                        }
 //
 //                    } catch (Exception e) {

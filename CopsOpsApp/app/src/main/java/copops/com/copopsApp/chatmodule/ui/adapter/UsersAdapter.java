@@ -52,7 +52,7 @@ public class UsersAdapter extends BaseListAdapter<QBUser> {
         }
 
         if (isUserMe(user)) {
-          //  holder.loginTextView.setText(context.getString(R.string.placeholder_username_you, user.getFullName()));
+       //     holder.loginTextView.setText(context.getString(R.string.placeholder_username_you, user.getFullName()));
         } else {
             holder.loginTextView.setText(user.getFullName());
         }
@@ -60,7 +60,7 @@ public class UsersAdapter extends BaseListAdapter<QBUser> {
         if (isAvailableForSelection(user)) {
             holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_black));
         } else {
-           // holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_medium_grey));
+          //  holder.loginTextView.setTextColor(ResourceUtils.getColor(R.color.text_color_medium_grey));
         }
 
         holder.userImageView.setBackgroundDrawable(UiUtils.getColorCircleDrawable(position));
