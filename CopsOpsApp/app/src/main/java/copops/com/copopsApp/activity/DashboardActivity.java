@@ -38,6 +38,7 @@ import copops.com.copopsApp.shortcut.PositionOfInteervebtionsFragmentShortcut;
 import copops.com.copopsApp.shortcut.ShortcutViewService;
 import copops.com.copopsApp.shortcut.ShortcutViewService_Citizen;
 import copops.com.copopsApp.utils.AppSession;
+import copops.com.copopsApp.utils.TrackingServices;
 import copops.com.copopsApp.utils.Utils;
 
 public class DashboardActivity extends AppCompatActivity {
@@ -65,7 +66,7 @@ public class DashboardActivity extends AppCompatActivity {
 
 
         setContentView(R.layout.activity_dashboard);
-
+        stopService(new Intent(getBaseContext(), TrackingServices.class));
         // FirebaseApp.initializeApp(this);
         mAppSession = mAppSession.getInstance(this);
 
