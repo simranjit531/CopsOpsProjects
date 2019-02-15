@@ -17,10 +17,10 @@ return [
 			'listofcitizens' => 'list des citoyens',
 			'citizentools' => 'Outils citoyens',
 			'Operatorstools' => 'Outils opérateur',
-			'listofusers' => 'list des utilisateurs',
+			'listofusers' => 'Liste des utilisteurs',
 			'dailycrew' => 'Equipage journalier',
-			'validationofregistrants' => 'validation des inscrits',
-			'accountrefuses' => 'Compte refusé',
+			'validationofregistrants' => 'Validations des inscrits',
+			'accountrefuses' => 'Compte refuse',
 			'enternameoperator' => 'Enter le nom d’un Opérateur',
 			'enternamecitizen' => 'Entrer le nom d’un Citoyen',
 			'assignanintervention' => 'Assigner une intervention',
@@ -39,8 +39,8 @@ return [
 			'number' => 'Numero', 
 			],
 			'intervention' => 'Intervention',
-			'attributed' => 'Attribuee',
-			'totelinterventionfenced' => 'Totel intervention cloturee',
+			'attributed' => 'attribués',
+			'totelinterventionfenced' => 'Total intereventions cloturées',
 	        'freeze_account' => 'Figer le compte',
 	        'change_access' => 'Modifier le grade d’accées',
 			'assigned_incidents' => 'Assigned Incidents',
@@ -80,6 +80,7 @@ return [
 	'other' => 'AUTRES',
 	'Previous' => 'Previous',
 	'Next' => 'Next',
+	'Validator' => 'Valider',
 	'copyright'=> 'Droit d’auteur © 2018-19 Copops Tous les droits sont réservés',
 	'selectregdate'=>'Sélectionner une date d’inscription',
 	'nodata'=> 'Aucune information disponible dans le tableau',
@@ -112,8 +113,33 @@ return [
 	'City' => 'Ville',
 	'handrail' => 'Main Courante',
 	'language' => 'Langues',
-	'reporting' => 'Signalement',
+	'reporting' => 'Signalements',
 	'Close' => 'Fermer',
 	'interventionassigned' => 'Interventions Assignées',
+	'CrewCreatedSuccessfully' => 'L’équipe a été créé avec sucée',
+	'OOPS' => 'OUPS !!!',
+	'Invalidrequest' => 'Requête invalide, veuillez réessayer plus tard',
+	'somethingwentwrong' => 'Un problème est survenue, veuillez réessayer plus tard',
+	'pleaseprovideincidentid' => 'Veuillez entrer l’identifiant de l’incident',
+	'Pleaseprovideuserid' => ' Veuillez entrer l’identifiant de l’utilisateur',
+	'freezedsuccess'=>'Le compte a été bloquer avec sucée',
+	'unfreezedsuccess' => 'Le compte a été débloquer avec sucée',
+	'accountapproved' => 'Le compte été approuvé avec sucée',
+	'accountreject' => 'le compte a été rejeter avec sucée',
+	'interventionassigned'=>'L’intervention a été assigner avec sucée',
+	/* index.php view */
+	'areusureremovepoi' => 'Etes- vous sure de vouloir supprimer ce point d’intérêt',
+	'giocodewasnotsuccess' => 'Le Géocode ne répond paspour la raison suivante:',
+	'dousaveinfo' => 'Voulez-vous sauvegarder l’information de la carte que cette action annulera votre dernière modification?',
+	'doudiscard' => 'Vous voulez supprimer les information enregistrées de la carte',
+	
+	/* validationofregistants */
+	'areusurerefuse'=>'Etes-vous sure de vouloir rejeter ce compte d’utilisateur?',
+	
+	/* dailycrew */
+	'morethenonecrew'=> 'Veuillez sélectionner plus du membre pour créer une équipe',
+	
+	/*master*/
+	'browsernotsuppory' => 'Votre navigateur ne supporte pas l’élément audio',
 	
 ];

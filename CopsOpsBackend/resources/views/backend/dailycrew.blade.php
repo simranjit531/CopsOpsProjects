@@ -189,7 +189,7 @@
 
 		if(operators.length <=1)
 		{
-			alert("Please select more than one crew memeber to create crew");
+			alert("{{ trans('pages.morethenonecrew')}}");
 			return false;
 		}
 		var team = $('input[type="text"][name="team_name"]').val();

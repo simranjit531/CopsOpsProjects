@@ -80,6 +80,7 @@ return [
 	'other' => 'Other',
 	'Previous' => 'Previous',
 	'Next' => 'Next',
+	'Validator' => 'Validator',
 	'copyright'=> 'Copyright © 2018-19 COP OPS All rights reserved.',
 	'selectregdate'=>'Select registration date',
 	'nodata'=> 'No data available In the Table',
@@ -111,10 +112,37 @@ return [
 	'Fireman'=>'Fireman',
 	'City' => 'City',
 	'handrail' => 'Handrail',
-	'language' => 'Language',
+	'language' => 'Languages',
 	'reporting' => 'Reporting',
 	'Close' => 'Close',
-	'interventionassigned' => 'intervention assigned',
+	'interventionassigned' => 'Intervention assigned',
+	
+	'CrewCreatedSuccessfully' => 'Crew Created Successfully',
+	'OOPS' => 'OOPS !!!',
+	'Invalidrequest' => 'Invalid request, Please try again later',
+	'somethingwentwrong' => 'Something went wrong please try again later',
+	'pleaseprovideincidentid' => 'Please provide Incident id',
+	'Pleaseprovideuserid' => 'Please provide user id',
+	'freezedsuccess'=>'Account freezed successfully',
+	'unfreezedsuccess' => 'Account unfreezed successfully',
+	'accountapproved' => 'Account approved successfully',
+	'accountreject' => 'Account rejected successfully',
+	'interventionassigned'=>'Intervention assigned successfully',
+	
+	/* index.php view */
+	'areusureremovepoi' => 'Are you sure you want to remove this point of interest',
+	'giocodewasnotsuccess' => 'Geocode was not successful for the following reason:',
+	'dousaveinfo' => 'Do you want to save the information of the map, this action will undo your last save',
+	'doudiscard' => 'Do you want to discard the saved information of the map',
+	
+	/* validationofregistants */
+	'areusurerefuse'=>'Are you sure you want to refuse this user account ?',
+	
+	/* dailycrew */
+	'morethenonecrew'=> 'Please select more than one crew member to create crew',
+	
+	/*master*/
+	'browsernotsuppory' => 'Your browser does not support the audio element',
 	
 
 ];

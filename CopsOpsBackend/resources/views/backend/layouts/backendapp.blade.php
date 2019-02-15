@@ -61,7 +61,7 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 <body class="hold-transition sidebar-mini">
 	<audio id="myAudio">      
       <source src="{{ asset('glass_ping.mp3') }}" type="audio/mp3">
-      Your browser does not support the audio element.
+		  {{ trans('pages.browsernotsuppory')}}
     </audio>
 	<div class="wrapper">
 
@@ -84,7 +84,8 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
                   </ul>
                 </li>
 				
-				<li class="language-drop"><select id="language">
+				<li class="language-drop">
+				<select id="language">
 						<option value=''>{{ trans('pages.language')}}</option>
 						<option value="fr">FR</option>
 						<option value="en">ANG</option>

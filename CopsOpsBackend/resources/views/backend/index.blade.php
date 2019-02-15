@@ -51,6 +51,10 @@
 .round input[type="checkbox"]:checked + label:after {
   opacity: 1;
 }
+
+.fixed_width{
+	
+}
 </style>
 <!-- Content Header (Page header) -->
 <div class="content-header">
@@ -180,7 +184,7 @@
 									<th>{{ trans('pages.Subject')}}</th>
 									<th>Description</th>
 									<th>{{ trans('pages.other')}} Descriptions</th>
-									<th>{{ trans('pages.archive.status')}}</th>
+									<th class='fixed_width'>{{ trans('pages.archive.status')}}</th>
 								</tr>
 							</thead>
 							<tbody></tbody>
@@ -575,7 +579,7 @@ function add_point_of_interest_markers(markerArray)
       		return function() {
     			if(pins.length >=1)
     			{
-    				r = confirm("Are you sure you want to remove this point of interest");
+    				r = confirm("{{ trans('pages.areusureremovepoi')}}");
     				if(r==true)
     				{
     		            pin.setMap(null);  
@@ -622,7 +626,7 @@ function add_zone_of_interest_circles(circleArray)
       		return function() {
     			if(zones.length >=1)
     			{
-    				r = confirm("Are you sure you want to remove this point of interest");
+    				r = confirm("{{ trans('pages.areusureremovepoi')}}");
     				if(r==true)
     				{
 						localStorage.setItem('pins', '');	
@@ -830,7 +834,7 @@ function codeAddress(address)
 			
             
         } else {
-            alert( 'Geocode was not successful for the following reason: ' + status );
+            alert( "{{trans('pages.giocodewasnotsuccess')}} " + status );
         }
     } );
 }
@@ -987,7 +991,7 @@ $("#add-zone-of-interest").on("click", function(){
 
 $('#save-map-activity').on("click", function(){
 
-	r = confirm("Do you want to save the information of the map, this action will undo your last save");
+	r = confirm("{{ trans('pages.dousaveinfo')}}");
 	if(r == true)
 	{
 		var pinsArray = []; circlesArray = [];
@@ -1064,7 +1068,7 @@ function refresh_pins()
 }
 
 $("#remove-map-activity").on("click", function(){
-	r = confirm("Do you want to discard the saved information of the map");
+	r = confirm("{{ trans('pages.doudiscard')}}");
 	if(r == true)
 	{		
 		localStorage.setItem('circle','');
@@ -1274,6 +1278,7 @@ function clear_markers()
 	
 	markers = [];	
 }
+
 
 </script>
 

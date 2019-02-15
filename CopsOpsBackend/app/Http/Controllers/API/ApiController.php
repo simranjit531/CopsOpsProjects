@@ -228,7 +228,7 @@ class ApiController extends Controller
                     'username' => $user->first_name.' '.$user->last_name,
                     'otp' => $otp,
                     'verified'=>0,
-                    'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_REGISTRATION_SUCCESS),
+                    'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_REGISTRATION_SUCCESS,strtolower($payload['device_language'])),
                     'profile_url' => empty($user->profile_image) ? '' : asset('uploads/profile').'/'.$user->profile_image,
                     'grade'=>str_replace('Grade', '', $user->cops_grade),
                     'available'=>$user->available,
@@ -244,7 +244,7 @@ class ApiController extends Controller
             {
                 return $this->sendResponseMessage([
                     'status' => false,
-                    'message'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_REGISTRATION_FAILURE)
+                    'message'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_REGISTRATION_FAILURE,strtolower($payload['device_language']))
                 ], 200);
             }
         }
@@ -262,7 +262,7 @@ class ApiController extends Controller
         $payload = $this->get_payload($request);
         if(isset($payload['status']) && $payload['status'] == false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
         }
 
         $email = $payload['email_id'];
@@ -271,13 +271,13 @@ class ApiController extends Controller
         #Validate user against email and otp
         $userData = User::where(['email_id'=>$email, 'otp'=>$otp])->get();
 
-        if($userData->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        if($userData->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
 
         # Update the status of citizen as verified
         $user = User::where(['email_id'=>$email, 'otp'=>$otp])->update(['verified'=>1]);
 
-        if($user) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_OTP_VERIFIED_SUCCESS)],200);
-        else return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_OTP_VERIFIED_FAILURE)],200);
+        if($user) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_OTP_VERIFIED_SUCCESS,strtolower($payload['device_language']))],200);
+        else return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_OTP_VERIFIED_FAILURE,strtolower($payload['device_language']))],200);
     }
 
     /**
@@ -289,7 +289,7 @@ class ApiController extends Controller
         $payload = $this->get_payload($request);
         if(isset($payload['status']) && $payload['status'] == false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
         }
 
         /* Validation for keys in payload request */
@@ -312,19 +312,19 @@ class ApiController extends Controller
 
         if($auth->isEmpty()) return $this->sendResponseMessage(array(
             'status'=>'false',
-            'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_INVALID_CREDENTIALS)), 200);
+            'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_INVALID_CREDENTIALS, strtolower($payload['device_language']))), 200);
         
         if($auth[0]->ref_user_type_id == UserType::_TYPE_OPERATOR && $auth[0]->status == 0) return $this->sendResponseMessage(array(
             'status'=>'false',
-            'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_FREEZED)), 200);
+            'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_FREEZED,strtolower($payload['device_language']))), 200);
         
         if($auth[0]->ref_user_type_id == UserType::_TYPE_OPERATOR && $auth[0]->approved == 0) return $this->sendResponseMessage(array(
             'status'=>'false',
-            'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_PENDING)), 200);
+            'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_PENDING,strtolower($payload['device_language']))), 200);
         
         elseif($auth[0]->ref_user_type_id == UserType::_TYPE_OPERATOR && $auth[0]->approved == 2) return $this->sendResponseMessage(array(
             'status'=>'false',
-            'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_REFUSED)), 200);
+            'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_REFUSED,strtolower($payload['device_language']))), 200);
         
         $lat = $payload['incident_lat'];
         $lng = $payload['incident_lng'];
@@ -350,7 +350,7 @@ class ApiController extends Controller
             'completed_reports'=>$attributes['completed_reports'],
             'new_reports'=>$attributes['new_reports'],
             'profile_qrcode'=>asset('uploads/profile/qrcodes').'/'.$auth[0]->profile_qrcode,
-            'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_LOGIN_SUCCESS)), 200);
+            'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_LOGIN_SUCCESS,strtolower($payload['device_language']))), 200);
     }
 
     public function reset_password(Request $request)
@@ -358,7 +358,7 @@ class ApiController extends Controller
         $payload = $this->get_payload($request);
         if(isset($payload['status']) && $payload['status'] == false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
         }
 
         $email = $payload['email_id'];
@@ -367,7 +367,7 @@ class ApiController extends Controller
         # Check if data exists for user with provided email
         $user = User::where(['email_id'=>$email, 'ref_user_type_id'=>$type])->get();
 
-        if($user->isEmpty()) return $this->sendResponseMessage(array('status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_EMAIL_NOT_FOUND)), 200);
+        if($user->isEmpty()) return $this->sendResponseMessage(array('status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_EMAIL_NOT_FOUND,strtolower($payload['device_language']))), 200);
 
         # Generate new random password
         $password = generateRandomString(8);
@@ -391,10 +391,10 @@ class ApiController extends Controller
                     $message->subject('User Password');
                 });
 
-                return $this->sendResponseMessage(array('status'=>'true', 'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_PASSWORD_RESET_SUCCESS)), 200);
+                return $this->sendResponseMessage(array('status'=>'true', 'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_PASSWORD_RESET_SUCCESS,strtolower($payload['device_language']))), 200);
             }
             else {
-                return $this->sendResponseMessage(array('status'=>'false', 'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_PASSWORD_RESET_FAILURE)), 200);
+                return $this->sendResponseMessage(array('status'=>'false', 'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_PASSWORD_RESET_FAILURE,strtolower($payload['device_language']))), 200);
             }
         }
         catch (QueryException $e){
@@ -412,7 +412,7 @@ class ApiController extends Controller
         $payload = $this->get_payload($request);
         if(isset($payload['status']) && $payload['status'] == false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
         }
 
         // $incidents = IncidentCategory::all();
@@ -421,7 +421,7 @@ class ApiController extends Controller
         $lang = strtolower($payload['device_language']);  
         $incidents = IncidentCategory::where(['lang'=>$lang])->get();
 
-        if($incidents->isEmpty()) return $this->sendResponseMessage(['flag'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        if($incidents->isEmpty()) return $this->sendResponseMessage(['flag'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
 
         foreach ($incidents as $k=>$i)
         {
@@ -451,7 +451,7 @@ class ApiController extends Controller
         $payload = $this->get_payload($request);
         if(isset($payload['status']) && $payload['status'] == false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
         }
 
         /* Get Language of device from api */
@@ -460,7 +460,7 @@ class ApiController extends Controller
         $incidentId = $payload['incident_id'];
         $subIncidents = IncidentSubcategory::where(['ref_incident_category_id'=>$incidentId, 'lang'=>$lang])->get();
 
-        if($subIncidents->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        if($subIncidents->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
 
         foreach($subIncidents as $k=>$i)
         {
@@ -494,20 +494,19 @@ class ApiController extends Controller
 
         if(isset($payload['status']) && $payload['status'] == false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND, strtolower($payload['device_language']))],200);
         }
 
         $rules =[
             'ref_incident_category_id'=>'required',
             'ref_incident_subcategory_id'=>'required',
             'incident_description'=>'required',
-            'other_description'=>'required',
             'incident_lat'=>'required',
             'incident_lng'=>'required',
             'created_by'=>'required'
         ];
         $address_city = get_address_city($payload['incident_lat'], $payload['incident_lng']);
-        if(isset($address_city['status']) && $address_city['status'] == false) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        if(isset($address_city['status']) && $address_city['status'] == false) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
 
         $address = ""; $city = "";
         if(isset($address_city['results'][0]['formatted_address'])) $address = $address_city['results'][0]['formatted_address'];
@@ -585,8 +584,8 @@ class ApiController extends Controller
                 $push = new \Edujugon\PushNotification\PushNotification('fcm');
                 $push->setMessage([
                     'notification' => [
-                        'title'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS),
-                        'body'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS),
+                        'title'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS,strtolower($payload['device_language'])),
+                        'body'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS,strtolower($payload['device_language'])),
                         'sound' => 'default'
                     ]
                 ]);
@@ -613,8 +612,8 @@ class ApiController extends Controller
                     file_put_contents('uploads/test.txt', $e->getMessage());                    
                 }
 
-                if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS), 'reference'=>$rs->reference, 'qrcode_url'=>asset('uploads/qrcodes').'/'.$referenceNo.'.png', 'helpline_number'=>$helplineNumber],200);
-                return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_FAILURE)],200);
+                if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS,strtolower($payload['device_language'])), 'reference'=>$rs->reference, 'qrcode_url'=>asset('uploads/qrcodes').'/'.$referenceNo.'.png', 'helpline_number'=>$helplineNumber],200);
+                return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_FAILURE,strtolower($payload['device_language']))],200);
             }
             catch(QueryException $e)
             {
@@ -622,7 +621,7 @@ class ApiController extends Controller
             }
 //        }
 
-        return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_IMAGE_VIDEO_REQUIRED)],200);
+        return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_IMAGE_VIDEO_REQUIRED,strtolower($payload['device_language']))],200);
 
     }
 
@@ -652,7 +651,7 @@ class ApiController extends Controller
         if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
 
         /* Validation for signature */
-        if(!$request->hasFile('signature')) return $this->sendResponseMessage(array('status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_SIGNATURE_REQUIRED)), 200);
+        if(!$request->hasFile('signature')) return $this->sendResponseMessage(array('status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_SIGNATURE_REQUIRED,strtolower($payload['device_language']))), 200);
 
         $sign = "";
         $signature = $this->uploadFile($request, 'uploads/signature', 'signature');
@@ -720,15 +719,15 @@ class ApiController extends Controller
                 ]);
                                 
                 
-                if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_HANDRAIL_ADD_SUCCESS), 'reference'=>$referenceNo, 'qrcode_url'=>asset('uploads/qrcodes/').'/'.$referenceNo.'.png'],200);
-                return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_HANDRAIL_ADD_FAILURE)],200);
+                if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_HANDRAIL_ADD_SUCCESS, strtolower($payload['device_language'])), 'reference'=>$referenceNo, 'qrcode_url'=>asset('uploads/qrcodes/').'/'.$referenceNo.'.png'],200);
+                return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_HANDRAIL_ADD_FAILURE,strtolower($payload['device_language']))],200);
             }
             catch (QueryException $e){
                 return $this->sendResponseMessage(['status'=>false, 'message'=>  $e->getMessage()],200);
             }
 //        }
 
-        return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_IMAGE_VIDEO_REQUIRED)],200);
+        return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_IMAGE_VIDEO_REQUIRED,strtolower($payload['device_language']))],200);
     }
 
 
@@ -742,7 +741,7 @@ class ApiController extends Controller
 		
         if(isset($payload['status']) && $payload['status'] == false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
         }
 
         $rules =[
@@ -785,7 +784,7 @@ class ApiController extends Controller
 
         if(isset($payload['status']) && $payload['status'] == false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
         }
         
         
@@ -810,7 +809,7 @@ class ApiController extends Controller
 
             $rs = \DB::select($query);
 
-            if(empty($rs)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_NO_INCIDENT_REPORTED)],200);
+            if(empty($rs)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_NO_INCIDENT_REPORTED,strtolower($payload['device_language']))],200);
             return $this->sendResponseMessage(['status'=>true, 'data'=> $rs],200);
 
         }catch (QueryException $e){
@@ -832,7 +831,7 @@ class ApiController extends Controller
 
         if(isset($payload['status']) && $payload['status'] == false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
         }
 
         $copId = $payload['user_id'];
@@ -849,7 +848,7 @@ class ApiController extends Controller
             ->where(['ref_user_id'=>$copId])->get();
 			
 
-        if($res->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+        if($res->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
 
         foreach ($res as $k => $v)
         {
@@ -870,7 +869,7 @@ class ApiController extends Controller
 
         if(isset($payload['status']) && $payload['status'] == false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
         }
 		$rules =[
             'incident_lat'=>'required',
@@ -934,12 +933,13 @@ class ApiController extends Controller
         $interventionDone = 1;
         if($interventions->isEmpty()) $interventionDone = 0; 
         
-        if(empty($res)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND), 'pending'=>$interventionDone],200);
+        if(empty($res)) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language'])), 'pending'=>$interventionDone],200);
 
         if(!empty($res)){
         	foreach ($res as $key => $value) 
         	{
-                $rs = ApplicationWaitNotification::where(['ref_incident_id'=>$value->id])->get();
+                $rs = ApplicationWaitNotification::where([['ref_user_id', '=', $copId],['ref_incident_id','=',$value->id]])->get();
+				
         		$date = Carbon::parse($res[$key]->created_at)->format('d/m/y H:i:s');
         		$res[$key]->created_at = $date;
 
@@ -961,7 +961,7 @@ class ApiController extends Controller
 		$payload = $this->get_payload($request);
 		if(isset($payload['status']) && $payload['status'] == false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
         }
 		
 		try{
@@ -971,8 +971,8 @@ class ApiController extends Controller
 			//$rsm = CopUserIncidentMapping::where(['cop_incident_details_id'=>$incidentId,'ref_user_id'=>$userId])->update(['status'=>'1']);
 			$rsm = CopUserIncidentMapping::where(['cop_incident_details_id'=>$incidentId,'ref_user_id'=>$userId])->delete();
 			$user_status = User::where(['id'=>$userId])->update(['available'=>'1']);
-			if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_REJECT_SUCCESS)],200);
-			return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_REJECT_FAILURE)],200);
+			if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_REJECT_SUCCESS,strtolower($payload['device_language']))],200);
+			return $this->sendResponseMessage(['status'=>false, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_REJECT_FAILURE,strtolower($payload['device_language']))],200);
 		}catch (QueryException $e){
             return $this->sendResponseMessage([
                 'status' => false,
@@ -988,7 +988,7 @@ class ApiController extends Controller
 
         if(isset($payload['status']) && $payload['status'] == false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
         }
 
         $userId = $payload['user_id'];
@@ -1000,7 +1000,7 @@ class ApiController extends Controller
         try{
             $user = User::where('id', $userId)->get();
 
-            if($user->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            if($user->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
             return $this->sendResponseMessage([
                 'status'=>true,
                 'grade'=>str_replace('Grade', '', $user[0]->cops_grade),
@@ -1026,7 +1026,7 @@ class ApiController extends Controller
 
         if(isset($payload['status']) && $payload['status'] == false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
         }
 
         $userId = $payload['user_id'];
@@ -1036,7 +1036,7 @@ class ApiController extends Controller
             $rs = User::where('id', $userId)->update(['available'=>$available]);
             $responseKey = $available == 1 ? ResponseMessage::_STATUS_AVAILABILITY_SET_AVAILABLE : ResponseMessage::_STATUS_AVAILABILITY_SET_UNAVAILABLE;
             if($rs) return $this->sendResponseMessage(['status'=>true, 'available'=>$available, 'message'=> ResponseMessage::statusResponses($responseKey)],200);
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INVALID_OPERATION)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INVALID_OPERATION,strtolower($payload['device_language']))],200);
 
         }catch (QueryException $e){
             return $this->sendResponseMessage([
@@ -1052,7 +1052,7 @@ class ApiController extends Controller
         
         if(isset($payload['status']) && $payload['status'] == false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
         }
         
         $userId = $payload['user_id'];
@@ -1060,7 +1060,7 @@ class ApiController extends Controller
         
         # Check whether intervention is already assigned to some user
         $res = CopUserIncidentMapping::where(['cop_incident_details_id'=>$incidentId])->get();
-        if(!$res->isEmpty()) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ALREADY_ASSIGNED)],200);
+        if(!$res->isEmpty()) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ALREADY_ASSIGNED,strtolower($payload['device_language']))],200);
        
         try
         {
@@ -1077,8 +1077,8 @@ class ApiController extends Controller
             $push = new \Edujugon\PushNotification\PushNotification('fcm');
             $push->setMessage([
                 'notification' => [
-                    'title'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_SUCCESS),
-                    'body'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_SUCCESS),
+                    'title'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_SUCCESS,strtolower($payload['device_language'])),
+                    'body'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_SUCCESS,strtolower($payload['device_language'])),
                     'sound' => 'default'
                 ]
             ]);
@@ -1116,7 +1116,7 @@ class ApiController extends Controller
         
         if(isset($payload['status']) && $payload['status'] == false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
         }
         
         $userId = $payload['user_id'];
@@ -1155,17 +1155,17 @@ class ApiController extends Controller
 
         if(isset($payload['status']) && $payload['status'] == false)
         {
-            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)],200);
+            return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
         }
         
         /* Check if intervention was assigned to same user */
         
         $incidentMappingData = CopUserIncidentMapping::where(["cop_incident_details_id"=> $payload['incident_id'], "ref_user_id"=>$payload['user_id']])->get();    
 
-        if($incidentMappingData->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_CLOSE_ERROR)], 200);
+        if($incidentMappingData->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_CLOSE_ERROR,strtolower($payload['device_language']))], 200);
 
         /* Validation for signature */
-        if(!$request->hasFile('signature')) return $this->sendResponseMessage(array('status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_SIGNATURE_REQUIRED)), 200);
+        if(!$request->hasFile('signature')) return $this->sendResponseMessage(array('status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_SIGNATURE_REQUIRED,strtolower($payload['device_language']))), 200);
 
         $sign = "";
         $signature = $this->uploadFile($request, 'uploads/signature', 'signature');
@@ -1209,7 +1209,7 @@ class ApiController extends Controller
             if(count($mappingCount) == 0) { User::where('id', $userId)->update(['available'=>1]); }
             
             if($rs) return $this->sendResponseMessage(['status'=>true, 
-                'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_REGISTERED_INCIDENT_CLOSED_SUCCESS),
+                'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_REGISTERED_INCIDENT_CLOSED_SUCCESS,strtolower($payload['device_language'])),
                 'qrcode_url'=>asset('uploads/qrcodes/').'/'.$referenceNo.'.png',
                 'reference'=>$referenceNo
                 
@@ -1317,7 +1317,7 @@ class ApiController extends Controller
 
         $res = \DB::select($query);
         $newReport = count($res);
-        
+        // echo $newReport; 
         /* Profile percentage calculations */
         $incidentDataCount = count($incidentData);
 
@@ -1335,17 +1335,21 @@ class ApiController extends Controller
                 array_push($incidentIdArr, $value->id);
             } 
         }
+		//print_r($incidentIdArr);
         $rs = ApplicationWaitNotification::whereIn('ref_incident_id', $incidentIdArr)->where(['ref_user_id'=> $userId])->get();        
         $count = count($rs);
-        // print_r($count);
-
+        // echo $count; die;
+		 $updatereports=0;
+		
+		 
         return array(
             'level'=>$quotient,
             'report'=>$report,
             'profile_percent'=>$percentage,
             'total_reports'=>$incidentDataCount,
             'completed_reports'=>count($closedIncidentData),
-            'new_reports'=> ($count > 0) ? ($newReport - $count) : $newReport
+            'new_reports'=> ($count > 0 && $newReport >0) ? ($newReport - $count) : $newReport
+			
         );
     }
 
@@ -1404,10 +1408,10 @@ class ApiController extends Controller
 		$userData = User::where(array('id' => $payload['user_id']))->get();
         $status =$userData[0]->status;
     
-        if($status) return $this->sendResponseMessage(['status'=>true, 'isfreeze'=>$status , 'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_FREEZED)], 200);
+        if($status) return $this->sendResponseMessage(['status'=>true, 'isfreeze'=>$status , 'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_FREEZED, strtolower($payload['device_language']))], 200);
 		
 		
-        else return $this->sendResponseMessage(['status'=>false,'isfreeze'=>$status , 'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_FREEZED)], 200);
+        else return $this->sendResponseMessage(['status'=>false,'isfreeze'=>$status , 'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_FREEZED, strtolower($payload['device_language']))], 200);
     }
 
 
@@ -1428,11 +1432,17 @@ class ApiController extends Controller
         
         $result = $this->validate_request($payload, $rules);
         if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
-        
+		$rs = ApplicationWaitNotification::where([
+		['ref_incident_id', '=', $payload['incident_id']],
+		['ref_user_id', '=', $payload['user_id']],])->get();
+	
+        if($rs->isEmpty())
+		{
         ApplicationWaitNotification::create([
             'ref_user_id' => $payload['user_id'], 
             'ref_incident_id' => $payload['incident_id'],
         ]);
+		}
     }
 
 

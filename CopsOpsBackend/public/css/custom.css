@@ -199,7 +199,7 @@ a.nav-link{
     margin:0 0 0 10px;
 }
 .journal-table table tr td{
-    font-size: 13px;
+    font-size: 12px;
     font-weight: normal;
     padding:6px 10px;
 }
@@ -818,7 +818,7 @@ a.comment-validate-btn{
     border-bottom: none;
 }
 .main-archive textarea, .main-archive .form-control{
-    width:80%;
+    width:90%;
     margin:0 auto;
     display: table;
 } 

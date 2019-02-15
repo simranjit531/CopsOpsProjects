@@ -143,7 +143,7 @@ class ResponseMessage
         '6010' => ' Une erreur s\'est produite. Veuillez réessayer',
         '60011' => 'L\'interevention Vous a été assigner',
         '60012' => 'L’acceptation du compte en attente du backoffice.',
-        '60013' => 'Votre compte a été figé. Veuillez contacter l\'administrateur du Backoffice.',
+        '60013' => 'Votre compte a été bloquer. Veuillez contacter l\'administrateur du Backoffice.',
         '60014' => 'Le compte a été refuse depuis le Backoffice',
         '60015' => 'Une photo de profil est requise',
         '60016' => 'Vous ne pouvez fermer que les interventions qui vous ont été assignées',

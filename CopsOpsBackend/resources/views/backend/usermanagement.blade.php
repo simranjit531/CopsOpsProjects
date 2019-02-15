@@ -28,7 +28,7 @@
 			<!-- /.col -->
 			<div class="col-sm-6">
 				<ol class="breadcrumb float-sm-right">
-					<li class="breadcrumb-item"><a href="#">{{ trans('pages.home')
+					<li class="breadcrumb-item"><a href="javascript:void(0);">{{ trans('pages.home')
 						}}</a></li>
 					<li class="breadcrumb-item active">{{ trans('pages.userManagement')
 						}}</li>
@@ -68,8 +68,8 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading" role="tab" id="headingOne">
                                     <h4 class="panel-title">
-                                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" class="">                                            
-                                            Operator
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" class="">                                      
+                                            {{trans('pages.usermgnt.operator')}}
                                         </a>
                                         <i class="less-more fa fa-plus"></i>
                                         <div class="clearfix"></div>
@@ -113,7 +113,7 @@
                     					<div id="cloned-divs"></div>
                     					
                     					<div class="col-sm-12 input-field mb-4">
-                    						<label><a href="javascript:void(0);">{{ trans('pages.addmore')}} <i class="fa fa-plus add-more-divs"></i></a> </label>
+                    						<label><a href="javascript:void(0);" class="add-more-divs">{{ trans('pages.addmore')}} <i class="fa fa-plus"></i></a> </label>
                     					</div>
                     					
                     					
@@ -275,7 +275,7 @@
 									<img id="profile_image" src="{{asset('img/jean-img.jpg')}}" alt="jean-img">
 								</figure>
 								<h2>
-									<span id="cop_grade">Grade III</span>
+									<span id="cop_grade"></span>
 								</h2>
 							</div>
 
@@ -516,6 +516,10 @@ var intervals = [];
 var bounds = new google.maps.LatLngBounds();
 $(function(){
 
+	// $('body').on('DOMNodeInserted', 'select', function () {
+ //        $(this).select2();
+ //    });
+    
 	$("#registration_start_date").datepicker().on('changeDate', function (ev) {
 		$(this).datepicker('hide');
 		$("#registration_end_date").val($(this).val());
@@ -538,7 +542,7 @@ $(function(){
 		oTableCitizen.ajax.reload(); 
 	});
 
-	$('.js-example-basic-single').select2({ placeholder: "Select a operator",});
+	// $('.js-example-basic-single').select2({ placeholder: "Select a operator",});
 	
 
 	
@@ -939,7 +943,6 @@ $(".add-more-divs").on("click", function(e){
 	var clonedDiv = $("#cloneDiv").clone();
 	clonedDiv.removeAttr("id");
 	clonedDiv.find('select[name="_operators[]"]').val('Operator');
-
 	$("#cloned-divs").append(clonedDiv);
 });
 

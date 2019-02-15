@@ -21,6 +21,7 @@ use Illuminate\Database\QueryException;
 use App\Handrail;
 use App\CopApprovalComments;
 use App\CopUserIncidentTempMapping;
+use App\ApplicationWaitNotification;
 use DateTime;
 use App\Crew;
 use App\CrewUser;
@@ -142,7 +143,7 @@ class BackendController extends Controller
         }
         catch (QueryException $qe)
         {
-            return redirect('dailycrew')->with(['type'=>'error', 'message'=>'OOPS !!!']);
+            return redirect('dailycrew')->with(['type'=>'error', 'message'=>Lang::get("pages.OOPS")]);
         }
     }
 	
@@ -186,7 +187,7 @@ class BackendController extends Controller
 		 } 
         catch (QueryException $qe) 
         {
-            return redirect('dailycrew')->with(['type'=>'error', 'message'=>'OOPS !!!']);
+            return redirect('dailycrew')->with(['type'=>'error', 'message'=>Lang::get("pages.OOPS")]);
         }
 	}
 	
@@ -230,7 +231,7 @@ class BackendController extends Controller
 		 } 
         catch (QueryException $qe) 
         {
-            return redirect('dailycrew')->with(['type'=>'error', 'message'=>'OOPS !!!']);
+            return redirect('dailycrew')->with(['type'=>'error', 'message'=>Lang::get("pages.OOPS")]);
         }
 	}
     
@@ -267,11 +268,11 @@ class BackendController extends Controller
                 }
             }
             
-            return redirect('dailycrew')->with(['type'=>'success', 'message'=>'Crew Created Successfully']);
+            return redirect('dailycrew')->with(['type'=>'success', 'message'=>Lang::get("pages.CrewCreatedSuccessfully")]);
         } 
         catch (QueryException $qe) 
         {
-            return redirect('dailycrew')->with(['type'=>'error', 'message'=>'OOPS !!!']);
+            return redirect('dailycrew')->with(['type'=>'error', 'message'=>Lang::get("pages.CrewCreatedSuccessfully")]);
         }
         
     }
@@ -300,9 +301,9 @@ class BackendController extends Controller
                 
                 return response()->json(['status'=>true, 'data'=>$response]);
             }
-            return response()->json(['status'=>false, 'message'=>'Invalid request, Please try again later']);
+            return response()->json(['status'=>false, 'message'=>Lang::get("pages.Invalidrequest")]);
         }
-        return response()->json(['status'=>false, 'message'=>'Invalid request, Please try again later']);
+        return response()->json(['status'=>false, 'message'=>Lang::get("pages.Invalidrequest")]);
     }
 	
 	public function reduseTabledata(Request $request)
@@ -373,7 +374,7 @@ class BackendController extends Controller
 	public function viewincident(Request $request)
     {
     	$incidentid = $request->incidentid;
-    	if(empty($incidentid)) return response()->json(['status'=>false, 'message'=>'Please provide Incident id'], 200);
+    	if(empty($incidentid)) return response()->json(['status'=>false, 'message'=>Lang::get("pages.pleaseprovideincidentid")], 200);
 
     	try {
             $userData = \DB::table('cop_user_incidents_closed')->select('cop_user_incidents_closed.id','cop_user_incidents_closed.comment','cop_user_incidents_closed.signature','cop_user_incidents_closed.created_at as closedate','cop_user_incidents_closed.reference as closereference','cop_incident_details.status','cop_incident_details.reference','cop_incident_details.updated_on','cop_incident_details.address','ref_user.first_name','ref_user.last_name','rfc.first_name as cop_first_name','rfc.last_name as cop_last_name', 'ref_incident_subcategory.sub_category_name',
@@ -386,7 +387,7 @@ class BackendController extends Controller
 			->where('cop_user_incidents_closed.id', $incidentid)
 			->get(); 
            
-            if($userData->isEmpty()) return response()->json(['status'=>false, 'message'=>'Something went wrong please try again later'], 200);
+            if($userData->isEmpty()) return response()->json(['status'=>false, 'message'=>Lang::get("pages.somethingwentwrong")], 200);
             
             return response()->json(['status'=>true, 'data'=>$userData], 200);
         } catch (QueryException $e) {
@@ -477,7 +478,7 @@ class BackendController extends Controller
 	public function viewhandrail(Request $request)
     {
     	$incidentid = $request->incidentid;
-    	if(empty($incidentid)) return response()->json(['status'=>false, 'message'=>'Please provide Incident id'], 200);
+    	if(empty($incidentid)) return response()->json(['status'=>false, 'message'=>Lang::get("pages.pleaseprovideincidentid")], 200);
 
     	try {
             /*$userData = \DB::table('cop_user_incidents_closed')->select('cop_user_incidents_closed.id','cop_user_incidents_closed.comment','cop_user_incidents_closed.created_at as closedate','cop_user_incidents_closed.reference as closereference','cop_incident_details.status','cop_incident_details.reference','cop_incident_details.updated_on','cop_incident_details.address','ref_user.first_name','ref_user.last_name','rfc.first_name as cop_first_name','rfc.last_name as cop_last_name', 'ref_incident_subcategory.sub_category_name','cop_incident_attachment.photo','cop_incident_attachment.video',
@@ -495,7 +496,7 @@ class BackendController extends Controller
            ->leftJoin('cop_handrail_attachment','cop_handrail.id','=','cop_handrail_attachment.cop_handrail_id')
 			->where('cop_handrail.id', $incidentid)
 			->get();
-            if($userData->isEmpty()) return response()->json(['status'=>false, 'message'=>'Something went wrong please try again later'], 200);
+            if($userData->isEmpty()) return response()->json(['status'=>false, 'message'=>Lang::get("pages.somethingwentwrong")], 200);
             
             return response()->json(['status'=>true, 'data'=>$userData], 200);
         } catch (QueryException $e) {
@@ -543,11 +544,11 @@ class BackendController extends Controller
 	{
 		$userid = $request->userid;
 		
-		if(empty($userid)) return response()->json(['status'=>false, 'message'=>'Please provide user id'], 200);
+		if(empty($userid)) return response()->json(['status'=>false, 'message'=>Lang::get("pages.Pleaseprovideuserid")], 200);
 		
         try {
             $userData = User::where(array('id' => $userid))->get();            
-            if($userData->isEmpty()) return response()->json(['status'=>false, 'message'=>'Something went wrong please try again later'], 200);
+            if($userData->isEmpty()) return response()->json(['status'=>false, 'message'=>Lang::get("pages.somethingwentwrong")], 200);
             
             foreach ($userData as $k => $v) 
             {
@@ -723,13 +724,13 @@ class BackendController extends Controller
 	    if($request->ajax())
 	    {
 	        # Validate if user id exists
-	        if(empty($request->input('user-id')))  return response()->json(['status'=>false, 'message'=>'Invalid request'], 200);
+	        if(empty($request->input('user-id')))  return response()->json(['status'=>false, 'message'=>Lang::get("pages.Invalidrequest")], 200);
 	        
 	        $rs = User::where(['id'=>$request->input('user-id')])->update(['cops_grade'=>$request->input('grade')]);
 	        if($rs) return response()->json(['status'=>true, 'message'=>'Grade updated successfully !'], 200);	        
 	        return response()->json(['status'=>false], 200);
 	    }
-	    return response()->json(['status'=>false, 'message'=>'Invalid request'], 200);
+	    return response()->json(['status'=>false, 'message'=>Lang::get("pages.Invalidrequest")], 200);
 	}
 	
 	public function updateaccount(Request $request)
@@ -737,14 +738,14 @@ class BackendController extends Controller
 	    if($request->ajax())
 	    {
 	        # Validate if user id exists
-	        if(empty($request->input('user-id')))  return response()->json(['status'=>false, 'message'=>'Invalid request'], 200);
+	        if(empty($request->input('user-id')))  return response()->json(['status'=>false, 'message'=>Lang::get("pages.Invalidrequest")], 200);
 	        
 	        $rs = User::where(['id'=>$request->input('user-id')])->update(['status'=>$request->input('type')]);
-	        $message = $request->input('type') == 0 ? "Account freezed successfully" : "Account unfreezed successfully";
+	        $message = $request->input('type') == 0 ? Lang::get("pages.freezedsuccess") : Lang::get("pages.unfreezedsuccess");
 	        if($rs) return response()->json(['status'=>true, 'message'=>$message], 200);
 	        return response()->json(['status'=>false], 200);
 	    }
-	    return response()->json(['status'=>false, 'message'=>'Invalid request'], 200);
+	    return response()->json(['status'=>false, 'message'=>Lang::get("pages.Invalidrequest")], 200);
 	}
 	
 	public function approveaccount(Request $request)
@@ -752,13 +753,13 @@ class BackendController extends Controller
 	    if($request->ajax())
 	    {
 	        # Validate if user id exists
-	        if(empty($request->input('user-id')))  return response()->json(['status'=>false, 'message'=>'Invalid request'], 200);
+	        if(empty($request->input('user-id')))  return response()->json(['status'=>false, 'message'=>Lang::get("pages.Invalidrequest")], 200);
 	        
 	        $rs = User::where(['id'=>$request->input('user-id')])->update(['approved' => 1]);	        
-	        if($rs) return response()->json(['status'=>true, 'message'=>'Account approved successfully'], 200);
+	        if($rs) return response()->json(['status'=>true, 'message'=>Lang::get("pages.accountapproved")], 200);
 	        return response()->json(['status'=>false], 200);
 	    }
-	    return response()->json(['status'=>false, 'message'=>'Invalid request'], 200);
+	    return response()->json(['status'=>false, 'message'=>Lang::get("pages.Invalidrequest")], 200);
 	}
 	
 	public function refuseaccount(Request $request)
@@ -768,7 +769,7 @@ class BackendController extends Controller
 	    if($request->ajax())
 	    {
 	        # Validate if user id exists
-	        if(empty($request->input('user-id')))  return response()->json(['status'=>false, 'message'=>'Invalid request'], 200);
+	        if(empty($request->input('user-id')))  return response()->json(['status'=>false, 'message'=>Lang::get("pages.Invalidrequest")], 200);
 	        
 	        $rs = User::where(['id'=>$request->input('user-id')])->update(['approved' => 2]);
 	        if($rs) 
@@ -780,11 +781,11 @@ class BackendController extends Controller
 	                'created_by' => $userId
 	            ]);
 	            
-	            return response()->json(['status'=>true, 'message'=>'Account rejected successfully'], 200);
+	            return response()->json(['status'=>true, 'message'=>Lang::get("pages.accountreject")], 200);
 	        }
 	        return response()->json(['status'=>false], 200);
 	    }
-	    return response()->json(['status'=>false, 'message'=>'Invalid request'], 200);
+	    return response()->json(['status'=>false, 'message'=>Lang::get("pages.Invalidrequest")], 200);
 	}
 	
 	public function assignintervention(Request $request)
@@ -794,7 +795,7 @@ class BackendController extends Controller
 	    if($request->ajax())
 	    {
 	        # Validate if user id exists	        
-	        if(empty($request->input('objectId')) || empty($request->input('operators-id'))) return response()->json(['status'=>false, 'message'=>'Invalid request'], 200);
+	        if(empty($request->input('objectId')) || empty($request->input('operators-id'))) return response()->json(['status'=>false, 'message'=>Lang::get("pages.Invalidrequest")], 200);
 	        	
 	        $rs = false;
 	
@@ -806,7 +807,7 @@ class BackendController extends Controller
 	               'ref_user_created_by' => $userId,
 	               'ref_incident_status_id' => 1
 	           ]);
-	           
+			   
 			   #user user status change
 			  // User::where('id',$o)->update(['available' => 0]); //pp
 			   
@@ -847,17 +848,17 @@ class BackendController extends Controller
                     'message' => 'intervention assigned'                    
                 ]);
 	            #IncidentDetail::where('id', $request->input('objectId'))->update(['status'=>2]);
-	            return response()->json(['status'=>true, 'message'=>'Intervention assigned successfully'], 200);
+	            return response()->json(['status'=>true, 'message'=>Lang::get("pages.interventionassigned")], 200);
 	        }
 	        return response()->json(['status'=>false], 200);
 	    }
-	    return response()->json(['status'=>false, 'message'=>'Invalid request'], 200);
+	    return response()->json(['status'=>false, 'message'=>Lang::get("pages.Invalidrequest")], 200);
 	}
 	
     public function viewincidentdata(Request $request)
     {
     	$incidentid = $request->incidentid;
-    	if(empty($incidentid)) return response()->json(['status'=>false, 'message'=>'Please provide Incident id'], 200);
+    	if(empty($incidentid)) return response()->json(['status'=>false, 'message'=>Lang::get("pages.pleaseprovideincidentid")], 200);
 
     	try {
     		$incidents = DB::table('cop_incident_details')->select('ref_incident_subcategory.sub_category_name',
@@ -871,7 +872,7 @@ class BackendController extends Controller
 				->where('cop_incident_details.id', $incidentid)
 				->get(); 
            
-            if($incidents->isEmpty()) return response()->json(['status'=>false, 'message'=>'Something went wrong please try again later'], 200);
+            if($incidents->isEmpty()) return response()->json(['status'=>false, 'message'=>Lang::get("pages.somethingwentwrong")], 200);
             
             foreach ($incidents as $k => $v) 
             {

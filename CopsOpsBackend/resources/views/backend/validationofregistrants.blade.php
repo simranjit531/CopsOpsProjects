@@ -95,12 +95,13 @@
 					<div class="row">
 						<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
 							<h2>
-								Inventation <br> Attribuee<span id="operator_assigned_report">12</span>
+								{{ trans('pages.reporting')}} <br> {{
+											trans('pages.usermgnt.attributed')}}<span id="operator_assigned_report">12</span>
 							</h2>
 						</div>
 						<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
 							<h2>
-								Inventation <br> Attribuee<span id="operator_completed_report">12</span>
+								{{ trans('pages.usermgnt.totelinterventionfenced')}}<span id="operator_completed_report">12</span>
 							</h2>
 						</div>
 					</div>
@@ -120,21 +121,21 @@
 							<h2>Carte professional</h2>
 							<a href="javascript:void(0)" id="id_card1" class="showimage"><i
 								class="fa fa-search-plus" aria-hidden="true"></i></a> <a
-								href="javascript:void(0)" id="id_card1" class="showimage"><i
+								href="javascript:void(0)" id="id_card2" class="showimage"><i
 								class="fa fa-search-plus" aria-hidden="true"></i></a>
 						</div>
 					</div>
-					<div class="comment-box mt-3">
+					<!--<div class="comment-box mt-3">
 					<h6>Comment</h6>
 					<textarea class="form-control"></textarea>
-					</div>
+					</div>-->
 				</div>
 
 
 				<div class="two-btn mt-5">
 					<a href="javascript:void(0)" id="btn-refuse-user"
 						class="refuser-btn">Refuser</a> <a href="javascript:void(0)"
-						id="btn-validate-user" class="validate-btn">Validator</a>
+						id="btn-validate-user" class="validate-btn">{{ trans('pages.Validator')}}</a>
 				</div>
 
 
@@ -161,7 +162,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('pages.Close')}}</button>
 					</div>
 				</div>
 			</div>
@@ -190,7 +191,7 @@
 					</div>
 					<div class="modal-body">
 						<div class="form-group">
-							<p class="text-center">Are you sure you want to refuse this user account ?</p>
+							<p class="text-center">{{ trans('pages.areusurerefuse')}}</p>
 						</div>
 						<div class="form-group">
 							<textarea class="form-control" rows="5" cols="" name="refuse_text"></textarea>
@@ -198,7 +199,7 @@
 					</div>
 					<div class="modal-footer">
 						<input type="hidden" name="hidden_user_id">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('pages.Close')}}</button>
 						<button type="button" id="confirm_reject_user" class="btn btn-success" type="submit">Confirm </button>
 					</div>
 				</div>
