@@ -653,11 +653,12 @@ class BackendController extends Controller
 	            ->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
 	            ->join('ref_user', 'ref_user.id', '=', 'cop_incident_details.created_by')
 	            ->orderBy('cop_incident_details.updated_at', 'DESC')->get();
+
 	            if($request->input('lat') && $request->input('lng'))
 	            {
 	                $lat = $request->input('lat');
 	                $lng = $request->input('lng');
-	                $query = "SELECT ref_incident_subcategory.sub_category_name,
+	              $query = "SELECT ref_incident_subcategory.sub_category_name,
               	             ref_user.first_name,ref_user.last_name, cop_incident_details.incident_description,
              	             cop_incident_details.other_description, cop_incident_details.reference, cop_incident_details.created_by,
             	             cop_incident_details.qr_code, cop_incident_details.latitude, cop_incident_details.longitude,
@@ -671,9 +672,10 @@ class BackendController extends Controller
 	                $incidents = \DB::select($query);
 
 	            }
-                
+               
 	            foreach ($incidents as $k => $v)
 	            {
+
 	                $users = User::where('id', $v->created_by)->get();
 	                $reporter = UserType::where('id', $users[0]->ref_user_type_id)->get()[0]->user_type;
 	                
@@ -684,6 +686,7 @@ class BackendController extends Controller
 	                
 	                # Validate if incident has relavent entry in mapping table
 	                $incidentMapping = CopUserIncidentMapping::where('cop_incident_details_id', $v->id)->get();
+ 
 	                if(!$incidentMapping->isEmpty())
 	                {
 	                    $incidents[$k]->status = '<span class="text-primary">'.Lang::get("pages.Pending").'</span>';

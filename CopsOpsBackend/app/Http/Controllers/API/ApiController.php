@@ -589,21 +589,66 @@ class ApiController extends Controller
                         'sound' => 'default'
                     ]
                 ]);
+
+                $lat = $payload['incident_lat'];
+                $lng = $payload['incident_lng'];
+
+                $latlngUsers = array();
+
+                $sql = "SELECT user_id, ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( latitude ) ) ) ) AS `distance`
+                  FROM cop_user_locations                  
+                  GROUP BY user_id HAVING `distance` <= 5";
                 
+                $res = \DB::select($sql);
+                if(!empty($res))
+                {
+                    foreach ($res as $r) 
+                    {
+                        array_push($latlngUsers, $r->user_id);
+                    }
+                }
+                
+                $operatorsIn5KmArray = array();
+                if(!empty($latlngUsers))
+                {
+                    $user = User::where(['ref_user_type_id'=> UserType::_TYPE_OPERATOR])->whereIn('id', $latlngUsers)->get(); 
+                    if(!$user->isEmpty())
+                    {
+                        foreach ($user as $u) {
+                            array_push($operatorsIn5KmArray, $u->id);
+                        }
+                    }                    
+                }
+
+                # Get all citizens
+                $usersArray = array();
+                $users = User::where('ref_user_type_id', UserType::_TYPE_CITIZEN)->get();
+                if(!$users->isEmpty())
+                {
+                    foreach ($users as $u) {
+                        array_push($usersArray, $u->id);
+                    }
+                }
+                array_push($usersArray, $payload['created_by']);
+
                 # Get device token of the user
                 #$tokenData = UserDeviceMapping::all()->chunk(100);
 
                 try{                    
-                    $tokenData = UserDeviceMapping::all()->chunk(100);
-                    
+                    $tokenData = UserDeviceMapping::whereNotIn('ref_user_id', $usersArray)->get()->chunk(100);
+                    #print_r($tokenData->toArray()); die;
                     if(!$tokenData->isEmpty()){
                         foreach ($tokenData as $tokens) {
                             foreach ($tokens as $t)
                             {
-                                if(empty($t->device_token) && $t->ref_user_id == $payload['created_by']) continue;
+                                if(empty($t->device_token)) continue;
+                                // if(in_array($t->user_id, $operatorsIn5KmArray))
+                                // {                                    
+                                    
+                                // } 
                                 $push->setDevicesToken($t->device_token);
-                                $push->send();
-                                $push->getFeedback();
+                                    $push->send();
+                                    $push->getFeedback();                                
                             }
                         }
                     }
