@@ -134,12 +134,16 @@ public class IncidentTypeFragment extends Fragment implements View.OnClickListen
                             if (incidentSubPojo.getStatus().equals("false")) {
                                 progressDialog.dismiss();
                             } else {
+                               try {
+                                   progressDialog.dismiss();
+                                   IncidentSubTypeAdapter adapter = new IncidentSubTypeAdapter(mContext, incidentSubPojo, mIncedentInterface);
+                                   recyclerView.setAdapter(adapter);
+                                   @SuppressLint("WrongConstant") GridLayoutManager manager = new GridLayoutManager(mContext, 2, GridLayoutManager.VERTICAL, false);
+                                   recyclerView.setLayoutManager(manager);
+                               }catch(Exception e){
+                                   e.printStackTrace();
+                               }
 
-                                progressDialog.dismiss();
-                                IncidentSubTypeAdapter adapter = new IncidentSubTypeAdapter(mContext, incidentSubPojo, mIncedentInterface);
-                                recyclerView.setAdapter(adapter);
-                                @SuppressLint("WrongConstant") GridLayoutManager manager = new GridLayoutManager(mContext, 2, GridLayoutManager.VERTICAL, false);
-                                recyclerView.setLayoutManager(manager);
                             }
                         }
 

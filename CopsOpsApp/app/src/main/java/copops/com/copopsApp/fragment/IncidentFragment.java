@@ -105,18 +105,33 @@ public class IncidentFragment extends Fragment implements View.OnClickListener, 
             Call<IncidentTypePojo> fileUpload = incidentType.incidentType(mFile);
             fileUpload.enqueue(new Callback<IncidentTypePojo>() {
                 @Override
-                public void onResponse(Call<IncidentTypePojo> call, Response<IncidentTypePojo> response)
-
-                {
+                public void onResponse(Call<IncidentTypePojo> call, Response<IncidentTypePojo> response) {
                     try {
                         if (response.body() != null) {
-                            incidentTypeResponse = response.body();
-                            IncidentTypeAdapter mAdapter = new IncidentTypeAdapter(mContext, incidentTypeResponse.getData(), mIncedentInterface);
-                            mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-                            mRecyclerview.setItemAnimator(new DefaultItemAnimator());
-                            mRecyclerview.setAdapter(mAdapter);
-                            mAdapter.notifyDataSetChanged();
-                            progressDialog.dismiss();
+
+                            try {
+                                incidentTypeResponse = response.body();
+
+
+                                if(incidentTypeResponse.getData()!=null){
+                                    IncidentTypeAdapter mAdapter = new IncidentTypeAdapter(mContext, incidentTypeResponse.getData(), mIncedentInterface);
+                                    mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+                                    mRecyclerview.setItemAnimator(new DefaultItemAnimator());
+                                    mRecyclerview.setAdapter(mAdapter);
+                                    mAdapter.notifyDataSetChanged();
+                                    progressDialog.dismiss();
+                                }else{
+                                    progressDialog.dismiss();
+                                }
+
+
+
+                            } catch (Exception e) {
+                                progressDialog.dismiss();
+                                e.getMessage();
+                                Utils.showAlert(e.getMessage(), mContext);
+                            }
+
 
                         }
 
@@ -158,7 +173,7 @@ public class IncidentFragment extends Fragment implements View.OnClickListener, 
                 if (loginvalid.equals("1") && userType.equals("Cops")) {
                     getFragmentManager().popBackStackImmediate();
                     Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
-                }else if (loginvalid.equals("1") && userType.equals("citizen")){
+                } else if (loginvalid.equals("1") && userType.equals("citizen")) {
                     getFragmentManager().popBackStackImmediate();
                     Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
                 }

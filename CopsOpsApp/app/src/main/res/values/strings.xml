@@ -21,6 +21,7 @@
     <string name="phone_number_10">Please enter phone number minimum 10 digit</string>
     <string name="email">Please enter email</string>
     <string name="Male_female">Please select man or woman</string>
+    <string name="profile_pic">Photo profile is requred ! </string>
     <string name="des">Please add description</string>
     <string name="other_des">Please add other description</string>
     <string name="password">Please enter password</string>
@@ -47,6 +48,8 @@
 
     <!--  Custom Dialog Screen -->
     <string name="accept">Accept</string>
+    <string name="other_headerr">Other Description </string>
+    <string name="eamil_taken">The email id has already been taken.</string>
     <string name="yes">YES</string>
     <string name="reject">Reject</string>
     <string name="no">NO</string>
@@ -296,8 +299,8 @@ the code sent to </string>
     <string name="interventionreport">Intervention Report</string>
     <string name="CarefullyCompletetheReport">Carefully Complete the Report</string>
     <string name="datehourstate">Date / hour / State</string>
-    <string name="datehint">25/08/2018</string>
-    <string name="timehint">12:13:40</string>
+    <string name="datehint">dd/mm/yyyy</string>
+    <string name="timehint">hh:mm:ss</string>
     <string name="statehint">Waiting</string>
     <string name="address">Address</string>
     <string name="closetheintervention">Close the intervention</string>

@@ -54,33 +54,40 @@ public class DashboardActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_dashboard);
+        try {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_dashboard);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread paramThread, Throwable paramThrowable) {
+                //Catch your exception
 
-        Locale locale = new Locale("fr");
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        getBaseContext().getResources().updateConfiguration(config,
-                getBaseContext().getResources().getDisplayMetrics());
 
+                // Without System.exit() this will not work.
+                System.exit(2);
+            }
+        });
 
-        setContentView(R.layout.activity_dashboard);
-        stopService(new Intent(getBaseContext(), TrackingServices.class));
-        // FirebaseApp.initializeApp(this);
+        String devicelanguage = Locale.getDefault().getDisplayLanguage();
         mAppSession = mAppSession.getInstance(this);
 
+        if(devicelanguage.equalsIgnoreCase("english")){
+            mAppSession.saveData("devicelanguage", "En");
+        }else{
+            mAppSession.saveData("devicelanguage", "Fr");
+        }
 
-        // String devicelanguage = Locale.getDefault().getDisplayLanguage();
-        //  Log.e("devicelanguage===", "" + devicelanguage);
-
-        mAppSession.saveData("devicelanguage", "Fr");
-        // mAppSession.saveData("devicelanguage","En");
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new
                     StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
+
+
+        stopService(new Intent(getBaseContext(), TrackingServices.class));
 
         handler = new Handler();
         checkOverlaySetting = new Runnable() {
@@ -145,12 +152,18 @@ public class DashboardActivity extends AppCompatActivity {
         } else {
             String intent = getIntent().getStringExtra("notification");
 
-            //  String notification = mAppSession.getData("notification");
+            // String notification = mAppSession.getData("notification");
             if (intent == null) {
                 Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
             } else {
-                stopService(new Intent(DashboardActivity.this, ShortcutViewService.class));
-                Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
+
+                if(mAppSession.getData("copsuser").equalsIgnoreCase("citizen")){
+                    Utils.fragmentCall(new CitizenFragment(), getSupportFragmentManager());
+                }else{
+                    Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
+                }
+
+              //  Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
             }
         }
 

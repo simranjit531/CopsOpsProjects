@@ -40,7 +40,7 @@ public class SpleshFragment extends Fragment {
         View v=inflater.inflate(R.layout.fragment_splesh, container, false);
         mAppSession = mAppSession.getInstance(getActivity());
 
-
+        mAppSession.saveData("isActivityRunning","DashbordActivit");
         if(mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
 
             FirebaseApp.initializeApp(getContext());

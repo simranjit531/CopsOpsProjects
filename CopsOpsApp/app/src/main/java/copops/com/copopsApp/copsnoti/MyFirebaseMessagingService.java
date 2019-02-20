@@ -218,6 +218,7 @@ interface updateInterface{
                         ("0", title, importance);
                 mChannel.setDescription(description);
                 mChannel.enableVibration(true);
+                mChannel.setSound(null, null);
                 notifManager.createNotificationChannel(mChannel);
             }
             builder = new NotificationCompat.Builder(context, "0");
@@ -225,6 +226,8 @@ interface updateInterface{
 //            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
 //                    Intent.FLAG_ACTIVITY_SINGLE_TOP);
             intent.putExtra("notification","notify");
+
+       //     Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
             builder.setContentTitle(title)
                     .setSmallIcon(getNotificationIcon()) // required
@@ -249,13 +252,12 @@ interface updateInterface{
 
             pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
-            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+         //   Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
                     .setContentTitle(title)
                     .setContentText(description)
                     .setAutoCancel(true)
                     .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                    .setSound(defaultSoundUri)
                     .setSmallIcon(getNotificationIcon())
                     .setContentIntent(pendingIntent)
                     .setStyle(new NotificationCompat.BigTextStyle().setBigContentTitle(title).bigText(description));
@@ -284,7 +286,7 @@ interface updateInterface{
                 .setContentTitle("COPOPS")
                 .setContentText(messageBody).setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody))
                 .setAutoCancel(true)
-                .setSound(defaultSoundUri)
+                .setDefaults(Notification.DEFAULT_SOUND)
                 .setContentIntent(pendingIntent).setPriority(NotificationCompat.PRIORITY_HIGH);
 
         NotificationManager notificationManager =

@@ -158,7 +158,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 //            }
 //        }
         //    progressDialog.show();
-        String SDSADSAD= mAppSession.getData("devicelanguage");
+        String SDSADSAD= mAppSession.getData("fcm_token");
         if (mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
             Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
 
@@ -333,6 +333,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     if (list.get(i).getLogin().equalsIgnoreCase(mAppSession.getData("user_id"))) {
                         QBUser user = list.get(i);
                         user.setPassword(App.getSampleConfigs().getUsersPassword());
+
+
+
                         //user.setPassword(mAppSession.getData("user_id"));
                         login(user);
 
@@ -360,7 +363,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
                 Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
                 incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
-
 
                 incomingMessagesManager.addDialogMessageListener(new AllDialogsMessageListener());
 
@@ -419,28 +421,95 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 }
                 int sender = qbChatMessage.getSenderId();
 
-                if (qbChatMessage.getAttachments().size() == 0) {
-                    for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i).getId().equals(sender)) {
-                            //  user = list.get(i);
-                          //  PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + " message)", getActivity());
-                            break;
+
+
+                int userId = result.getUserId();
+                //  Activity a = (Activity) getContext();
+                //  Boolean asas =isActivityRunning(DashboardActivity.class);
+
+                if (mAppSession.getData("isActivityRunning").equalsIgnoreCase("DashbordActivit")) {
+
+                    if (qbChatMessage.getAttachments().size() == 0) {
+
+//                        if (qbChatMessage.getDialogId().equalsIgnoreCase(result.getDialogId())) {
+//                            try {
+//                            PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
+//                        }catch (Exception e){
+//                            e.printStackTrace();
+//                        }
+//                    } else {
+//
+//
+//                        }
+                        for (int i = 0; i < list.size(); i++) {
+                            if (list.get(i).getId().equals(userId)) {
+                                //  user = list.get(i);
+
+                                try {
+
+                                    // if(count==1) {
+                                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
+                                    //  }
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                                break;
+                            }
                         }
-                    }
 
 
-                } else {
+                    } else {
 
-                    for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i).getId().equals(sender)) {
-                            //  user = list.get(i);
-                  //          PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
-                            break;
+
+                        for (int i = 0; i < list.size(); i++) {
+                            if (list.get(i).getId().equals(userId)) {
+                                //  user = list.get(i);
+
+                                try {
+
+                                    //   if(count==1) {
+                                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
+                                    //     }
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                                break;
+                            }
                         }
+
+                        //   for (int i = 0; i < list.size(); i++) {
+                        //    if (list.get(i).getId().equals(sender)) {
+                        //  user = list.get(i);
+                        //   break;
+                        // }
+                        //     }
+
+
                     }
-
-
                 }
+
+//                if (qbChatMessage.getAttachments().size() == 0) {
+//                    for (int i = 0; i < list.size(); i++) {
+//                        if (list.get(i).getId().equals(sender)) {
+//                            //  user = list.get(i);
+//                          //  PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + " message)", getActivity());
+//                            break;
+//                        }
+//                    }
+//
+//
+//                } else {
+//
+//                    for (int i = 0; i < list.size(); i++) {
+//                        if (list.get(i).getId().equals(sender)) {
+//                            //  user = list.get(i);
+//                  //          PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
+//                            break;
+//                        }
+//                    }
+//
+//
+//                }
 
 //                if (qbChatMessage.getAttachments().size() == 0) {
 //                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + " message)", getActivity());

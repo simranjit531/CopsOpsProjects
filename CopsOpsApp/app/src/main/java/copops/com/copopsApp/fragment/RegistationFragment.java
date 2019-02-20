@@ -368,20 +368,23 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
         } else if (etPassword.getText().toString().equals("")) {
             Utils.showAlert(getActivity().getString(R.string.password), mContext);
 
-        } else if (etCPassword.getText().toString().equals("")) {
+        } else if (filePathprofilePic == null) {
+            Utils.showAlert(getActivity().getString(R.string.profile_pic), mContext);
+
+        }  else if (etCPassword.getText().toString().equals("")) {
             Utils.showAlert(getActivity().getString(R.string.con_password), mContext);
         } else if (!etCPassword.getText().toString().equalsIgnoreCase(etPassword.getText().toString())) {
             Utils.showAlert(getActivity().getString(R.string.password_not_same), mContext);
 
         } else if (!Utils.isValidMail(etEmail.getText().toString())) {
             Utils.showAlert(getActivity().getString(R.string.valid_email_errer), mContext);
-        } else if (userType.equalsIgnoreCase("Cops") && idCardUri_1 == null) {
+        } else if (userType.equalsIgnoreCase("Cops") && filePathidCard_1 == null) {
                 Utils.showAlert(getActivity().getString(R.string.card1), mContext);
-            } else if (userType.equalsIgnoreCase("Cops") && idCardUri_2 == null) {
+            } else if (userType.equalsIgnoreCase("Cops") && filePathidCard_2 == null) {
                 Utils.showAlert(getActivity().getString(R.string.card2), mContext);
-            } else if (userType.equalsIgnoreCase("Cops") && idBusinessCardUri_1 == null) {
+            } else if (userType.equalsIgnoreCase("Cops") && fileBusCard_1 == null) {
                 Utils.showAlert(getActivity().getString(R.string.bussiness1), mContext);
-            } else if (userType.equalsIgnoreCase("Cops") && idBusinessCardUri_2 == null) {
+            } else if (userType.equalsIgnoreCase("Cops") && fileBusCard_2 == null) {
                 Utils.showAlert(getActivity().getString(R.string.bussiness2), mContext);
             }else{
             try {
@@ -468,7 +471,13 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                                 if (response.body() != null) {
                                     RegistationPojo registrationResponse = response.body();
                                     if (registrationResponse.getStatus().equals("false")) {
-                                        Utils.showAlert(registrationResponse.getMessage(), mContext);
+
+                                        if(registrationResponse.getMessage().equalsIgnoreCase(getString(R.string.eamil_taken))){
+                                            Utils.showAlert(getString(R.string.eamil_taken), mContext);
+                                        }else{
+                                            Utils.showAlert(registrationResponse.getMessage(), mContext);
+                                        }
+
                                     } else {
 
                                         mAppSession.saveData("id", registrationResponse.getId());
@@ -584,7 +593,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                         OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
                         os.close();
-                        idCardUri_1 = Utils.getImageUri(getActivity(), bitmap);
+                 //       idCardUri_1 = Utils.getImageUri(getActivity(), bitmap);
 
                         filePathidCard_1 = Utils.getRealPathFromURIPath(contentURI, getActivity());
                         //  profilePicUri = Utils.getRealPathFromURIPath(profileUri, getActivity());
@@ -599,7 +608,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                         OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
                         os.close();
-                        idCardUri_2 = Utils.getImageUri(getActivity(), bitmap);
+                        //idCardUri_2 = Utils.getImageUri(getActivity(), bitmap);
                         filePathidCard_2 = Utils.getRealPathFromURIPath(contentURI, getActivity());
                         IDCARD_2 = 0;
 
@@ -613,7 +622,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                         OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
                         os.close();
-                        idBusinessCardUri_1 = Utils.getImageUri(getActivity(), bitmap);
+                        //idBusinessCardUri_1 = Utils.getImageUri(getActivity(), bitmap);
                         fileBusCard_1 = Utils.getRealPathFromURIPath(contentURI, getActivity());
                         IDBUSINESSCARD_1 = 0;
                     } else if (IDBUSINESSCARD_2 == 2) {
@@ -1015,12 +1024,10 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                 if (Utils.checkPermission(mContext)) {
                     if (EasyPermissions.hasPermissions(mContext, Manifest.permission.CAMERA)) {
                         IDBUSINESSCARD_1 = 1;
-                       // takePhotoFromCamera();
                         dispatchTakePictureIntent();
                     }
                 } else {
                     IDBUSINESSCARD_1 = 1;
-                 //   takePhotoFromCamera();
                     dispatchTakePictureIntent();
                 }
                 break;
@@ -1054,12 +1061,10 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                 if (Utils.checkPermission(mContext)) {
                     if (EasyPermissions.hasPermissions(mContext, Manifest.permission.CAMERA)) {
                         IDBUSINESSCARD_2 = 2;
-                       // takePhotoFromCamera();
                         dispatchTakePictureIntent();
                     }
                 } else {
                     IDBUSINESSCARD_2 = 2;
-                   // takePhotoFromCamera();
                     dispatchTakePictureIntent();
                 }
                 break;
@@ -1069,12 +1074,10 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                 if (Utils.checkPermission(mContext)) {
                     if (EasyPermissions.hasPermissions(mContext, Manifest.permission.CAMERA)) {
                         IDCARD_2 = 2;
-                       // takePhotoFromCamera();
                         dispatchTakePictureIntent();
                     }
                 } else {
                     IDCARD_2 = 2;
-                //    takePhotoFromCamera();
 
                     dispatchTakePictureIntent();
                 }
@@ -1126,9 +1129,6 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
         isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
         if (!isGpsEnabled && !isNetworkEnabled) {
-            // displayLocationSettingsRequest(getActivity());
-//    if (!isGpsEnabled) {
-//            Toast.makeText(m_activity, "GPS is not enabled", Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
@@ -1202,7 +1202,6 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
 
 
             if (IDCARD_1 == 1) {
-                //    idCardUri_1 = Utils.getImageUri(mContext, thumbnail);
                 storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
                 file = File.createTempFile(fileName,  ".jpg" ,storageDir      /* directory */);
 
@@ -1213,7 +1212,6 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                 filePathidCard_2 = file.getAbsolutePath();
 
             } else if (IDBUSINESSCARD_1 == 1) {
-                //  idBusinessCardUri_1 = Utils.getImageUri(mContext, thumbnail);
                 storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
                 file = File.createTempFile(fileName,  ".jpg" ,storageDir      /* directory */);
                 fileBusCard_1 = file.getAbsolutePath();
@@ -1235,7 +1233,6 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
             storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
 
             file = File.createTempFile(fileName,  ".mp4" ,storageDir      /* directory */);
-         //   mCurrentVideoPath = file.getAbsolutePath();
 
         }
 

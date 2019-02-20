@@ -132,9 +132,9 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialogs);
-
+        stopService(new Intent(this, ShortcutViewService.class));
         if (checkConfigsWithSnackebarError()) {
-            stopService(new Intent(this, ShortcutViewService.class));
+
             proceedToTheNextActivityWithDelay();
 
         }
@@ -142,6 +142,9 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         ButterKnife.bind(this);
 
         mAppSession = mAppSession.getInstance(this);
+
+
+
 
         googlePlayServicesHelper = new GooglePlayServicesHelper();
         stopService(new Intent(this, ShortcutViewService.class));
@@ -151,6 +154,8 @@ public class DialogsActivity extends BaseActivity implements DialogsManager.Mana
         systemMessagesListener = new SystemMessagesListener();
 
         dialogsManager = new DialogsManager();
+
+
 
         currentUser = ChatHelper.getCurrentUser();
         qbChatDialogArrayListSearchUpdate= new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values());
@@ -439,7 +444,9 @@ else{
         IVback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mAppSession.saveData("isActivityRunning","DashbordActivit");
                 finish();
+
             }
         });
 
@@ -960,7 +967,7 @@ else{
     public void onBackPressed() {
         super.onBackPressed();
 
-
+        mAppSession.saveData("isActivityRunning","DashbordActivit");
 
 
         // userLogout();

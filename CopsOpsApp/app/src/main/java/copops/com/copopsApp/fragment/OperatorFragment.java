@@ -1,6 +1,8 @@
 package copops.com.copopsApp.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 
@@ -8,10 +10,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -46,12 +50,14 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
+import copops.com.copopsApp.activity.DashboardActivity;
 import copops.com.copopsApp.chatmodule.App;
 import copops.com.copopsApp.chatmodule.ui.activity.DialogsActivity;
 import copops.com.copopsApp.chatmodule.utils.PushBroadcastReceiver;
@@ -184,7 +190,13 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         mAppSession.saveData("latitude", String.valueOf(latitude));
         mAppSession.saveData("longitude", String.valueOf(longitude));
 
-
+        try {
+            currentUser = ChatHelper.getCurrentUser();
+            incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
+            incomingMessagesManager.addDialogMessageListener(new OperatorFragment.AllDialogsMessageListener());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //    mAppSession.getData("new_reports");
 //        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 //        if (checkPermission() && gpsEnabled()) {
@@ -335,6 +347,8 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
             case R.id.rlchat:
                 // getActivity().stopService(new Intent(getActivity(), ShortcutViewService.class));
                 Intent mIntent = new Intent(getActivity(), DialogsActivity.class);
+
+                mAppSession.saveData("isActivityRunning","ChatView");
                 startActivity(mIntent);
 //                if (mTimer != null) // Cancel if already existed
 //                    mTimer.cancel();
@@ -422,6 +436,11 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+
+                SharedPreferences preferences = getActivity().getSharedPreferences("copops.com.copopsApp", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.clear();
+                editor.commit();
                 mAppSession.saveData("Login", "0");
                 Utils.fragmentCall(new HomeFragment(), getFragmentManager());
                 userLogout();
@@ -855,13 +874,13 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                 SharedPrefsHelper.getInstance().saveQbUser(user);
                 //   ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
 
-                try {
-                    currentUser = ChatHelper.getCurrentUser();
-                    incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
-                    incomingMessagesManager.addDialogMessageListener(new OperatorFragment.AllDialogsMessageListener());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    currentUser = ChatHelper.getCurrentUser();
+//                    incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
+//                    incomingMessagesManager.addDialogMessageListener(new OperatorFragment.AllDialogsMessageListener());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
             }
 
             @Override
@@ -896,11 +915,13 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
     private void loadUpdatedDialog(String dialogId, QBChatMessage qbChatMessage) {
         ChatHelper.getInstance().getDialogById(dialogId, new QbEntityCallbackImpl<QBChatDialog>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onSuccess(QBChatDialog result, Bundle bundle) {
                 //   isProcessingResultInProgress = false;
                 QbDialogHolder.getInstance().addDialog(result);
                 int count = getUnreadMsgCount(result);
+                result.getLastMessage();
 
                 qbChatMessage1 = qbChatMessage;
                 if (count == 0) {
@@ -913,32 +934,69 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
 
                 }
+                int userId = result.getUserId();
+              //  Activity a = (Activity) getContext();
+            //  Boolean asas =isActivityRunning(DashboardActivity.class);
 
+                if (mAppSession.getData("isActivityRunning").equalsIgnoreCase("DashbordActivit")) {
 
+                    if (qbChatMessage.getAttachments().size() == 0) {
 
-                int sender = qbChatMessage.getSenderId();
-
-                if (qbChatMessage.getAttachments().size() == 0) {
+//                        if (qbChatMessage.getDialogId().equalsIgnoreCase(result.getDialogId())) {
+//                            try {
+//                            PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
+//                        }catch (Exception e){
+//                            e.printStackTrace();
+//                        }
+//                    } else {
+//
+//
+//                        }
                     for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i).getId().equals(sender)) {
+                        if (list.get(i).getId().equals(userId)) {
                             //  user = list.get(i);
-                            PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + getString(R.string.messaging )+")", getActivity());
+
+                            try {
+
+                               // if(count==1) {
+                                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
+                              //  }
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
                             break;
                         }
                     }
 
 
-                } else {
+                    } else {
 
-                    for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i).getId().equals(sender)) {
-                            //  user = list.get(i);
-                            PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + getString(R.string.messaging )+")", getActivity());
-                            break;
+
+                        for (int i = 0; i < list.size(); i++) {
+                            if (list.get(i).getId().equals(userId)) {
+                                //  user = list.get(i);
+
+                                try {
+
+                                 //   if(count==1) {
+                                        PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
+                               //     }
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                                break;
+                            }
                         }
+
+                     //   for (int i = 0; i < list.size(); i++) {
+                        //    if (list.get(i).getId().equals(sender)) {
+                                //  user = list.get(i);
+                             //   break;
+                           // }
+                   //     }
+
+
                     }
-
-
                 }
             }
 
@@ -1055,6 +1113,20 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
         }
 
+    }
+
+
+    protected Boolean isActivityRunning(Class activityClass)
+    {
+        ActivityManager activityManager = (ActivityManager) getActivity().getBaseContext().getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
+
+        for (ActivityManager.RunningTaskInfo task : tasks) {
+            if (activityClass.getCanonicalName().equalsIgnoreCase(task.baseActivity.getClassName()))
+                return true;
+        }
+
+        return false;
     }
 }
 

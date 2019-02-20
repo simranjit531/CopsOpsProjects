@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         }
        // Log.d("Firebase", "token "+ FirebaseInstanceId.getInstance().getToken());
 
-        mAppSession.saveData("fcm_token",FirebaseInstanceId.getInstance().getToken());
+    //    mAppSession.saveData("fcm_token",FirebaseInstanceId.getInstance().getToken());
         return view;
     }
 
@@ -98,11 +98,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.llcitizenhome:
+                mAppSession.saveData("copsuser","citizen");
                 Utils.fragmentCall(new LoginFragment("citizen"), getFragmentManager());
+
+
                 break;
 
 
             case R.id.llcopshome:
+                mAppSession.saveData("copsuser","Cops");
                 Utils.fragmentCall(new LoginFragment("Cops"), getFragmentManager());
                 break;
         }

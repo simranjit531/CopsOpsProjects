@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -40,6 +41,7 @@ import copops.com.copopsApp.pojo.OperatorShowAlInfo;
 import copops.com.copopsApp.pojo.RegistationPojo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
+import copops.com.copopsApp.shortcut.ShortcutViewService;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
 
@@ -128,6 +130,7 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
 
         ButterKnife.bind(this, view);
         mAppSession = mAppSession.getInstance(getActivity());
+        getActivity().stopService(new Intent(getActivity(), ShortcutViewService.class));
         initView();
 
         RLreportanincident.setOnClickListener(this);
@@ -272,6 +275,10 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 dialog.dismiss();
                 mAppSession.saveData("Login", "0");
+                SharedPreferences preferences = getActivity().getSharedPreferences("copops.com.copopsApp", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.clear();
+                editor.commit();
                 Utils.fragmentCall(new HomeFragment(), getFragmentManager());
             }
         });

@@ -42,6 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.pojo.IncdentSetPojo;
+import copops.com.copopsApp.shortcut.ShortcutViewService;
 import copops.com.copopsApp.shortcut.ShortcutViewService_Citizen;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.AppSession;
@@ -149,6 +150,7 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
             case R.id.llcamera:
                 if (Utils.checkPermission(mContext)) {
                     //main logic or main code
+                    getActivity().stopService(new Intent(getActivity(), ShortcutViewService.class));
                     //  takePhotoFromCamera();
                     dispatchTakePictureIntent();
 
@@ -162,7 +164,9 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
 
             case R.id.llvideo:
                 if (Utils.checkPermission(mContext)) {
+                    getActivity().stopService(new Intent(getActivity(), ShortcutViewService.class));
                     dispatchTakeVideoIntent();
+
 
                 } else {
                     Utils.requestPermission(getActivity());
@@ -224,31 +228,31 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
                     Log.e("aaaa", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mIncdentSetPojo)));
                     RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mIncdentSetPojo)));
 
-                    if (mCurrentPhotoPath != null) {
-
-                        File fdelete = new File(mCurrentPhotoPath);
-                        if (fdelete.exists()) {
-                            if (fdelete.delete()) {
-
-                                Log.e("current file Deleted :", "current file Deleted");
-                            } else {
-
-                                Log.e("currentf not Deleted :", "currentf not Deleted");
-                            }
-                        }
-                    }
-                    if (mCurrentVideoPath != null) {
-                        File fdeletevideo = new File(mCurrentVideoPath);
-                        if (fdeletevideo.exists()) {
-                            if (fdeletevideo.delete()) {
-                                Log.e("current file Deleted :", "current file Deleted");
-
-                            } else {
-                                Log.e("currentf not Deleted :", "currentf not Deleted");
-
-                            }
-                        }
-                    }
+//                    if (mCurrentPhotoPath != null) {
+//
+//                        File fdelete = new File(mCurrentPhotoPath);
+//                        if (fdelete.exists()) {
+//                            if (fdelete.delete()) {
+//
+//                                Log.e("current file Deleted :", "current file Deleted");
+//                            } else {
+//
+//                                Log.e("currentf not Deleted :", "currentf not Deleted");
+//                            }
+//                        }
+//                    }
+//                    if (mCurrentVideoPath != null) {
+//                        File fdeletevideo = new File(mCurrentVideoPath);
+//                        if (fdeletevideo.exists()) {
+//                            if (fdeletevideo.delete()) {
+//                                Log.e("current file Deleted :", "current file Deleted");
+//
+//                            } else {
+//                                Log.e("currentf not Deleted :", "currentf not Deleted");
+//
+//                            }
+//                        }
+//                    }
 
                     Utils.fragmentCall(new HandrailSignatureFragment(incedint_image, incedint_video, mFile, filePathImage, filePathVideo), getFragmentManager());
                 } else {

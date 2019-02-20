@@ -14,16 +14,17 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Bonjour fragment vierge</string>
-    <string name="last_name">S\'il vous plaît entrer le nom de famille</string>
-    <string name="first_name">S\'il vous plaît entrer le prénom</string>
+    <string name="last_name">Veuillez entrer votre nom de naissance</string>
+    <string name="first_name">Veuillez entrer votre prénom de naissance </string>
     <string name="dob">Veuillez entrer votre date de naissance</string>
-    <string name="phone_number">S\'il vous plaît entrer le numéro de téléphone</string>
-    <string name="phone_number_10">S\'il vous plaît entrer le numéro de téléphone minimum 10 chiffres</string>
-    <string name="email">Veuillez enterrer votre adresse mail</string>
-    <string name="Male_female">Veuillez choisir un  Homme/ Femme</string>
+    <string name="phone_number">Veuillez entrer votre numéro de téléphone</string>
+    <string name="phone_number_10">Veuillez entrer votre numéro de téléphone minimum 10 chiffres</string>
+    <string name="email">Veuillez entrer  votre adresse mail</string>
+    <string name="Male_female"> Homme/ Femme </string>
     <string name="des">S\'il vous plaît ajouter une description</string>
     <string name="other_des">S\'il vous plaît ajouter une autre description</string>
     <string name="password">Veuillez entrer un mot de passe</string>
+    <string name="profile_pic"> La photo de profil est requise </string>
     <string name="path">Veuillez capturer au moins une vidéo ou une image</string>
     <string name="objecttext">Veuillez renseigner l\'objet de la main courante. </string>
     <string name="objecttextdes">Veuillez décrire la main courante. </string>
@@ -38,14 +39,14 @@
     <string name="bussiness2">Carte professionnelle 2 requise !</string>
     <string name="read_file">Cette application doit accéder à votre stockage de fichiers pour pouvoir lire des photos.</string>
     <string name="internet_conection">S\'il vous plaît vérifier votre connexion Internet !!! .</string>
-    <string name="intervin">Vous avez déjà un rapport en cours. Veuillez déjà le compléter .</string>
+    <string name="intervin">Vous avez déjà un rapport en cours. Veuillez d\'abord le compléter</string>
     <string name="password_not_same">Mot de passe et Confirmer le mot de passe doivent être égaux.</string>
 
     <string name="cityName">S\'il vous plaît entrer le nom de la ville</string>
     <string name="no_find">Aucun Enregistrement Trouvé</string>
 
 
-
+    <string name="eamil_taken">L\'adresse mail a déjà été prise. Veuillez choisir une différente.</string>
     <!--  Custom Dialog Screen -->
     <string name="yes">Oui</string>
     <string name="no">non</string>
@@ -273,6 +274,7 @@ le code envoyé à</string>
     <!-- Incident screen -->
     <string name="reason">Motif</string>
     <string name="other_hint">Autres informations (Victimes, description de lieu .....</string>
+    <string name="other_headerr">Autres informations</string>
     <string name="reference">Référence</string>
     <string name="finish">Terminer</string>
     <string name="bemorepercise">Soyez au plus précis</string>
@@ -294,8 +296,8 @@ le code envoyé à</string>
     <string name="interventionreport">Rapport d\'intervention</string>
     <string name="CarefullyCompletetheReport">Complétez soigneusement le rapport</string>
     <string name="datehourstate">Date / heure / état</string>
-    <string name="datehint">25/08/2018</string>
-    <string name="timehint">12:13:40</string>
+    <string name="datehint">dd/mm/yyyy</string>
+    <string name="timehint">hh:mm:ss</string>
     <string name="statehint">Attendre</string>
     <string name="address">Adresse</string>
     <string name="ok">Ok</string>

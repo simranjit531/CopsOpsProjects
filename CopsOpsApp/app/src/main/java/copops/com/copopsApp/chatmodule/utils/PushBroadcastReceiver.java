@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.quickblox.sample.core.utils.constant.GcmConsts;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import copops.com.copopsApp.R;
@@ -36,6 +37,7 @@ public class PushBroadcastReceiver {
         displayCustomNotificationForOrders("heelo","hii",context);
     }*/
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint("WrongConstant")
     public static void displayCustomNotificationForOrders(String title, String description, Context context) {
         if (notifManager == null) {
@@ -56,6 +58,7 @@ public class PushBroadcastReceiver {
                         ("0", title, importance);
                 mChannel.setDescription(description);
                 mChannel.enableVibration(true);
+                mChannel.setSound(null, null);
                 notifManager.createNotificationChannel(mChannel);
             }
             builder = new NotificationCompat.Builder(context, "0");
@@ -63,6 +66,8 @@ public class PushBroadcastReceiver {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_SINGLE_TOP);
             pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+
             builder.setContentTitle(title)
                     .setSmallIcon(getNotificationIcon()) // required
                     .setContentText(description)  // required
@@ -70,7 +75,8 @@ public class PushBroadcastReceiver {
                     .setAutoCancel(true)
                     .setLargeIcon(BitmapFactory.decodeResource
                             (context.getResources(), R.mipmap.logo_launcher))
-                    .setBadgeIconType(R.mipmap.logo_launcher)
+                    .setBadgeIconType(R.mipmap.logo_launcher).setSound( Uri.parse("android.resource://"
+                    + context.getPackageName() + "/" + R.raw.notification))
                     .setContentIntent(pendingIntent);
 //                    .setSound(RingtoneManager.getDefaultUri
 //                            (RingtoneManager.TYPE_NOTIFICATION));
@@ -81,25 +87,37 @@ public class PushBroadcastReceiver {
             }
         } else {
             try {
+
+                int importance = NotificationManager.IMPORTANCE_HIGH;
+
+
                 Intent intent = new Intent(context, DialogsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 PendingIntent pendingIntent = null;
+                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
 
-                pendingIntent = PendingIntent.getActivity(context, 1251, intent, PendingIntent.FLAG_ONE_SHOT);
+                pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+                if (mChannel == null) {
+                    mChannel = new NotificationChannel
+                            ("0", title, importance);
+                    mChannel.setDescription(description);
+                    mChannel.enableVibration(true);
+                    mChannel.setSound(null, null);
+                    notifManager.createNotificationChannel(mChannel);
+                }
+              Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
-                        .setContentTitle(title)
+                notificationBuilder.setContentTitle(title)
                         .setContentText(description)
                         .setAutoCancel(true)
                         .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                        .setSound(defaultSoundUri)
                         .setSmallIcon(getNotificationIcon())
-                        .setContentIntent(pendingIntent)
+                        .setContentIntent(pendingIntent).setSound(Uri.parse("android.resource://"
+                        + context.getPackageName() + "/" + R.raw.notification))
                         .setStyle(new NotificationCompat.BigTextStyle().setBigContentTitle(title).bigText(description));
 
                 NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.notify(1251, notificationBuilder.build());
+                notificationManager.notify(0, notificationBuilder.build());
             }catch (Exception e){
                 e.printStackTrace();
             }

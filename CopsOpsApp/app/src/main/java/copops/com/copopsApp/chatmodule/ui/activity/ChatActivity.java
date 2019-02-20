@@ -60,6 +60,7 @@ import copops.com.copopsApp.chatmodule.utils.qb.QbDialogHolder;
 import copops.com.copopsApp.chatmodule.utils.qb.QbDialogUtils;
 import copops.com.copopsApp.chatmodule.utils.qb.VerboseQbChatConnectionListener;
 import copops.com.copopsApp.shortcut.ShortcutViewService;
+import copops.com.copopsApp.utils.AppSession;
 
 public class ChatActivity extends BaseActivity implements OnImagePickedListener {
     private static final String TAG = ChatActivity.class.getSimpleName();
@@ -81,6 +82,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private AttachmentPreviewAdapter attachmentPreviewAdapter;
     private ConnectionListener chatConnectionListener;
     private ImageAttachClickListener imageAttachClickListener;
+
+    AppSession mAppSession;
 @BindView(R.id.IVback)
 ImageView IVback;
 
@@ -110,7 +113,9 @@ ImageView chatAdd;
         IVback.setVisibility(View.GONE);
         chatAdd.setVisibility(View.GONE);
         filterId.setVisibility(View.VISIBLE);
+        mAppSession = mAppSession.getInstance(this);
 
+        mAppSession.saveData("isActivityRunning","ChatView");
         Log.v(TAG, "onCreate ChatCopsActivity on Thread ID = " + Thread.currentThread().getId());
 
         qbChatDialog = (QBChatDialog) getIntent().getSerializableExtra(EXTRA_DIALOG_ID);
@@ -164,7 +169,7 @@ ImageView chatAdd;
     public void onBackPressed() {
         releaseChat();
         sendDialogId();
-
+        mAppSession.saveData("isActivityRunning","DashbordActivit");
         super.onBackPressed();
     }
 
@@ -334,6 +339,7 @@ ImageView chatAdd;
             @Override
             public void onClick(View v) {
                 finish();
+                mAppSession.saveData("isActivityRunning","DashbordActivit");
             }
         });
 

@@ -49,6 +49,7 @@ import copops.com.copopsApp.pojo.IncedentAcceptResponse;
 import copops.com.copopsApp.pojo.IncidentSubPojo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
+import copops.com.copopsApp.shortcut.ShortcutViewService;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.Utils;
@@ -214,6 +215,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
             case R.id.llcamera:
                 if (Utils.checkPermission(mContext)) {
                     //main logic or main code
+                    getActivity().stopService(new Intent(getActivity(), ShortcutViewService.class));
                     dispatchTakePictureIntent();
 
                 } else {
@@ -224,6 +226,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
             case R.id.llvideo:
                 if (Utils.checkPermission(mContext)) {
                     //main logic or main code
+                    getActivity().stopService(new Intent(getActivity(), ShortcutViewService.class));
                     dispatchTakeVideoIntent();
                     // . write your main code to execute, It will execute if the permission is already given.
 
@@ -371,6 +374,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
 
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        getActivity().stopService(new Intent(getActivity(), ShortcutViewService.class));
         takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         // Ensure that there's a camera activity to handle the intent

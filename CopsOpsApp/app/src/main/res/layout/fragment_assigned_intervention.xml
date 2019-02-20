@@ -130,7 +130,7 @@
             android:focusable="false"
             android:background="@drawable/edittext_background"
             android:drawableRight="@mipmap/img_write"
-            android:hint="@string/address_hint"
+            android:hint="@string/address"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"></EditText>
 
@@ -159,11 +159,12 @@
             android:clickable="false"
             android:focusable="false"
             android:background="@drawable/edittext_background"
-            android:hint="loresum, ipo"
+            android:hint="@string/object"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"></EditText>
 
         <TextView
+            android:id="@+id/desHeaderTv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -189,11 +190,40 @@
             android:focusable="false"
             android:background="@drawable/edittext_background"
             android:drawableRight="@mipmap/img_write"
-            android:hint="36,rue desnos, la rochelle"
+            android:hint="@string/describetheincident"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"></EditText>
 
+        <TextView
+            android:id="@+id/otherHeaderTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:text="@string/other_headerr"
+            android:textColor="@color/dodgerblue"
+            android:textSize="@dimen/textsize_18sp"
+            android:textStyle="bold" />
 
+        <EditText
+            android:id="@+id/otherdescId"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:inputType="text"
+            android:clickable="false"
+            android:focusable="false"
+            android:background="@drawable/edittext_background"
+            android:drawableRight="@mipmap/img_write"
+            android:hint="@string/other_headerr"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"></EditText>
         <TextView
             android:id="@+id/TVreference"
             android:layout_width="match_parent"

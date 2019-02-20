@@ -56,15 +56,25 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
     @BindView(R.id.Tvstate)
     TextView Tvstate;
 
+    @BindView(R.id.desHeaderTv)
+    TextView desHeaderTv;
+
     @BindView(R.id.TVreferencenumber)
     TextView TVreferencenumber;
   @BindView(R.id.tvid)
     TextView tvid;
 
+  @BindView(R.id.otherHeaderTv)
+    TextView otherHeaderTv;
+
     @BindView(R.id.etAddressId)
     EditText etAddressId;
     @BindView(R.id.objectId)
     EditText objectId;
+
+
+ @BindView(R.id.otherdescId)
+    EditText otherdescId;
 
     @BindView(R.id.descId)
     EditText descId;
@@ -130,7 +140,18 @@ if(assignmentListPojo.getData().get(pos).getUser_id()==null){
         Rlintervenue.setOnClickListener(this);
         etAddressId.setText(assignmentListPojo.getData().get(pos).getAddress());
         objectId.setText(assignmentListPojo.getData().get(pos).getSub_category_name());
-        descId.setText(assignmentListPojo.getData().get(pos).getOther_description());
+
+        descId.setText(assignmentListPojo.getData().get(pos).getIncident_description());
+
+        if(assignmentListPojo.getData().get(pos).getOther_description().equalsIgnoreCase("")){
+          //  otherdescId.setText(assignmentListPojo.getData().get(pos).getOther_description());
+            otherdescId.setVisibility(View.GONE);
+            otherHeaderTv.setVisibility(View.GONE);
+        }else {
+            otherdescId.setVisibility(View.VISIBLE);
+            otherHeaderTv.setVisibility(View.VISIBLE);
+            otherdescId.setText(assignmentListPojo.getData().get(pos).getOther_description());
+        }
         TVreferencenumber.setText(assignmentListPojo.getData().get(pos).getReference());
         dateString = assignmentListPojo.getData().get(pos).getCreated_at();
         String[] parts = dateString.split(" ");

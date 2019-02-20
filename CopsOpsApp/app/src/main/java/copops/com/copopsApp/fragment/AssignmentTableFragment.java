@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
@@ -28,6 +29,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
+import copops.com.copopsApp.activity.DashboardActivity;
 import copops.com.copopsApp.adapter.AssignmentInsidentListAdapter;
 import copops.com.copopsApp.interfaceview.IncedentInterface;
 import copops.com.copopsApp.pojo.AssignmentListPojo;
@@ -35,6 +37,7 @@ import copops.com.copopsApp.pojo.CommanStatusPojo;
 import copops.com.copopsApp.pojo.IncdentSetPojo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
+import copops.com.copopsApp.shortcut.ShortcutViewService;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.Utils;
@@ -89,7 +92,7 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
         mIncedentInterface = this;
         mAppSession = mAppSession.getInstance(getActivity());
         Rltoolbar.setOnClickListener(this);
-
+        getActivity().stopService(new Intent(getActivity(), ShortcutViewService.class));
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.loading));

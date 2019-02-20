@@ -61,6 +61,11 @@ public class IncidentTypeAdapter extends RecyclerView.Adapter<IncidentTypeAdapte
 
     @Override
     public int getItemCount() {
+        try {
+            return incidentType.size();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return incidentType.size();
     }
 
