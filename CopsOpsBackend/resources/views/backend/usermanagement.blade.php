@@ -285,10 +285,10 @@
 									<li>{{ trans('pages.usermgnt.tables.firstname')}} / {{
 										trans('pages.usermgnt.tables.lastname')}}<span></span>
 									</li>
-									<li>{{ trans('pages.usermgnt.tables.lastname')}} <span></span></li>
-									<li>{{ trans('pages.usermgnt.tables.birthdate')}}<span></span></li>
-									<li>{{ trans('pages.usermgnt.tables.number')}} <span></span></li>
-									<li>{{ trans('pages.usermgnt.tables.email')}} <span></span></li>
+									<li style="display: none;">{{ trans('pages.usermgnt.tables.lastname')}} <span></span></li>
+									<li>{{ trans('pages.usermgnt.tables.birthdate')}}<span style="display: inline-block;padding-left: 5px;"></span></li>
+									<li>{{ trans('pages.usermgnt.tables.number')}} <span style="display: inline-block;padding-left: 5px;"></span></li>
+									<li>{{ trans('pages.usermgnt.tables.email')}} :<span style="display: inline-block;padding-left: 5px;"></span></li>
 								</ul>
 							</div>
 

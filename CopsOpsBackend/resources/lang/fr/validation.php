@@ -132,6 +132,12 @@ return [
         ],
     ],
 
+    'custom' => [
+        'profile_image' => [
+            'required' => 'La photo de profil est requise',
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes

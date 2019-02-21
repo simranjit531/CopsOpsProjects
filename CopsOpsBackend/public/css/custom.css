@@ -505,7 +505,8 @@ h2.outlin-heading{
     display: block;
 }
 .inention-div{
-    width:80%;
+    /*width:80%;*/
+    width:100%;
     margin:0 auto;
     display: table;
     background: #e7e7e7;
@@ -518,6 +519,7 @@ h2.outlin-heading{
     color: #000000;
     display: table;
 	font-weight:600;
+    margin-bottom: 10px;
 }
 .inention-div span{
     font-size: 12px;
@@ -820,7 +822,7 @@ a.comment-validate-btn{
 .main-archive textarea, .main-archive .form-control{
     width:90%;
     margin:0 auto;
-    display: table;
+    /*display: table;*/
 } 
 .main-archive .form-control.refrence-input{
     width:30%;

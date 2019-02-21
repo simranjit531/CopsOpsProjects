@@ -680,7 +680,7 @@ class BackendController extends Controller
 	                $reporter = UserType::where('id', $users[0]->ref_user_type_id)->get()[0]->user_type;
 	                
 	                $incidents[$k]->reporter = Lang::get("pages.$reporter");
-	                $incidents[$k]->date = Carbon::parse($v->created_at)->format('d/m/y H:i a');
+	                $incidents[$k]->date = Carbon::parse($v->created_at)->format('d/m/y H:i');
 	                $incidents[$k]->status = '<span class="text-danger">'.Lang::get("pages.Onwait").'</span>';
 	                $incidents[$k]->state = Lang::get("pages.Onwait");
 	                
