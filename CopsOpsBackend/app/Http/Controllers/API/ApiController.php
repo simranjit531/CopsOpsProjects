@@ -635,7 +635,7 @@ class ApiController extends Controller
                 #$tokenData = UserDeviceMapping::all()->chunk(100);
 
                 try{                    
-                    $tokenData = UserDeviceMapping::whereNotIn('ref_user_id', $usersArray)->get()->chunk(100);
+                    $tokenData = UserDeviceMapping::whereIn('ref_user_id', $operatorsIn5KmArray)->get()->chunk(100);
                     #print_r($tokenData->toArray()); die;
                     if(!$tokenData->isEmpty()){
                         foreach ($tokenData as $tokens) {

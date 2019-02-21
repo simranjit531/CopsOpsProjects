@@ -1,4 +1,12 @@
 @extends('backend.layouts.backendapp') @section('content')
+<style type="text/css">
+	.image-attachments {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+}
+</style>
+
 <div class="tab-div">
 	<ul>
 		<li><a href="{{ url('/usermanagement')}}">{{
@@ -109,22 +117,69 @@
 
 				<div class="zoom-div mt-4">
 					<div class="row">
-						<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 zoom-left">
-							<h2>Carte professional</h2>
-							<a href="javascript:void(0)" id="business_card1"
-								class="showimage"><i class="fa fa-search-plus"
-								aria-hidden="true"></i></a> <a href="javascript:void(0)"
-								id="business_card2" class="showimage"><i
-								class="fa fa-search-plus" aria-hidden="true"></i></a>
-						</div>
-						<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 zoom-left">
-							<h2>Carte professional</h2>
-							<a href="javascript:void(0)" id="id_card1" class="showimage"><i
-								class="fa fa-search-plus" aria-hidden="true"></i></a> <a
-								href="javascript:void(0)" id="id_card2" class="showimage"><i
-								class="fa fa-search-plus" aria-hidden="true"></i></a>
-						</div>
+					<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 zoom-left">
+						<ul id="lightgallery" class="list-unstyled row">
+						
+			                <li class="col-xs-6 col-sm-6 col-md-6" id="bus1" data-src="">
+			                    <a href="javascript:void(0);"  id="business_card1_a">
+			                        <img class="img-responsive image-attachments" id="business_card1">
+			                    </a>
+			                </li>
+			                <li class="col-xs-6 col-sm-6 col-md-6" id="bus2" data-src="">
+			                    <a href="javascript:void(0);" id="business_card2_a">
+			                        <img class="img-responsive image-attachments" id="business_card2">
+			                    </a>
+			                </li>
+			               
+						<li class="col-xs-6 col-sm-6 col-md-6" id="bus3" data-src="">
+		                    <a href="javascript:void(0);"  id="id_card1_a">
+		                        <img class="img-responsive image-attachments" id="id_card1"/>
+		                    </a>
+		                </li>
+		                <li class="col-xs-6 col-sm-6 col-md-6"  id="bus4" data-src="">
+		                    <a href="javascript:void(0);" id="id_card2_a">
+		                        <img class="img-responsive image-attachments" id="id_card2"/>
+		                    </a>
+		                </li>
+			            </ul>
 					</div>
+					</div>
+					<!--
+					<div id="lightgallery" class="row">
+
+						<!--
+						<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 zoom-left">
+							<h2>Carte professional</h2>
+							<span id="bus1" data-src="">
+								<a href="javascript:void(0)" id="bus1" data-src=""> 
+									<img class="img-responsive image-attachments" id="business_card1">
+								</a>
+							</span> 
+
+							<span id="bus1" data-src="">
+								<a href="javascript:void(0)" id="bus2" data-src="">
+									<img class="img-responsive image-attachments" id="business_card2">
+								</a>
+							</span>
+						</div>
+						<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 zoom-left">
+							<h2>Carte professional</h2>
+
+							<span id="bus1" data-src="">
+								<a href="javascript:void(0);" id="id_card1_a" data-src="">
+			                        <img class="img-responsive image-attachments" id="id_card1"/>
+			                    </a>
+			                </span>
+
+			                <span id="bus1" data-src="">
+			                    <a href="javascript:void(0);" id="id_card2_a" data-src="">
+			                        <img class="img-responsive image-attachments" id="id_card2"/>
+			                    </a>
+			                </span>
+						</div>
+					
+					</div>
+				-->
 					<!--<div class="comment-box mt-3">
 					<h6>Comment</h6>
 					<textarea class="form-control"></textarea>
@@ -218,6 +273,9 @@
 @endsection @section('before-styles') @endsection
 @section('after-scripts')
 
+<link href="{{ asset('js/plugins/lightbox2/src/css/lightbox.css') }}" rel="stylesheet">
+<script src="{{ asset('js/plugins/lightbox2/src/js/lightbox.js') }}"></script>
+
 <script>
 var oTable = '';
 	$(function() {
@@ -261,7 +319,8 @@ var oTable = '';
 				$('.rightPart .zoom-div .zoom-left').find('#business_card2').attr('href', 'javascript:void(0);').removeAttr('target');
 				$('.rightPart .zoom-div .zoom-left').find('#id_card1').attr('href', 'javascript:void(0);').removeAttr('target');
 				$('.rightPart .zoom-div .zoom-left').find('#id_card2').attr('href', 'javascript:void(0);').removeAttr('target');
-				
+				 
+
 				$('.rightPart').show();
 				$('.user-mgm-m7 h6').html(d[0]['first_name']+" "+ d[0]['last_name']);
 				$('.user-mgm-m7 .right-part ul li:eq(0) span').html(d[0]['first_name']+" "+ d[0]['last_name']);
@@ -275,11 +334,23 @@ var oTable = '';
 				
 				if(d[0]['profile_image'] !="") $('.rightPart').find('img#profile_image').attr('src', d[0]['profile_image']);
 				
-				if(d[0]['business_card1'] !="")$('.rightPart .zoom-div .zoom-left').find('#business_card1').attr('href', d[0]['business_card1']).attr('target','_blank');
-				if(d[0]['business_card2'] !="")$('.rightPart .zoom-div .zoom-left').find('#business_card2').attr('href', d[0]['business_card2']).attr('target','_blank');
+				if(d[0]['business_card1'] !=""){
+					$('.rightPart .zoom-div .zoom-left').find('#business_card1').attr('src', d[0]['business_card1']);
+					$('#bus1').attr('data-src',d[0]['business_card1']);
+				}
+				if(d[0]['business_card2'] !=""){
+					$('.rightPart .zoom-div .zoom-left').find('#business_card2').attr('src', d[0]['business_card2']);
+					$('#bus2').attr('data-src',d[0]['business_card1']);
+				}
 
-				if(d[0]['id_card1'] !="")$('.rightPart .zoom-div .zoom-left').find('#id_card1').attr('href', d[0]['id_card1']).attr('target','_blank');
-				if(d[0]['id_card2'] !="")$('.rightPart .zoom-div .zoom-left').find('#id_card2').attr('href', d[0]['id_card2']).attr('target','_blank');
+				if(d[0]['id_card1'] !=""){
+					$('.rightPart .zoom-div .zoom-left').find('#id_card1').attr('src', d[0]['id_card1']);
+					$('#bus3').attr('data-src',d[0]['id_card1']);
+				}
+				if(d[0]['id_card2'] !=""){
+					$('.rightPart .zoom-div .zoom-left').find('#id_card2').attr('src', d[0]['id_card2']);
+					$('#bus4').attr('data-src',d[0]['id_card1']);
+				}
 
 				$('.rightPart .operator').find('span#operator_assigned_report').text(d[0]['assigned_incidents']);						
 				$('.rightPart .operator').find('span#operator_completed_report').text(d[0]['completed_incidents']);

@@ -344,7 +344,7 @@ class BackendController extends Controller
 			
 		foreach($users as $k=>$u)
 		{
-		    $users[$k]->date = Carbon::parse($u->created_at)->format('d/m/y H:i a');		    
+		    $users[$k]->date = Carbon::parse($u->created_at)->format('d/m/y H:i');		    
 		}
 		
 		return Datatables::of($users)->addColumn('firstlast', function($row){
@@ -440,7 +440,7 @@ class BackendController extends Controller
 			{
 			    foreach ($users as $k=>$u)
 			    {
-			        $users[$k]->date = Carbon::parse($u->created_at)->format('d/m/y H:i a');
+			        $users[$k]->date = Carbon::parse($u->created_at)->format('d/m/y H:i');
 			    }
 			}
 			 return Datatables::of($users) ->addColumn('firstlast', function($row){

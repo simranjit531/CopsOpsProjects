@@ -1142,12 +1142,12 @@ $(document).on('click','.view-incident',function(e){
 				$('.citizen ').addClass('hide');	
 			if(typeof d[0]['assigned_incidents'] !== 'undefined')
 			{
-			$('#assigned_incidents').html("<h2>{{ trans('pages.Assigned')}}<br> Interventions<span >"+d[0]['assigned_incidents']+"</span></h2>");
+			$('#assigned_incidents').html("<h2>{{ trans('pages.Assigned')}}<br><span >"+d[0]['assigned_incidents']+"</span></h2>");
 			}
 
 			if(typeof d[0]['completed_incidents'] !== 'undefined')
 			{
-			$('#completed_incidents').html("<h2>{{ trans('pages.Completed')}}<br>incidents<span >"+d[0]['completed_incidents']+"</span></h2>");
+			$('#completed_incidents').html("<h2>{{ trans('pages.Completed')}}<br><span >"+d[0]['completed_incidents']+"</span></h2>");
 			}
 		}
 			$('#incidents_address').val(d[0]['address']);
