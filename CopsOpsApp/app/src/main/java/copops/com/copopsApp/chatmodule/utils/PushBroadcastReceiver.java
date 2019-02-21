@@ -89,8 +89,6 @@ public class PushBroadcastReceiver {
             try {
 
                 int importance = NotificationManager.IMPORTANCE_HIGH;
-
-
                 Intent intent = new Intent(context, DialogsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 PendingIntent pendingIntent = null;
