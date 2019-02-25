@@ -95,7 +95,7 @@
                 <!--<action android:name="{YOUR_INTENT_NAME}" />-->
             <!--</intent-filter>-->
         <!--</service>-->
-        <service android:name=".services.ForegroundService" />
+        <!--<service android:name=".services.ForegroundService" />-->
 
         <provider
             android:name=".utils.GenericFileProvider"
@@ -137,7 +137,7 @@
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
+            android:exported="false"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -147,13 +147,13 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".chatmodule.gcm.GcmPushListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </service>
+        <!--<service-->
+            <!--android:name=".chatmodule.gcm.GcmPushListenerService"-->
+            <!--android:exported="false">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.android.c2dm.intent.RECEIVE" />-->
+            <!--</intent-filter>-->
+        <!--</service>-->
         <service
             android:name="com.quickblox.messages.services.gcm.QBGcmPushInstanceIDService"
             android:exported="false">
@@ -180,6 +180,8 @@
         <!-- android:value="GlideModule" /> -->
 
         <activity android:name=".chat.ChatCopsActivity" />
+
+
 
         <!-- <provider -->
         <!-- android:name="androidx.core.content.FileProvider" -->

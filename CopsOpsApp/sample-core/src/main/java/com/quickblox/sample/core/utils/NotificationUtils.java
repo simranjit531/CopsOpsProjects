@@ -12,6 +12,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 
+import com.quickblox.sample.core.R;
 import com.quickblox.sample.core.utils.constant.GcmConsts;
 
 import androidx.annotation.DrawableRes;
@@ -19,8 +20,8 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 public class NotificationUtils {
-    private static final String CHANNEL_ONE_ID = "com.quickblox.samples.ONE";// The id of the channel.
-    private static final String CHANNEL_ONE_NAME = "Channel One";
+    private static final String CHANNEL_ONE_ID = "copops.com.copopsApp";// The id of the channel.
+    private static final String CHANNEL_ONE_NAME = "Copops";
 
     public static void showNotification(Context context, Class<? extends Activity> activityClass,
                                         String title, String message, @DrawableRes int icon,
@@ -44,6 +45,7 @@ public class NotificationUtils {
                     CHANNEL_ONE_NAME, importance);
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.BLUE);
+            notificationChannel.setSound(null, null);
             notificationChannel.setShowBadge(true);
             notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             notificationManager.createNotificationChannel(notificationChannel);
@@ -52,14 +54,15 @@ public class NotificationUtils {
 
     private static Notification buildNotification(Context context, Class<? extends Activity> activityClass,
                                                   String title, String message, @DrawableRes int icon) {
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+       // Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         return new NotificationCompat.Builder(context, CHANNEL_ONE_ID)
-                .setSmallIcon(icon)
+                .setSmallIcon( R.mipmap.logo_launcher)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
-                .setSound(defaultSoundUri)
+                .setSound( Uri.parse("android.resource://"
+                        + context.getPackageName() + "/" + R.raw.notification))
                 .setContentIntent(buildContentIntent(context, activityClass, message))
                 .build();
     }
@@ -70,4 +73,6 @@ public class NotificationUtils {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
+
+
 }

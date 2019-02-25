@@ -149,7 +149,7 @@
     <string name="chat_empty_start_new_chat">Commencer un nouveau chat.</string>
     <string name="chat_unsupported_type">Type de dialogue non pris en charge</string>
     <string name="chat_wait_for_attachments_to_upload">Attendez que toutes les pièces jointes soient téléchargées</string>
-    <string name="notification_title">Notification de discussion Quickblox</string>
+    <string name="notification_title">Copops</string>
     <string name="connection_error">La connexion au chat a été abandonnée</string>
     <string name="reconnect_alert">Reconnexion en% s secondes</string>
     <string name="write_someting_on_chat">Ecrire quelque chose à envoyer.</string>

@@ -8,6 +8,7 @@ import com.quickblox.sample.core.utils.NotificationUtils;
 import com.quickblox.sample.core.utils.ResourceUtils;
 
 import copops.com.copopsApp.R;
+import copops.com.copopsApp.activity.DashboardActivity;
 import copops.com.copopsApp.chatmodule.ui.activity.SplashActivity;
 
 public class GcmPushListenerService extends CoreGcmPushListenerService {
@@ -18,8 +19,8 @@ public class GcmPushListenerService extends CoreGcmPushListenerService {
 
         Log.e("chatmessage",""+message);
 
-        NotificationUtils.showNotification(this, SplashActivity.class,
+        NotificationUtils.showNotification(this, DashboardActivity.class,
                 ResourceUtils.getString(R.string.notification_title), message,
-                R.mipmap.ic_notification, NOTIFICATION_ID);
+                R.mipmap.logo_launcher, NOTIFICATION_ID);
     }
 }

@@ -20,6 +20,7 @@ import com.quickblox.messages.services.SubscribeService;
 import com.quickblox.sample.core.utils.SharedPrefsHelper;
 import com.quickblox.users.QBUsers;
 
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -95,7 +96,14 @@ public class TrackingServices extends Service {
                 @Override
                 public void run() {
 
+                    String devicelanguage = Locale.getDefault().getDisplayLanguage();
 
+
+                    if(devicelanguage.equalsIgnoreCase("english")){
+                        mAppSession.saveData("devicelanguage", "En");
+                    }else{
+                        mAppSession.saveData("devicelanguage", "Fr");
+                    }
                     latitude = gps.getLatitude();
                     longitude = gps.getLongitude();
 

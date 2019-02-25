@@ -66,12 +66,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         FirebaseApp.initializeApp(getContext());
         mAppSession=mAppSession.getInstance(getActivity());
         onClick();
+
+
+
         String devicelanguage = Locale.getDefault().getDisplayLanguage();
         if(devicelanguage.equalsIgnoreCase("english")){
             mAppSession.saveData("devicelanguage", "En");
         }else{
             mAppSession.saveData("devicelanguage", "Fr");
         }
+
         if(mAppSession.getData("user_id").equalsIgnoreCase("")){
 
         }else{

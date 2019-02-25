@@ -7,18 +7,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
 import android.net.Uri;
-
 import android.os.Build;
 import android.util.Log;
-import android.view.View;
-
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
-
-
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import copops.com.copopsApp.R;
@@ -91,11 +85,13 @@ interface updateInterface{
                         if(remoteMessage.getNotification().getBody().equalsIgnoreCase("intervention assigned")) {
                             if(mAppSession.getData("devicelanguage").equalsIgnoreCase("fr")) {
                                 sendNotification("COPOPS", "Interventions Assignées", getApplicationContext());
+                                Log.d(TAG, "From: 1" + remoteMessage.getFrom());
 
                             }else{
                                 sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
+                                Log.d(TAG, "From: 2 " + remoteMessage.getFrom());
                             }
-                                sendNotification("COPOPS", "Interventions Assignées", getApplicationContext());
+                               // sendNotification("COPOPS", "Interventions Assignées", getApplicationContext());
                                 if (Utils.checkConnection(getApplicationContext())) {
                                     IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
                                     incdentSetPojo.setUser_id(mAppSession.getData("id"));
@@ -112,6 +108,9 @@ interface updateInterface{
 
                         }else{
                             sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
+
+                            Log.d(TAG, "From: 3 " + remoteMessage.getFrom());
+
                             if (Utils.checkConnection(getApplicationContext())) {
                                 IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
                                 incdentSetPojo.setUser_id(mAppSession.getData("id"));
@@ -141,54 +140,54 @@ interface updateInterface{
         }
 
         // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            Log.e(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-
-
-            if(remoteMessage.getNotification().getBody().equalsIgnoreCase("intervention assigned")) {
-
-                if(mAppSession.getData("devicelanguage").equalsIgnoreCase("fr")) {
-                    sendNotification("COPOPS", "Interventions Assignées", getApplicationContext());
-
-                    }else{
-                    sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
-                }
-                //  String new_reports =remoteMessage.getData().get("new_reports");
-                if (Utils.checkConnection(getApplicationContext())) {
-                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
-                    incdentSetPojo.setUser_id(mAppSession.getData("id"));
-                    incdentSetPojo.setDevice_id(Utils.getDeviceId(getApplicationContext()));
-                    incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
-                    incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
-                    incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
-                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                    RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                    getCopeStatus(mFile);
-                } else {
-                    Utils.showAlert(getApplicationContext().getString(R.string.internet_conection), getApplicationContext());
-                }
-            }else{
-                sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
-                //  String new_reports =remoteMessage.getData().get("new_reports");
-                if (Utils.checkConnection(getApplicationContext())) {
-                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
-                    incdentSetPojo.setUser_id(mAppSession.getData("id"));
-                    incdentSetPojo.setDevice_id(Utils.getDeviceId(getApplicationContext()));
-                    incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
-                    incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
-                    incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
-                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                    RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                    getCopeStatus(mFile);
-                } else {
-                    Utils.showAlert(getApplicationContext().getString(R.string.internet_conection), getApplicationContext());
-                }
-            }
-      //      mAppSession.saveData("new_reports",new_reports);
-          //  sendNotification(remoteMessage.getNotification().getBody());
-            mAppSession.saveData("notification","notify");
-        }
+//        if (remoteMessage.getNotification() != null) {
+//            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+//            Log.e(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+//
+//
+//            if(remoteMessage.getNotification().getBody().equalsIgnoreCase("intervention assigned")) {
+//
+//                if(mAppSession.getData("devicelanguage").equalsIgnoreCase("fr")) {
+//                    sendNotification("COPOPS", "Interventions Assignées", getApplicationContext());
+//
+//                    }else{
+//                    sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
+//                }
+//                //  String new_reports =remoteMessage.getData().get("new_reports");
+//                if (Utils.checkConnection(getApplicationContext())) {
+//                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+//                    incdentSetPojo.setUser_id(mAppSession.getData("id"));
+//                    incdentSetPojo.setDevice_id(Utils.getDeviceId(getApplicationContext()));
+//                    incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+//                    incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+//                    incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+//                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+//                    RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+//                    getCopeStatus(mFile);
+//                } else {
+//                    Utils.showAlert(getApplicationContext().getString(R.string.internet_conection), getApplicationContext());
+//                }
+//            }else{
+//                sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
+//                //  String new_reports =remoteMessage.getData().get("new_reports");
+//                if (Utils.checkConnection(getApplicationContext())) {
+//                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+//                    incdentSetPojo.setUser_id(mAppSession.getData("id"));
+//                    incdentSetPojo.setDevice_id(Utils.getDeviceId(getApplicationContext()));
+//                    incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+//                    incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+//                    incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+//                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+//                    RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+//                    getCopeStatus(mFile);
+//                } else {
+//                    Utils.showAlert(getApplicationContext().getString(R.string.internet_conection), getApplicationContext());
+//                }
+//            }
+//      //      mAppSession.saveData("new_reports",new_reports);
+//          //  sendNotification(remoteMessage.getNotification().getBody());
+//            mAppSession.saveData("notification","notify");
+//        }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
@@ -210,7 +209,8 @@ interface updateInterface{
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationCompat.Builder builder;
             Intent intent = new Intent(context, DashboardActivity.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+          //  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent;
             int importance = NotificationManager.IMPORTANCE_HIGH;
             if (mChannel == null) {
@@ -227,13 +227,15 @@ interface updateInterface{
 //                    Intent.FLAG_ACTIVITY_SINGLE_TOP);
             intent.putExtra("notification","notify");
 
+
+
        //     Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
             builder.setContentTitle(title)
                     .setSmallIcon(getNotificationIcon()) // required
                     .setContentText(description)  // required
-                    .setDefaults(Notification.DEFAULT_ALL)
-                    .setAutoCancel(true)
+                    .setAutoCancel(true).setSound( Uri.parse("android.resource://"
+                    + context.getPackageName() + "/" + R.raw.notification))
 //                    .setLargeIcon(BitmapFactory.decodeResource
 //                            (context.getResources(), R.mipmap.logo_launcher))
                     .setBadgeIconType(R.mipmap.logo_launcher)
@@ -246,7 +248,7 @@ interface updateInterface{
 
             Intent intent = new Intent(context, DashboardActivity.class);
 
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("notification","notify");
             PendingIntent pendingIntent = null;
 
@@ -259,7 +261,8 @@ interface updateInterface{
                     .setAutoCancel(true)
                     .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                     .setSmallIcon(getNotificationIcon())
-                    .setContentIntent(pendingIntent)
+                    .setContentIntent(pendingIntent).setSound( Uri.parse("android.resource://"
+                            + context.getPackageName() + "/" + R.raw.notification))
                     .setStyle(new NotificationCompat.BigTextStyle().setBigContentTitle(title).bigText(description));
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -270,30 +273,31 @@ interface updateInterface{
 
 
 
-    private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, DashboardActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
-
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
-        //old image name for push is logon
-        //new image name is app_logo_new
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.logo_launcher)
-                .setContentTitle("COPOPS")
-                .setContentText(messageBody).setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody))
-                .setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_SOUND)
-                .setContentIntent(pendingIntent).setPriority(NotificationCompat.PRIORITY_HIGH);
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
-    }
+//    private void sendNotification(String messageBody) {
+//        Intent intent = new Intent(this, DashboardActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+//                PendingIntent.FLAG_ONE_SHOT);
+//
+//      //  Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//
+//        //old image name for push is logon
+//        //new image name is app_logo_new
+//
+//        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+//                .setSmallIcon(R.mipmap.logo_launcher)
+//                .setContentTitle("COPOPS")
+//                .setContentText(messageBody).setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody))
+//                .setAutoCancel(true)
+//                .setSound( Uri.parse("android.resource://"
+//                        + context.getPackageName() + "/" + com.quickblox.sample.core.R.raw.notification))
+//                .setContentIntent(pendingIntent).setPriority(NotificationCompat.PRIORITY_HIGH);
+//
+//        NotificationManager notificationManager =
+//                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+//    }
 
 
     private static int getNotificationIcon() {

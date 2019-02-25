@@ -31,7 +31,17 @@
 # Application classes that will be serialized/deserialized over Gson
  -keep class com.quickblox.core.account.model.** { *; }
 
-
+-dontwarn org.apache.http.**
+-ignorewarnings
+-dontwarn **CompatHoneycomb
+-dontwarn **CompatHoneycombMR2
+-dontwarn **CompatcreatorHoneycombMR2
+-keepclasseswithmembernames class * {
+native <methods>;
+}
+-keepclasseswithmembers class * {
+public <init>(android.content.context, android.util.Attributeset);
+}
 ##---------------End: proguard configuration for Gson  ----------
 #quickblox sample chat
 
@@ -68,6 +78,8 @@
 -keep class * {
     public private *;
 }
+
+
 
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }

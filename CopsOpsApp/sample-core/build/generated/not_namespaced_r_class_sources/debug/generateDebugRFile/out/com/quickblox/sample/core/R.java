@@ -1089,10 +1089,9 @@ public final class R {
         public static int notification_template_icon_low_bg = 0x7f090081;
         public static int notification_tile_bg = 0x7f090082;
         public static int notify_panel_notification_icon_bg = 0x7f090083;
-        public static int qb_logo = 0x7f090084;
-        public static int shape_circle = 0x7f090085;
-        public static int tooltip_frame_dark = 0x7f090086;
-        public static int tooltip_frame_light = 0x7f090087;
+        public static int shape_circle = 0x7f090084;
+        public static int tooltip_frame_dark = 0x7f090085;
+        public static int tooltip_frame_light = 0x7f090086;
     }
     public static final class id {
         private id() {}
@@ -1427,6 +1426,12 @@ public final class R {
 
         public static int ic_launcher = 0x7f110001;
         public static int ic_notification = 0x7f110002;
+        public static int logo_launcher = 0x7f110003;
+    }
+    public static final class raw {
+        private raw() {}
+
+        public static int notification = 0x7f140001;
     }
     public static final class string {
         private string() {}

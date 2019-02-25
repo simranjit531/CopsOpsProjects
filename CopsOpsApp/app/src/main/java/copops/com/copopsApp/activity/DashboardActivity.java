@@ -135,6 +135,17 @@ public class DashboardActivity extends AppCompatActivity {
         fragmentContener();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        Log.e("helll","ranjan");
+
+
+    }
+
+
+
     private void fragmentContener() {
         Log.e("shortcutscreentype==", mAppSession.getData("shortcutscreentype"));
 

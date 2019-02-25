@@ -9,7 +9,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
@@ -66,7 +65,7 @@ public class PushBroadcastReceiver {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_SINGLE_TOP);
             pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-
+                Log.e("hhhhhh", "From: 3 ");
 
             builder.setContentTitle(title)
                     .setSmallIcon(getNotificationIcon()) // required
@@ -89,11 +88,13 @@ public class PushBroadcastReceiver {
             try {
 
                 int importance = NotificationManager.IMPORTANCE_HIGH;
+
+
                 Intent intent = new Intent(context, DialogsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 PendingIntent pendingIntent = null;
                 NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
-
+                Log.e("hhhhhh", "From: 4 ");
                 pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
                 if (mChannel == null) {
                     mChannel = new NotificationChannel
@@ -103,7 +104,7 @@ public class PushBroadcastReceiver {
                     mChannel.setSound(null, null);
                     notifManager.createNotificationChannel(mChannel);
                 }
-              Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+             // Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
                 notificationBuilder.setContentTitle(title)
                         .setContentText(description)

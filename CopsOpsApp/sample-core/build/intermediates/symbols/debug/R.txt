@@ -1047,10 +1047,9 @@ int drawable notification_template_icon_bg 0x7f090080
 int drawable notification_template_icon_low_bg 0x7f090081
 int drawable notification_tile_bg 0x7f090082
 int drawable notify_panel_notification_icon_bg 0x7f090083
-int drawable qb_logo 0x7f090084
-int drawable shape_circle 0x7f090085
-int drawable tooltip_frame_dark 0x7f090086
-int drawable tooltip_frame_light 0x7f090087
+int drawable shape_circle 0x7f090084
+int drawable tooltip_frame_dark 0x7f090085
+int drawable tooltip_frame_light 0x7f090086
 int id ALT 0x7f0c0001
 int id CTRL 0x7f0c0002
 int id FUNCTION 0x7f0c0003
@@ -1365,6 +1364,8 @@ int layout support_simple_spinner_dropdown_item 0x7f0f0041
 int layout tooltip 0x7f0f0042
 int mipmap ic_launcher 0x7f110001
 int mipmap ic_notification 0x7f110002
+int mipmap logo_launcher 0x7f110003
+int raw notification 0x7f140001
 int string abc_action_bar_home_description 0x7f150001
 int string abc_action_bar_home_description_format 0x7f150002
 int string abc_action_bar_home_subtitle_description_format 0x7f150003

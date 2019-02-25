@@ -20,13 +20,17 @@ android {
         versionCode 2
         versionName "1.1"
         multiDexEnabled true
+
         //  resConfigs "en"
     }
     buildTypes {
         release {
             minifyEnabled true
-            debuggable true
+            shrinkResources true
+            useProguard true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
 
         }
 

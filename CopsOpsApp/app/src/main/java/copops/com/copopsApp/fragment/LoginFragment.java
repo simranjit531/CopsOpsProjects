@@ -448,7 +448,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                 try {
 
                                     // if(count==1) {
-                                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
+                                 //   PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
                                     //  }
                                 }catch (Exception e){
                                     e.printStackTrace();
@@ -468,7 +468,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                 try {
 
                                     //   if(count==1) {
-                                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
+                                //   PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
                                     //     }
                                 }catch (Exception e){
                                     e.printStackTrace();

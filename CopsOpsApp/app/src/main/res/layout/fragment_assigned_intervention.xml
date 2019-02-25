@@ -180,18 +180,22 @@
         <EditText
             android:id="@+id/descId"
             android:layout_width="match_parent"
-            android:layout_height="85dp"
+            android:layout_height="100dp"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"
-            android:inputType="text"
+            android:inputType="textMultiLine"
+            android:autoText="true"
             android:clickable="false"
+            android:lines="10"
+            android:padding="@dimen/_5sdp"
             android:focusable="false"
             android:background="@drawable/edittext_background"
             android:drawableRight="@mipmap/img_write"
             android:hint="@string/describetheincident"
             android:paddingLeft="15dp"
+            android:textSize="@dimen/_12sdp"
             android:paddingRight="15dp"></EditText>
 
         <TextView
@@ -206,18 +210,23 @@
             android:text="@string/other_headerr"
             android:textColor="@color/dodgerblue"
             android:textSize="@dimen/textsize_18sp"
+
             android:textStyle="bold" />
 
         <EditText
             android:id="@+id/otherdescId"
             android:layout_width="match_parent"
-            android:layout_height="85dp"
+            android:layout_height="100dp"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"
-            android:inputType="text"
+            android:inputType="textMultiLine"
             android:clickable="false"
+            android:padding="@dimen/_5sdp"
+            android:autoText="true"
+            android:lines="10"
+            android:textSize="@dimen/_12sdp"
             android:focusable="false"
             android:background="@drawable/edittext_background"
             android:drawableRight="@mipmap/img_write"

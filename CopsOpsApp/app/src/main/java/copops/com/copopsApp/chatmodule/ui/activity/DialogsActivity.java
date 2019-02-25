@@ -222,7 +222,7 @@ else{
     @Override
     protected void onResume() {
         super.onResume();
-        googlePlayServicesHelper.checkPlayServicesAvailable(this);
+    //    googlePlayServicesHelper.checkPlayServicesAvailable(this);
         Log.d("NitinCheck", "hii");
         loadDialogsFromQb(true, true);
         LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
@@ -679,7 +679,7 @@ else{
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
             String message = intent.getStringExtra(GcmConsts.EXTRA_GCM_MESSAGE);
-            Log.v(TAG, "Received broadcast " + intent.getAction() + " with data: " + message);
+            Log.v("OOOO", "Received broadcast " + intent.getAction() + " with data: " + message);
             requestBuilder.setSkip(skipRecords = 0);
             loadDialogsFromQb(true, true);
         }

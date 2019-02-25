@@ -180,15 +180,22 @@
         <EditText
             android:id="@+id/descId"
             android:layout_width="match_parent"
-            android:layout_height="85dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="20dp"
+            android:layout_height="100dp"
             android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:inputType="textMultiLine"
+            android:autoText="true"
+            android:clickable="false"
+            android:lines="10"
+            android:padding="@dimen/_5sdp"
+            android:focusable="false"
             android:background="@drawable/edittext_background"
             android:drawableRight="@mipmap/img_write"
-            android:inputType="text"
+            android:hint="@string/describetheincident"
             android:paddingLeft="15dp"
+            android:textSize="@dimen/_12sdp"
             android:paddingRight="15dp"></EditText>
 
 

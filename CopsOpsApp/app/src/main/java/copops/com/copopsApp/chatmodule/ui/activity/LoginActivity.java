@@ -50,7 +50,7 @@ public class LoginActivity extends CoreBaseActivity implements UsersAdapter.clic
 
         userListView.addHeaderView(listHeader, null, false);
         userListView.setOnItemClickListener(new OnUserLoginItemClickListener());
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    //    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         buildUsersList();
     }
 
