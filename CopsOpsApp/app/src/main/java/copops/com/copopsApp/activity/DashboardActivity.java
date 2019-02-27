@@ -74,6 +74,8 @@ public class DashboardActivity extends AppCompatActivity {
         String devicelanguage = Locale.getDefault().getDisplayLanguage();
         mAppSession = mAppSession.getInstance(this);
 
+
+
         if(devicelanguage.equalsIgnoreCase("english")){
             mAppSession.saveData("devicelanguage", "En");
         }else{
