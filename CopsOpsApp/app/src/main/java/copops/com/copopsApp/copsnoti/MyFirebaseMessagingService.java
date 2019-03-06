@@ -7,12 +7,19 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
+
+import java.util.List;
+
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import copops.com.copopsApp.R;
@@ -37,13 +44,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static NotificationChannel mChannel;
     private static NotificationManager notifManager;
-
     AppSession mAppSession;
-interface updateInterface{
-   public void update();
-}
 
-    updateInterface mUpdateInterface;
+
+
+
     /**
      * Called when message is received.
      *
@@ -75,7 +80,7 @@ interface updateInterface{
         // Check if message contains a data payload.
 
         if(remoteMessage.getNotification() != null) {
-            if (remoteMessage.getData().size() > 0) {
+           // if (remoteMessage.getData().size() > 0) {
 
                 try {
                     if (remoteMessage.getNotification().getBody() != null) {
@@ -88,7 +93,7 @@ interface updateInterface{
                                 Log.d(TAG, "From: 1" + remoteMessage.getFrom());
 
                             }else{
-                                sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
+                               // sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
                                 Log.d(TAG, "From: 2 " + remoteMessage.getFrom());
                             }
                                // sendNotification("COPOPS", "Interventions Assignées", getApplicationContext());
@@ -137,7 +142,7 @@ interface updateInterface{
                     e.printStackTrace();
                 }
             }
-        }
+    //    }
 
         // Check if message contains a notification payload.
 //        if (remoteMessage.getNotification() != null) {
@@ -201,11 +206,9 @@ interface updateInterface{
     @SuppressLint("WrongConstant")
     public static void sendNotification(String title, String description, Context context) {
 
-
+        Ringtone r = null;
         if (notifManager == null) {
-            notifManager = (NotificationManager) context.getSystemService
-                    (Context.NOTIFICATION_SERVICE);
-        }
+            notifManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE); }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationCompat.Builder builder;
             Intent intent = new Intent(context, DashboardActivity.class);
@@ -213,35 +216,31 @@ interface updateInterface{
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent;
             int importance = NotificationManager.IMPORTANCE_HIGH;
-            if (mChannel == null) {
-                mChannel = new NotificationChannel
-                        ("0", title, importance);
+            if (mChannel==null) {
+                mChannel = new NotificationChannel("0", title, importance);
                 mChannel.setDescription(description);
                 mChannel.enableVibration(true);
-                mChannel.setSound(null, null);
+                mChannel.setSound(null,null);
                 notifManager.createNotificationChannel(mChannel);
+
+
+
+
             }
             builder = new NotificationCompat.Builder(context, "0");
-
-//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-//                    Intent.FLAG_ACTIVITY_SINGLE_TOP);
             intent.putExtra("notification","notify");
 
 
-
-       //     Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
             builder.setContentTitle(title)
                     .setSmallIcon(getNotificationIcon()) // required
                     .setContentText(description)  // required
-                    .setAutoCancel(true).setSound( Uri.parse("android.resource://"
-                    + context.getPackageName() + "/" + R.raw.notification))
+                    .setAutoCancel(true)
 //                    .setLargeIcon(BitmapFactory.decodeResource
 //                            (context.getResources(), R.mipmap.logo_launcher))
                     .setBadgeIconType(R.mipmap.logo_launcher)
                     .setContentIntent(pendingIntent);
-//                    .setSound(RingtoneManager.getDefaultUri
-//                            (RingtoneManager.TYPE_NOTIFICATION));
+
             Notification notification = builder.build();
             notifManager.notify(0, notification);
         } else {
@@ -254,16 +253,15 @@ interface updateInterface{
 
             pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
-         //   Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
                     .setContentTitle(title)
                     .setContentText(description)
                     .setAutoCancel(true)
                     .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                     .setSmallIcon(getNotificationIcon())
-                    .setContentIntent(pendingIntent).setSound( Uri.parse("android.resource://"
-                            + context.getPackageName() + "/" + R.raw.notification))
+                    .setContentIntent(pendingIntent)
                     .setStyle(new NotificationCompat.BigTextStyle().setBigContentTitle(title).bigText(description));
+
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(0, notificationBuilder.build());

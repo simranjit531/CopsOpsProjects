@@ -14,12 +14,14 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import androidx.core.app.ActivityCompat;
+import copops.com.copopsApp.utils.Utils;
 
 public class GPSTracker extends Service implements LocationListener {
 
@@ -39,10 +41,10 @@ public class GPSTracker extends Service implements LocationListener {
     double longitude; // longitude
 
     // The minimum distance to change Updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1000; // 10 meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 100; // 1 meters
 
     // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 1 * 1; // 1 sec
 
     // Declaring a Location Manager
     protected LocationManager locationManager;
@@ -73,22 +75,7 @@ public class GPSTracker extends Service implements LocationListener {
                 // no network provider is enabled
             } else {
                 this.canGetLocation = true;
-                if (isNetworkEnabled) {
 
-                    locationManager.requestLocationUpdates(
-                            LocationManager.NETWORK_PROVIDER,
-                            MIN_TIME_BW_UPDATES,
-                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                    Log.d("Network", "Network Enabled");
-                    if (locationManager != null) {
-                        location = locationManager
-                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        if (location != null) {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                        }
-                    }
-                }
                 // if GPS Enabled get lat/long using GPS Services
                 if (isGPSEnabled) {
                     if (location == null) {
@@ -98,13 +85,35 @@ public class GPSTracker extends Service implements LocationListener {
                                 LocationManager.GPS_PROVIDER,
                                 MIN_TIME_BW_UPDATES,
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                        Log.d("GPS", "GPS Enabled");
+                        Log.d("GPS", "GPS Enabled"+getLocationMode(mContext));
                         if (locationManager != null) {
                             location = locationManager
                                     .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            if (location != null) {
+                            if (location != null && getLocationMode(mContext) == 3) {
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();
+                            }else {
+                                Utils.buildAlertMessageNoGps(mContext);
+                                Toast.makeText(mContext, "Location is not available now.Please Set accuracy high.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                   else if (isNetworkEnabled) {
+
+                        locationManager.requestLocationUpdates(
+                                LocationManager.NETWORK_PROVIDER,
+                                MIN_TIME_BW_UPDATES,
+                                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                        Log.d("Network", "Network Enabled");
+                        if (locationManager != null) {
+                            location = locationManager
+                                    .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                            if (location != null && getLocationMode(mContext) == 3) {
+                                latitude = location.getLatitude();
+                                longitude = location.getLongitude();
+                            }else {
+                                Utils.buildAlertMessageNoGps(mContext);
+                                Toast.makeText(mContext, "Location is not available now.Please Set accuracy high.", Toast.LENGTH_LONG).show();
                             }
                         }
                     }
@@ -209,9 +218,10 @@ public class GPSTracker extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-
-        Log.e("onLocationChanged_lat", "" + location.getLatitude());
-        Log.e("onLocationChanged_lng", "" + location.getLongitude());
+        if (location != null ) {
+            Log.d("onLocationChanged_lat", "" + location.getLatitude());
+            Log.d("onLocationChanged_lng", "" + location.getLongitude());
+        }
 
     }
 
@@ -266,5 +276,13 @@ public class GPSTracker extends Service implements LocationListener {
         long tmp = Math.round(value);
         return (double) tmp / factor;
     }
-
+    public  int getLocationMode(Context context) {
+        int mode = -1;
+        try {
+            mode= Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return mode;
+    }
 }

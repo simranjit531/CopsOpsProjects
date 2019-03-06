@@ -11,723 +11,723 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".fragment.bottomnavigation.FragMap" />-->
-    <fragment
-        class="com.here.android.mpa.mapping.MapFragment"
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <RelativeLayout
-            android:id="@+id/RLheader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@mipmap/img_full_header">
-
-
-            <ImageView
-                android:id="@+id/IVdrawer"
-                android:layout_width="25dp"
-                android:layout_height="30dp"
-                android:layout_alignParentLeft="true"
-                android:layout_gravity="left"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:src="@mipmap/img_filter"
-                android:visibility="invisible" />
-
-            <ImageView
-                android:id="@+id/IVdropmenu"
-                android:layout_width="125dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="20dp"
-                android:src="@mipmap/img_menudropdown"
-                android:visibility="visible" />
-
-
-            <TextView
-                android:id="@+id/Tvheadertitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/IVdropmenu"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
-                android:text="@string/signaler_un_incident"
-                android:textColor="@color/blue_shade"
-                android:textSize="@dimen/textsize_16sp"
-                android:textStyle="bold" />
-
-
-            <ImageView
-                android:id="@+id/IVheaderpolice"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignRight="@+id/Tvheaderpolice"
-                android:layout_below="@+id/IVdrawer"
-                android:layout_marginTop="5dp"
-                android:src="@mipmap/img_police_header" />
-
-            <TextView
-                android:id="@+id/Tvheaderpolice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/IVheaderpolice"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="2dp"
-                android:text="@string/type_police"
-                android:textColor="@color/aluminiumcolor"
-                android:textSize="@dimen/textsize_14sp" />
-
-            <ImageView
-                android:id="@+id/IVheadercity"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignRight="@+id/Tvheaderpolice"
-                android:layout_below="@+id/IVdropmenu"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@+id/Tvheadertitle"
-                android:src="@mipmap/img_city_header" />
-
-            <TextView
-                android:id="@+id/Tvheadercity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/IVheadercity"
-                android:layout_marginRight="25dp"
-                android:layout_marginTop="2dp"
-                android:text="@string/type_city"
-                android:textColor="@color/aluminiumcolor"
-                android:textSize="@dimen/textsize_14sp" />
-
-            <ImageView
-                android:id="@+id/IVheadermedical"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_below="@+id/Tvheadertitle"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="15dp"
-                android:src="@mipmap/img_medical_header" />
-
-            <TextView
-                android:id="@+id/Tvheadermedical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/IVheadermedical"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="2dp"
-                android:text="@string/medical_fireman"
-                android:textColor="@color/aluminiumcolor"
-                android:textSize="@dimen/textsize_14sp" />
-
-
-            <View
-                android:id="@+id/viewline"
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:layout_below="@+id/Tvheadermedical" />
-
-
-            <RelativeLayout
-                android:id="@+id/RLpoliceicons"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/viewline"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/IVpoliceheaderattack"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignLeft="@+id/IVpoliceheadersexualviolence"
-                    android:layout_alignStart="@+id/IVpoliceheadersexualviolence"
-                    android:layout_alignTop="@+id/IVpoliceheaderburglary"
-                    android:src="@mipmap/img_policeheader_icon1" />
-
-                <TextView
-                    android:id="@+id/Tvpoliceheaderattack"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/IVpoliceheaderattack"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="2dp"
-                    android:text="@string/Attack_violence"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_14sp" />
-
-                <ImageView
-                    android:id="@+id/IVpoliceheadertheft"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignBottom="@+id/Tvpoliceheaderattack"
-                    android:layout_alignLeft="@+id/IVpoliceheaderbodyaccident"
-                    android:layout_alignStart="@+id/IVpoliceheaderbodyaccident"
-                    android:src="@mipmap/img_policeheader_icon3" />
-
-                <TextView
-                    android:id="@+id/Tvpoliceheadertheft"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/IVpoliceheadertheft"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="2dp"
-                    android:text="@string/Theft"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_14sp" />
-
-                <ImageView
-                    android:id="@+id/IVpoliceheaderburglary"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="5dp"
-                    android:src="@mipmap/img_policeheader_icon5" />
-
-
-                <TextView
-                    android:id="@+id/Tvpoliceheaderburglary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/IVpoliceheaderburglary"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="2dp"
-                    android:text="@string/Burglary"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_14sp" />
-
-
-                <ImageView
-                    android:id="@+id/IVpoliceheadersexualviolence"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/Tvpoliceheaderattack"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="5dp"
-                    android:src="@mipmap/img_policeheader_icon2" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/IVpoliceheadersexualviolence"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="2dp"
-                    android:text="@string/Sexual_violence"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_14sp" />
-
-                <ImageView
-                    android:id="@+id/IVpoliceheaderbodyaccident"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_below="@+id/Tvpoliceheadertheft"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="15dp"
-                    android:src="@mipmap/img_policeheader_icon4" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/IVpoliceheaderbodyaccident"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="2dp"
-                    android:text="@string/body_accident"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_14sp" />
-
-                <ImageView
-                    android:id="@+id/IVpoliceheaderother"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/Tvpoliceheaderburglary"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="5dp"
-                    android:src="@mipmap/img_policeheader_icon6" />
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/IVpoliceheaderother"
-                    android:layout_marginRight="30dp"
-                    android:layout_marginTop="2dp"
-                    android:text="@string/other"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_14sp" />
-
-            </RelativeLayout>
-
-
-            <RelativeLayout
-                android:id="@+id/RLmedicalicons"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/viewline"
-                android:visibility="visible">
-
-                <ImageView
-                    android:id="@+id/IVmedicalheartattack"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="5dp"
-                    android:src="@mipmap/img_medical_header_heartattack" />
-
-                <TextView
-                    android:id="@+id/Tvmedicalheartattack"
-                    android:layout_width="90dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/IVmedicalheartattack"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="2dp"
-                    android:text="@string/Heart_attack_and_malaise"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_12sp" />
-
-                <ImageView
-                    android:id="@+id/IVmedicalheaderfire"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="25dp"
-                    android:src="@mipmap/img_medical_header_fire" />
-
-                <TextView
-                    android:id="@+id/Tvmedicalheaderfire"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/IVmedicalheaderfire"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="2dp"
-                    android:gravity="center_horizontal"
-                    android:text="@string/Fire_and_scorch"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_12sp" />
-
-                <ImageView
-                    android:id="@+id/IVmedicalheaderhemorrhage"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="5dp"
-                    android:src="@mipmap/img_medical_header_hemorrhage" />
-
-
-                <TextView
-                    android:id="@+id/Tvmedicalheaderburglary"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/IVmedicalheaderhemorrhage"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="2dp"
-                    android:gravity="center_horizontal"
-                    android:text="@string/hemorrhage_wound"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_12sp" />
-
-
-                <ImageView
-                    android:id="@+id/IVmedicalheadersexualviolence"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/Tvmedicalheartattack"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="5dp"
-                    android:src="@mipmap/img_medical_header_sexual_violence" />
-
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/IVmedicalheadersexualviolence"
-                    android:layout_marginLeft="18dp"
-                    android:layout_marginTop="2dp"
-                    android:text="Sexual violence"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_12sp" />
-
-                <ImageView
-                    android:id="@+id/IVmedicalheaderbodyaccident"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_below="@+id/Tvmedicalheaderfire"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="15dp"
-                    android:src="@mipmap/img_medical_header_bodyaccident" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/textView"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/airway_obstruction"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_12sp" />
-
-                <ImageView
-                    android:id="@+id/IVmedicalheaderother"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_above="@+id/textView"
-                    android:layout_alignLeft="@+id/IVmedicalheaderhemorrhage"
-                    android:layout_alignStart="@+id/IVmedicalheaderhemorrhage"
-                    android:src="@mipmap/img_policeheader_icon6" />
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/IVmedicalheaderother"
-                    android:layout_marginRight="30dp"
-                    android:layout_marginTop="2dp"
-                    android:text="@string/other"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_12sp" />
-
-            </RelativeLayout>
-
-
-            <RelativeLayout
-                android:id="@+id/RLcityicons"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/viewline"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/IVcitytag"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="5dp"
-                    android:src="@mipmap/img_city_header_tag" />
-
-                <TextView
-                    android:id="@+id/Tvcitytag"
-                    android:layout_width="90dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/IVcitytag"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="2dp"
-                    android:gravity="center_horizontal"
-                    android:text="@string/tags_onapublicbuilding"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_12sp" />
-
-                <ImageView
-                    android:id="@+id/IVcityheaderdirtyplace"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="25dp"
-                    android:src="@mipmap/img_city_header_dirtyplace" />
-
-                <TextView
-                    android:id="@+id/Tvcityheaderdirtyplace"
-                    android:layout_width="90dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/IVcityheaderdirtyplace"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="2dp"
-                    android:gravity="center_horizontal"
-                    android:text="@string/dirty_place"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_12sp" />
-
-                <ImageView
-                    android:id="@+id/IVcityheaderhole"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="5dp"
-                    android:src="@mipmap/img_city_header_hole" />
-
-
-                <TextView
-                    android:id="@+id/Tvcityheaderhole"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/IVcityheaderhole"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="2dp"
-                    android:gravity="center_horizontal"
-                    android:text="@string/hemorrhage_wound"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_12sp" />
-
-
-                <ImageView
-                    android:id="@+id/IVcityheaderlighting"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignLeft="@+id/IVcitytag"
-                    android:layout_alignStart="@+id/IVcitytag"
-                    android:layout_below="@+id/Tvcitytag"
-                    android:src="@mipmap/img_city_header_lighting" />
-
-                <TextView
-                    android:layout_width="90dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/IVcityheaderlighting"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="1dp"
-                    android:gravity="center_horizontal"
-                    android:text="@string/lighting_out_of_order"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_12sp" />
-
-                <ImageView
-                    android:id="@+id/IVcityheaderbodyaccident"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_below="@+id/Tvcityheaderdirtyplace"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="15dp"
-                    android:src="@mipmap/img_city_header_dirtyplace" />
-
-                <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/IVcityheaderbodyaccident"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center_horizontal"
-                    android:text="@string/body_accident"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_12sp" />
-
-                <ImageView
-                    android:id="@+id/IVcityheaderother"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/Tvcityheaderhole"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="5dp"
-                    android:src="@mipmap/img_city_header_other" />
-
-
-                <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/IVcityheaderother"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="2dp"
-                    android:gravity="center_horizontal"
-                    android:text="@string/other"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_12sp" />
-
-            </RelativeLayout>
-
-
-            <LinearLayout
-                android:id="@+id/llsearch_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/IVdropmenu"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:gravity="center_vertical"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/fill_dest"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/textsize_14sp" />
-
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:background="@mipmap/img_edittext_background"
-                    android:visibility="visible">
-
-                    <EditText
-                        android:id="@+id/search_et"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_toLeftOf="@+id/IVedit"
-                        android:background="@null"
-                        android:drawableLeft="@mipmap/img_current"
-                        android:hint="@string/address_hint"
-                        android:imeOptions="actionSearch"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="5dp"
-                        android:singleLine="true"
-                        android:textSize="@dimen/textsize_14sp"
-                        android:visibility="gone" />
-
-                    <ImageView
-                        android:id="@+id/IVedit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentRight="true"
-                        android:layout_gravity="right|center_vertical"
-                        android:layout_marginRight="5dp"
-                        android:paddingRight="10dp"
-                        android:src="@mipmap/img_write"
-                        android:visibility="gone" />
-                </RelativeLayout>
-
-
-            </LinearLayout>
-
-
-        </RelativeLayout>
-
-        <Button
-            android:id="@+id/BTstart"
-            android:layout_width="100dp"
-            android:layout_height="35dp"
-            android:layout_above="@+id/RLbottom"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/background_white_button"
-            android:text="Start"
-            android:textAllCaps="false"
-            android:textColor="@color/dodgerblue"
-            android:textSize="@dimen/textsize_14sp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/IVimagesgps"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_above="@+id/RLbottom"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="20dp"
-            android:src="@mipmap/img_gps_icon"
-            android:visibility="gone" />
-
-
-        <RelativeLayout
-            android:id="@+id/RLbottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="bottom">
-
-
-            <RelativeLayout
-                android:id="@+id/RLcontentbackground"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:background="@mipmap/img_gps_back_new">
-
-                <RelativeLayout
-                    android:id="@+id/mTimeDistanceRL"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginRight="30dp"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:id="@+id/kmId"
-                        android:layout_width="wrap_content"
-                        android:layout_height="25dp"
-                        android:drawableLeft="@mipmap/img_map_distance"
-                        android:drawablePadding="@dimen/textsize_10sp"
-                        android:gravity="center_vertical"
-                        android:text="" />
-
-                    <TextView
-                        android:id="@+id/timeId"
-                        android:layout_width="wrap_content"
-                        android:layout_height="25dp"
-                        android:layout_alignParentRight="true"
-                        android:drawableLeft="@mipmap/img_time"
-                        android:drawablePadding="@dimen/textsize_10sp"
-                        android:gravity="center_vertical"
-                        android:text="" />
-
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_below="@+id/mTimeDistanceRL"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginRight="30dp"
-                    android:background="@mipmap/imgedittextsearch"
-                    android:drawableRight="@mipmap/img_write"
-                    android:paddingLeft="@dimen/textsize_15sp"
-                    android:paddingRight="@dimen/textsize_15sp">
-
-                    <fragment
-                        android:id="@+id/place_autocomplete_fragment"
-                        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:hint="@string/whereareyougoing"
-                        android:textColor="@color/aluminiumcolor"
-                        android:textSize="@dimen/textsize_8sp" />
-                </LinearLayout>
-
-                <EditText
-                    android:id="@+id/ETwherewegoing"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginRight="30dp"
-                    android:background="@mipmap/imgedittextsearch"
-                    android:clickable="false"
-                    android:drawableRight="@mipmap/img_write"
-                    android:focusable="false"
-                    android:hint="@string/whereareyougoing"
-                    android:paddingLeft="40dp"
-                    android:paddingRight="15dp"
-                    android:textColor="@color/aluminiumcolor"
-                    android:textSize="@dimen/textsize_12sp"
-                    android:visibility="gone" />
-
-
-            </RelativeLayout>
-        </RelativeLayout>
-
-    </RelativeLayout>
+    <!--<fragment-->
+        <!--class="com.here.android.mpa.mapping.MapFragment"-->
+        <!--android:id="@+id/map"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/RLheader"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@mipmap/img_full_header">-->
+
+
+            <!--<ImageView-->
+                <!--android:id="@+id/IVdrawer"-->
+                <!--android:layout_width="25dp"-->
+                <!--android:layout_height="30dp"-->
+                <!--android:layout_alignParentLeft="true"-->
+                <!--android:layout_gravity="left"-->
+                <!--android:layout_marginLeft="20dp"-->
+                <!--android:layout_marginTop="20dp"-->
+                <!--android:src="@mipmap/img_filter"-->
+                <!--android:visibility="invisible" />-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/IVdropmenu"-->
+                <!--android:layout_width="125dp"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:layout_marginLeft="20dp"-->
+                <!--android:src="@mipmap/img_menudropdown"-->
+                <!--android:visibility="visible" />-->
+
+
+            <!--<TextView-->
+                <!--android:id="@+id/Tvheadertitle"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/IVdropmenu"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:text="@string/signaler_un_incident"-->
+                <!--android:textColor="@color/blue_shade"-->
+                <!--android:textSize="@dimen/textsize_16sp"-->
+                <!--android:textStyle="bold" />-->
+
+
+            <!--<ImageView-->
+                <!--android:id="@+id/IVheaderpolice"-->
+                <!--android:layout_width="70dp"-->
+                <!--android:layout_height="70dp"-->
+                <!--android:layout_alignParentLeft="true"-->
+                <!--android:layout_alignRight="@+id/Tvheaderpolice"-->
+                <!--android:layout_below="@+id/IVdrawer"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:src="@mipmap/img_police_header" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/Tvheaderpolice"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentLeft="true"-->
+                <!--android:layout_below="@+id/IVheaderpolice"-->
+                <!--android:layout_marginLeft="15dp"-->
+                <!--android:layout_marginTop="2dp"-->
+                <!--android:text="@string/type_police"-->
+                <!--android:textColor="@color/aluminiumcolor"-->
+                <!--android:textSize="@dimen/textsize_14sp" />-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/IVheadercity"-->
+                <!--android:layout_width="70dp"-->
+                <!--android:layout_height="70dp"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_alignRight="@+id/Tvheaderpolice"-->
+                <!--android:layout_below="@+id/IVdropmenu"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:layout_toRightOf="@+id/Tvheadertitle"-->
+                <!--android:src="@mipmap/img_city_header" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/Tvheadercity"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_below="@+id/IVheadercity"-->
+                <!--android:layout_marginRight="25dp"-->
+                <!--android:layout_marginTop="2dp"-->
+                <!--android:text="@string/type_city"-->
+                <!--android:textColor="@color/aluminiumcolor"-->
+                <!--android:textSize="@dimen/textsize_14sp" />-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/IVheadermedical"-->
+                <!--android:layout_width="70dp"-->
+                <!--android:layout_height="70dp"-->
+                <!--android:layout_below="@+id/Tvheadertitle"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_marginTop="15dp"-->
+                <!--android:src="@mipmap/img_medical_header" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/Tvheadermedical"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/IVheadermedical"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_marginBottom="4dp"-->
+                <!--android:layout_marginTop="2dp"-->
+                <!--android:text="@string/medical_fireman"-->
+                <!--android:textColor="@color/aluminiumcolor"-->
+                <!--android:textSize="@dimen/textsize_14sp" />-->
+
+
+            <!--<View-->
+                <!--android:id="@+id/viewline"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="10dp"-->
+                <!--android:layout_below="@+id/Tvheadermedical" />-->
+
+
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/RLpoliceicons"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/viewline"-->
+                <!--android:visibility="gone">-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/IVpoliceheaderattack"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_alignLeft="@+id/IVpoliceheadersexualviolence"-->
+                    <!--android:layout_alignStart="@+id/IVpoliceheadersexualviolence"-->
+                    <!--android:layout_alignTop="@+id/IVpoliceheaderburglary"-->
+                    <!--android:src="@mipmap/img_policeheader_icon1" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/Tvpoliceheaderattack"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentLeft="true"-->
+                    <!--android:layout_below="@+id/IVpoliceheaderattack"-->
+                    <!--android:layout_marginLeft="15dp"-->
+                    <!--android:layout_marginTop="2dp"-->
+                    <!--android:text="@string/Attack_violence"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_14sp" />-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/IVpoliceheadertheft"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_alignBottom="@+id/Tvpoliceheaderattack"-->
+                    <!--android:layout_alignLeft="@+id/IVpoliceheaderbodyaccident"-->
+                    <!--android:layout_alignStart="@+id/IVpoliceheaderbodyaccident"-->
+                    <!--android:src="@mipmap/img_policeheader_icon3" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/Tvpoliceheadertheft"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@+id/IVpoliceheadertheft"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_marginTop="2dp"-->
+                    <!--android:text="@string/Theft"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_14sp" />-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/IVpoliceheaderburglary"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_marginRight="20dp"-->
+                    <!--android:layout_marginTop="5dp"-->
+                    <!--android:src="@mipmap/img_policeheader_icon5" />-->
+
+
+                <!--<TextView-->
+                    <!--android:id="@+id/Tvpoliceheaderburglary"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_below="@+id/IVpoliceheaderburglary"-->
+                    <!--android:layout_marginRight="15dp"-->
+                    <!--android:layout_marginTop="2dp"-->
+                    <!--android:text="@string/Burglary"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_14sp" />-->
+
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/IVpoliceheadersexualviolence"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_alignParentLeft="true"-->
+                    <!--android:layout_below="@+id/Tvpoliceheaderattack"-->
+                    <!--android:layout_marginLeft="20dp"-->
+                    <!--android:layout_marginTop="5dp"-->
+                    <!--android:src="@mipmap/img_policeheader_icon2" />-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentLeft="true"-->
+                    <!--android:layout_below="@+id/IVpoliceheadersexualviolence"-->
+                    <!--android:layout_marginLeft="15dp"-->
+                    <!--android:layout_marginTop="2dp"-->
+                    <!--android:text="@string/Sexual_violence"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_14sp" />-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/IVpoliceheaderbodyaccident"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_below="@+id/Tvpoliceheadertheft"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_marginTop="15dp"-->
+                    <!--android:src="@mipmap/img_policeheader_icon4" />-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@+id/IVpoliceheaderbodyaccident"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_marginTop="2dp"-->
+                    <!--android:text="@string/body_accident"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_14sp" />-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/IVpoliceheaderother"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_below="@+id/Tvpoliceheaderburglary"-->
+                    <!--android:layout_marginRight="20dp"-->
+                    <!--android:layout_marginTop="5dp"-->
+                    <!--android:src="@mipmap/img_policeheader_icon6" />-->
+
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_below="@+id/IVpoliceheaderother"-->
+                    <!--android:layout_marginRight="30dp"-->
+                    <!--android:layout_marginTop="2dp"-->
+                    <!--android:text="@string/other"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_14sp" />-->
+
+            <!--</RelativeLayout>-->
+
+
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/RLmedicalicons"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/viewline"-->
+                <!--android:visibility="visible">-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/IVmedicalheartattack"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_alignParentLeft="true"-->
+                    <!--android:layout_marginLeft="20dp"-->
+                    <!--android:layout_marginTop="5dp"-->
+                    <!--android:src="@mipmap/img_medical_header_heartattack" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/Tvmedicalheartattack"-->
+                    <!--android:layout_width="90dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentLeft="true"-->
+                    <!--android:layout_below="@+id/IVmedicalheartattack"-->
+                    <!--android:layout_marginLeft="15dp"-->
+                    <!--android:layout_marginTop="2dp"-->
+                    <!--android:text="@string/Heart_attack_and_malaise"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_12sp" />-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/IVmedicalheaderfire"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_marginTop="25dp"-->
+                    <!--android:src="@mipmap/img_medical_header_fire" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/Tvmedicalheaderfire"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@+id/IVmedicalheaderfire"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_marginTop="2dp"-->
+                    <!--android:gravity="center_horizontal"-->
+                    <!--android:text="@string/Fire_and_scorch"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_12sp" />-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/IVmedicalheaderhemorrhage"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_marginRight="20dp"-->
+                    <!--android:layout_marginTop="5dp"-->
+                    <!--android:src="@mipmap/img_medical_header_hemorrhage" />-->
+
+
+                <!--<TextView-->
+                    <!--android:id="@+id/Tvmedicalheaderburglary"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_below="@+id/IVmedicalheaderhemorrhage"-->
+                    <!--android:layout_marginRight="15dp"-->
+                    <!--android:layout_marginTop="2dp"-->
+                    <!--android:gravity="center_horizontal"-->
+                    <!--android:text="@string/hemorrhage_wound"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_12sp" />-->
+
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/IVmedicalheadersexualviolence"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_alignParentLeft="true"-->
+                    <!--android:layout_below="@+id/Tvmedicalheartattack"-->
+                    <!--android:layout_marginLeft="20dp"-->
+                    <!--android:layout_marginTop="5dp"-->
+                    <!--android:src="@mipmap/img_medical_header_sexual_violence" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/textView"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentLeft="true"-->
+                    <!--android:layout_below="@+id/IVmedicalheadersexualviolence"-->
+                    <!--android:layout_marginLeft="18dp"-->
+                    <!--android:layout_marginTop="2dp"-->
+                    <!--android:text="Sexual violence"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_12sp" />-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/IVmedicalheaderbodyaccident"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_below="@+id/Tvmedicalheaderfire"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_marginTop="15dp"-->
+                    <!--android:src="@mipmap/img_medical_header_bodyaccident" />-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@+id/textView"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_marginTop="10dp"-->
+                    <!--android:text="@string/airway_obstruction"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_12sp" />-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/IVmedicalheaderother"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_above="@+id/textView"-->
+                    <!--android:layout_alignLeft="@+id/IVmedicalheaderhemorrhage"-->
+                    <!--android:layout_alignStart="@+id/IVmedicalheaderhemorrhage"-->
+                    <!--android:src="@mipmap/img_policeheader_icon6" />-->
+
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_below="@+id/IVmedicalheaderother"-->
+                    <!--android:layout_marginRight="30dp"-->
+                    <!--android:layout_marginTop="2dp"-->
+                    <!--android:text="@string/other"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_12sp" />-->
+
+            <!--</RelativeLayout>-->
+
+
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/RLcityicons"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/viewline"-->
+                <!--android:visibility="gone">-->
+
+                <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:id="@+id/IVcitytag"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_width="60dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_height="60dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_alignParentLeft="true"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_marginLeft="20dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_marginTop="5dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:src="@mipmap/img_city_header_tag" />&ndash;&gt;-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/Tvcitytag"-->
+                    <!--android:layout_width="90dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentLeft="true"-->
+                    <!--android:layout_below="@+id/IVcitytag"-->
+                    <!--android:layout_marginLeft="15dp"-->
+                    <!--android:layout_marginTop="2dp"-->
+                    <!--android:gravity="center_horizontal"-->
+                    <!--android:text="@string/tags_onapublicbuilding"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_12sp" />-->
+
+                <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:id="@+id/IVcityheaderdirtyplace"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_width="60dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_height="60dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_marginTop="25dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:src="@mipmap/img_city_header_dirtyplace" />&ndash;&gt;-->
+
+                <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:id="@+id/Tvcityheaderdirtyplace"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_width="90dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_below="@+id/IVcityheaderdirtyplace"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_marginTop="2dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:gravity="center_horizontal"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:text="@string/dirty_place"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:textColor="@color/aluminiumcolor"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:textSize="@dimen/textsize_12sp" />&ndash;&gt;-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/IVcityheaderhole"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_marginRight="20dp"-->
+                    <!--android:layout_marginTop="5dp"-->
+                    <!--android:src="@mipmap/img_city_header_hole" />-->
+
+
+                <!--<TextView-->
+                    <!--android:id="@+id/Tvcityheaderhole"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_below="@+id/IVcityheaderhole"-->
+                    <!--android:layout_marginRight="15dp"-->
+                    <!--android:layout_marginTop="2dp"-->
+                    <!--android:gravity="center_horizontal"-->
+                    <!--android:text="@string/hemorrhage_wound"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_12sp" />-->
+
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/IVcityheaderlighting"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_alignLeft="@+id/IVcitytag"-->
+                    <!--android:layout_alignStart="@+id/IVcitytag"-->
+                    <!--android:layout_below="@+id/Tvcitytag"-->
+                    <!--android:src="@mipmap/img_city_header_lighting" />-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="90dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentLeft="true"-->
+                    <!--android:layout_below="@+id/IVcityheaderlighting"-->
+                    <!--android:layout_marginLeft="15dp"-->
+                    <!--android:layout_marginTop="1dp"-->
+                    <!--android:gravity="center_horizontal"-->
+                    <!--android:text="@string/lighting_out_of_order"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_12sp" />-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/IVcityheaderbodyaccident"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_below="@+id/Tvcityheaderdirtyplace"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_marginTop="15dp"-->
+                    <!--android:src="@mipmap/img_city_header_dirtyplace" />-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@+id/IVcityheaderbodyaccident"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:gravity="center_horizontal"-->
+                    <!--android:text="@string/body_accident"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_12sp" />-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/IVcityheaderother"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_below="@+id/Tvcityheaderhole"-->
+                    <!--android:layout_marginRight="20dp"-->
+                    <!--android:layout_marginTop="5dp"-->
+                    <!--android:src="@mipmap/img_city_header_other" />-->
+
+
+                <!--<TextView-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_below="@+id/IVcityheaderother"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:layout_marginTop="2dp"-->
+                    <!--android:gravity="center_horizontal"-->
+                    <!--android:text="@string/other"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_12sp" />-->
+
+            <!--</RelativeLayout>-->
+
+
+            <!--<LinearLayout-->
+                <!--android:id="@+id/llsearch_layout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/IVdropmenu"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:orientation="vertical"-->
+                <!--android:visibility="gone">-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginBottom="5dp"-->
+                    <!--android:layout_marginLeft="20dp"-->
+                    <!--android:layout_marginRight="20dp"-->
+                    <!--android:layout_marginTop="5dp"-->
+                    <!--android:text="@string/fill_dest"-->
+                    <!--android:textColor="@color/black"-->
+                    <!--android:textSize="@dimen/textsize_14sp" />-->
+
+
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--android:layout_marginLeft="20dp"-->
+                    <!--android:layout_marginRight="20dp"-->
+                    <!--android:background="@mipmap/img_edittext_background"-->
+                    <!--android:visibility="visible">-->
+
+                    <!--<EditText-->
+                        <!--android:id="@+id/search_et"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_toLeftOf="@+id/IVedit"-->
+                        <!--android:background="@null"-->
+                        <!--android:drawableLeft="@mipmap/img_current"-->
+                        <!--android:hint="@string/address_hint"-->
+                        <!--android:imeOptions="actionSearch"-->
+                        <!--android:paddingLeft="10dp"-->
+                        <!--android:paddingRight="5dp"-->
+                        <!--android:singleLine="true"-->
+                        <!--android:textSize="@dimen/textsize_14sp"-->
+                        <!--android:visibility="gone" />-->
+
+                    <!--<ImageView-->
+                        <!--android:id="@+id/IVedit"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_alignParentRight="true"-->
+                        <!--android:layout_gravity="right|center_vertical"-->
+                        <!--android:layout_marginRight="5dp"-->
+                        <!--android:paddingRight="10dp"-->
+                        <!--android:src="@mipmap/img_write"-->
+                        <!--android:visibility="gone" />-->
+                <!--</RelativeLayout>-->
+
+
+            <!--</LinearLayout>-->
+
+
+        <!--</RelativeLayout>-->
+
+        <!--<Button-->
+            <!--android:id="@+id/BTstart"-->
+            <!--android:layout_width="100dp"-->
+            <!--android:layout_height="35dp"-->
+            <!--android:layout_above="@+id/RLbottom"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_marginBottom="10dp"-->
+            <!--android:background="@drawable/background_white_button"-->
+            <!--android:text="Start"-->
+            <!--android:textAllCaps="false"-->
+            <!--android:textColor="@color/dodgerblue"-->
+            <!--android:textSize="@dimen/textsize_14sp"-->
+            <!--android:textStyle="bold" />-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/IVimagesgps"-->
+            <!--android:layout_width="35dp"-->
+            <!--android:layout_height="35dp"-->
+            <!--android:layout_above="@+id/RLbottom"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_marginBottom="10dp"-->
+            <!--android:layout_marginRight="20dp"-->
+            <!--android:src="@mipmap/img_gps_icon"-->
+            <!--android:visibility="gone" />-->
+
+
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/RLbottom"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_gravity="bottom">-->
+
+
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/RLcontentbackground"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="100dp"-->
+                <!--android:background="@mipmap/img_gps_back_new">-->
+
+                <!--<RelativeLayout-->
+                    <!--android:id="@+id/mTimeDistanceRL"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="30dp"-->
+                    <!--android:layout_marginRight="30dp"-->
+                    <!--android:padding="10dp">-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/kmId"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="25dp"-->
+                        <!--android:drawableLeft="@mipmap/img_map_distance"-->
+                        <!--android:drawablePadding="@dimen/textsize_10sp"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="" />-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/timeId"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="25dp"-->
+                        <!--android:layout_alignParentRight="true"-->
+                        <!--android:drawableLeft="@mipmap/img_time"-->
+                        <!--android:drawablePadding="@dimen/textsize_10sp"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="" />-->
+
+                <!--</RelativeLayout>-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="40dp"-->
+                    <!--android:layout_below="@+id/mTimeDistanceRL"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:layout_marginLeft="30dp"-->
+                    <!--android:layout_marginRight="30dp"-->
+                    <!--android:background="@mipmap/imgedittextsearch"-->
+                    <!--android:drawableRight="@mipmap/img_write"-->
+                    <!--android:paddingLeft="@dimen/textsize_15sp"-->
+                    <!--android:paddingRight="@dimen/textsize_15sp">-->
+
+                    <!--<fragment-->
+                        <!--android:id="@+id/place_autocomplete_fragment"-->
+                        <!--android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:hint="@string/whereareyougoing"-->
+                        <!--android:textColor="@color/aluminiumcolor"-->
+                        <!--android:textSize="@dimen/textsize_8sp" />-->
+                <!--</LinearLayout>-->
+
+                <!--<EditText-->
+                    <!--android:id="@+id/ETwherewegoing"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="40dp"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:layout_marginLeft="30dp"-->
+                    <!--android:layout_marginRight="30dp"-->
+                    <!--android:background="@mipmap/imgedittextsearch"-->
+                    <!--android:clickable="false"-->
+                    <!--android:drawableRight="@mipmap/img_write"-->
+                    <!--android:focusable="false"-->
+                    <!--android:hint="@string/whereareyougoing"-->
+                    <!--android:paddingLeft="40dp"-->
+                    <!--android:paddingRight="15dp"-->
+                    <!--android:textColor="@color/aluminiumcolor"-->
+                    <!--android:textSize="@dimen/textsize_12sp"-->
+                    <!--android:visibility="gone" />-->
+
+
+            <!--</RelativeLayout>-->
+        <!--</RelativeLayout>-->
+
+    <!--</RelativeLayout>-->
 
 </FrameLayout>

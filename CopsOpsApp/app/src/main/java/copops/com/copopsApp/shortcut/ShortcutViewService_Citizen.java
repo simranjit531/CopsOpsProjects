@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,6 +24,8 @@ public class ShortcutViewService_Citizen extends Service implements View.OnClick
     private View expandedView;
     private View btnhandrail, btnreportofincident,btnmain;
     private AppSession mSession;
+    private final static float CLICK_DRAG_TOLERANCE = 10;
+    private WindowManager.LayoutParams params;
 
     public ShortcutViewService_Citizen() {
     }
@@ -49,44 +52,37 @@ public class ShortcutViewService_Citizen extends Service implements View.OnClick
             LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_PHONE;
         }
 
-        /*final WindowManager.LayoutParams params1 = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                LAYOUT_FLAG,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);*/
 
-        final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+       /* final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 LAYOUT_FLAG,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);
-
-     /*   final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                50,
-                100,
-                LAYOUT_FLAG,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);*/
 
-        //setting the layout parameters
-        final WindowManager.LayoutParams params1 = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);
+        if (mSession.getData("shortcutlocationx").equals("") && mSession.getData("shortcutlocationy").equals("")) {
 
+            params = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    LAYOUT_FLAG,
+                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    PixelFormat.TRANSLUCENT);
+        } else {
 
-        /*WindowManager.LayoutParams paramsnew = new WindowManager.LayoutParams(1, 1,
-                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.O ?
-                        WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY :
-                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-                PixelFormat.TRANSLUCENT);*/
+            Float fx = Float.valueOf(mSession.getData("shortcutlocationx"));
+            Float fy = Float.valueOf(mSession.getData("shortcutlocationy"));
 
+            params = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    LAYOUT_FLAG,
+                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    PixelFormat.TRANSLUCENT);
+
+            params.x = Math.round(fx);
+            params.y = Math.round(fy);
+        }
 
         //getting windows services and adding the floating view to it
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -128,8 +124,27 @@ public class ShortcutViewService_Citizen extends Service implements View.OnClick
 
                     case MotionEvent.ACTION_UP:
                         //when the drag is ended switching the state of the widget
-                        collapsedView.setVisibility(View.GONE);
-                        expandedView.setVisibility(View.VISIBLE);
+                       /* collapsedView.setVisibility(View.GONE);
+                        expandedView.setVisibility(View.VISIBLE);*/
+
+                        float upRawX = event.getRawX();
+                        float upRawY = event.getRawY();
+
+                        float upDX = upRawX - initialTouchX;
+                        float upDY = upRawY - initialTouchY;
+
+
+                        mSession.saveData("shortcutlocationx", String.valueOf(params.x));
+                        mSession.saveData("shortcutlocationy", String.valueOf(params.y));
+
+                        if (Math.abs(upDX) < CLICK_DRAG_TOLERANCE && Math.abs(upDY) < CLICK_DRAG_TOLERANCE) { // A click
+                            Log.e("click===", "==" + Math.abs(upDY));
+                            collapsedView.setVisibility(View.GONE);
+                            expandedView.setVisibility(View.VISIBLE);// WE HAVE A CLICK!!
+                        } else {
+                            Log.e("DRag===", "==" + Math.abs(upDX));
+                        }
+
                         return true;
 
                     case MotionEvent.ACTION_MOVE:

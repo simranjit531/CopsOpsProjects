@@ -142,16 +142,14 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
 
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (checkPermission() && gpsEnabled()) {
-            if (isNetworkEnabled) {
-
-                progressDialog.show();
-                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
-                        10, mLocationListener);
-            } else {
-                progressDialog.show();
+            if (isGpsEnabled) {
                 mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
                         10, mLocationListener);
+            } else {
+                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
+                        10, mLocationListener);
             }
+
         }
         return view;
     }
@@ -275,6 +273,8 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 dialog.dismiss();
                 mAppSession.saveData("Login", "0");
+                mAppSession.saveData("shortcutlocationx", "");
+                mAppSession.saveData("shortcutlocationy", "");
                 SharedPreferences preferences = getActivity().getSharedPreferences("copops.com.copopsApp", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.clear();

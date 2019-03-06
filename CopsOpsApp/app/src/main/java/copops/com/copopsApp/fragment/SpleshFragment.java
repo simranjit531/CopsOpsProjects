@@ -11,8 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.File;
 
@@ -41,13 +44,30 @@ public class SpleshFragment extends Fragment {
         mAppSession = mAppSession.getInstance(getActivity());
 
         mAppSession.saveData("isActivityRunning","DashbordActivit");
-        if(mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
 
-            FirebaseApp.initializeApp(getContext());
-            Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
+        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
 
-            mAppSession.saveData("fcm_token", FirebaseInstanceId.getInstance().getToken());
-        }
+        FirebaseApp.initializeApp(getContext());
+
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( getActivity(),  new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                String mToken = instanceIdResult.getToken();
+               // Log.e("Token2",mToken);
+                Log.e("newToken2",mToken);
+
+
+                mAppSession.saveData("fcm_token",mToken);
+            }
+        });
+
+//        if(mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
+//
+//            FirebaseApp.initializeApp(getContext());
+//            Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
+//
+//            mAppSession.saveData("fcm_token", FirebaseInstanceId.getInstance().getToken());
+//        }
        String aaaa = mAppSession.getData("Login");
         if(mAppSession.getData("Login")!=null){
         }else{

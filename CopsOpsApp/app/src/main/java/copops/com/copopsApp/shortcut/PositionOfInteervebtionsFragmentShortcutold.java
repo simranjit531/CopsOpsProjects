@@ -168,13 +168,13 @@ public class PositionOfInteervebtionsFragmentShortcutold extends Fragment implem
         });
 
 
-//        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+//       mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 //        if (checkPermission() && gpsEnabled()) {
-//            if (isNetworkEnabled) {
-//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
+//            if (isGpsEnabled) {
+//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
 //                        10, mLocationListener);
 //            } else {
-//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
 //                        10, mLocationListener);
 //            }
 //        }
@@ -363,7 +363,7 @@ public class PositionOfInteervebtionsFragmentShortcutold extends Fragment implem
                         tvLat.setText(allLocationAndCityPojo.getData().get(i).getAddress());
                         tv_lng.setText(allLocationAndCityPojo.getData().get(i).getSub_category_name());
                         dateId.setText(allLocationAndCityPojo.getData().get(i).getCreated_at());
-                        //  tvLat.setTextColor(Color.GREEN);
+
                     }
                 }
                 return v;

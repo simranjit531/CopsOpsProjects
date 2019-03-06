@@ -2,26 +2,36 @@ package copops.com.copopsApp.activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import java.io.File;
 import java.util.Locale;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import copops.com.copopsApp.R;
 
+import copops.com.copopsApp.copsnoti.Konstant;
 import copops.com.copopsApp.fragment.AssignmentTableFragment;
 import copops.com.copopsApp.fragment.AuthenticateCodeFragment;
 import copops.com.copopsApp.fragment.CitizenFragment;
@@ -42,8 +52,18 @@ import copops.com.copopsApp.utils.TrackingServices;
 import copops.com.copopsApp.utils.Utils;
 
 public class DashboardActivity extends AppCompatActivity {
+    public static final String TOPIC_GLOBAL = "global";
 
+    // broadcast receiver intent filters
+    public static final String REGISTRATION_COMPLETE = "registrationComplete";
+    public static final String PUSH_NOTIFICATION = "pushNotification";
 
+    // id to handle the notification in the notification tray
+    public static final int NOTIFICATION_ID = 100;
+    public static final int NOTIFICATION_ID_BIG_IMAGE = 101;
+
+    public static final String SHARED_PREF = "ah_firebase";
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
     Fragment fragment = null;
     AppSession mAppSession;
 
@@ -52,14 +72,61 @@ public class DashboardActivity extends AppCompatActivity {
     private Runnable checkOverlaySetting;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_dashboard);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+
+
+
+
+//        Intent intent = new Intent();
+//        if(android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1){
+//            intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+//            intent.putExtra("android.provider.extra.APP_PACKAGE", this.getPackageName());
+//        }else if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+//            intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+//            intent.putExtra("app_package", this.getPackageName());
+//            intent.putExtra("app_uid", this.getApplicationInfo().uid);
+//        }else {
+//            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//            intent.addCategory(Intent.CATEGORY_DEFAULT);
+//            intent.setData(Uri.parse("package:" + this.getPackageName()));
+//        }
+//
+//        this.startActivity(intent);
+
+//        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//
+//                // checking for type intent filter
+//                if (intent.getAction().equals(Konstant.REGISTRATION_COMPLETE)) {
+//                    // gcm successfully registered
+//                    // now subscribe to `global` topic to receive app wide notifications
+//                    FirebaseMessaging.getInstance().subscribeToTopic(Konstant.TOPIC_GLOBAL);
+//
+//                    displayFirebaseRegId();
+//
+//                } else if (intent.getAction().equals(Konstant.PUSH_NOTIFICATION)) {
+//                    // new push notification is received
+//
+//                    String message = intent.getStringExtra("message");
+//
+//                    Toast.makeText(getApplicationContext(), "Push notification: " + message, Toast.LENGTH_LONG).show();
+//
+//                   // txtMessage.setText(message);
+//                }
+//            }
+//        };
+        // startForegroundService(new Intent(this, MyFirebaseMessagingService.class));
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread paramThread, Throwable paramThrowable) {
@@ -73,12 +140,17 @@ public class DashboardActivity extends AppCompatActivity {
 
         String devicelanguage = Locale.getDefault().getDisplayLanguage();
         mAppSession = mAppSession.getInstance(this);
+        Log.e("first===",""+mAppSession.getData("first"));
+        if (mAppSession.getData("first").equalsIgnoreCase("")) {
+            mAppSession.saveData("first", "1");
+            goToNotificationSettings(null, this);
+        } else {
 
+        }
 
-
-        if(devicelanguage.equalsIgnoreCase("english")){
+        if (devicelanguage.equalsIgnoreCase("english")) {
             mAppSession.saveData("devicelanguage", "En");
-        }else{
+        } else {
             mAppSession.saveData("devicelanguage", "Fr");
         }
 
@@ -141,11 +213,10 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        Log.e("helll","ranjan");
+        Log.e("helll", "ranjan");
 
 
     }
-
 
 
     private void fragmentContener() {
@@ -155,28 +226,32 @@ public class DashboardActivity extends AppCompatActivity {
             Utils.fragmentCall(new PositionOfInteervebtionsFragmentShortcut(), getSupportFragmentManager());
         } else if (mAppSession.getData("shortcutscreentype").equals("assignedintervation")) {
             Utils.fragmentCall(new AssignmentTableFragmentShortcut(), getSupportFragmentManager());
-        }else if (mAppSession.getData("shortcutscreentype").equals("citizenhandrail")) {
+        } else if (mAppSession.getData("shortcutscreentype").equals("citizenhandrail")) {
             Utils.fragmentCall(new HandrailFragment(), getSupportFragmentManager());
             mAppSession.saveData("handrail", "handrail");
         } else if (mAppSession.getData("shortcutscreentype").equals("citizenreportanincident")) {
             Utils.fragmentCall(new IncidentFragment(mAppSession.getData("id")), getSupportFragmentManager());
             mAppSession.saveData("operatorScreenBack", "1");
             mAppSession.saveData("handrail", "dasd");
-        } else {
+        } else if (mAppSession.getData("shortcutscreentype").equals("operatorreportanincident")) {
+            Utils.fragmentCall(new IncidentFragment(mAppSession.getData("id")), getSupportFragmentManager());
+            mAppSession.saveData("operatorScreenBack", "1");
+            mAppSession.saveData("handrail", "dasd");
+        }else {
             String intent = getIntent().getStringExtra("notification");
 
             // String notification = mAppSession.getData("notification");
             if (intent == null) {
                 Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
             } else {
-
-                if(mAppSession.getData("copsuser").equalsIgnoreCase("citizen")){
+                stopService(new Intent(DashboardActivity.this, ShortcutViewService.class));
+                if (mAppSession.getData("copsuser").equalsIgnoreCase("citizen")) {
                     Utils.fragmentCall(new CitizenFragment(), getSupportFragmentManager());
-                }else{
+                } else {
                     Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
                 }
 
-              //  Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
+                //  Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
             }
         }
 
@@ -243,20 +318,20 @@ public class DashboardActivity extends AppCompatActivity {
             Utils.fragmentCall(new OperatorFragment(), getSupportFragmentManager());
         } else if (f instanceof PositionOfInteervebtionsFragmentShortcut) {//the fragment on which you want to handle your back press
             Utils.fragmentCall(new OperatorFragment(), getSupportFragmentManager());
-        }else if (f instanceof IncidentFragment) {//the fragment on which you want to handle your back press
+        } else if (f instanceof IncidentFragment) {//the fragment on which you want to handle your back press
             String loginvalid = mAppSession.getData("Login");
             String userType = mAppSession.getData("userType");
             if (loginvalid.equals("1") && userType.equals("Cops")) {
                 getSupportFragmentManager().popBackStackImmediate();
                 Utils.fragmentCall(new OperatorFragment(), getSupportFragmentManager());
-            }else if (loginvalid.equals("1") && userType.equals("citizen")){
+            } else if (loginvalid.equals("1") && userType.equals("citizen")) {
                 getSupportFragmentManager().popBackStackImmediate();
                 Utils.fragmentCall(new CitizenFragment(), getSupportFragmentManager());
             }
-        }else if (f instanceof HandrailFragment) {//the fragment on which you want to handle your back press
+        } else if (f instanceof HandrailFragment) {//the fragment on which you want to handle your back press
             getSupportFragmentManager().popBackStackImmediate();
             Utils.fragmentCall(new CitizenFragment(), getSupportFragmentManager());
-        }  else {
+        } else {
             super.onBackPressed();
         }
 
@@ -271,7 +346,7 @@ public class DashboardActivity extends AppCompatActivity {
         String userType = mAppSession.getData("userType");
         if (loginvalid.equals("1") && userType.equals("Cops")) {
             stopService(new Intent(DashboardActivity.this, ShortcutViewService.class));
-        }else if (loginvalid.equals("1") && userType.equals("citizen")){
+        } else if (loginvalid.equals("1") && userType.equals("citizen")) {
             stopService(new Intent(DashboardActivity.this, ShortcutViewService_Citizen.class));
         }
 
@@ -291,7 +366,7 @@ public class DashboardActivity extends AppCompatActivity {
             } else if (Settings.canDrawOverlays(DashboardActivity.this)) {
                 startService(new Intent(DashboardActivity.this, ShortcutViewService.class));
             }
-        }else if (loginvalid.equals("1") && userType.equals("citizen")){
+        } else if (loginvalid.equals("1") && userType.equals("citizen")) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 startService(new Intent(DashboardActivity.this, ShortcutViewService_Citizen.class));
             } else if (Settings.canDrawOverlays(DashboardActivity.this)) {
@@ -309,11 +384,12 @@ public class DashboardActivity extends AppCompatActivity {
         String userType = mAppSession.getData("userType");
         if (loginvalid.equals("1") && userType.equals("Cops")) {
             stopService(new Intent(DashboardActivity.this, ShortcutViewService.class));
-        }else if (loginvalid.equals("1") && userType.equals("citizen")){
+        } else if (loginvalid.equals("1") && userType.equals("citizen")) {
             stopService(new Intent(DashboardActivity.this, ShortcutViewService_Citizen.class));
         }
 
     }
+
 
     @Override
     protected void onDestroy() {
@@ -363,6 +439,57 @@ public class DashboardActivity extends AppCompatActivity {
         } else {
             return false;
         }
+    }
+
+
+    private void displayFirebaseRegId() {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(Konstant.SHARED_PREF, 0);
+        String regId = pref.getString("regId", null);
+
+        Log.e("Dashboard", "Firebase reg id: " + regId);
+
+        if (!TextUtils.isEmpty(regId))
+
+            Log.e("Dashboard tag", "Firebase reg id: " + regId);
+        else
+
+
+            Log.e("Dashboard tag", "Firebase Reg Id is not received yet!");
+    }
+
+
+    public void goToNotificationSettings(String channel, Context context) {
+        Intent intent = new Intent();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (channel != null) {
+                intent.setAction(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
+                intent.putExtra(Settings.EXTRA_CHANNEL_ID, channel);
+            } else {
+                intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            }
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName());
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (channel != null) {
+                intent.setAction(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
+                intent.putExtra(Settings.EXTRA_CHANNEL_ID, channel);
+            } else {
+                intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            }
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName());
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName());
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra("app_package", context.getPackageName());
+            intent.putExtra("app_uid", context.getApplicationInfo().uid);
+        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.setData(Uri.parse("package:" + context.getPackageName()));
+        }
+        context.startActivity(intent);
     }
 
 }

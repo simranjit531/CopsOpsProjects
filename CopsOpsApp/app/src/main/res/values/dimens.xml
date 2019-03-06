@@ -4,7 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
+
     <dimen name="textsize_8sp">8sp</dimen>
     <dimen name="textsize_10sp">10sp</dimen>
     <dimen name="textsize_12sp">12sp</dimen>
@@ -35,23 +35,21 @@
     <dimen name="textsize_tab_80sp">80sp</dimen>
     <dimen name="textsize_tab_85sp">85sp</dimen>
     <dimen name="textsize_tab_90sp">90sp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+
+    <dimen name="margin_x">8dp</dimen>
+    <dimen name="normal_text">16sp</dimen>
+    <dimen name="default_text">14sp</dimen>
+    <dimen name="chat_user_name">12sp</dimen>
+    <dimen name="chat_time_text">8sp</dimen>
 
 
-    <dimen name="chat_date_text_size">13sp</dimen>
-    <dimen name="chat_date_header_top_margin">30dp</dimen>
 
-    <dimen name="chat_author_text_size">16sp</dimen>
-    <dimen name="chat_attachment_preview_size">80dp</dimen>
 
-    <dimen name="chat_message_body_text_size">16sp</dimen>
-    <dimen name="chat_message_info_text_size">13sp</dimen>
-    <dimen name="chat_message_content_margin">4dp</dimen>
-    <dimen name="chat_message_username_margin">@dimen/chat_message_content_margin</dimen>
 
-    <dimen name="chat_message_attachment_username_margin">12dp</dimen>
-    <dimen name="chat_message_attachment_size">160dp</dimen>
-
-    <dimen name="list_item_side_margin">@dimen/padding_common_twice</dimen>
 
 
 </resources>

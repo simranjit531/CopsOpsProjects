@@ -14,6 +14,14 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="TASKS" />
     <permission
@@ -33,12 +41,10 @@
     <uses-feature
         android:name="android.hardware.camera.flash"
         android:required="false" />
-
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:name=".chatmodule.App"
+        android:name=".chat.BaseApplication"
         android:allowBackup="false"
         tools:replace="android:allowBackup"
         android:icon="@mipmap/logo_launcher"
@@ -58,28 +64,7 @@
             </intent-filter>
         </activity>
 
-        <!--
-         Developers should put application credentials here.To obtain them, please register the application
-         at https://developer.here.com/develop/mobile-sdks
-        -->
-        <!--
-         Developers should put application credentials here.To obtain them, please register the application
-         at https://developer.here.com/develop/mobile-sdks
-        -->
-        <meta-data
-            android:name="com.here.android.maps.appid"
-            android:value="g5YLVfJUvZeH1Gn3W1XR" />
-        <meta-data
-            android:name="com.here.android.maps.apptoken"
-            android:value="lXixcfQJ6K9OWpE7-y5Myw" />
-        <meta-data
-            android:name="com.here.android.maps.license.key"
-            android:value="Y8pkYQrqhXIjdHzD7iIUfkBylcbei2U7PJgtgm7AwzN89w8BjxcscwVgSYwThVJrZcbXB3AmZG293T48zs73QxgiWcYZktbQB6Q98VUxFgyCWiCP9CzB6NGtsn/3FPvOzuDaOBaAlN/W9B/vNUnji5m1CVDzRGArvMVNZ73+HxzUgbfAohOqRnWuWQ3Od6etadoPmbGUB0QBrFwVQSwxYVdcDumBEGpayGTkPyncYxhKIqC9+webQJ3MHjSOiQ6PRksGFALy8+iM6i7+aSibKHJYrMa7qNHz9o6GOOHvTTqfwtWTxYPrjkNW/pGWvIcvMu6D9rz6tFGVJPZVg0HvHd2uDu228xpM8jR9e5xJUxSKuWDdTeqmpsTF0b3QMEreT8oT/V3tX26FAii1NZRaCCWGB5JSW0ks6Wc31iFI3XR0E+nNlSU11WNQl9nmUE3TAAJHuQFGjqk7oxV9kTbct1gJv5Jwa4dlcLOsuYoUyVvt4/PunriCG49EJQbpLCK2gJSPN/mLvfO5MHiMHtHdZvupRcPJ3R6ZjZgNY4WjQ5bJG2FEvV+22mydlNzp/L7Ge7TDW8lpPpJLb/9XDnCHiIDzDy9YIiZXN8oZ6cWfYSuh57o9+LI5YUzf9/WpOlGFjjLNlrYipyF++bp4Zpfvk7GBDlr2l/oBo9VrTMHSIJ8=" />
 
-        <!--
-        Developers should always provide custom values for each of {YOUR_LABEL_NAME} and {YOUR_INTENT_NAME}.
-        Do not reuse HERE SDK defaults.
-        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBrxD_Azxlj-PY4MUR1RYzwIFuLFt0GnOM" />
@@ -87,15 +72,6 @@
             android:name="INTENT_NAME"
             android:value="{YOUR_INTENT_NAME}" />
 
-        <!--<service-->
-            <!--android:name="com.here.android.mpa.service.MapService"-->
-            <!--android:exported="false"-->
-            <!--android:label="{YOUR_LABEL_NAME}">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="{YOUR_INTENT_NAME}" />-->
-            <!--</intent-filter>-->
-        <!--</service>-->
-        <!--<service android:name=".services.ForegroundService" />-->
 
         <provider
             android:name=".utils.GenericFileProvider"
@@ -107,121 +83,67 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity
-            android:name=".chatmodule.ui.activity.SplashActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".chatmodule.ui.activity.LoginActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".chatmodule.ui.activity.SelectUsersActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemenoactionbar" />
-        <activity
-            android:name=".chatmodule.ui.activity.DialogsActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".chatmodule.ui.activity.ChatActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemenoactionbar"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name=".chatmodule.ui.activity.ChatInfoActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name=".chatmodule.ui.activity.AttachmentImageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Dark" />
 
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="false"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <category android:name="copops.com.copopsApp" />
-            </intent-filter>
-        </receiver>
 
-        <!--<service-->
-            <!--android:name=".chatmodule.gcm.GcmPushListenerService"-->
-            <!--android:exported="false">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.google.android.c2dm.intent.RECEIVE" />-->
-            <!--</intent-filter>-->
-        <!--</service>-->
-        <service
-            android:name="com.quickblox.messages.services.gcm.QBGcmPushInstanceIDService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
-            </intent-filter>
-        </service>
+
+
         <service android:name=".utils.TrackingServices" />
-        <meta-data
-            android:name="com.quickblox.messages.TYPE"
-            android:value="GCM" />
-        <meta-data
-            android:name="com.quickblox.messages.SENDER_ID"
-            android:value="@string/sender_id" />
-        <meta-data
 
-            android:name="com.quickblox.messages.QB_ENVIRONMENT"
-            android:value="DEVELOPMENT" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <!-- <meta-data -->
-        <!-- android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule" -->
-        <!-- android:value="GlideModule" /> -->
-
-        <activity android:name=".chat.ChatCopsActivity" />
 
 
 
-        <!-- <provider -->
-        <!-- android:name="androidx.core.content.FileProvider" -->
-        <!-- android:authorities="${applicationId}" -->
-        <!-- android:exported="false" -->
-        <!-- android:grantUriPermissions="true"> -->
-        <!-- <meta-data -->
-        <!-- android:name="android.support.FILE_PROVIDER_PATHS" -->
-        <!-- android:resource="@xml/provider_paths_chats" /> -->
-        <!-- </provider> -->
+
+
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="copops.com.copopsApp.utils"
+            android:authorities="copops.com.copopsApp.utils."
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths_chats" />
+                android:resource="@xml/provider_paths" />
         </provider>
 
-        <!-- [START firebase_service] -->
-        <service android:name=".copsnoti.MyFirebaseMessagingService">
+
+
+
+        <!--<service-->
+            <!--android:name=".copsnoti.MyFirebaseMessagingService"-->
+            <!--android:stopWithTask="false">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.firebase.MESSAGING_EVENT" />-->
+            <!--</intent-filter>-->
+        <!--</service>-->
+         <!--<service-->
+         <!--android:name=".copsnoti.MyFirebaseInstanceIDService"-->
+         <!--android:stopWithTask="false">-->
+         <!--<intent-filter>-->
+         <!--<action android:name="com.google.firebase.MESSAGING_EVENT" />-->
+         <!--</intent-filter>-->
+         <!--</service>-->
+        <receiver
+            android:name=".utils.FirebaseDataReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
-        </service>
-        <!-- [END firebase_service] -->
-        <!-- [START firebase_iid_service] -->
-        <service android:name=".copsnoti.MyFirebaseInstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
-        <!-- <service -->
-        <!-- android:name=".conps.MyFirebaseInstanceIDService" -->
-        <!-- android:stopWithTask="false"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="com.google.firebase.MESSAGING_EVENT" /> -->
-        <!-- </intent-filter> -->
-        <!-- </service> -->
+        </receiver>
+        <!--<service android:name=".copsnoti.MyFirebaseMessagingServiceNew">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.firebase.MESSAGING_EVENT" />-->
+            <!--</intent-filter>-->
+        <!--</service>-->
+
+        <!--<service android:name=".copsnoti.MyFirebaseInstanceIDServiceNew">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.firebase.INSTANCE_ID_EVENT" />-->
+            <!--</intent-filter>-->
+        <!--</service>-->
 
         <service
             android:name=".shortcut.ShortcutViewService"
@@ -236,6 +158,71 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="9a662926d6c2eed4a4bd5ad88520ea6ee0ad0329" />
+
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel"
+            android:value="@string/default_notification_channel_id"/>
+
+
+
+        <activity
+            android:name=".chat.MainActivity"
+
+            android:theme="@style/AppThemenoactionbar">
+        </activity>
+        <activity
+            android:name=".chat.ListActivity"
+
+            android:label="@string/title_activity_list" />
+        <activity
+            android:name=".chat.CreateGroupChannelActivity"
+            android:label="@string/title_activity_channel_create"
+            android:parentActivityName=".chat.ListActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".chat.ListActivity" />
+        </activity>
+        <activity
+            android:name=".chat.ConversationActivity"
+            android:label="@string/title_activity_conversation"
+            android:parentActivityName=".chat.ListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".chat.ListActivity" />
+        </activity>
+
+        <service android:name=".chat.ChatCampAppFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".chat.ChatCampAppFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/logo_launcher" />
+        <!--
+             Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimary" />
+
+        <activity
+            android:name=".chat.TestConversationActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".chat.CreateOpenChannelActivity"></activity>
     </application>
+
+
+
 
 </manifest>

@@ -63,13 +63,21 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         ButterKnife.bind(this, view);
 
 
-        FirebaseApp.initializeApp(getContext());
+      //  FirebaseApp.initializeApp(getContext());
         mAppSession=mAppSession.getInstance(getActivity());
         onClick();
 
-
+//        if(mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
+//
+//            FirebaseApp.initializeApp(getContext());
+//            Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
+//
+//            mAppSession.saveData("fcm_token", FirebaseInstanceId.getInstance().getToken());
+//        }
 
         String devicelanguage = Locale.getDefault().getDisplayLanguage();
+
+
         if(devicelanguage.equalsIgnoreCase("english")){
             mAppSession.saveData("devicelanguage", "En");
         }else{

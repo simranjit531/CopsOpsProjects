@@ -31,15 +31,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.quickblox.chat.QBChatService;
-import com.quickblox.chat.QBIncomingMessagesManager;
-import com.quickblox.chat.model.QBChatMessage;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
-import com.quickblox.sample.core.utils.SharedPrefsHelper;
-import com.quickblox.users.QBUsers;
-import com.quickblox.users.model.QBUser;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -59,16 +50,11 @@ import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
-import copops.com.copopsApp.chatmodule.App;
-import copops.com.copopsApp.chatmodule.utils.PushBroadcastReceiver;
-import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
-import copops.com.copopsApp.chatmodule.utils.qb.QbChatDialogMessageListenerImp;
 import copops.com.copopsApp.pojo.RegistationPjoSetData;
 import copops.com.copopsApp.pojo.RegistationPojo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
 import copops.com.copopsApp.shortcut.GPSTracker;
-import copops.com.copopsApp.shortcut.ShortcutViewService;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.MyDatePickerFragment;
@@ -281,13 +267,13 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
         progressDialog.setMessage(getString(R.string.loading));
 
 
-//        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+//       mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 //        if (checkPermission() && gpsEnabled()) {
-//            if (isNetworkEnabled) {
-//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
+//            if (isGpsEnabled) {
+//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
 //                        10, mLocationListener);
 //            } else {
-//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
 //                        10, mLocationListener);
 //            }
 //        }
@@ -492,8 +478,11 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                                         } else {
                                             Utils.fragmentCall(new LoginFragment(mAppSession.getData("userType")), getFragmentManager());
                                         }
+
+
+                                        getActivity().startService(new Intent(getActivity(), TrackingServices.class));
                                     }
-                                    getActivity().startService(new Intent(getActivity(), TrackingServices.class));
+
                                     progressDialog.dismiss();
 
                                 } else {

@@ -21,20 +21,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.iid.InstanceIDListenerService;
-import com.google.firebase.iid.FirebaseInstanceId;
+
 import com.google.gson.Gson;
-import com.quickblox.chat.QBChatService;
-import com.quickblox.chat.QBIncomingMessagesManager;
-import com.quickblox.chat.model.QBChatDialog;
-import com.quickblox.chat.model.QBChatMessage;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.messages.services.gcm.QBGcmPushInstanceIDService;
-import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
-import com.quickblox.sample.core.utils.SharedPrefsHelper;
-import com.quickblox.users.QBUsers;
-import com.quickblox.users.model.QBUser;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,14 +34,8 @@ import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
-import copops.com.copopsApp.activity.DashboardActivity;
-import copops.com.copopsApp.chatmodule.App;
-import copops.com.copopsApp.chatmodule.utils.PushBroadcastReceiver;
-import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
-import copops.com.copopsApp.chatmodule.utils.qb.QbChatDialogMessageListenerImp;
-import copops.com.copopsApp.chatmodule.utils.qb.QbDialogHolder;
-import copops.com.copopsApp.chatmodule.utils.qb.callback.QbEntityCallbackImpl;
-import copops.com.copopsApp.pojo.CommanStatusPojo;
+
+
 import copops.com.copopsApp.pojo.LoginPojoSetData;
 import copops.com.copopsApp.pojo.RegistationPojo;
 import copops.com.copopsApp.services.ApiUtils;
@@ -102,15 +85,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     double longitude;
     double latitude;
-    QBIncomingMessagesManager incomingMessagesManager;
-    private QBUser currentUser;
-    ArrayList<QBUser> list;
-    GPSTracker gps;
+
 
     LocationManager mLocationManager;
     private boolean isNetworkEnabled;
     private boolean isGpsEnabled;
-
+    GPSTracker gps;
     public LoginFragment(String userType) {
 
         this.userType = userType;
@@ -147,23 +127,23 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             mAppSession.saveData("type", userTypeRegistation);
         }
 //
-//        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+//       mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 //        if (checkPermission() && gpsEnabled()) {
-//            if (isNetworkEnabled) {
-//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
+//            if (isGpsEnabled) {
+//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
 //                        10, mLocationListener);
 //            } else {
-//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
 //                        10, mLocationListener);
 //            }
 //        }
         //    progressDialog.show();
-        String SDSADSAD= mAppSession.getData("fcm_token");
-        if (mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
-            Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
-
-            mAppSession.saveData("fcm_token", FirebaseInstanceId.getInstance().getToken());
-        }
+//        String SDSADSAD= mAppSession.getData("fcm_token");
+//        if (mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
+//            Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
+//
+//            mAppSession.saveData("fcm_token", FirebaseInstanceId.getInstance().getToken());
+//        }
         return view;
     }
 
@@ -261,7 +241,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
 //                                        Intent alarm = new Intent(getActivity(), BackgroundBroadCast.class);
 //                                        getActivity().sendBroadcast(alarm);
-                                        buildUsersList();
+                                      //  buildUsersList();
+
+                                        Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
                                     }
                                 }
                                 progressDialog.dismiss();
@@ -317,228 +299,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    private void buildUsersList() {
 
-        ProgressDialogFragment.show(getActivity().getSupportFragmentManager());
-        List<String> tags = new ArrayList<>();
-        tags.add(App.getSampleConfigs().getUsersTag());
-
-        QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
-            @Override
-            public void onSuccess(ArrayList<QBUser> result, Bundle params) {
-          //      ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
-                list = result;
-                String aaa = mAppSession.getData("user_id");
-                for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i).getLogin().equalsIgnoreCase(mAppSession.getData("user_id"))) {
-                        QBUser user = list.get(i);
-                        user.setPassword(App.getSampleConfigs().getUsersPassword());
-
-
-
-                        //user.setPassword(mAppSession.getData("user_id"));
-                        login(user);
-
-
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
-            }
-        });
-    }
-
-    private void login(final QBUser user) {
-        ProgressDialogFragment.show(getActivity().getSupportFragmentManager(), R.string.dlg_login);
-        ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
-            @Override
-            public void onSuccess(Void result, Bundle bundle) {
-                SharedPrefsHelper.getInstance().saveQbUser(user);
-                ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
-                currentUser = ChatHelper.getCurrentUser();
-
-                Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
-                incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
-
-                incomingMessagesManager.addDialogMessageListener(new AllDialogsMessageListener());
-
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
-            }
-        });
-    }
-
-
-    private class AllDialogsMessageListener extends QbChatDialogMessageListenerImp {
-        @Override
-        public void processMessage(final String dialogId, final QBChatMessage qbChatMessage, Integer senderId) {
-            Log.d("RanjanCheck", "processMessage");
-
-
-            Log.d("RanjanCheck", "processMessage");
-
-
-            QBUser user = null;
-            int sender = qbChatMessage.getSenderId();
-//            for (int i = 0; i < list.size(); i++) {
-//                if (list.get(i).getId().equals(sender)) {
-//                    user = list.get(i);
-//
-//                    break;
-//                }
-//            }
-
-            loadUpdatedDialog(qbChatMessage.getDialogId(), qbChatMessage);
-
-
-            //  PushBroadcastReceiver.displayCustomNotificationForOrders(user.getFullName(), " "+qbChatMessage.getBody(), getActivity());
-            //   PushBroadcastReceiver.displayCustomNotificationForOrders("COPOPS", " "+qbChatMessage.getBody(), getActivity());
-        }
-    }
-
-
-    private void loadUpdatedDialog(String dialogId, QBChatMessage qbChatMessage) {
-        ChatHelper.getInstance().getDialogById(dialogId, new QbEntityCallbackImpl<QBChatDialog>() {
-            @Override
-            public void onSuccess(QBChatDialog result, Bundle bundle) {
-                //   isProcessingResultInProgress = false;
-                QbDialogHolder.getInstance().addDialog(result);
-                int count = getUnreadMsgCount(result);
-
-
-                if (count == 0) {
-
-                    mAppSession.saveData("messagecount", "0");
-                } else {
-                    mAppSession.saveData("messagecount", "" + count);
-                }
-                int sender = qbChatMessage.getSenderId();
-
-
-
-                int userId = result.getUserId();
-                //  Activity a = (Activity) getContext();
-                //  Boolean asas =isActivityRunning(DashboardActivity.class);
-
-                if (mAppSession.getData("isActivityRunning").equalsIgnoreCase("DashbordActivit")) {
-
-                    if (qbChatMessage.getAttachments().size() == 0) {
-
-//                        if (qbChatMessage.getDialogId().equalsIgnoreCase(result.getDialogId())) {
-//                            try {
-//                            PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
-//                        }catch (Exception e){
-//                            e.printStackTrace();
-//                        }
-//                    } else {
-//
-//
-//                        }
-                        for (int i = 0; i < list.size(); i++) {
-                            if (list.get(i).getId().equals(userId)) {
-                                //  user = list.get(i);
-
-                                try {
-
-                                    // if(count==1) {
-                                 //   PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
-                                    //  }
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
-                                break;
-                            }
-                        }
-
-
-                    } else {
-
-
-                        for (int i = 0; i < list.size(); i++) {
-                            if (list.get(i).getId().equals(userId)) {
-                                //  user = list.get(i);
-
-                                try {
-
-                                    //   if(count==1) {
-                                //   PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
-                                    //     }
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
-                                break;
-                            }
-                        }
-
-                        //   for (int i = 0; i < list.size(); i++) {
-                        //    if (list.get(i).getId().equals(sender)) {
-                        //  user = list.get(i);
-                        //   break;
-                        // }
-                        //     }
-
-
-                    }
-                }
-
-//                if (qbChatMessage.getAttachments().size() == 0) {
-//                    for (int i = 0; i < list.size(); i++) {
-//                        if (list.get(i).getId().equals(sender)) {
-//                            //  user = list.get(i);
-//                          //  PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + " message)", getActivity());
-//                            break;
-//                        }
-//                    }
-//
-//
-//                } else {
-//
-//                    for (int i = 0; i < list.size(); i++) {
-//                        if (list.get(i).getId().equals(sender)) {
-//                            //  user = list.get(i);
-//                  //          PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
-//                            break;
-//                        }
-//                    }
-//
-//
-//                }
-
-//                if (qbChatMessage.getAttachments().size() == 0) {
-//                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + " message)", getActivity());
-//
-//                } else {
-//                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
-//
-//                }
-                //  PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " "+qbChatMessage.getBody()+"  "+"("+count+" message)", getActivity());
-
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-
-                e.printStackTrace();
-
-            }
-        });
-    }
-
-    public int getUnreadMsgCount(QBChatDialog chatDialog) {
-        Integer unreadMessageCount = chatDialog.getUnreadMessageCount();
-        if (unreadMessageCount == null) {
-            return 0;
-        } else {
-            return unreadMessageCount;
-        }
-    }
 
 
     ////Manish

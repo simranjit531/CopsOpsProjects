@@ -13,7 +13,7 @@ import android.view.WindowManager;
 
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.activity.DashboardActivity;
-import copops.com.copopsApp.chatmodule.ui.activity.DialogsActivity;
+
 import copops.com.copopsApp.utils.AppSession;
 
 public class ShortcutViewService extends Service implements View.OnClickListener {
@@ -23,8 +23,10 @@ public class ShortcutViewService extends Service implements View.OnClickListener
     private View mFloatingView;
     private View collapsedView;
     private View expandedView;
-    private View btnreportofincident, btnassignedintervation, btnchat, btnmain;
+    private View btnreportofincident, btnassignedintervation, btnchat, btnmain,btnreportanincident;
     private AppSession mSession;
+    private final static float CLICK_DRAG_TOLERANCE = 10;
+    private WindowManager.LayoutParams params;
 
     public ShortcutViewService() {
     }
@@ -51,44 +53,29 @@ public class ShortcutViewService extends Service implements View.OnClickListener
             LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_PHONE;
         }
 
-        /*final WindowManager.LayoutParams params1 = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                LAYOUT_FLAG,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);*/
+        if (mSession.getData("shortcutlocationx").equals("") && mSession.getData("shortcutlocationy").equals("")) {
 
-        final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                LAYOUT_FLAG,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);
+            params = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    LAYOUT_FLAG,
+                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    PixelFormat.TRANSLUCENT);
+        } else {
 
-     /*   final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                50,
-                100,
-                LAYOUT_FLAG,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);*/
+            Float fx = Float.valueOf(mSession.getData("shortcutlocationx"));
+            Float fy = Float.valueOf(mSession.getData("shortcutlocationy"));
 
-        //setting the layout parameters
-        final WindowManager.LayoutParams params1 = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);
+            params = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    LAYOUT_FLAG,
+                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    PixelFormat.TRANSLUCENT);
 
-
-        /*WindowManager.LayoutParams paramsnew = new WindowManager.LayoutParams(1, 1,
-                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.O ?
-                        WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY :
-                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-                PixelFormat.TRANSLUCENT);*/
-
+            params.x = Math.round(fx);
+            params.y = Math.round(fy);
+        }
 
         //getting windows services and adding the floating view to it
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -103,6 +90,7 @@ public class ShortcutViewService extends Service implements View.OnClickListener
         btnmain = mFloatingView.findViewById(R.id.btnmain);
         btnassignedintervation = mFloatingView.findViewById(R.id.btnassignedintervation);
         btnchat = mFloatingView.findViewById(R.id.btnchat);
+        btnreportanincident = mFloatingView.findViewById(R.id.btnreportanincident);
 
         //adding click listener to close button and expanded view
         mFloatingView.findViewById(R.id.buttonClose).setOnClickListener(this);
@@ -111,6 +99,7 @@ public class ShortcutViewService extends Service implements View.OnClickListener
         btnassignedintervation.setOnClickListener(this);
         btnreportofincident.setOnClickListener(this);
         btnmain.setOnClickListener(this);
+        btnreportanincident.setOnClickListener(this);
 
         //adding an touchlistener to make drag movement of the floating widget
         mFloatingView.findViewById(R.id.relativeLayoutParent).setOnTouchListener(new View.OnTouchListener() {
@@ -131,8 +120,29 @@ public class ShortcutViewService extends Service implements View.OnClickListener
 
                     case MotionEvent.ACTION_UP:
                         //when the drag is ended switching the state of the widget
-                        collapsedView.setVisibility(View.GONE);
-                        expandedView.setVisibility(View.VISIBLE);
+
+                        float upRawX = event.getRawX();
+                        float upRawY = event.getRawY();
+
+                        Log.e("============", "params.x ==" + params.x);
+                        Log.e("============", "params.y ==" + params.y);
+
+                        float upDX = upRawX - initialTouchX;
+                        float upDY = upRawY - initialTouchY;
+
+                        mSession.saveData("shortcutlocationx", String.valueOf(params.x));
+                        mSession.saveData("shortcutlocationy", String.valueOf(params.y));
+
+                       /* mSession.saveData("shortcutlocationx", "");
+                        mSession.saveData("shortcutlocationy", "");*/
+
+                        if (Math.abs(upDX) < CLICK_DRAG_TOLERANCE && Math.abs(upDY) < CLICK_DRAG_TOLERANCE) { // A click
+                            collapsedView.setVisibility(View.GONE);
+                            expandedView.setVisibility(View.VISIBLE);// WE HAVE A CLICK!!
+                        } else {
+                            Log.e("DRag===", "==" + Math.abs(upDX));
+                        }
+
                         return true;
 
                     case MotionEvent.ACTION_MOVE:
@@ -180,18 +190,19 @@ public class ShortcutViewService extends Service implements View.OnClickListener
 
             case R.id.btnchat:
                 //switching views
-                mSession.saveData("shortcutscreentype", "chat");
+              /*  mSession.saveData("shortcutscreentype", "chat");
                 Intent ic = new Intent(getApplicationContext(), DialogsActivity.class);
                 ic.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(ic);
+                startActivity(ic);*/
                 collapsedView.setVisibility(View.VISIBLE);
                 expandedView.setVisibility(View.GONE);
                 break;
 
             case R.id.btnreportofincident:
                 //switching views
-                Log.e("getgrade==",""+mSession.getData("operatorgrade"));
-                if (mSession.getData("operatorgrade").equals("Grade II")) {
+                Log.e("getgrade==", "" + mSession.getData("operatorgrade"));
+             //   if (mSession.getData("operatorgrade").equals("Grade II")) {
+                if (mSession.getData("operatorgrade").equalsIgnoreCase(" II")) {
                     mSession.saveData("shortcutscreentype", "reportanincident");
                     Intent ir = new Intent(getApplicationContext(), DashboardActivity.class);
                     ir.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -205,6 +216,13 @@ public class ShortcutViewService extends Service implements View.OnClickListener
             case R.id.buttonClose:
                 //closing the widget
                 stopSelf();
+                break;
+
+            case R.id.btnreportanincident:
+                mSession.saveData("shortcutscreentype", "operatorreportanincident");
+                Intent ir = new Intent(getApplicationContext(), DashboardActivity.class);
+                ir.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(ir);
                 break;
         }
     }

@@ -23,7 +23,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:text="Date"
-        android:textColor="@color/grey"
+        android:textColor="@color/lightgrey"
         android:textSize="@dimen/textsize_14sp" />
 
     <View
@@ -31,5 +31,5 @@
         android:layout_height="1dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:background="@color/grey" />
+        android:background="@color/lightgrey" />
 </LinearLayout>

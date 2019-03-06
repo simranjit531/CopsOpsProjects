@@ -15,10 +15,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.quickblox.messages.services.QBPushManager;
-import com.quickblox.messages.services.SubscribeService;
-import com.quickblox.sample.core.utils.SharedPrefsHelper;
-import com.quickblox.users.QBUsers;
 
 import java.util.Locale;
 import java.util.Timer;
@@ -29,9 +25,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import copops.com.copopsApp.activity.DashboardActivity;
-import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
-import copops.com.copopsApp.chatmodule.utils.qb.QbDialogHolder;
-import copops.com.copopsApp.chatmodule.utils.qb.callback.QBPushSubscribeListenerImpl;
+
 import copops.com.copopsApp.fragment.Frag_Public_Profile_Shown;
 import copops.com.copopsApp.fragment.HomeFragment;
 import copops.com.copopsApp.fragment.LoginFragment;
@@ -97,6 +91,8 @@ public class TrackingServices extends Service {
                 public void run() {
 
                     String devicelanguage = Locale.getDefault().getDisplayLanguage();
+
+
 
 
                     if(devicelanguage.equalsIgnoreCase("english")){
@@ -171,7 +167,6 @@ public class TrackingServices extends Service {
 
                                 if (commanStatusPojo.getIsfreeze().equalsIgnoreCase("0")) {
                                     mAppSession.saveData("Login", "0");
-                                    userLogout();
 
                                     mAppSession.saveData("freez", "0");
                                     stopService(new Intent(getBaseContext(), TrackingServices.class));
@@ -212,36 +207,9 @@ public class TrackingServices extends Service {
 
     }
 
-    public void userLogout() {
-        ChatHelper.getInstance().destroy();
-        logout();
-        SharedPrefsHelper.getInstance().removeQbUser();
 
-        //  finish();
-        //  LoginActivity.start(DialogsActivity.this);
-        //   Intent mIntent = new Intent(DialogsActivity.this,DashboardActivity.class);
-        //   startActivity(mIntent);
-        QbDialogHolder.getInstance().clear();
-        //  ProgressDialogFragment.hide(getSupportFragmentManager());
-        //  finish();
-    }
 
-    private void logout() {
-        if (QBPushManager.getInstance().isSubscribedToPushes()) {
-            QBPushManager.getInstance().addListener(new QBPushSubscribeListenerImpl() {
-                @Override
-                public void onSubscriptionDeleted(boolean success) {
-                    logoutREST();
-                    QBPushManager.getInstance().removeListener(this);
-                }
-            });
-            SubscribeService.unSubscribeFromPushes(getApplicationContext());
-        } else {
-            logoutREST();
-        }
-    }
 
-    private void logoutREST() {
-        QBUsers.signOut().performAsync(null);
-    }
+
+
 }
