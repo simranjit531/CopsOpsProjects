@@ -109,6 +109,7 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
         progressDialog.setMessage(getString(R.string.loading));
         mClossPassInterFace = this;
         mAppSession = mAppSession.getInstance(getActivity());
+        Utils.statusCheck(getActivity());
 
         initView();
         return view;

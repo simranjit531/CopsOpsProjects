@@ -13,7 +13,6 @@ import android.view.WindowManager;
 
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.activity.DashboardActivity;
-
 import copops.com.copopsApp.utils.AppSession;
 
 public class ShortcutViewService extends Service implements View.OnClickListener {

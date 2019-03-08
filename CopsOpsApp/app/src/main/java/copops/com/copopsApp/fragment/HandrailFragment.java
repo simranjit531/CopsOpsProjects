@@ -103,6 +103,7 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_handrail, container, false);
 
         ButterKnife.bind(this, view);
+        Utils.statusCheck(getActivity());
         mContext = getActivity();
         mAppSession = mAppSession.getInstance(mContext);
         mAppSession.saveData("shortcutscreentype", "");
@@ -113,13 +114,13 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
         llvideo.setOnClickListener(this);
         Rltoolbar.setOnClickListener(this);
 
-        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (checkPermission() && gpsEnabled()) {
-            if (isGpsEnabled) {
-                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+            if (isNetworkEnabled) {
+                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
                         10, mLocationListener);
             } else {
-                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
                         10, mLocationListener);
             }
         }

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +42,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
@@ -49,6 +50,7 @@ import copops.com.copopsApp.pojo.IncedentAcceptResponse;
 import copops.com.copopsApp.pojo.IncidentSubPojo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
+import copops.com.copopsApp.shortcut.GPSTracker;
 import copops.com.copopsApp.shortcut.ShortcutViewService;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
@@ -111,6 +113,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
     private boolean isGpsEnabled;
     double longitude;
     double latitude;
+    private GPSTracker gpsTracker;
 
     AppSession mAppSession;
 
@@ -132,30 +135,20 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
         ButterKnife.bind(this, v);
         mContext = getActivity();
         mAppSession = mAppSession.getInstance(getActivity());
-        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        //commented by BBH
+       /* mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (checkPermission() && gpsEnabled()) {
-            if (isGpsEnabled) {
+            if (isNetworkEnabled) {
                 mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-                        10, mLocationListener);
+                        5, mLocationListener);
             } else {
                 mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
-                        10, mLocationListener);
+                        5, mLocationListener);
             }
-        }
-//        LocationManager lm = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
-//        if (lm.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null) {
-//            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//            longitude = location.getLongitude();
-//            latitude = location.getLatitude();
-//        } else {
-//            Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//            longitude = location.getLongitude();
-//            latitude = location.getLatitude();
-//        }
-//        LocationManager lm = (LocationManager)mContext.getSystemService(Context.LOCATION_SERVICE);
-//        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//        longitude = location.getLongitude();
-//        latitude = location.getLatitude();
+        }*/
+
+
 
         Log.e("parent ID", "" + incidentSubPojo.getData().get(pos).getIncident_parent_id());
 
@@ -171,6 +164,13 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
         CBburglary.setText("     " + incidentSubPojo.getData().get(pos).getIncident_name());
         onClick();
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//BBH
+
     }
 
     private void onClick() {
@@ -238,6 +238,13 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
     }
 
     public void validation() {
+        gpsTracker = new GPSTracker(getActivity());
+        latitude = gpsTracker.getLatitude();
+        longitude = gpsTracker.getLongitude();
+        Log.e("Incedent Latitude",""+latitude);
+        Log.e("Incedent Longitude",""+longitude);
+        mAppSession.saveData("latitude", String.valueOf(latitude));
+        mAppSession.saveData("longitude", String.valueOf(longitude));
         if (ETdescribetheincident.getText().toString().trim().equalsIgnoreCase("")) {
             Utils.showAlert(getActivity().getString(R.string.incidentdes), getActivity());
         }/* else if (ETotherinfoincident.getText().toString().trim().equalsIgnoreCase("")) {
@@ -415,8 +422,8 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
         //verify if the image was gotten successfully
         if (requestCode == Utils.REQUEST_TAKE_CAMERA_PHOTO && resultCode == RESULT_OK) {
 
-            filePathImage =mCurrentPhotoPath;
-         //   File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/CopOps/images");
+            filePathImage = mCurrentPhotoPath;
+            //   File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/CopOps/images");
 
 //            new ImageCompressionAsyncTask(mContext).execute(mCurrentPhotoPath,
 //                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/CopOps/images");
@@ -604,21 +611,32 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
         }
         return true;
     }
-
+    public int getLocationMode(Context context) {
+        int mode = -1;
+        try {
+            mode= Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return mode;
+    }
     ////Manish
     private final android.location.LocationListener mLocationListener = new android.location.LocationListener() {
 
         @Override
         public void onLocationChanged(final Location location) {
-            if (location != null) {
+            if (location != null && getLocationMode(mContext) == 3) {
                 // mCurrentLocation = location;
+
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
-
+                Log.e("Incedent Latitude",""+latitude);
+                Log.e("Incedent Longitude",""+longitude);
                 mAppSession.saveData("latitude", String.valueOf(latitude));
                 mAppSession.saveData("longitude", String.valueOf(longitude));
-                //  initMapFragment();
+
             } else {
+                Utils.buildAlertMessageNoGps(mContext);
                 Toast.makeText(getActivity(), "Location is not available now", Toast.LENGTH_LONG).show();
             }
         }
@@ -637,5 +655,8 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
         public void onProviderDisabled(String provider) {
 
         }
+
     };
+
 }
+

@@ -1,8 +1,6 @@
 package copops.com.copopsApp.fragment;
 
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -17,11 +15,8 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.io.File;
-
 import androidx.fragment.app.Fragment;
 import copops.com.copopsApp.R;
-import copops.com.copopsApp.shortcut.ShortcutViewService;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.Utils;
 

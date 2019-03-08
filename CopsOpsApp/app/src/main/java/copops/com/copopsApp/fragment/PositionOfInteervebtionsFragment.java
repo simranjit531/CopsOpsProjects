@@ -166,13 +166,13 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         });
 
 
-//       mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+//        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 //        if (checkPermission() && gpsEnabled()) {
-//            if (isGpsEnabled) {
-//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+//            if (isNetworkEnabled) {
+//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
 //                        10, mLocationListener);
 //            } else {
-//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
+//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
 //                        10, mLocationListener);
 //            }
 //        }

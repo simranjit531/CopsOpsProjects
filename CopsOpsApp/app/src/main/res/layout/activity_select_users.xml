@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    style="@style/MatchParent">
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/chattoolbar" />
+    <RelativeLayout
+        android:id="@+id/rl"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@+id/toolbar"
+        android:background="@drawable/edittext_background">
+
+        <EditText
+            android:id="@+id/userSearch"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:singleLine="true"
+            android:maxLength="50"
+            android:paddingLeft="10dp"
+            android:paddingRight="15dp"
+            android:drawableLeft="@mipmap/outline_search_black_18dp"
+            android:hint="@string/search"
+            android:background="@android:color/transparent"
+            android:imeOptions="actionDone"
+            android:textColor="@color/aluminiumcolor"
+            android:textSize="@dimen/textsize_12sp"
+          android:drawableTint="@color/grey"
+            android:visibility="visible" />
+
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/userneame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="20dp"
+        android:layout_below="@+id/rl"
+        android:textSize="@dimen/textsize_20sp"
+        android:textColor="@color/blue"
+        android:text="@string/recent"
+        />
+    <ListView
+        android:id="@+id/list_select_users"
+        android:layout_below="@+id/userneame"
+        style="@style/ListViewWithoutDividerStyle" />
+
+    <ProgressBar
+        android:id="@+id/progress_select_users"
+        style="@style/CenterProgressBarStyle" />
+</RelativeLayout>

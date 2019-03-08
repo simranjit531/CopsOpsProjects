@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+
+    android:orientation="horizontal"
+    >
+
+<LinearLayout
+
+    android:id="@+id/msg_linear_frame_left"
+    style="@style/WidgetTextMessage.Left">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/msg_image_avatar"
+        style="@style/AvatarImageViewStyle.Left"/>
+
+
+   <LinearLayout android:layout_width="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+
+    android:orientation="horizontal">
+       <View
+
+           android:layout_height="80dp"
+           android:layout_width="2dp"
+           android:background="#007FFF" />
+   </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/msg_bubble_background"
+        style="@style/BubbleTextFrame.Left">
+
+
+        <LinearLayout
+            android:id="@+id/msg_linear_list_item_left"
+            style="@style/LinearWidgetTextMsg.Left">
+
+            <!--LinearLayout should place its actual message widget here.-->
+            <LinearLayout
+                android:id="@+id/msg_custom_widget_frame_top"
+                style="@style/CustomWidgetFrame.Left" />
+
+            <TextView
+                android:id="@+id/meiD"
+                style="@style/TextViewTimeMsg.Left"
+                android:text="ME"
+                android:textColor="#007FFF" />
+
+            <TextView
+                android:id="@+id/msg_text_time_message"
+                style="@style/TextViewTimeMsg.Left"
+                tools:text="August 16" />
+
+            <TextView
+                android:id="@+id/msg_text_message"
+                style="@style/TextViewTextMsg.Left"
+                tools:text="messagertdfsscsd" />
+
+            <LinearLayout
+                android:id="@+id/msg_link_preview"
+                style="@style/LinkPreviewFrame.Left"/>
+
+            <!--LinearLayout should place its actual message widget here.-->
+            <LinearLayout
+                android:id="@+id/msg_custom_widget_frame_bottom"
+                style="@style/CustomWidgetFrame.Left" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
+    </LinearLayout>
+
+

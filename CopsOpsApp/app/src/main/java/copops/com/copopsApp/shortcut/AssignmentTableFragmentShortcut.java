@@ -21,7 +21,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
-import copops.com.copopsApp.activity.DashboardActivity;
 import copops.com.copopsApp.adapter.AssignmentInsidentListAdapter;
 import copops.com.copopsApp.fragment.AssignedInterventionFragment;
 import copops.com.copopsApp.fragment.CloseIntervationReportFragment;

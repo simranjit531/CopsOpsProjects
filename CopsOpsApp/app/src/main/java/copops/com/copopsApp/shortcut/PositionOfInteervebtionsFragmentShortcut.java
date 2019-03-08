@@ -1,22 +1,14 @@
 package copops.com.copopsApp.shortcut;
 
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 
 
-import android.text.Editable;
-import android.text.Selection;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -176,13 +168,13 @@ public class PositionOfInteervebtionsFragmentShortcut extends Fragment implement
         });
 
 
-//       mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+//        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 //        if (checkPermission() && gpsEnabled()) {
-//            if (isGpsEnabled) {
-//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+//            if (isNetworkEnabled) {
+//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
 //                        10, mLocationListener);
 //            } else {
-//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
+//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
 //                        10, mLocationListener);
 //            }
 //        }

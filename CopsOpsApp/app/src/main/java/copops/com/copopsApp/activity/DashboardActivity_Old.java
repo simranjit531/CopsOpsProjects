@@ -203,9 +203,9 @@ public class DashboardActivity_Old extends AppCompatActivity {
 
         if (loginvalid.equals("1") && userType.equals("Cops")) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                startService(new Intent(DashboardActivity.this, ShortcutViewService.class));
+                startService(new Intent(DashboardActivity.this, ShortcutViewService_old.class));
             } else if (Settings.canDrawOverlays(DashboardActivity.this)) {
-                startService(new Intent(DashboardActivity.this, ShortcutViewService.class));
+                startService(new Intent(DashboardActivity.this, ShortcutViewService_old.class));
             }
         }*/
     }
@@ -232,9 +232,9 @@ public class DashboardActivity_Old extends AppCompatActivity {
         Log.e("copsopsdestroy", "loginvalid==" + mAppSession.getData("Login") + "==userType==" + mAppSession.getData("userType"));
         if (loginvalid.equals("1") && userType.equals("Cops")) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                startService(new Intent(DashboardActivity.this, ShortcutViewService.class));
+                startService(new Intent(DashboardActivity.this, ShortcutViewService_old.class));
             } else if (Settings.canDrawOverlays(DashboardActivity.this)) {
-                startService(new Intent(DashboardActivity.this, ShortcutViewService.class));
+                startService(new Intent(DashboardActivity.this, ShortcutViewService_old.class));
             }
         }*/
 

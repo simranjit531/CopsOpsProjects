@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clickId"
+    style="@style/ListItem"
+    tools:ignore="RtlHardcoded">
+
+
+    <ImageView
+        android:id="@+id/image_user"
+        android:visibility="gone"
+        style="@style/UserIconStyle" />
+
+    <TextView
+        android:id="@+id/text_user_login"
+        android:layout_marginLeft="@dimen/textsize_16sp"
+        style="@style/UserTitleStyle" />
+    <CheckBox
+        android:visibility="gone"
+        android:id="@+id/checkbox_user"
+        style="@style/UserCheckboxStyle" />
+
+    </LinearLayout>
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@color/grey" />
+</LinearLayout>

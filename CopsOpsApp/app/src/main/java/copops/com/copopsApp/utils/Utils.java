@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.location.LocationManager;
 import android.media.MediaScannerConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -33,9 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -313,23 +312,6 @@ public class Utils {
         dialog.show();
     }
 
-    public static void buildAlertMessageNoGps(Context mContext) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setMessage("To continue, turn on device GPS location & set it on high accuracy.?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        mContext.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        dialog.cancel();
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
-    }
 
     public static void opendialogcustomdialogoperator(final Context mContext, String text, String loginstatus, String usertype) {
 
@@ -407,7 +389,32 @@ public class Utils {
 
         dialog.show();
     }
+    public static void statusCheck(Context mContext) {
+        final LocationManager manager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
 
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            buildAlertMessageNoGps(mContext);
+
+        }
+    }
+
+    public static void buildAlertMessageNoGps(Context mContext) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setMessage("To continue, turn on device location.?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        mContext.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
 
     public static void opendialogcustomdialogClose(Context mContext, String text, final clossPassInterFace mClossPassInterFace) {
 

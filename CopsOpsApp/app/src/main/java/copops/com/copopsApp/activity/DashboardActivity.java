@@ -15,11 +15,6 @@ import android.os.StrictMode;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.File;
 import java.util.Locale;
@@ -72,6 +67,11 @@ public class DashboardActivity extends AppCompatActivity {
     private Runnable checkOverlaySetting;
 
 
+
+
+
+
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +81,6 @@ public class DashboardActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
 
 
 
@@ -140,7 +137,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         String devicelanguage = Locale.getDefault().getDisplayLanguage();
         mAppSession = mAppSession.getInstance(this);
-        Log.e("first===",""+mAppSession.getData("first"));
+
         if (mAppSession.getData("first").equalsIgnoreCase("")) {
             mAppSession.saveData("first", "1");
             goToNotificationSettings(null, this);
@@ -233,18 +230,14 @@ public class DashboardActivity extends AppCompatActivity {
             Utils.fragmentCall(new IncidentFragment(mAppSession.getData("id")), getSupportFragmentManager());
             mAppSession.saveData("operatorScreenBack", "1");
             mAppSession.saveData("handrail", "dasd");
-        } else if (mAppSession.getData("shortcutscreentype").equals("operatorreportanincident")) {
-            Utils.fragmentCall(new IncidentFragment(mAppSession.getData("id")), getSupportFragmentManager());
-            mAppSession.saveData("operatorScreenBack", "1");
-            mAppSession.saveData("handrail", "dasd");
-        }else {
+        } else {
             String intent = getIntent().getStringExtra("notification");
 
             // String notification = mAppSession.getData("notification");
             if (intent == null) {
                 Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
             } else {
-                stopService(new Intent(DashboardActivity.this, ShortcutViewService.class));
+
                 if (mAppSession.getData("copsuser").equalsIgnoreCase("citizen")) {
                     Utils.fragmentCall(new CitizenFragment(), getSupportFragmentManager());
                 } else {
@@ -400,9 +393,9 @@ public class DashboardActivity extends AppCompatActivity {
         Log.e("copsopsdestroy", "loginvalid==" + mAppSession.getData("Login") + "==userType==" + mAppSession.getData("userType"));
         if (loginvalid.equals("1") && userType.equals("Cops")) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                startService(new Intent(DashboardActivity.this, ShortcutViewService.class));
+                startService(new Intent(DashboardActivity.this, ShortcutViewService_old.class));
             } else if (Settings.canDrawOverlays(DashboardActivity.this)) {
-                startService(new Intent(DashboardActivity.this, ShortcutViewService.class));
+                startService(new Intent(DashboardActivity.this, ShortcutViewService_old.class));
             }
         }*/
 
@@ -491,5 +484,10 @@ public class DashboardActivity extends AppCompatActivity {
         }
         context.startActivity(intent);
     }
+
+
+
+
+
 
 }
