@@ -822,19 +822,49 @@ class BackendController extends Controller
 	               'status' => 2
 	           ]);*/
 			   
+			   
+			   $incidentDetails= DB::table('cop_incident_details')->select('cop_incident_details.id', 'ref_incident_subcategory.sub_category_name','cop_incident_details.other_description','cop_incident_details.reference','cop_incident_details.address','cop_incident_details.created_at',
+            'cop_incident_details.incident_description','cop_incident_details.status')
+            ->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
+            ->where('cop_incident_details.id', $request->input('objectId'))
+            ->get();
+			  
+			   
 	           # Once intervention is assigned, send push notification
 	           $push = new \Edujugon\PushNotification\PushNotification('fcm');
+	           /*
 	           $push->setMessage([
 	               'notification' => [
 	                   'title'=>'A new intervention has been assigned to you',
 	                   'body'=>'A new intervention has been assigned to you',
-	                   'sound' => 'default'
+	                   'sound' => 'default',	                   
 	               ],
 	               'data' => [
-	                   'new_reports' => '100'	                   
+					   'data'=> $incidentDetails[0],
 	               ]
 	           ]);
+	           */
 	           
+	           $data = array(
+					$incidentDetails->toArray()[0]
+	           );
+
+	           /*
+	           if(!$incidentDetails->isEmpty())
+	           {
+	           		
+	           		echo "<pre>";	           		
+	           		array_merge($data, (array)$t[0]);
+	           }
+				*/
+
+	          # print_r(json_encode($data)); die;
+
+	           $push->setMessage([
+	           		'data'=>$incidentDetails[0]
+	           ]);
+
+
 	           # Get device token of the user
 	           $tokenData = UserDeviceMapping::where('ref_user_id', $o)->get();	           
 	           $push->setDevicesToken($tokenData[0]->device_token);

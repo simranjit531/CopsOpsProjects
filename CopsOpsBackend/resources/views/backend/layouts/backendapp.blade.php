@@ -87,8 +87,8 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 				<li class="language-drop">
 				<select id="language">
 						<option value=''>{{ trans('pages.language')}}</option>
-						<option value="fr">FR</option>
-						<option value="en">ANG</option>
+						<option value="fr" @if(Config::get('app.locale') == "fr") selected @endif>FR</option>
+						<option value="en" @if(Config::get('app.locale') == "en") selected @endif>ANG</option>
 				</select></li>
 
 			</ul>
@@ -141,12 +141,20 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 							class="nav-link {{ (\Request::route()->getName() == 'dashboard') ? 'active' : '' }}"> <i class="nav-icon fa fa-home"></i>
 								<p>{{ trans('pages.controlCenter') }}</p> <!--Centre de controle-->
 						</a></li>
-
+						
+						{{--
+						<li class="nav-item"><a href="{{ url('/playground') }}"
+							class="nav-link {{ (\Request::route()->getName() == 'playground') ? 'active' : '' }}"> <i class="nav-icon fa fa-handshake-o"></i>
+								<p>{{ trans('pages.mapplayground') }}</p> <!--Centre de controle-->
+						</a></li>
+						--}}
+						
 						<li class="nav-item"><a href="{{ url('/usermanagement') }}"
 							class="nav-link {{ in_array(\Request::route()->getName(), array('usermanagement', 'dailycrew', 'validationofregistrants', 'accountrefuses')) ? 'active' : '' }}"> <i class="nav-icon fa fa-user-o"></i>
 								<p>{{ trans('pages.userManagement') }}</p> <!--Gestion des utilisateurs-->
 						</a></li>
 
+						
 						<li class="nav-item"><a href="{{ url('/chat') }}" class="nav-link {{ (\Request::route()->getName() == 'chat') ? 'active' : '' }}">
 								<i class="nav-icon fa fa-comments-o"></i>
 								<p>{{ trans('pages.discussion') }}</p> <!--Discussion-->
@@ -271,10 +279,10 @@ $(document).ready(function(){
         var notiCount = $("#noticount").html();
         var notiCount = notiCount == "" ? 0 : parseInt(notiCount);
 
-		console.log($("#noticount").html());
+		// console.log($("#noticount").html());
 		if($("#noticount").html() !=0){
-			console.log($("#noticount").html());
-			console.log(res.count);
+			// console.log($("#noticount").html());
+			// console.log(res.count);
     		if(res.count != notiCount){
     			/* Play Sound */
     			playAudio();

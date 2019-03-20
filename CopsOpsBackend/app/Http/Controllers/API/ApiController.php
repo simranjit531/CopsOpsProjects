@@ -47,7 +47,7 @@ class ApiController extends Controller
     public function register(Request $request)
     {
         $payload = $this->get_payload($request);
-		
+		// print_r($payload); die;
         if(isset($payload['status']) && $payload['status'] === false)
         {
             return $this->sendResponseMessage(['status'=>false, 'message'=> $payload['message']],200);
@@ -197,6 +197,7 @@ class ApiController extends Controller
 				
                 if($payload['ref_user_type_id'] == "Cops") {
 					
+                    /*
                     $resp = _quickblox_create_session();
                     
                     if($resp['flag'] == 1)
@@ -210,7 +211,22 @@ class ApiController extends Controller
                             'token' => $resp['result']->session->token
                         );                        
                         _quickblox_create_user($data);
-                    }                    
+                    } 
+                    */ 
+
+                    $url = "https://api.chatcamp.io//api/1.0/users.create";
+                    $data = array(
+                        'id' => $user->user_id,
+                        'first_name' => $user->first_name,
+                        'last_name' => $user->last_name,
+                        'email' => $user->email_id,
+                        'display_name' => $user->first_name,                                                 
+                    );
+                    //print_r($data);
+                    _chat_execute_url($url, $data);
+
+
+
                 }
                 
                 # New user registration notification
@@ -948,7 +964,8 @@ class ApiController extends Controller
                   GROUP BY cop_incident_details.id HAVING `distance` <= 5 OR cop_user_incident_temp_mapping.ref_user_id = $copId ORDER BY status ASC";*/
 				  
 		$query ="select * from (
-                 SELECT (case when cop_incident_details.status =2 THEN 'Pending' when cop_incident_details.status =1 THEN 'Wait' When cop_incident_details.status =3 THEN 'Finished' ELSE 'Assigned' END)as isAssigned,ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
+                 SELECT (case when cop_incident_details.status =2 THEN 'Pending' when cop_incident_details.status =1 THEN 'Wait' When cop_incident_details.status =3 THEN 'Finished' ELSE 'Assigned' END)as isAssigned,
+				 (case when cop_incident_details.status =2 THEN 'a' when cop_incident_details.status =1 THEN 'b' When cop_incident_details.status =3 THEN 'c' ELSE 'Assigned' END)as abc, ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
                   cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.created_at, ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( latitude ) ) ) ) AS `distance`,
                   cop_incident_details.city, cop_incident_details.address, cop_user_incident_temp_mapping.ref_user_id, cop_user_incident_mapping.ref_user_id as user_id
                   FROM cop_incident_details 
@@ -957,7 +974,9 @@ class ApiController extends Controller
                   LEFT JOIN cop_user_incident_mapping ON cop_user_incident_mapping.cop_incident_details_id = cop_incident_details.id                 
                   GROUP BY cop_incident_details.id HAVING `distance` <= 5 
                  union
-                 SELECT (case when cop_incident_details.status =2 THEN 'Pending' when cop_incident_details.status =1 THEN 'Wait' When cop_incident_details.status =3 THEN 'Finished' ELSE 'Assigned' END)as isAssigned,ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
+                 SELECT (case when cop_incident_details.status =2 THEN 'Pending' when cop_incident_details.status =1 THEN 'Wait' When cop_incident_details.status =3 THEN 'Finished' ELSE 'Assigned' END)as isAssigned,
+				 (case when cop_incident_details.status =2 THEN 'a' when cop_incident_details.status =1 THEN 'b' When cop_incident_details.status =3 THEN 'c' ELSE 'Assigned' END)as abc, 
+				 ref_incident_subcategory.sub_category_name, cop_incident_details.id, cop_incident_details.status,cop_incident_details.incident_description,cop_incident_details.other_description,cop_incident_details.reference,cop_incident_details.qr_code,
                  cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.created_at, ( 6371 * acos( cos( radians({$lat}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( latitude ) ) ) ) AS `distance`,
                  cop_incident_details.city, cop_incident_details.address, cop_user_incident_temp_mapping.ref_user_id, cop_user_incident_mapping.ref_user_id as user_id
                  FROM cop_incident_details 
@@ -966,7 +985,7 @@ class ApiController extends Controller
              LEFT JOIN cop_user_incident_mapping ON cop_user_incident_mapping.cop_incident_details_id = cop_incident_details.id
                  WHERE cop_incident_details.id in 
                  (select cop_incident_details_id from cop_user_incident_temp_mapping where ref_user_id = $copId) GROUP BY cop_incident_details.id )cid 				 
-                 order by status ASC, created_at desc";
+                 order by abc ASC, created_at desc";
                  
         $res = \DB::select($query);
 		
@@ -1127,7 +1146,10 @@ class ApiController extends Controller
                     'title'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_SUCCESS,strtolower($payload['device_language'])),
                     'body'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_SUCCESS,strtolower($payload['device_language'])),
                     'sound' => 'default'
-                ]
+                ],
+				'extraPayLoad' => [
+                'incidentId' => $incidentId,
+				]
             ]);
             
             # Get device token of the user

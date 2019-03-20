@@ -95,6 +95,7 @@ if(! function_exists('_execute_curl_request')){
     
 }
 
+/*
 if(!function_exists('_quickblox_create_session')){
     
     function _quickblox_create_session(){
@@ -153,3 +154,48 @@ if(!function_exists('_quickblox_create_user')){
         curl_close($curl);        
     }
 }
+*/
+
+if(!function_exists('_chat_execute_url')){
+    
+    function _chat_execute_url($url, $data){
+        
+        $apiId = '6512253349478264832';
+        $apiKey = 'OHNUNHQ1OTROcXJmTGFOelp0YVZrUT09';
+
+        $post = http_build_query(array(
+            'id' => $data['id'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'email' => $data['email'],
+            'display_name' => $data['display_name'],             
+        ));
+        
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            "x-app-id: $apiId",
+            "x-api-key: $apiKey",            
+        ));
+        
+        $response = curl_exec($curl);
+        if ($response) return $response;
+        else return false;
+        
+        curl_close($curl);        
+    }
+}
+
+
+
+
+
+
+
+
+
+
+

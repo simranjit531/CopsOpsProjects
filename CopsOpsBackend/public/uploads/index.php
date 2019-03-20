@@ -79,19 +79,20 @@ $key = '0123456789abcdef'; #Same as in JAVA
 		"last_name":"Jit",
 		"date_of_birth":"1991-12-01",
 		"phone_number":"5678459625",
-		"email_id":"ssimranjit07111@gmail.com",
+		"email_id":"abc@gmail.com",
 		"user_password":"123",
 		"ref_user_type_id":"Cops",
 		"reg_latitude":"28.6027854",
 		"reg_longitude":"77.3812507",
-		"device_id":"3852b250afbc0180"
+		"device_id":"3852b250afbc0180",
+		"fcm_token":"4378978942gfd",
+		"device_language":1
     }';*/
 	
 $data = '{
-		"user_id":"99",
-		"incident_lat":"28.6027854",
-		"incident_lng":"77.3812507"	
-    }';
+		"user_id":"45",
+		"incident_id":"165"
+		}';
 
 
 

@@ -18,6 +18,23 @@
   width: 20px;
 }
 
+.attachmentvideoinc{
+    width: 100%;
+    border: 0px solid #cecece;
+    text-align: center;
+    min-height: 205px;
+    vertical-align: middle;
+    padding: 11%;
+    font-size: 136px;
+}
+
+.attachmentinc{
+    display: block;
+    margin: 0 !important;
+    padding: 0;
+    float: left;
+}
+
 .round label:after {
   border: 2px solid #fff;
     border-top: none;
@@ -355,10 +372,12 @@
 										style="resize: none; width: 100%;" id="other_description"></textarea>
 								</div>
 								<div
-									class="form-group col-12 col-sm-4 col-md-4 col-lg-4 col-xl-5 mt-2 pl-0">
+									class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 pl-0">
 									<label class="w-100">{{ trans('pages.Attachement')}}</label>
-									<p id="attachmentinc"></p>
-									<div id="attachmentvideoinc"></div>
+									<div class="row">
+									<p id="attachmentinc" class="col-md-6 attachmentinc"></p>
+									<div id="attachmentvideoinc" class="col-md-6 attachmentvideoinc"></div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -1167,11 +1186,16 @@ $(document).on('click','.view-incident',function(e){
     			    lightbox.start($(this));
     			    return false;
     			})
+			}else{
+			$('#attachmentinc').html('');
 			}
 			if(d[0]['video'] != null)
 			{
 			var video= "{{ url('/uploads/incident_video') }}/"+d[0]['video'];
-			$('#attachmentvideoinc').html('<a href="'+video+'" traget="_blank">View</a>');
+			$('#attachmentvideoinc').html('<a href="'+video+'" target="_blank"><i class="fa fa-file-video-o" aria-hidden="true"></i><span style="display:block;font-size:14px;">Play</span></a>');
+			}
+			else{
+				$('#attachmentvideoinc').html('');
 			}
 
 			if(d[0]['business_card1'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#business_card1').attr('href', d[0]['business_card1']).attr('target','_blank');
