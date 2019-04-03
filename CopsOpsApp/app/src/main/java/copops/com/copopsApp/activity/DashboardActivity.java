@@ -24,9 +24,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import copops.com.copopsApp.R;
 
 import copops.com.copopsApp.copsnoti.Konstant;
+import copops.com.copopsApp.fragment.AssignedInterventionFragment;
 import copops.com.copopsApp.fragment.AssignmentTableFragment;
 import copops.com.copopsApp.fragment.AuthenticateCodeFragment;
 import copops.com.copopsApp.fragment.CitizenFragment;
@@ -49,22 +52,11 @@ import copops.com.copopsApp.utils.Utils;
 public class DashboardActivity extends AppCompatActivity {
     public static final String TOPIC_GLOBAL = "global";
 
-    // broadcast receiver intent filters
-    public static final String REGISTRATION_COMPLETE = "registrationComplete";
-    public static final String PUSH_NOTIFICATION = "pushNotification";
-
-    // id to handle the notification in the notification tray
-    public static final int NOTIFICATION_ID = 100;
-    public static final int NOTIFICATION_ID_BIG_IMAGE = 101;
-
-    public static final String SHARED_PREF = "ah_firebase";
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
-    Fragment fragment = null;
-    AppSession mAppSession;
-
     private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2084;
     private Handler handler;
     private Runnable checkOverlaySetting;
+    private Context mContext;
+    AppSession mAppSession;
 
 
 
@@ -78,11 +70,22 @@ public class DashboardActivity extends AppCompatActivity {
         try {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_dashboard);
+            mContext=DashboardActivity.this;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    /*    String menuFragment = getIntent().getStringExtra("Intervation");
 
+
+        // If menuFragment is defined, then this activity was launched with a fragment selection
+        if (menuFragment != null) {crf-customer req
+
+            // Here we can decide what do to -- perhaps load other parameters from the intent extras such as IDs, etc
+            if (menuFragment.equals("assignedIntervation")) {
+                Utils.fragmentCall(new AssignedInterventionFragment(), getSupportFragmentManager());
+            }
+        }*/
 
 //        Intent intent = new Intent();
 //        if(android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1){
@@ -205,21 +208,58 @@ public class DashboardActivity extends AppCompatActivity {
         }
         fragmentContener();
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e("copsopsstart", "loginvalid==" + mAppSession.getData("Login") + "==userType==" + mAppSession.getData("userType"));
+
+        String loginvalid = mAppSession.getData("Login");
+        String userType = mAppSession.getData("userType");
+        if (loginvalid.equals("1") && userType.equals("Cops")) {
+            stopService(new Intent(DashboardActivity.this, ShortcutViewService.class));
+        } else if (loginvalid.equals("1") && userType.equals("citizen")) {
+            stopService(new Intent(DashboardActivity.this, ShortcutViewService_Citizen.class));
+        }
+
+    }
+
+
 
     @Override
     protected void onPause() {
         super.onPause();
-
+        mAppSession.saveData("screenShow","abc");
         Log.e("helll", "ranjan");
 
 
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        String loginvalid = mAppSession.getData("Login");
+        String userType = mAppSession.getData("userType");
+        if (loginvalid.equals("1") && userType.equals("Cops")) {
+            stopService(new Intent(DashboardActivity.this, ShortcutViewService.class));
+        } else if (loginvalid.equals("1") && userType.equals("citizen")) {
+            stopService(new Intent(DashboardActivity.this, ShortcutViewService_Citizen.class));
+        }
+
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        Intent intent_o = getIntent();
+    }
 
     private void fragmentContener() {
         Log.e("shortcutscreentype==", mAppSession.getData("shortcutscreentype"));
 
         if (mAppSession.getData("shortcutscreentype").equals("reportanincident")) {
+
             Utils.fragmentCall(new PositionOfInteervebtionsFragmentShortcut(), getSupportFragmentManager());
         } else if (mAppSession.getData("shortcutscreentype").equals("assignedintervation")) {
             Utils.fragmentCall(new AssignmentTableFragmentShortcut(), getSupportFragmentManager());
@@ -230,22 +270,44 @@ public class DashboardActivity extends AppCompatActivity {
             Utils.fragmentCall(new IncidentFragment(mAppSession.getData("id")), getSupportFragmentManager());
             mAppSession.saveData("operatorScreenBack", "1");
             mAppSession.saveData("handrail", "dasd");
-        } else {
-            String intent = getIntent().getStringExtra("notification");
+        } else
+            {
 
-            // String notification = mAppSession.getData("notification");
-            if (intent == null) {
-                Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
-            } else {
 
-                if (mAppSession.getData("copsuser").equalsIgnoreCase("citizen")) {
-                    Utils.fragmentCall(new CitizenFragment(), getSupportFragmentManager());
+                String intent = getIntent().getStringExtra("notification");
+
+                // String notification = mAppSession.getData("notification");
+                if (intent == null) {
+                    Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
                 } else {
-                    Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
+
+                    if (mAppSession.getData("copsuser").equalsIgnoreCase("citizen")) {
+                        Utils.fragmentCall(new CitizenFragment(), getSupportFragmentManager());
+                    } else {
+                        Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
+                    }
+
+                    //  Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
                 }
 
-                //  Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
-            }
+
+                /*if (getIntent().getExtras()!=null)
+                {
+                    if (mAppSession.getData("copsuser").equalsIgnoreCase("citizen"))
+                    {
+                        Utils.fragmentCall(new CitizenFragment(), getSupportFragmentManager());
+                    }
+                    else {
+                        //startActivity(new Intent(getApplicationContext(),AssigenedIntervation.class));
+
+                        Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
+                        }
+                }else
+                {
+                       Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
+
+                }
+*/
         }
 
 
@@ -331,19 +393,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
 
-        String loginvalid = mAppSession.getData("Login");
-        String userType = mAppSession.getData("userType");
-        if (loginvalid.equals("1") && userType.equals("Cops")) {
-            stopService(new Intent(DashboardActivity.this, ShortcutViewService.class));
-        } else if (loginvalid.equals("1") && userType.equals("citizen")) {
-            stopService(new Intent(DashboardActivity.this, ShortcutViewService_Citizen.class));
-        }
-
-    }
 
 
     protected void onStop() {
@@ -368,20 +418,7 @@ public class DashboardActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.e("copsopsstart", "loginvalid==" + mAppSession.getData("Login") + "==userType==" + mAppSession.getData("userType"));
 
-        String loginvalid = mAppSession.getData("Login");
-        String userType = mAppSession.getData("userType");
-        if (loginvalid.equals("1") && userType.equals("Cops")) {
-            stopService(new Intent(DashboardActivity.this, ShortcutViewService.class));
-        } else if (loginvalid.equals("1") && userType.equals("citizen")) {
-            stopService(new Intent(DashboardActivity.this, ShortcutViewService_Citizen.class));
-        }
-
-    }
 
 
     @Override

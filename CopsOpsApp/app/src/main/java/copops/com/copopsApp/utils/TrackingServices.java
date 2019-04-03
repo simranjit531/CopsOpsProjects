@@ -8,23 +8,13 @@ import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-
 import com.google.gson.Gson;
-import com.quickblox.messages.services.QBPushManager;
-import com.quickblox.messages.services.SubscribeService;
-import com.quickblox.sample.core.utils.SharedPrefsHelper;
-import com.quickblox.users.QBUsers;
-
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import copops.com.copopsApp.activity.DashboardActivity;
-import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
-import copops.com.copopsApp.chatmodule.utils.qb.QbDialogHolder;
-import copops.com.copopsApp.chatmodule.utils.qb.callback.QBPushSubscribeListenerImpl;
 import copops.com.copopsApp.pojo.CommanStatusPojo;
 import copops.com.copopsApp.pojo.LoginPojoSetData;
 import copops.com.copopsApp.services.ApiUtils;
@@ -162,7 +152,6 @@ public class TrackingServices extends Service {
 
                                 if (commanStatusPojo.getIsfreeze().equalsIgnoreCase("0")) {
                                     mAppSession.saveData("Login", "0");
-                                    userLogout();
 
                                     mAppSession.saveData("freez", "0");
                                     stopService(new Intent(getBaseContext(), TrackingServices.class));
@@ -203,36 +192,6 @@ public class TrackingServices extends Service {
 
     }
 
-    public void userLogout() {
-        ChatHelper.getInstance().destroy();
-        logout();
-        SharedPrefsHelper.getInstance().removeQbUser();
 
-        //  finish();
-        //  LoginActivity.start(DialogsActivity.this);
-        //   Intent mIntent = new Intent(DialogsActivity.this,DashboardActivity.class);
-        //   startActivity(mIntent);
-        QbDialogHolder.getInstance().clear();
-        //  ProgressDialogFragment.hide(getSupportFragmentManager());
-        //  finish();
-    }
 
-    private void logout() {
-        if (QBPushManager.getInstance().isSubscribedToPushes()) {
-            QBPushManager.getInstance().addListener(new QBPushSubscribeListenerImpl() {
-                @Override
-                public void onSubscriptionDeleted(boolean success) {
-                    logoutREST();
-                    QBPushManager.getInstance().removeListener(this);
-                }
-            });
-            SubscribeService.unSubscribeFromPushes(getApplicationContext());
-        } else {
-            logoutREST();
-        }
-    }
-
-    private void logoutREST() {
-        QBUsers.signOut().performAsync(null);
-    }
 }

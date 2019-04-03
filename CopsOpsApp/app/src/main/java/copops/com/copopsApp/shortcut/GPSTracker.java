@@ -63,6 +63,7 @@ private final  Context mContext;
     }
     public Location getLocation() {
         try {
+
             locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
             Criteria criteria  = new Criteria();
             criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -79,7 +80,7 @@ private final  Context mContext;
 
 
 
-            if (!isGPSEnabled && !isNetworkEnabled) {
+            if (!isGPSEnabled && !isNetworkEnabled&&locationManager!=null) {
                 // no network provider is enabled
             }
             else

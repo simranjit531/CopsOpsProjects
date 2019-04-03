@@ -2,11 +2,8 @@ package copops.com.copopsApp.fragment;
 
 
 import android.annotation.SuppressLint;
-
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,14 +14,10 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
-
 import androidx.fragment.app.Fragment;
-
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
-import copops.com.copopsApp.activity.DashboardActivity;
 import copops.com.copopsApp.pojo.AssignmentListPojo;
 import copops.com.copopsApp.pojo.CommanStatusPojo;
 import copops.com.copopsApp.pojo.IncdentSetPojo;
@@ -33,7 +26,6 @@ import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
-import copops.com.copopsApp.utils.TrackingServices;
 import copops.com.copopsApp.utils.Utils;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -90,6 +82,9 @@ public class AssignedInterventionFragment extends Fragment implements View.OnCli
     AppSession mAppSession;
     CommanStatusPojo commanStatusPojo;
 
+    public AssignedInterventionFragment() {
+        // Required empty public constructor
+    }
     public AssignedInterventionFragment(int pos, AssignmentListPojo assignmentListPojo) {
         // Required empty public constructor
         this.pos = pos;
@@ -343,7 +338,7 @@ if(assignmentListPojo.getData().get(pos).getUser_id()==null){
 
         try {
 
-            copops.com.copopsApp.services.Service operator = ApiUtils.getAPIService();
+            Service operator = ApiUtils.getAPIService();
             Call<CommanStatusPojo> getallLatLong = operator.getupdate(Data);
             getallLatLong.enqueue(new Callback<CommanStatusPojo>() {
                 @SuppressLint("ResourceAsColor")
@@ -356,16 +351,8 @@ if(assignmentListPojo.getData().get(pos).getUser_id()==null){
                             CommanStatusPojo commanStatusPojo = response.body();
 
                             if (commanStatusPojo.getStatus().equals("false")) {
-
-
                             } else {
-
-
-
-
                             }
-
-
                         } else {
 
                         }

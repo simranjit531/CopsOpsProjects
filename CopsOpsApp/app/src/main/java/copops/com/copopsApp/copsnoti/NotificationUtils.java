@@ -35,7 +35,7 @@ import copops.com.copopsApp.R;
 
 
 /**
- * Created by Ravi on 31/03/15.
+ * Created by Ranjan on 31/03/15.
  */
 public class NotificationUtils {
     NotificationManager mManager;

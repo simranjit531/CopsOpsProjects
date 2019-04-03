@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/_10sdp"
+
+    android:layout_marginLeft="@dimen/_10sdp"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Ranajn"
+        android:layout_weight="1"
+        android:padding="@dimen/_5sdp"
+        android:textSize="@dimen/_14sdp"
+        android:textColor="@color/gray_dark"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="1"
+            android:layout_weight="1"
+        android:gravity="right"
+            android:padding="@dimen/_10sdp"
+            android:textSize="@dimen/_14sdp"
+            android:textColor="@color/blue"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Hi i am Ranjan "
+        android:layout_weight="1"
+      android:paddingBottom="@dimen/_5sdp"
+        android:textSize="@dimen/_12sdp"
+        android:textColor="@color/gray_dark"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="16dp"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_2sdp"
+        android:background="@color/gray"
+        ></View>
+</LinearLayout>

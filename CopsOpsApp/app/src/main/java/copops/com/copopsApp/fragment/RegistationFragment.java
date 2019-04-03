@@ -31,15 +31,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.quickblox.chat.QBChatService;
-import com.quickblox.chat.QBIncomingMessagesManager;
-import com.quickblox.chat.model.QBChatMessage;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
-import com.quickblox.sample.core.utils.SharedPrefsHelper;
-import com.quickblox.users.QBUsers;
-import com.quickblox.users.model.QBUser;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -47,7 +38,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -250,11 +240,10 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
         mAPIService = ApiUtils.getAPIService();
 
         gps = new GPSTracker(getActivity());
-        Utils.statusCheck(getActivity());
-
         latitude=gps.getLatitude();
         longitude=gps.getLongitude();
         mAppSession = mAppSession.getInstance(mContext);
+        mAppSession.saveData("countNoti","0");
 
         try {
             mAppSession.saveData("latitude", String.valueOf(latitude));
@@ -278,13 +267,13 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
         progressDialog.setMessage(getString(R.string.loading));
 
 
-//        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+//       mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 //        if (checkPermission() && gpsEnabled()) {
-//            if (isNetworkEnabled) {
-//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
+//            if (isGpsEnabled) {
+//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
 //                        10, mLocationListener);
 //            } else {
-//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
 //                        10, mLocationListener);
 //            }
 //        }
@@ -423,10 +412,6 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                     MultipartBody.Part fileToUploadProfileBusCard_2 = null;
 
                     if (filePathprofilePic != null) {
-                       /* Bitmap bitmapImage = BitmapFactory.decodeFile(filePathprofilePic);
-                        int nh = (int) ( bitmapImage.getHeight() * (512.0 / bitmapImage.getWidth()) );
-                        Bitmap scaled = Bitmap.createScaledBitmap(bitmapImage, 512, nh, true);*/
-
                         filePrrofile = new File(filePathprofilePic);
                         RequestBody mFile = RequestBody.create(MediaType.parse("image/*"), filePrrofile);
                         fileToUploadProfile = MultipartBody.Part.createFormData("profile_image", filePrrofile.getName(), mFile);
@@ -591,11 +576,6 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                     if (IDCARD_1 == 1) {
                         //idCardUri_1 = Utils.getImageUri(mContext, thumbnail);
                         Uri contentURI = data.getData();
-                        //added by bbh
-                       /* Bitmap bitmapImage = BitmapFactory.decodeFile("Your path");
-                        int nh = (int) ( bitmapImage.getHeight() * (512.0 / bitmapImage.getWidth()) );
-                        Bitmap scaled = Bitmap.createScaledBitmap(bitmapImage, 512, nh, true);*/
-
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
                         String profilePicUri1 = Utils.getRealPathFromURIPath(contentURI, getActivity());
                         File file = new File(profilePicUri1);
@@ -610,7 +590,6 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                     } else if (IDCARD_2 == 2) {
                         Uri contentURI = data.getData();
                         //  idCardUri_2 = Utils.getImageUri(mContext, thumbnail);
-
 
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
                         String profilePicUri1 = Utils.getRealPathFromURIPath(contentURI, getActivity());
@@ -803,7 +782,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
 
     public void choosePhotoFromGallary() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
         startActivityForResult(galleryIntent, GALLERY);
     }
@@ -1123,11 +1102,11 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
 
 
     private boolean checkPermission() {
-        boolean check = ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        boolean check = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
         if (!check) {
             ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
             return false;
         }
         return true;
@@ -1203,7 +1182,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
         String fileName;
         File file;
         File storageDir;
-        if(type==Utils.TYPE_IMAGE) {
+        if(type== Utils.TYPE_IMAGE) {
             fileName ="JPEG_" + timeStamp + "_";
         }else{
             fileName ="VID_" + timeStamp + "_";

@@ -159,7 +159,8 @@ public class ShortcutViewService extends Service implements View.OnClickListener
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mFloatingView != null) mWindowManager.removeView(mFloatingView);
+        if (mFloatingView != null)
+            mWindowManager.removeView(mFloatingView);
     }
 
     @Override

@@ -39,7 +39,7 @@
 
     <application
         android:usesCleartextTraffic="true"
-        android:name=".chatmodule.App"
+        android:name=".chat.BaseApplication"
         android:allowBackup="false"
         tools:replace="android:allowBackup"
         android:icon="@mipmap/logo_launcher"
@@ -47,6 +47,7 @@
         android:roundIcon="@mipmap/logo_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppThemenoactionbar">
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
         <activity
             android:name=".activity.DashboardActivity"
             android:label="@string/app_name"
@@ -108,35 +109,14 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity
-            android:name=".chatmodule.ui.activity.SplashActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".chatmodule.ui.activity.LoginActivity"
-            android:screenOrientation="portrait" />
-        <!--<activity-->
-            <!--android:name=".chatmodule.ui.activity.SelectUsersActivity"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/AppThemenoactionbar" />-->
-        <!--<activity-->
-            <!--android:name=".chatmodule.ui.activity.DialogsActivity"-->
-            <!--android:screenOrientation="portrait" />-->
-        <!--<activity-->
-            <!--android:name=".chatmodule.ui.activity.ChatActivity"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/AppThemenoactionbar"-->
-            <!--android:windowSoftInputMode="stateHidden|adjustResize" />-->
-        <activity
-            android:name=".chatmodule.ui.activity.ChatInfoActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name=".chatmodule.ui.activity.AttachmentImageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Dark" />
 
-        <receiver
+        <activity
+            android:name=".activity.AssigenedIntervation"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
+
+
+      <!--  <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="false"
             android:permission="com.google.android.c2dm.permission.SEND">
@@ -146,7 +126,7 @@
 
                 <category android:name="copops.com.copopsApp" />
             </intent-filter>
-        </receiver>
+        </receiver>-->
 
         <!--<service-->
             <!--android:name=".chatmodule.gcm.GcmPushListenerService"-->
@@ -190,23 +170,8 @@
 
 
 
-        <!-- <meta-data -->
-        <!-- android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule" -->
-        <!-- android:value="GlideModule" /> -->
 
-
-
-
-        <!-- <provider -->
-        <!-- android:name="androidx.core.content.FileProvider" -->
-        <!-- android:authorities="${applicationId}" -->
-        <!-- android:exported="false" -->
-        <!-- android:grantUriPermissions="true"> -->
-        <!-- <meta-data -->
-        <!-- android:name="android.support.FILE_PROVIDER_PATHS" -->
-        <!-- android:resource="@xml/provider_paths_chats" /> -->
-        <!-- </provider> -->
-        <provider
+      <!--  <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="copops.com.copopsApp.utils"
             android:exported="false"
@@ -214,21 +179,9 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths_chats" />
-        </provider>
+        </provider>-->
 
-        <!-- [START firebase_service] -->
-        <!--<service android:name=".copsnoti.MyFirebaseMessagingService">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.google.firebase.MESSAGING_EVENT" />-->
-            <!--</intent-filter>-->
-        <!--</service>-->
-        <!-- [END firebase_service] -->
-        <!-- [START firebase_iid_service] -->
-        <!--<service android:name=".copsnoti.MyFirebaseInstanceIDService">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.google.firebase.INSTANCE_ID_EVENT" />-->
-            <!--</intent-filter>-->
-        <!--</service>-->
+
 
 
         <service
@@ -273,6 +226,74 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel"
             android:value="@string/default_notification_channel_id"/>
+
+
+
+        <!--chat camp-->
+        <activity
+            android:name=".chat.MainActivity"
+
+            android:theme="@style/AppThemenoactionbar">
+        </activity>
+        <activity
+            android:name=".chat.RecentChatActivity"
+
+            android:theme="@style/AppThemenoactionbar">
+        </activity>
+        <activity
+            android:name=".chat.SelectContactActivity"
+
+            android:theme="@style/AppThemenoactionbar">
+        </activity>
+        <activity
+            android:name=".chat.ListActivity"
+
+            android:label="@string/title_activity_list" />
+        <activity
+            android:name=".chat.CreateGroupChannelActivity"
+            android:label="@string/title_activity_channel_create"
+            android:parentActivityName=".chat.ListActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".chat.ListActivity" />
+        </activity>
+        <activity
+            android:name=".chat.ConversationActivity"
+            android:label="@string/title_activity_conversation"
+            android:parentActivityName=".chat.ListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".chat.ListActivity" />
+        </activity>
+
+        <service android:name=".chat.ChatCampAppFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".chat.ChatCampAppFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/logo_launcher" />
+        <!--
+             Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimary" />
+
+        <activity
+            android:name=".chat.TestConversationActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".chat.CreateOpenChannelActivity"></activity>
     </application>
 
 </manifest>

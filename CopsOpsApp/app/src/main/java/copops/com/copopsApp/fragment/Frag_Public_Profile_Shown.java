@@ -12,8 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.quickblox.sample.core.utils.ResourceUtils;
+
 
 
 import androidx.annotation.Nullable;
@@ -21,7 +20,7 @@ import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
-import copops.com.copopsApp.chatmodule.App;
+
 import copops.com.copopsApp.pojo.OperatorShowAlInfo;
 import copops.com.copopsApp.utils.AppSession;
 

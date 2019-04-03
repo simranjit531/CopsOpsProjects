@@ -65,6 +65,7 @@ public class SpleshFragment extends Fragment {
 //        }
        String aaaa = mAppSession.getData("Login");
         if(mAppSession.getData("Login")!=null){
+
         }else{
             mAppSession.saveData("Login","0");
         }

@@ -18,11 +18,17 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
+import java.util.Map;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import copops.com.copopsApp.R;
+import copops.com.copopsApp.activity.AssigenedIntervation;
 import copops.com.copopsApp.activity.DashboardActivity;
 import copops.com.copopsApp.fragment.OperatorFragment;
 import copops.com.copopsApp.pojo.IncdentSetPojo;
@@ -45,7 +51,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static NotificationChannel mChannel;
     private static NotificationManager notifManager;
     AppSession mAppSession;
+    Map<String, String> data;
+    private String strRemoteMessage;
+    private String intervationId="";
+    private String intervationDateTime="";
+    private String intervationAddress="";
+    private String intervationObject="";
+    private String intervationDescp="";
+    private String intervationOthDescp="";
+    private String intervationStatus="";
+    private String intervationRef="";
 
+    JSONObject object;
 
 
 
@@ -75,11 +92,88 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
-        Log.e(TAG, "From: " + remoteMessage.getFrom());
+        Log.e(TAG, "Remote Message " +remoteMessage.getData());
+    //    Log.e(TAG, "Remote Message1 " +remoteMessage.getNotification().getBody());
+       // strRemoteMessage=remoteMessage.getData();
+           data = remoteMessage.getData();
+
+
+        Map<String, String> params = remoteMessage.getData();
+       object = new JSONObject(params);
+        Log.e("JSON_OBJECT", object.toString());
+
+        /*    intervationId=data.get("id");
+       intervationDateTime=data.get("created_at");
+       intervationAddress=data.get("address");
+       intervationObject=data.get("sub_category_name");
+       intervationDescp=data.get("incident_description");
+       intervationOthDescp=data.get("other_description");
+       intervationStatus=data.get("status");
+       intervationRef=data.get("reference");*/
+
+
+        //you can get your text message here.
+      //  String text= data.get("sub_category_name");
+    //    Log.d("sub_category_name", ""+ text);
+
+
 
         // Check if message contains a data payload.
 
-        if(remoteMessage.getNotification() != null) {
+        if(remoteMessage.getData() != null) {
+            // if (remoteMessage.getData().size() > 0) {
+
+            try {
+
+                    if(mAppSession.getData("devicelanguage").equalsIgnoreCase("fr")) {
+                        // sendNotification("COPOPS", "Interventions Assignées", intervationId,intervationDateTime,intervationAddress,intervationObject,intervationDescp,intervationOthDescp,intervationStatus,intervationRef, getApplicationContext());
+                        sendNotification("A new intervention has been assigned to you", "A new intervention has been assigned to you", object.toString(), getApplicationContext());
+
+                        Log.d(TAG, "From: 1" + remoteMessage.getFrom());
+                        if (Utils.checkConnection(getApplicationContext())) {
+                            IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                            incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                            incdentSetPojo.setDevice_id(Utils.getDeviceId(getApplicationContext()));
+                            incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+                            incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                            incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+                            Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                            RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                            getCopeStatus(mFile);
+                        } else {
+                            Utils.showAlert(getApplicationContext().getString(R.string.internet_conection), getApplicationContext());
+                        }
+
+                    }else{
+                        sendNotification("A new intervention has been assigned to you", "A new intervention has been assigned to you", object.toString(), getApplicationContext());
+
+                        Log.d(TAG, "From: 3 " + remoteMessage.getFrom());
+
+                        if (Utils.checkConnection(getApplicationContext())) {
+                            IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                            incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                            incdentSetPojo.setDevice_id(Utils.getDeviceId(getApplicationContext()));
+                            incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
+                            incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
+                            incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+                            Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                            RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                            getCopeStatus(mFile);
+                        } else {
+                            Utils.showAlert(getApplicationContext().getString(R.string.internet_conection), getApplicationContext());
+                        }
+                    }
+                    // sendNotification("COPOPS", "Interventions Assignées", getApplicationContext());
+
+                    mAppSession.saveData("notification", "notify");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+     /*   if(remoteMessage.getNotification() != null) {
            // if (remoteMessage.getData().size() > 0) {
 
                 try {
@@ -89,7 +183,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                         if(remoteMessage.getNotification().getBody().equalsIgnoreCase("intervention assigned")) {
                             if(mAppSession.getData("devicelanguage").equalsIgnoreCase("fr")) {
-                                sendNotification("COPOPS", "Interventions Assignées", getApplicationContext());
+                               // sendNotification("COPOPS", "Interventions Assignées", intervationId,intervationDateTime,intervationAddress,intervationObject,intervationDescp,intervationOthDescp,intervationStatus,intervationRef, getApplicationContext());
+                             //   sendNotification("COPOPS", "Interventions Assignées", object.toString(), getApplicationContext());
+                                sendNotification("A new intervention has been assigned to you", "A new intervention has been assigned to you", object.toString(), getApplicationContext());
+
                                 Log.d(TAG, "From: 1" + remoteMessage.getFrom());
 
                             }else{
@@ -112,7 +209,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                 }
 
                         }else{
-                            sendNotification("COPOPS", remoteMessage.getNotification().getBody(), getApplicationContext());
+                           // sendNotification("COPOPS", remoteMessage.getNotification().getBody(), intervationId,intervationDateTime,intervationAddress,intervationObject,intervationDescp,intervationOthDescp,intervationStatus,intervationRef, getApplicationContext());
+                          //  sendNotification("COPOPS", "Interventions Assignées", object.toString(), getApplicationContext());
+                            sendNotification("A new intervention has been assigned to you", "A new intervention has been assigned to you", object.toString(), getApplicationContext());
 
                             Log.d(TAG, "From: 3 " + remoteMessage.getFrom());
 
@@ -141,7 +240,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
     //    }
 
         // Check if message contains a notification payload.
@@ -201,19 +300,25 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
 
-
-
     @SuppressLint("WrongConstant")
-    public static void sendNotification(String title, String description, Context context) {
+    public static void sendNotification(String title, String description,String remMsg, Context context) {
 
         Ringtone r = null;
         if (notifManager == null) {
             notifManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE); }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationCompat.Builder builder;
-            Intent intent = new Intent(context, DashboardActivity.class);
-          //  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            //  Intent intent = new Intent(context, DashboardActivity.class);
+            Intent intent = new Intent(context, AssigenedIntervation.class);
+
+            // intent.putExtra("Intervation", "assignedIntervation");
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            // intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("notification","notify");
+            intent.putExtra("remMsg",remMsg);
+
+            intent.putExtra("","");
             PendingIntent pendingIntent;
             int importance = NotificationManager.IMPORTANCE_HIGH;
             if (mChannel==null) {
@@ -228,9 +333,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             }
             builder = new NotificationCompat.Builder(context, "0");
-            intent.putExtra("notification","notify");
-
-
             pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
             builder.setContentTitle(title)
                     .setSmallIcon(getNotificationIcon()) // required
@@ -245,10 +347,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notifManager.notify(0, notification);
         } else {
 
-            Intent intent = new Intent(context, DashboardActivity.class);
-
-            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            // Intent intent = new Intent(context, DashboardActivity.class);
+            Intent intent = new Intent(context, AssigenedIntervation.class);
+            //   intent.putExtra("Intervation", "assignedIntervation");
+            // intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             intent.putExtra("notification","notify");
+            intent.putExtra("remMsg",remMsg);
+
             PendingIntent pendingIntent = null;
 
             pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -267,6 +373,97 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notificationManager.notify(0, notificationBuilder.build());
         }
     }
+
+
+/*
+    @SuppressLint("WrongConstant")
+    public static void sendNotification(String title, String description,String intervationId,String intervationDateTime,String intervationAddress,String intervationObject,String intervationDescp,String intervationOthDescp,String intervationStatus,String intervationRef, Context context) {
+
+        Ringtone r = null;
+        if (notifManager == null) {
+            notifManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE); }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationCompat.Builder builder;
+          //  Intent intent = new Intent(context, DashboardActivity.class);
+            Intent intent = new Intent(context, AssigenedIntervation.class);
+
+            // intent.putExtra("Intervation", "assignedIntervation");
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+           // intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("notification","notify");
+            intent.putExtra("intervationId",intervationId);
+            intent.putExtra("intervationDateTime",intervationDateTime);
+            intent.putExtra("intervationAddress",intervationAddress);
+            intent.putExtra("intervationObject",intervationObject);
+            intent.putExtra("intervationDescp",intervationDescp);
+            intent.putExtra("intervationOthDescp",intervationOthDescp);
+            intent.putExtra("intervationStatus",intervationStatus);
+            intent.putExtra("intervationRef",intervationRef);
+
+            intent.putExtra("","");
+            PendingIntent pendingIntent;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            if (mChannel==null) {
+                mChannel = new NotificationChannel("0", title, importance);
+                mChannel.setDescription(description);
+                mChannel.enableVibration(true);
+                mChannel.setSound(null,null);
+                notifManager.createNotificationChannel(mChannel);
+
+
+
+
+            }
+            builder = new NotificationCompat.Builder(context, "0");
+            pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+            builder.setContentTitle(title)
+                    .setSmallIcon(getNotificationIcon()) // required
+                    .setContentText(description)  // required
+                    .setAutoCancel(true)
+//                    .setLargeIcon(BitmapFactory.decodeResource
+//                            (context.getResources(), R.mipmap.logo_launcher))
+                    .setBadgeIconType(R.mipmap.logo_launcher)
+                    .setContentIntent(pendingIntent);
+
+            Notification notification = builder.build();
+            notifManager.notify(0, notification);
+        } else {
+
+           // Intent intent = new Intent(context, DashboardActivity.class);
+            Intent intent = new Intent(context, AssigenedIntervation.class);
+         //   intent.putExtra("Intervation", "assignedIntervation");
+           // intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.putExtra("notification","notify");
+            intent.putExtra("intervationId",intervationId);
+            intent.putExtra("intervationDateTime",intervationDateTime);
+            intent.putExtra("intervationAddress",intervationAddress);
+            intent.putExtra("intervationObject",intervationObject);
+            intent.putExtra("intervationDescp",intervationDescp);
+            intent.putExtra("intervationOthDescp",intervationOthDescp);
+            intent.putExtra("intervationStatus",intervationStatus);
+            intent.putExtra("intervationRef",intervationRef);
+
+            PendingIntent pendingIntent = null;
+
+            pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
+                    .setContentTitle(title)
+                    .setContentText(description)
+                    .setAutoCancel(true)
+                    .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                    .setSmallIcon(getNotificationIcon())
+                    .setContentIntent(pendingIntent)
+                    .setStyle(new NotificationCompat.BigTextStyle().setBigContentTitle(title).bigText(description));
+
+
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(0, notificationBuilder.build());
+        }
+    }
+*/
 
 
 

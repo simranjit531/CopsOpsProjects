@@ -1,59 +1,35 @@
 package copops.com.copopsApp.fragment;
 
 
-import android.Manifest;
+
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
+
 import android.location.LocationManager;
 import android.os.Bundle;
 
-import android.text.InputType;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
+
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.iid.InstanceIDListenerService;
-import com.google.firebase.iid.FirebaseInstanceId;
+
+
 import com.google.gson.Gson;
-import com.quickblox.chat.QBChatService;
-import com.quickblox.chat.QBIncomingMessagesManager;
-import com.quickblox.chat.model.QBChatDialog;
-import com.quickblox.chat.model.QBChatMessage;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.messages.services.gcm.QBGcmPushInstanceIDService;
-import com.quickblox.sample.core.ui.dialog.ProgressDialogFragment;
-import com.quickblox.sample.core.utils.SharedPrefsHelper;
-import com.quickblox.users.QBUsers;
-import com.quickblox.users.model.QBUser;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
-import copops.com.copopsApp.activity.DashboardActivity;
-import copops.com.copopsApp.chatmodule.App;
-import copops.com.copopsApp.chatmodule.utils.PushBroadcastReceiver;
-import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
-import copops.com.copopsApp.chatmodule.utils.qb.QbChatDialogMessageListenerImp;
-import copops.com.copopsApp.chatmodule.utils.qb.QbDialogHolder;
-import copops.com.copopsApp.chatmodule.utils.qb.callback.QbEntityCallbackImpl;
-import copops.com.copopsApp.pojo.CommanStatusPojo;
+
 import copops.com.copopsApp.pojo.LoginPojoSetData;
 import copops.com.copopsApp.pojo.RegistationPojo;
 import copops.com.copopsApp.services.ApiUtils;
@@ -103,9 +79,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     double longitude;
     double latitude;
-    QBIncomingMessagesManager incomingMessagesManager;
-    private QBUser currentUser;
-    ArrayList<QBUser> list;
+
     GPSTracker gps;
 
     LocationManager mLocationManager;
@@ -127,7 +101,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         onClick();
         mContext = getActivity();
         mAppSession = mAppSession.getInstance(mContext);
-
+        mAppSession.saveData("countNoti","0");
         gps =  new GPSTracker(getContext());
         if (gps!=null)
         {
@@ -325,295 +299,21 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    private void buildUsersList() {
 
-        ProgressDialogFragment.show(getActivity().getSupportFragmentManager());
-        List<String> tags = new ArrayList<>();
-        tags.add(App.getSampleConfigs().getUsersTag());
 
-        QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
-            @Override
-            public void onSuccess(ArrayList<QBUser> result, Bundle params) {
-          //      ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
-                list = result;
-                String aaa = mAppSession.getData("user_id");
-                for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i).getLogin().equalsIgnoreCase(mAppSession.getData("user_id"))) {
-                        QBUser user = list.get(i);
-                        user.setPassword(App.getSampleConfigs().getUsersPassword());
 
 
 
-                        //user.setPassword(mAppSession.getData("user_id"));
-                        login(user);
 
 
-                        break;
-                    }
-                }
-            }
 
-            @Override
-            public void onError(QBResponseException e) {
-                ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
-            }
-        });
-    }
 
-    private void login(final QBUser user) {
-        ProgressDialogFragment.show(getActivity().getSupportFragmentManager(), R.string.dlg_login);
-        ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
-            @Override
-            public void onSuccess(Void result, Bundle bundle) {
-                SharedPrefsHelper.getInstance().saveQbUser(user);
-                ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
-                currentUser = ChatHelper.getCurrentUser();
 
-                Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
-                incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
 
-                incomingMessagesManager.addDialogMessageListener(new AllDialogsMessageListener());
 
-            }
-            @Override
-            public void onError(QBResponseException e) {
-                ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
-            }
-        });
-    }
 
 
-    private class AllDialogsMessageListener extends QbChatDialogMessageListenerImp {
-        @Override
-        public void processMessage(final String dialogId, final QBChatMessage qbChatMessage, Integer senderId) {
-            Log.d("RanjanCheck", "processMessage");
 
-
-            Log.d("RanjanCheck", "processMessage");
-
-
-            QBUser user = null;
-            int sender = qbChatMessage.getSenderId();
-//            for (int i = 0; i < list.size(); i++) {
-//                if (list.get(i).getId().equals(sender)) {
-//                    user = list.get(i);
-//
-//                    break;
-//                }
-//            }
-
-            loadUpdatedDialog(qbChatMessage.getDialogId(), qbChatMessage);
-
-
-            //  PushBroadcastReceiver.displayCustomNotificationForOrders(user.getFullName(), " "+qbChatMessage.getBody(), getActivity());
-            //   PushBroadcastReceiver.displayCustomNotificationForOrders("COPOPS", " "+qbChatMessage.getBody(), getActivity());
-        }
-    }
-
-
-    private void loadUpdatedDialog(String dialogId, QBChatMessage qbChatMessage) {
-        ChatHelper.getInstance().getDialogById(dialogId, new QbEntityCallbackImpl<QBChatDialog>() {
-            @Override
-            public void onSuccess(QBChatDialog result, Bundle bundle) {
-                //   isProcessingResultInProgress = false;
-                QbDialogHolder.getInstance().addDialog(result);
-                int count = getUnreadMsgCount(result);
-
-
-                if (count == 0) {
-
-                    mAppSession.saveData("messagecount", "0");
-                } else {
-                    mAppSession.saveData("messagecount", "" + count);
-                }
-                int sender = qbChatMessage.getSenderId();
-
-
-
-                int userId = result.getUserId();
-                //  Activity a = (Activity) getContext();
-                //  Boolean asas =isActivityRunning(DashboardActivity.class);
-
-                if (mAppSession.getData("isActivityRunning").equalsIgnoreCase("DashbordActivit")) {
-
-                    if (qbChatMessage.getAttachments().size() == 0) {
-
-//                        if (qbChatMessage.getDialogId().equalsIgnoreCase(result.getDialogId())) {
-//                            try {
-//                            PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
-//                        }catch (Exception e){
-//                            e.printStackTrace();
-//                        }
-//                    } else {
-//
-//
-//                        }
-                        for (int i = 0; i < list.size(); i++) {
-                            if (list.get(i).getId().equals(userId)) {
-                                //  user = list.get(i);
-
-                                try {
-
-                                    // if(count==1) {
-                                 //   PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
-                                    //  }
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
-                                break;
-                            }
-                        }
-
-
-                    } else {
-
-
-                        for (int i = 0; i < list.size(); i++) {
-                            if (list.get(i).getId().equals(userId)) {
-                                //  user = list.get(i);
-
-                                try {
-
-                                    //   if(count==1) {
-                                //   PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
-                                    //     }
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
-                                break;
-                            }
-                        }
-
-                        //   for (int i = 0; i < list.size(); i++) {
-                        //    if (list.get(i).getId().equals(sender)) {
-                        //  user = list.get(i);
-                        //   break;
-                        // }
-                        //     }
-
-
-                    }
-                }
-
-//                if (qbChatMessage.getAttachments().size() == 0) {
-//                    for (int i = 0; i < list.size(); i++) {
-//                        if (list.get(i).getId().equals(sender)) {
-//                            //  user = list.get(i);
-//                          //  PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + " message)", getActivity());
-//                            break;
-//                        }
-//                    }
-//
-//
-//                } else {
-//
-//                    for (int i = 0; i < list.size(); i++) {
-//                        if (list.get(i).getId().equals(sender)) {
-//                            //  user = list.get(i);
-//                  //          PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
-//                            break;
-//                        }
-//                    }
-//
-//
-//                }
-
-//                if (qbChatMessage.getAttachments().size() == 0) {
-//                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + " message)", getActivity());
-//
-//                } else {
-//                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + " message)", getActivity());
-//
-//                }
-                //  PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " "+qbChatMessage.getBody()+"  "+"("+count+" message)", getActivity());
-
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-
-                e.printStackTrace();
-
-            }
-        });
-    }
-
-    public int getUnreadMsgCount(QBChatDialog chatDialog) {
-        Integer unreadMessageCount = chatDialog.getUnreadMessageCount();
-        if (unreadMessageCount == null) {
-            return 0;
-        } else {
-            return unreadMessageCount;
-        }
-    }
-
-
-    ////Manish
-    private final android.location.LocationListener mLocationListener = new android.location.LocationListener() {
-
-        @Override
-        public void onLocationChanged(final Location location) {
-            if (location != null) {
-                // mCurrentLocation = location;
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-
-                mAppSession.saveData("latitude", String.valueOf(latitude));
-                mAppSession.saveData("longitude", String.valueOf(longitude));
-
-                progressDialog.dismiss();
-                //  initMapFragment();
-            } else {
-                Toast.makeText(getActivity(), "Location is not available now", Toast.LENGTH_LONG).show();
-                progressDialog.dismiss();
-            }
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
-    };
-
-
-    private boolean checkPermission() {
-        boolean check = ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-        if (!check) {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-            return false;
-        }
-        return true;
-//    }
-    }
-
-    private boolean gpsEnabled() {
-        isGpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-        if (!isGpsEnabled && !isNetworkEnabled) {
-            // displayLocationSettingsRequest(getActivity());
-//    if (!isGpsEnabled) {
-//            Toast.makeText(m_activity, "GPS is not enabled", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        return true;
-    }
-
-    public void startService(View view) {
-
-    }
 
 
 }

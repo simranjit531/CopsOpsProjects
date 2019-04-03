@@ -1,5 +1,6 @@
 package copops.com.copopsApp.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,10 +17,12 @@ import copops.com.copopsApp.R;
 public class SplashScreen extends AppCompatActivity {
 
     private static int SPLASH_TIME_OUT = 1000;
+    private Context mContext;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
+        mContext=SplashScreen.this;
         refreshUI();
     }
 
@@ -27,9 +30,17 @@ public class SplashScreen extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
                                       @Override
                                       public void run() {
-                                          Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
-                                          startActivity(intent);
-                                          finish();
+
+                                          if (getIntent().getExtras()!=null)
+                                          {
+
+                                          }else
+                                          {
+                                              startActivity(new Intent(mContext, DashboardActivity.class));
+                                              finish();
+                                          }
+
+
                                       }
                                   },
                 SPLASH_TIME_OUT);

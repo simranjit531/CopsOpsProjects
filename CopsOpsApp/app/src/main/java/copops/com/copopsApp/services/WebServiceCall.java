@@ -1,9 +1,9 @@
 package copops.com.copopsApp.services;
 
 
-
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
 
 
 public class WebServiceCall {
@@ -17,6 +17,8 @@ public class WebServiceCall {
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
+
         return retrofit;
     }
+
 }

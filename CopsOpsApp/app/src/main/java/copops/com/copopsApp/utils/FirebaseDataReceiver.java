@@ -1,23 +1,18 @@
 package copops.com.copopsApp.utils;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
-import android.util.Log;
-
 import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 import androidx.legacy.content.WakefulBroadcastReceiver;
 import copops.com.copopsApp.R;
-import copops.com.copopsApp.activity.DashboardActivity;
-import copops.com.copopsApp.chatmodule.utils.PushBroadcastReceiver;
+
+
+
+
 
 public class FirebaseDataReceiver extends WakefulBroadcastReceiver  {
 

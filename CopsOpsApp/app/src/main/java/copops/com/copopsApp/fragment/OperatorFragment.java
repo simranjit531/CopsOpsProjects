@@ -17,12 +17,15 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -31,37 +34,32 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
-import com.quickblox.chat.QBIncomingMessagesManager;
-import com.quickblox.chat.model.QBChatDialog;
-import com.quickblox.chat.model.QBChatMessage;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.messages.services.QBPushManager;
-import com.quickblox.messages.services.SubscribeService;
-import com.quickblox.sample.core.utils.SharedPrefsHelper;
-import com.quickblox.users.QBUsers;
-import com.quickblox.users.model.QBUser;
+
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
-import copops.com.copopsApp.chatmodule.App;
-import copops.com.copopsApp.chatmodule.utils.PushBroadcastReceiver;
-import copops.com.copopsApp.chatmodule.utils.chat.ChatHelper;
-import copops.com.copopsApp.chatmodule.utils.qb.QbChatDialogMessageListenerImp;
-import copops.com.copopsApp.chatmodule.utils.qb.QbDialogHolder;
-import copops.com.copopsApp.chatmodule.utils.qb.callback.QBPushSubscribeListenerImpl;
-import copops.com.copopsApp.chatmodule.utils.qb.callback.QbEntityCallbackImpl;
+
+import copops.com.copopsApp.chat.Constant;
+import copops.com.copopsApp.chat.ListActivity;
+import copops.com.copopsApp.chat.LocalStorage;
+import copops.com.copopsApp.chat.MainActivity;
+import copops.com.copopsApp.chat.RecentChatActivity;
 import copops.com.copopsApp.pojo.AssignmentListPojo;
 import copops.com.copopsApp.pojo.CommanStatusPojo;
 import copops.com.copopsApp.pojo.IncdentSetPojo;
@@ -70,10 +68,14 @@ import copops.com.copopsApp.pojo.RegistationPojo;
 import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
 import copops.com.copopsApp.shortcut.GPSTracker;
+
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.chatcamp.sdk.ChatCamp;
+import io.chatcamp.sdk.ChatCampException;
+import io.chatcamp.sdk.User;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -144,10 +146,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     AssignmentListPojo assignmentListPojo_close;
     double longitude;
     double latitude;
-    ArrayList<QBUser> list;
-    QBIncomingMessagesManager incomingMessagesManager;
-    private QBUser currentUser;
-    QBChatMessage qbChatMessage1;
+
     GPSTracker gps;
     public static final int notify = 2000;  //interval between two services(Here Service run every 5 seconds)
     int count = 0;  //number of times service is display
@@ -183,6 +182,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         longitude = gps.getLongitude();
         mAppSession.saveData("latitude", String.valueOf(latitude));
         mAppSession.saveData("longitude", String.valueOf(longitude));
+
 
 
 
@@ -355,18 +355,22 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
             case R.id.rlchat:
 
 
-                Toast toast = Toast.makeText(getContext(),
-                        "Le chat est en confinement de test. Mis à rude épreuves pour une utilisation sans failles",
-                        Toast.LENGTH_LONG);
+                try
+                {
 
-                toast.show();
-                // getActivity().stopService(new Intent(getActivity(), ShortcutViewService_old.class));
-//                Intent mIntent = new Intent(getActivity(), DialogsActivity.class);
-//
-//                mAppSession.saveData("isActivityRunning","ChatView");
-//                startActivity(mIntent);
-//                if (mTimer != null) // Cancel if already existed
-//                    mTimer.cancel();
+                //    Utils.fragmentCall(new ChatRecentFragment(), getFragmentManager());
+
+                    if (!TextUtils.isEmpty(LocalStorage.getInstance().getUserId()) && !TextUtils.isEmpty(LocalStorage.getInstance().getUsername())) {
+                        connectToChatSdk(LocalStorage.getInstance().getUserId(), LocalStorage.getInstance().getUsername());
+                        return;
+                    }
+
+                }catch (Exception e){e.printStackTrace();}
+               setUpView();
+               /* Intent mIntent = new Intent(getActivity(), MainActivity.class);
+                mAppSession.saveData("isActivityRunning","ChatView");
+                startActivity(mIntent);*/
+
                 break;
 
             case R.id.TVname:
@@ -458,7 +462,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                 editor.commit();
                 mAppSession.saveData("Login", "0");
                 Utils.fragmentCall(new HomeFragment(), getFragmentManager());
-                userLogout();
+               // userLogout();
                 if (mTimer != null) // Cancel if already existed
                     mTimer.cancel();
             }
@@ -683,13 +687,13 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
 
-        String aa = mAppSession.getData("messagecount");
+        String aa = mAppSession.getData("countNoti");
 
-        if (mAppSession.getData("messagecount").equals("") || mAppSession.getData("messagecount").equals("0")) {
+        if (mAppSession.getData("countNoti").equals("") || mAppSession.getData("countNoti").equals("0")) {
             chatCountId.setVisibility(View.GONE);
         } else {
             chatCountId.setVisibility(View.VISIBLE);
-            chatCountId.setText(mAppSession.getData("messagecount"));
+            chatCountId.setText(mAppSession.getData("countNoti"));
         }
 
         //loadUpdatedDialog(qbChatMessage1.getDialogId(),qbChatMessage1);
@@ -821,225 +825,17 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void logout() {
-        if (QBPushManager.getInstance().isSubscribedToPushes()) {
-            QBPushManager.getInstance().addListener(new QBPushSubscribeListenerImpl() {
-                @Override
-                public void onSubscriptionDeleted(boolean success) {
-                    logoutREST();
-                    QBPushManager.getInstance().removeListener(this);
-                }
-            });
-            SubscribeService.unSubscribeFromPushes(getActivity());
-        } else {
-            logoutREST();
-        }
-    }
-
-    private void logoutREST() {
-        QBUsers.signOut().performAsync(null);
-    }
-
-
-    public void userLogout() {
-        ChatHelper.getInstance().destroy();
-        logout();
-        SharedPrefsHelper.getInstance().removeQbUser();
-
-        //  finish();
-        //  LoginActivity.start(DialogsActivity.this);
-        //   Intent mIntent = new Intent(DialogsActivity.this,DashboardActivity.class);
-        //   startActivity(mIntent);
-        QbDialogHolder.getInstance().clear();
-        //  ProgressDialogFragment.hide(getSupportFragmentManager());
-        //  finish();
-    }
-
-
-    private void buildUsersList() {
-        //  ProgressDialogFragment.show(getActivity().getSupportFragmentManager());
-        List<String> tags = new ArrayList<>();
-        tags.add(App.getSampleConfigs().getUsersTag());
-        QBUsers.getUsersByTags(tags, null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
-            @Override
-            public void onSuccess(ArrayList<QBUser> result, Bundle params) {
-                list = result;
-                //   ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
-                for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i).getLogin().equalsIgnoreCase(mAppSession.getData("user_id"))) {
-                        QBUser user = list.get(i);
-                        user.setPassword(App.getSampleConfigs().getUsersPassword());
-                        //user.setPassword(mAppSession.getData("user_id"));
-                        login(user);
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                //    ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
-            }
-        });
-    }
-
-    private void login(final QBUser user) {
-        //  ProgressDialogFragment.show(getActivity().getSupportFragmentManager(), R.string.dlg_login);
-        ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
-            @Override
-            public void onSuccess(Void result, Bundle bundle) {
-                SharedPrefsHelper.getInstance().saveQbUser(user);
-                //   ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
-
-//                try {
-//                    currentUser = ChatHelper.getCurrentUser();
-//                    incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
-//                    incomingMessagesManager.addDialogMessageListener(new OperatorFragment.AllDialogsMessageListener());
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                //   ProgressDialogFragment.hide(getActivity().getSupportFragmentManager());
-            }
-        });
-    }
-
-
-    private class AllDialogsMessageListener extends QbChatDialogMessageListenerImp {
-        @Override
-        public void processMessage(final String dialogId, final QBChatMessage qbChatMessage, Integer senderId) {
-            Log.d("RanjanCheck", "processMessage");
-            QBUser user = null;
-            int sender = qbChatMessage.getSenderId();
-//            for (int i = 0; i < list.size(); i++) {
-//                if (list.get(i).getId().equals(sender)) {
-//                     user = list.get(i);
-//
-//                    break;
-//                }
-//            }
-            // createDialog(list);
-
-            loadUpdatedDialog(qbChatMessage.getDialogId(), qbChatMessage);
-
-
-        }
-    }
-
-
-    private void loadUpdatedDialog(String dialogId, QBChatMessage qbChatMessage) {
-        ChatHelper.getInstance().getDialogById(dialogId, new QbEntityCallbackImpl<QBChatDialog>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onSuccess(QBChatDialog result, Bundle bundle) {
-                //   isProcessingResultInProgress = false;
-                QbDialogHolder.getInstance().addDialog(result);
-                int count = getUnreadMsgCount(result);
-                result.getLastMessage();
-
-                qbChatMessage1 = qbChatMessage;
-                if (count == 0) {
-                    chatCountId.setVisibility(View.GONE);
-                    mAppSession.saveData("messagecount", "0");
-                } else {
-                    chatCountId.setVisibility(View.VISIBLE);
-                    chatCountId.setText("" + count);
-                    mAppSession.saveData("messagecount", "" + count);
-
-
-                }
-                int userId = result.getUserId();
-              //  Activity a = (Activity) getContext();
-            //  Boolean asas =isActivityRunning(DashboardActivity.class);
 
 
 
-                if (mAppSession.getData("isActivityRunning").equalsIgnoreCase("DashbordActivit")) {
-
-                    if (qbChatMessage.getAttachments().size() == 0) {
-
-//                        if (qbChatMessage.getDialogId().equalsIgnoreCase(result.getDialogId())) {
-//                            try {
-//                            PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
-//                        }catch (Exception e){
-//                            e.printStackTrace();
-//                        }
-//                    } else {
-//
-//
-//                        }
-                    for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i).getId().equals(userId)) {
-                            //  user = list.get(i);
-
-                            try {
-
-                               // if(count==1) {
-                                    PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + qbChatMessage.getBody() + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
-
-                                break;
-                              //  }
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
-                            break;
-                        }
-                    }
 
 
-                    } else {
 
 
-                        for (int i = 0; i < list.size(); i++) {
-                            if (list.get(i).getId().equals(userId)) {
-                                //  user = list.get(i);
-
-                                try {
-
-                                 //   if(count==1) {
-                                        PushBroadcastReceiver.displayCustomNotificationForOrders(result.getName(), " " + "Attachment" + "  " + "(" + count + getString(R.string.messaging) + ")", getActivity());
-                               //     }
-
-                                    break;
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
-                                break;
-                            }
-                        }
-
-                     //   for (int i = 0; i < list.size(); i++) {
-                        //    if (list.get(i).getId().equals(sender)) {
-                                //  user = list.get(i);
-                             //   break;
-                           // }
-                   //     }
 
 
-                    }
-                }
-            }
 
-            @Override
-            public void onError(QBResponseException e) {
 
-                e.printStackTrace();
-
-            }
-        });
-    }
-
-    public int getUnreadMsgCount(QBChatDialog chatDialog) {
-        Integer unreadMessageCount = chatDialog.getUnreadMessageCount();
-        if (unreadMessageCount == null) {
-            return 0;
-        } else {
-            return unreadMessageCount;
-        }
-    }
 
 
     private boolean appInstalledOrNot(String uri) {
@@ -1054,6 +850,17 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     }
 
     public void update() {
+
+
+        String aa = mAppSession.getData("countNoti");
+
+        if (mAppSession.getData("countNoti").equals("") || mAppSession.getData("countNoti").equals("0")) {
+            chatCountId.setVisibility(View.GONE);
+        } else {
+            chatCountId.setVisibility(View.VISIBLE);
+            chatCountId.setText(mAppSession.getData("countNoti"));
+        }
+
         if (mAppSession.getData("new_reports").equalsIgnoreCase("")) {
             countId.setVisibility(View.INVISIBLE);
             picId.setVisibility(View.INVISIBLE);
@@ -1151,5 +958,81 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
         return false;
     }
+    public void connectToChatSdk(final String userId, final String displyName) {
+        ChatCamp.init(getActivity(), Constant.APP_ID);
+        ChatCamp.connect(userId, new ChatCamp.ConnectListener() {
+            @Override
+            public void onConnected(User user, ChatCampException e) {
+                if (e != null) {
+
+                        LocalStorage.getInstance().setUserId("");
+                        LocalStorage.getInstance().setUsername("");
+                        setUpView();
+
+                        Snackbar.make(getView(), "Something went wrong", Snackbar.LENGTH_LONG).show();
+
+                } else {
+                    try{
+                        System.out.println("CONNECTED");
+                        LocalStorage.getInstance().setUserId(user.getId());
+                        LocalStorage.getInstance().setUsername(displyName);
+                    }
+                    catch (Exception e1)
+                    {
+                        e1.printStackTrace();
+                    }
+
+                    ChatCamp.updateUserDisplayName(displyName, new ChatCamp.UserUpdateListener() {
+                        //                            ChatCamp.updateUserProfileUrl("https://iflychat.com", new ChatCamp.UserUpdateListener() {
+                        @Override
+                        public void onUpdated(User user, ChatCampException e) {
+                            System.out.println("UPDATE DISPLAY NAME" + user.getDisplayName());
+
+                            mAppSession.saveData("screenShow","recentchat");
+
+                            Intent intent = new Intent(getActivity(), RecentChatActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                          //  finish();
+
+
+
+                        }
+                    });
+
+                    Map map = new HashMap();
+                    map.put("key", "value");
+                    ChatCamp.updateUserMetadata(map, new ChatCamp.UserUpdateListener() {
+                        @Override
+                        public void onUpdated(User user, ChatCampException e) {
+                            Log.d("CHATCAMP_APP", "meta data updated");
+                        }
+                    });
+                    if (FirebaseInstanceId.getInstance().getToken() != null) {
+                        ChatCamp.updateUserPushToken(FirebaseInstanceId.getInstance().getToken(), new ChatCamp.UserPushTokenUpdateListener() {
+                            @Override
+                            public void onUpdated(User user, ChatCampException e) {
+                                Log.d("CHATCAMP_APP", "PUSH TOKEN REGISTERED");
+
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
+    private void setUpView() {
+
+
+        ChatCamp.init(getActivity(), "6512253349478264832");
+        String userId=mAppSession.getData("user_id");
+        String displyName=mAppSession.getData("name");
+        connectToChatSdk(userId,displyName);
+
+    }
+
+
 }
 
