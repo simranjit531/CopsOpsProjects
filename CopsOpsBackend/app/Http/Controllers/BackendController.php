@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -35,7 +34,7 @@ use Session;
 use Lang; 
 
 class BackendController extends Controller
-{
+{	
     public function __construct()
     {
         $this->middleware('auth');

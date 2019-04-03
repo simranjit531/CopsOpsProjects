@@ -48,6 +48,12 @@
     width: 75% !important;
     height: 100%;
 }
+.chatcamp-widget-record-main, .cc-list-header-image, .cc-list-header-actions, .cc-list-header-image svg, .header-actionsm, .chatcamp-widget-emoji, .chatcamp-widget-emoji svg{
+  display: none !important;
+
+}
+.message-content img{width:200px!important;height: 200px!important;}
+.message-content video{width:200px!important;}
 
 </style>
 @endsection
@@ -115,8 +121,24 @@
         }
       })
 
+/*  
+$(function(){
+  console.log("Chat Count");
+  var data = JSON.stringify({id:'{{ Auth::user()->user_id }}'});
 
+  var xhr = new XMLHttpRequest();
+  xhr.withCredentials = true;
 
+  xhr.addEventListener("readystatechange", function () {
+    if (this.readyState === this.DONE) {
+      console.log(this.responseText);
+    }
+  });
+
+  xhr.open("POST", "https://api.chatcamp.io//api/2.0/group_channels.messages_count");
+
+  xhr.send(data);
+});
 /*    
 $(function(){
 	_auto_login();	
@@ -176,6 +198,12 @@ $(document).on('keyup', 'input[type="text"][name="search"]', function(){
 	
 });
 */
+
+$(function(){
+  setTimeout(function(){  $('.cc-list-header-text').html('Chat'); }, 1000);
+  
+})
+
 </script>
          
 @endsection
