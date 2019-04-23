@@ -50,6 +50,8 @@ class ResponseMessage
     const _STATUS_PROFILE_IMAGE_REQUIRED = 60015;
     const _STATUS_INTERVENTION_CLOSE_ERROR = 60016;
     
+    const _STATUS_NOTHING_TO_UPLOAD = 70001;
+    
     public static $lang = 'en';
 
     public static $response = [
@@ -98,8 +100,9 @@ class ResponseMessage
         '60015' => 'Profile Image is required !',
         '60016' => 'You can only close interventions assigned to you only',
         '6015' => 'Rejected Successful',
-        '6016' => 'Rejected Failed'
+        '6016' => 'Rejected Failed',
         
+        '70001' => 'Nothing to upload, please try again later',
     ];
     
     public static $responseFrench = [
@@ -148,8 +151,9 @@ class ResponseMessage
         '60015' => 'Une photo de profil est requise',
         '60016' => 'Vous ne pouvez fermer que les interventions qui vous ont Ã©tÃ© assignÃ©es',
         '6015' => 'Rejeter avec succÃ©',
-        '6016' => 'Echeque de rejet'
+        '6016' => 'Echeque de rejet',
         
+        '70001' => 'Rien à télécharger, veuillez réessayer plus tard',
     ];
 
     public static function statusResponses($responseKey, $lang=null)

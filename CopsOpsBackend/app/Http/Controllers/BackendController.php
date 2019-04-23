@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ use App\UserDeviceMapping;
 use App\UserType;
 use App\CopUserIncidentMapping;
 use App\CopUserIncidentClosed;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\QueryException;
 use App\Handrail;
 use App\CopApprovalComments;
@@ -34,7 +36,7 @@ use Session;
 use Lang; 
 
 class BackendController extends Controller
-{	
+{
     public function __construct()
     {
         $this->middleware('auth');
@@ -1071,5 +1073,69 @@ class BackendController extends Controller
 // 	    dd($userData);
 	    if($lastLocation->isEmpty()) return response()->json(['status'=>false]);
 	    return response()->json(['status'=>true, 'data'=>$lastLocation->toArray(), 'ref_user_type_id'=>$userData['ref_user_type_id']]);
+	}
+	
+	public function uploadMessageFile(Request $request)
+	{
+	    $lang = $request->input('lang');
+	    
+	    $rules = ['upload_document' => 'required'];
+	    $result = $this->validate_upload_request($request, $rules);
+	    if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
+	    
+	    $result = $this->uploadFile($request, 'uploads/messages', 'upload_document');
+	    
+	    if($result['status'] == true)
+	    {
+	        unset($result['message']);
+	        $result['message'] = asset('uploads/messages').'/'.$result['fileName'];
+	    }
+	    
+	    return $this->sendResponseMessage($result, 200);
+	}
+	
+	public function uploadFile($request, $destination=null, $key=null)
+	{
+	    if($request->hasFile($key))
+	    {
+	        $file = $request->file($key);
+	        $size = $file->getSize();
+	        
+	        $extension = $file->getClientOriginalExtension();
+	        $mime = $file->getMimeType();
+	        
+	        /*
+	         * to be enabled in production
+	         if($size > 5000000) return array('status'=>false, 'message'=>'File must not be greater than 5 MB');
+	         if(!in_array($mime, $this->mimes)) return array('status'=>false, 'message'=>'Invalid Image Type');
+	         if(!in_array($mime, $this->mimes)) return array('status'=>false, 'message'=>'Invalid Image Type');
+	         if(!in_array($extension, $this->extensions)) return array('status'=>false, 'message'=>'Invalid Image Type');
+	         */
+	        
+	        # Move Uploaded File
+	        $destinationPath = 'uploads';
+	        if($destination) $destinationPath = $destination;
+	        
+	        $fileName = uniqid().'.'.$extension;
+	        if($file->move($destinationPath, $fileName)) return array('status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_IMAGE_UPLOAD_SUCCESS), 'fileName'=>$fileName);
+	        return array('status'=>false, 'message'=>'Something went wrong, please try again later');
+	    }
+	    
+	    return array('status'=>false, 'message'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_NOTHING_TO_UPLOAD));
+	}
+	
+	public function validate_upload_request($request, $rules)
+	{
+	    $validator  = Validator::make($request->all(), $rules);
+	    if($validator->fails())
+	    {
+	        $messages = $validator->messages();
+	        return $messages->first();
+	    }
+	}
+	
+	public function sendResponseMessage(array $message, $status=null)
+	{
+	    return response()->json($message, $status);
 	}
 }

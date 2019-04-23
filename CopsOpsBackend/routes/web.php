@@ -82,3 +82,6 @@ Route::post('/notifications/status/update', 'BackendController@updateNotificatio
 
 # Get Live location
 Route::get('/live/location', 'BackendController@userLiveLocation')->name('backoffice.live.location');
+
+
+Route::post('/upload/document','BackendController@uploadMessageFile')->name('ajax.upload.document');

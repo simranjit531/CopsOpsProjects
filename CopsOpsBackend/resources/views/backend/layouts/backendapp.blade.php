@@ -13,6 +13,7 @@
 	href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"
 	rel="stylesheet">
 <link href="https://cdn.rawgit.com/sachinchoolur/lightgallery.js/master/dist/css/lightgallery.css" rel="stylesheet">
+
 <!-- Font Awesome -->
 {{ Html::style('css/plugins/font-awesome/css/font-awesome.min.css') }}
 <!-- Theme style -->
@@ -157,7 +158,7 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 						
 						<li class="nav-item"><a href="{{ url('/chat') }}" class="nav-link {{ (\Request::route()->getName() == 'chat') ? 'active' : '' }}">
 								<i class="nav-icon fa fa-comments-o"></i>
-								<p>{{ trans('pages.discussion') }}</p> <!--Discussion-->
+								<p>{{ trans('pages.discussion') }} <span id="chatCount">1</span></p> <!--Discussion-->
 						</a></li>
 
 
@@ -181,6 +182,8 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 		<footer class="main-footer">
 			<strong>{{ trans('pages.copyright') }}
 			<div class="float-right d-none d-sm-inline-block"></div>
+			
+			
 		</footer>
 
 		<!-- Control Sidebar -->
@@ -239,7 +242,8 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 	
 	<link href="{{ asset('css/toastr.min.css') }}" rel="stylesheet">
 	<script src="{{ asset('js/toastr.min.js') }}"></script>
-	
+	<script src="{{ asset('js/websocket.js') }}"></script>
+	<script src="{{ asset('js/websocket_chat.js') }}"></script>
 	
 	
 	<script

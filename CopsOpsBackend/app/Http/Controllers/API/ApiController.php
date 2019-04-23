@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Chat;
 use App\City;
 use App\CopUserIncidentClosed;
 use App\Handrail;
@@ -1513,7 +1514,63 @@ class ApiController extends Controller
         ]);
 		}
     }
+    
+    /* File Upload function 
+     * Expects [jpg, jpeg, bmp, png, txt, mp3, mp4, pdf]  
+     */
 
+    public function uploadMessageFile(Request $request)
+    {
+        $lang = $request->input('lang');
+        
+        $rules = ['upload_document' => 'required'];
+        $result = $this->validate_upload_request($request, $rules);
+        if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
+        
+        $result = $this->uploadFile($request, 'uploads/messages', 'upload_document');
+        
+        if($result['status'] == true)
+        {
+            unset($result['message']);
+            $result['message'] = asset('uploads/messages').'/'.$result['fileName'];    
+        }
+        
+        return $this->sendResponseMessage($result, 200);
+    }
+    
+    public function getMyMessages(Request $request)
+    {
+        /*
+        $payload = $this->get_payload($request);
+        if(isset($payload['status']) && $payload['status'] === false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> $payload['message']],200);
+        }
+        */
+        
+        $rules  = [
+            'sender_id'=>'required',
+            'receiver_id' => 'required'
+        ];
+        
+        $result = $this->validate_request($request, $rules);
+        if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
+        
+        
+        
+        $chat = Chat::where(function($query) use ($request){
+            $query->where(['sender_id'=>$request->input('sender_id'), 'receiver_id'=>$request->input('receiver_id')]);
+        })
+        ->orWhere(function($query) use ($request){
+            $query->where(['sender_id'=>$request->input('receiver_id'), 'receiver_id'=>$request->input('sender_id')]);
+        })
+        ->orderBy('created_at', 'desc')
+        //                         ->limit(10)
+        ->get();
+        
+        $this->sendResponseMessage(['message'=>count($chat), 'status'=>true]);
+    }
+    
 
     /* Util function for payload processing
      * @accepts encoded json string in request
@@ -1565,7 +1622,6 @@ class ApiController extends Controller
 
     public function uploadFile($request, $destination=null, $key=null)
     {
-
         if($request->hasFile($key))
         {
             $file = $request->file($key);
@@ -1590,6 +1646,8 @@ class ApiController extends Controller
             if($file->move($destinationPath, $fileName)) return array('status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_IMAGE_UPLOAD_SUCCESS), 'fileName'=>$fileName);
             return array('status'=>false, 'message'=>'Something went wrong, please try again later');
         }
+        
+        return array('status'=>false, 'message'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_NOTHING_TO_UPLOAD));
     }
 
     /* API Return Response Messages */

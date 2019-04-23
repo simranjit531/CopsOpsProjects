@@ -52,6 +52,9 @@ Route::group(['prefix' => 'auth'], function () {
 	Route::post('/check/freeze','API\ApiController@check_user_freeze'); //pp
 
     Route::post('/notification/update','API\ApiController@update_notification_status');
+    
+    Route::post('/upload/document','API\ApiController@uploadMessageFile');
+    Route::post('/get/message','API\ApiController@getMyMessages');
 });
 
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
