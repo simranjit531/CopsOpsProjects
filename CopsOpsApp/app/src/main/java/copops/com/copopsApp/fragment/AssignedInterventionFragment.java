@@ -159,10 +159,10 @@ if(assignmentListPojo.getData().get(pos).getUser_id()==null){
             Tvstate.setText(R.string.onwait);
             Tvstate.setTextColor(getResources().getColor(R.color.orange));
         }
-        else if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("pending")) {
+        else if (assignmentListPojo.getData().get(pos).getIsAssigned().equalsIgnoreCase("pending")) {
             Tvstate.setText(R.string.pending);
             Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
-        }else if (assignmentListPojo.getData().get(pos).getStatus().equalsIgnoreCase("Assigned")) {
+        }else if (assignmentListPojo.getData().get(pos).getIsAssigned().equalsIgnoreCase("Assigned")) {
             Tvstate.setText(R.string.Assigned);
             Tvstate.setTextColor(getResources().getColor(R.color.black));
         }

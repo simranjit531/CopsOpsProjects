@@ -9,6 +9,26 @@ public class OperatorShowAlInfo implements Serializable {
     String level;
     String profile_percent;
 
+    public String getMedical_file() {
+        return medical_file;
+    }
+
+    public void setMedical_file(String medical_file) {
+        this.medical_file = medical_file;
+    }
+
+    String medical_file;
+
+    public String getTotalMessageCount() {
+        return totalMessageCount;
+    }
+
+    public void setTotalMessageCount(String totalMessageCount) {
+        this.totalMessageCount = totalMessageCount;
+    }
+
+    String totalMessageCount;
+
     public String getReport() {
         return report;
     }

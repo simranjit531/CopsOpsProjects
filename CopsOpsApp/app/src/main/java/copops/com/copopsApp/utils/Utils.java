@@ -34,6 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,6 +50,9 @@ import copops.com.copopsApp.shortcut.ShortcutViewService_Citizen;
 
 
 public class Utils {
+   // public static final String CHAT_BASE_URL="ws://82.165.253.201:8080";
+
+    public static final String CHAT_BASE_URL="ws://93.90.201.167:8080";
 
     public static final String APP_ID = "75246";
     public static final String AUTH_KEY = "xeF9L4KE2yg76tE";
@@ -85,9 +89,48 @@ public class Utils {
         public void onClick();
     }
 
+
+    public static String getFileNameFromUrl(URL url) {
+
+        String urlString = url.getFile();
+
+        return urlString.substring(urlString.lastIndexOf('/') + 1).split("\\?")[0].split("#")[0];
+    }
+
     public static void showAlert(String mgs, Context context) {
         new AlertDialog.Builder(context, R.style.AlertDialogTheme)
                 .setTitle(R.string.Information)
+                .setMessage(mgs)
+                .setCancelable(false)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+
+                }).setIcon(R.drawable.information)
+                .show();
+    }
+
+
+
+    public static void showAlertInterFace(String mgs, Context context,clossPassInterFace mClossPassInterFace) {
+        new AlertDialog.Builder(context, R.style.AlertDialogTheme)
+                .setTitle(R.string.Information)
+                .setMessage(mgs)
+                .setCancelable(false)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mClossPassInterFace.onClick();
+                    }
+
+                }).setIcon(R.drawable.information)
+                .show();
+    }
+
+
+    public static void showAlertfaq(String mgs, Context context) {
+        new AlertDialog.Builder(context, R.style.AlertDialogTheme)
+                .setTitle(R.string.FAQ)
                 .setMessage(mgs)
                 .setCancelable(false)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {

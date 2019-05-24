@@ -5,7 +5,9 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
@@ -49,17 +52,16 @@ import java.util.TimerTask;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.SortedList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
 
-import copops.com.copopsApp.chat.Constant;
-import copops.com.copopsApp.chat.ListActivity;
-import copops.com.copopsApp.chat.LocalStorage;
-import copops.com.copopsApp.chat.MainActivity;
-import copops.com.copopsApp.chat.RecentChatActivity;
+
+import copops.com.copopsApp.activity.DashboardActivity;
 import copops.com.copopsApp.pojo.AssignmentListPojo;
 import copops.com.copopsApp.pojo.CommanStatusPojo;
 import copops.com.copopsApp.pojo.IncdentSetPojo;
@@ -73,14 +75,12 @@ import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.chatcamp.sdk.ChatCamp;
-import io.chatcamp.sdk.ChatCampException;
-import io.chatcamp.sdk.User;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 
 public class OperatorFragment extends Fragment implements View.OnClickListener {
 
@@ -184,7 +184,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         mAppSession.saveData("longitude", String.valueOf(longitude));
 
 
-
+        mAppSession.saveData("Chat","0");
 
 
 
@@ -354,19 +354,19 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.rlchat:
 
-
-                try
-                {
-
-                //    Utils.fragmentCall(new ChatRecentFragment(), getFragmentManager());
-
-                    if (!TextUtils.isEmpty(LocalStorage.getInstance().getUserId()) && !TextUtils.isEmpty(LocalStorage.getInstance().getUsername())) {
-                        connectToChatSdk(LocalStorage.getInstance().getUserId(), LocalStorage.getInstance().getUsername());
-                        return;
-                    }
-
-                }catch (Exception e){e.printStackTrace();}
-               setUpView();
+               Utils.fragmentCall(new ChatRecentFragment(), getFragmentManager());
+//                try
+//                {
+//
+//                //    Utils.fragmentCall(new ChatRecentFragment(), getFragmentManager());
+//
+//                    if (!TextUtils.isEmpty(LocalStorage.getInstance().getUserId()) && !TextUtils.isEmpty(LocalStorage.getInstance().getUsername())) {
+//                        connectToChatSdk(LocalStorage.getInstance().getUserId(), LocalStorage.getInstance().getUsername());
+//                        return;
+//                    }
+//
+//                }catch (Exception e){e.printStackTrace();}
+//               setUpView();
                /* Intent mIntent = new Intent(getActivity(), MainActivity.class);
                 mAppSession.saveData("isActivityRunning","ChatView");
                 startActivity(mIntent);*/
@@ -436,6 +436,8 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                 } else {
                     Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
                 }
+
+                mAppSession.saveData("Chat","0");
                 break;
         }
     }
@@ -456,12 +458,22 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 dialog.dismiss();
 
-                SharedPreferences preferences = getActivity().getSharedPreferences("copops.com.copopsApp", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.clear();
-                editor.commit();
-                mAppSession.saveData("Login", "0");
-                Utils.fragmentCall(new HomeFragment(), getFragmentManager());
+
+                if (Utils.checkConnection(getActivity())) {
+                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                    incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                    incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+                    //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
+                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                    RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                    logOutData(mFile);
+                } else {
+                    Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
+                }
+              //  logOutData()
+
+
+
                // userLogout();
                 if (mTimer != null) // Cancel if already existed
                     mTimer.cancel();
@@ -498,12 +510,14 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
                                 mAppSession.saveData("new_reports",operatorShowAlInfo.getNew_reports());
 
+
                             } else {
 
                                 mAppSession.saveData("new_reports",operatorShowAlInfo.getNew_reports());
                                 mTimer = new Timer();   //recreate new
                                 mTimer.scheduleAtFixedRate(new TimeDisplay(), 0, notify);   //Schedule task
                             }
+                            mAppSession.saveData("notifica",operatorShowAlInfo.getTotalMessageCount());
                             TVpsental.setText(getString(R.string.sentinel)+" "+operatorShowAlInfo.getLevel());
                             mAppSession.saveData("operatorgrade", operatorShowAlInfo.getGrade());
                             Log.e("getgrade==", "" + mAppSession.getData("operatorgrade"));
@@ -553,6 +567,8 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             mAppSession.saveData("operatorlevel", operatorShowAlInfo.getLevel());
                         }
                         progressDialog.dismiss();
+
+
 
                     } else {
                        // Utils.showAlert(getString(R.string.Notfound), getActivity());
@@ -705,6 +721,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
             incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
             incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
             incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+            incdentSetPojo.setFcm_token(mAppSession.getData("fcm_token"));
             Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
             RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
             getCopeStatus(mFile);
@@ -780,6 +797,64 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     };
 
 
+    /**
+     * for logout CITIZEN AND OPERATOR use this methed
+     * @param Data= user id
+     */
+    private void logOutData(RequestBody Data) {
+        try {
+
+
+            progressDialog.show();
+            Service acceptInterven = ApiUtils.getAPIService();
+            Call<CommanStatusPojo> acceptIntervenpCall = acceptInterven.logout(Data);
+            acceptIntervenpCall.enqueue(new Callback<CommanStatusPojo>() {
+                @SuppressLint("ResourceAsColor")
+                @Override
+                public void onResponse(Call<CommanStatusPojo> call, Response<CommanStatusPojo> response) {
+                    try {
+                        if (response.body() != null) {
+                            CommanStatusPojo  logOutCommanStatusPojo = response.body();
+                            if (logOutCommanStatusPojo.getStatus().equals("false")) {
+                                Utils.showAlert(logOutCommanStatusPojo.getMessage(), getActivity());
+                            } else {
+
+
+                                SharedPreferences preferences = getActivity().getSharedPreferences("copops.com.copopsApp", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = preferences.edit();
+                                editor.clear();
+                                editor.commit();
+                                mAppSession.saveData("Login", "0");
+
+                                Utils.fragmentCall(new HomeFragment(), getFragmentManager());
+                                //  Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close), getFragmentManager());
+                            }
+                            progressDialog.dismiss();
+
+                        } else {
+                            //  Utils.showAlert(getString(R.string.Notfound), getActivity());
+                            Utils.showAlert(getString(R.string.Notfound), getActivity());
+                        }
+
+                    } catch (Exception e) {
+                        progressDialog.dismiss();
+                        e.getMessage();
+                        Utils.showAlert(e.getMessage(), getActivity());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CommanStatusPojo> call, Throwable t) {
+                    Log.d("TAG", "Error " + t.getMessage());
+                    progressDialog.dismiss();
+                    Utils.showAlert(t.getMessage(), getActivity());
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void getAssignIntervationData(RequestBody Data) {
         try {
 
@@ -852,13 +927,26 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     public void update() {
 
 
-        String aa = mAppSession.getData("countNoti");
 
-        if (mAppSession.getData("countNoti").equals("") || mAppSession.getData("countNoti").equals("0")) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext());
+        Intent resultIntent = new Intent(getContext(), DashboardActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getContext());
+        stackBuilder.addParentStack(DashboardActivity.class);
+
+// Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+
+
+
+        String aa = mAppSession.getData("notifica");
+
+        if (mAppSession.getData("notifica").equals("") || mAppSession.getData("notifica").equals("0")) {
             chatCountId.setVisibility(View.GONE);
         } else {
             chatCountId.setVisibility(View.VISIBLE);
-            chatCountId.setText(mAppSession.getData("countNoti"));
+            chatCountId.setText(mAppSession.getData("notifica"));
         }
 
         if (mAppSession.getData("new_reports").equalsIgnoreCase("")) {
@@ -958,81 +1046,190 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
         return false;
     }
-    public void connectToChatSdk(final String userId, final String displyName) {
-        ChatCamp.init(getActivity(), Constant.APP_ID);
-        ChatCamp.connect(userId, new ChatCamp.ConnectListener() {
-            @Override
-            public void onConnected(User user, ChatCampException e) {
-                if (e != null) {
+//    public void connectToChatSdk(final String userId, final String displyName) {
+//        ChatCamp.init(getActivity(), Constant.APP_ID);
+//        ChatCamp.connect(userId, new ChatCamp.ConnectListener() {
+//            @Override
+//            public void onConnected(User user, ChatCampException e) {
+//                if (e != null) {
+//
+//                        LocalStorage.getInstance().setUserId("");
+//                        LocalStorage.getInstance().setUsername("");
+//                        setUpView();
+//
+//                        Snackbar.make(getView(), "Something went wrong", Snackbar.LENGTH_LONG).show();
+//
+//                } else {
+//                    try{
+//                        System.out.println("CONNECTED");
+//                        LocalStorage.getInstance().setUserId(user.getId());
+//                        LocalStorage.getInstance().setUsername(displyName);
+//                    }
+//                    catch (Exception e1)
+//                    {
+//                        e1.printStackTrace();
+//                    }
+//
+//                    ChatCamp.updateUserDisplayName(displyName, new ChatCamp.UserUpdateListener() {
+//                        //                            ChatCamp.updateUserProfileUrl("https://iflychat.com", new ChatCamp.UserUpdateListener() {
+//                        @Override
+//                        public void onUpdated(User user, ChatCampException e) {
+//                            System.out.println("UPDATE DISPLAY NAME" + user.getDisplayName());
+//
+//                            mAppSession.saveData("screenShow","recentchat");
+//
+//                            Intent intent = new Intent(getActivity(), RecentChatActivity.class);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                            startActivity(intent);
+//                          //  finish();
+//
+//
+//
+//                        }
+//                    });
+//
+//                    Map map = new HashMap();
+//                    map.put("key", "value");
+//                    ChatCamp.updateUserMetadata(map, new ChatCamp.UserUpdateListener() {
+//                        @Override
+//                        public void onUpdated(User user, ChatCampException e) {
+//                            Log.d("CHATCAMP_APP", "meta data updated");
+//                        }
+//                    });
+//                    if (FirebaseInstanceId.getInstance().getToken() != null) {
+//                        ChatCamp.updateUserPushToken(FirebaseInstanceId.getInstance().getToken(), new ChatCamp.UserPushTokenUpdateListener() {
+//                            @Override
+//                            public void onUpdated(User user, ChatCampException e) {
+//                                Log.d("CHATCAMP_APP", "PUSH TOKEN REGISTERED");
+//
+//                            }
+//                        });
+//                    }
+//                }
+//            }
+//        });
+//    }
 
-                        LocalStorage.getInstance().setUserId("");
-                        LocalStorage.getInstance().setUsername("");
-                        setUpView();
+//    private void setUpView() {
+//
+//
+//        ChatCamp.init(getActivity(), "6512253349478264832");
+//        String userId=mAppSession.getData("user_id");
+//        String displyName=mAppSession.getData("name");
+//        connectToChatSdk(userId,displyName);
+//
+//    }
 
-                        Snackbar.make(getView(), "Something went wrong", Snackbar.LENGTH_LONG).show();
+//    private void getMsg(RequestBody Data) {
+//        try {
+//
+//
+//            // p.show();
+//            Service acceptInterven = ApiUtils.getAPIService();
+//            Call<String> msesg = acceptInterven.getMsgCount(Data);
+//
+//            msesg.enqueue(new Callback<String>() {
+//                @Override
+//                public void onResponse(Call<String> call, Response<String> response) {
+//
+//                    if(response!=null){
+//                        String assignmentListPojo_close = response.body();
+//                        Log.e("ddd",""+assignmentListPojo_close);
+//                    }
+//                    Log.e("ddd",""+response);
+//                }
+//
+//                @Override
+//                public void onFailure(Call<String> call, Throwable t) {
+//                    Utils.showAlert(t.getMessage(), getActivity());
+//                    Log.e("ddd",""+"failure");
+//                }
+//            });
+////            acceptInterasvenpCall.enqueue(new Callback<CommanStatusPojo>() {
+////                @SuppressLint("ResourceAsColor")
+////                @Override
+////                public void onResponse(Call<CommanStatusPojo> call,Response<CommanStatusPojo> response) {
+////                    try {
+////                        if (response.body() != null) {
+////                            CommanStatusPojo assignmentListPojo_close = response.body();
+////                            if (assignmentListPojo_close.getStatus().equals("false")) {
+////                                Utils.showAlert(assignmentListPojo_close.getMessage(), getActivity());
+////                            } else {
+////                                //  Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close), getFragmentManager());
+////                            }
+////                           // progressDialog.dismiss();
+////
+////                        } else {
+////                            //  Utils.showAlert(getString(R.string.Notfound), getActivity());
+////                            Utils.showAlert(getString(R.string.Notfound), getActivity());
+////                        }
+////
+////                    } catch (Exception e) {
+////                      //  progressDialog.dismiss();
+////                        e.getMessage();
+////                        Utils.showAlert(e.getMessage(), getActivity());
+////                    }
+////                }
+////
+////                @Override
+////                public void onFailure(Call<CommanStatusPojo> call, Throwable t) {
+////                    Log.d("TAG", "Error " + t.getMessage());
+////                   // progressDialog.dismiss();
+////                    Utils.showAlert(t.getMessage(), getActivity());
+////                }
+////            });
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-                } else {
-                    try{
-                        System.out.println("CONNECTED");
-                        LocalStorage.getInstance().setUserId(user.getId());
-                        LocalStorage.getInstance().setUsername(displyName);
-                    }
-                    catch (Exception e1)
-                    {
-                        e1.printStackTrace();
-                    }
-
-                    ChatCamp.updateUserDisplayName(displyName, new ChatCamp.UserUpdateListener() {
-                        //                            ChatCamp.updateUserProfileUrl("https://iflychat.com", new ChatCamp.UserUpdateListener() {
-                        @Override
-                        public void onUpdated(User user, ChatCampException e) {
-                            System.out.println("UPDATE DISPLAY NAME" + user.getDisplayName());
-
-                            mAppSession.saveData("screenShow","recentchat");
-
-                            Intent intent = new Intent(getActivity(), RecentChatActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                          //  finish();
 
 
 
-                        }
-                    });
-
-                    Map map = new HashMap();
-                    map.put("key", "value");
-                    ChatCamp.updateUserMetadata(map, new ChatCamp.UserUpdateListener() {
-                        @Override
-                        public void onUpdated(User user, ChatCampException e) {
-                            Log.d("CHATCAMP_APP", "meta data updated");
-                        }
-                    });
-                    if (FirebaseInstanceId.getInstance().getToken() != null) {
-                        ChatCamp.updateUserPushToken(FirebaseInstanceId.getInstance().getToken(), new ChatCamp.UserPushTokenUpdateListener() {
-                            @Override
-                            public void onUpdated(User user, ChatCampException e) {
-                                Log.d("CHATCAMP_APP", "PUSH TOKEN REGISTERED");
-
-                            }
-                        });
-                    }
-                }
-            }
-        });
-    }
-
-    private void setUpView() {
-
-
-        ChatCamp.init(getActivity(), "6512253349478264832");
-        String userId=mAppSession.getData("user_id");
-        String displyName=mAppSession.getData("name");
-        connectToChatSdk(userId,displyName);
-
-    }
-
+//    private void getMsgDATA(RequestBody Data) {
+//
+//        progressDialog.show();
+//        Service operator = ApiUtils.getAPIService();
+//        Call<CommanStatusPojo> getallLatLong = operator.getMsgCount(Data);
+//        getallLatLong.enqueue(new Callback<CommanStatusPojo>() {
+//            @SuppressLint("ResourceAsColor")
+//            @Override
+//            public void onResponse(Call<CommanStatusPojo> call, Response<CommanStatusPojo> response) {
+//                try {
+//                    if (response.body() != null) {
+//                        CommanStatusPojo operatorShowAlInfo = response.body();
+//
+//                        if (operatorShowAlInfo.getStatus().equals("false")) {
+//                            //  Utils.showAlert(registrationResponse.getMessage(), getActivity());
+//                        } else {
+//
+//
+//                        }
+//                        progressDialog.dismiss();
+//
+//                    } else {
+//                        // Utils.showAlert(getString(R.string.Notfound), getActivity());
+//
+//                        Utils.showAlert(getString(R.string.Notfound), getActivity());
+//                        progressDialog.dismiss();
+//                    }
+//
+//                } catch (Exception e) {
+//                    progressDialog.dismiss();
+//                    e.getMessage();
+//                    Utils.showAlert(e.getMessage(), getActivity());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<CommanStatusPojo> call, Throwable t) {
+//                Log.d("TAG", "Error " + t.getMessage());
+//                progressDialog.dismiss();
+//                Utils.showAlert(t.getMessage(), getActivity());
+//            }
+//        });
+//    }
 
 }
 

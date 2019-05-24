@@ -8,26 +8,40 @@ import android.net.Uri;
 import android.os.Build;
 import androidx.annotation.RequiresApi;
 import androidx.legacy.content.WakefulBroadcastReceiver;
+
+import com.google.firebase.messaging.RemoteMessage;
+
 import copops.com.copopsApp.R;
-
-
-
+import copops.com.copopsApp.copsnoti.MyFirebaseMessagingService;
 
 
 public class FirebaseDataReceiver extends WakefulBroadcastReceiver  {
 
     private final String TAG = "FirebaseDataReceiver";
+    AppSession mAppSession;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void onReceive(Context context, Intent intent) {
      //   Log.d("abcccc", "I'm in!!!");
      //   Bundle dataBundle = intent.getBundleExtra("data");
 
+        mAppSession=mAppSession.getInstance(context);
+
        // PushBroadcastReceiver.displayCustomNotificationForOrders("Copops", " " + "Attachment" +" message)", context);
 
      //   Log.d(TAG, dataBundle.toString());
 
-        playNotificationSound(context);
+        if(mAppSession.getData("copsuser").equalsIgnoreCase("citizen")){
+            return;
+        }
+
+
+        if(mAppSession.getData("Chat").equalsIgnoreCase("1")){
+
+        }else{
+            playNotificationSound(context);
+        }
+
 
 
     }
@@ -39,6 +53,9 @@ public class FirebaseDataReceiver extends WakefulBroadcastReceiver  {
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             Ringtone r = RingtoneManager.getRingtone(context, notification);
             r.play();
+
+
+
 
 //            Intent intent = new Intent(context, DashboardActivity.class);
 //

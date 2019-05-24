@@ -13,7 +13,7 @@ import io.chatcamp.sdk.GroupChannel;
 import io.chatcamp.sdk.Message;
 import io.chatcamp.sdk.User;
 
-import static copops.com.copopsApp.chat.ChatCampAppFirebaseMessagingService.sendNotification;
+
 
 
 //import com.facebook.stetho.Stetho;
@@ -47,8 +47,8 @@ public class BaseApplication extends Application implements Application.Activity
                 Log.e("Base Application", "push notification");
                 if (!BaseApplication.getInstance().getGroupId().equals(groupChannel.getId())
                         && !message.getUser().getId().equalsIgnoreCase(ChatCamp.getCurrentUser().getId())) {
-                    sendNotification(BaseApplication.this, groupChannel.getId(),
-                            BaseChannel.ChannelType.GROUP.name(), message, "chatcamp");
+//                    sendNotification(BaseApplication.this, groupChannel.getId(),
+//                            BaseChannel.ChannelType.GROUP.name(), message, "chatcamp");
                 }
             }
         });

@@ -24,14 +24,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+
+import com.google.gson.JsonObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import copops.com.copopsApp.R;
 
-import copops.com.copopsApp.copsnoti.Konstant;
-import copops.com.copopsApp.fragment.AssignedInterventionFragment;
+
 import copops.com.copopsApp.fragment.AssignmentTableFragment;
 import copops.com.copopsApp.fragment.AuthenticateCodeFragment;
+import copops.com.copopsApp.fragment.ChatConversionFragment;
+import copops.com.copopsApp.fragment.ChatRecentFragment;
 import copops.com.copopsApp.fragment.CitizenFragment;
 import copops.com.copopsApp.fragment.Frag_Call_Number;
 import copops.com.copopsApp.fragment.HandrailFragment;
@@ -74,95 +79,30 @@ public class DashboardActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-    /*    String menuFragment = getIntent().getStringExtra("Intervation");
-
-
-        // If menuFragment is defined, then this activity was launched with a fragment selection
-        if (menuFragment != null) {crf-customer req
-
-            // Here we can decide what do to -- perhaps load other parameters from the intent extras such as IDs, etc
-            if (menuFragment.equals("assignedIntervation")) {
-                Utils.fragmentCall(new AssignedInterventionFragment(), getSupportFragmentManager());
-            }
-        }*/
-
-//        Intent intent = new Intent();
-//        if(android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1){
-//            intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
-//            intent.putExtra("android.provider.extra.APP_PACKAGE", this.getPackageName());
-//        }else if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-//            intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
-//            intent.putExtra("app_package", this.getPackageName());
-//            intent.putExtra("app_uid", this.getApplicationInfo().uid);
-//        }else {
-//            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-//            intent.addCategory(Intent.CATEGORY_DEFAULT);
-//            intent.setData(Uri.parse("package:" + this.getPackageName()));
-//        }
-//
-//        this.startActivity(intent);
-
-//        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//
-//                // checking for type intent filter
-//                if (intent.getAction().equals(Konstant.REGISTRATION_COMPLETE)) {
-//                    // gcm successfully registered
-//                    // now subscribe to `global` topic to receive app wide notifications
-//                    FirebaseMessaging.getInstance().subscribeToTopic(Konstant.TOPIC_GLOBAL);
-//
-//                    displayFirebaseRegId();
-//
-//                } else if (intent.getAction().equals(Konstant.PUSH_NOTIFICATION)) {
-//                    // new push notification is received
-//
-//                    String message = intent.getStringExtra("message");
-//
-//                    Toast.makeText(getApplicationContext(), "Push notification: " + message, Toast.LENGTH_LONG).show();
-//
-//                   // txtMessage.setText(message);
-//                }
-//            }
-//        };
-        // startForegroundService(new Intent(this, MyFirebaseMessagingService.class));
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread paramThread, Throwable paramThrowable) {
-                //Catch your exception
 
-
-                // Without System.exit() this will not work.
                 System.exit(2);
             }
         });
-
         String devicelanguage = Locale.getDefault().getDisplayLanguage();
         mAppSession = mAppSession.getInstance(this);
-
         if (mAppSession.getData("first").equalsIgnoreCase("")) {
             mAppSession.saveData("first", "1");
             goToNotificationSettings(null, this);
-        } else {
-
         }
-
         if (devicelanguage.equalsIgnoreCase("english")) {
             mAppSession.saveData("devicelanguage", "En");
         } else {
             mAppSession.saveData("devicelanguage", "Fr");
         }
-
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new
                     StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-
-
         stopService(new Intent(getBaseContext(), TrackingServices.class));
-
         handler = new Handler();
         checkOverlaySetting = new Runnable() {
             @Override
@@ -179,11 +119,9 @@ public class DashboardActivity extends AppCompatActivity {
                 handler.postDelayed(this, 1000);
             }
         };
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
             askPermission();
         } else {
-
             if (Build.VERSION.SDK_INT >= 23) {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
                         != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -193,7 +131,6 @@ public class DashboardActivity extends AppCompatActivity {
                         != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) {
-
                     ActivityCompat.requestPermissions(this, new String[]
                             {Manifest.permission.CALL_PHONE,
                                     Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -209,10 +146,17 @@ public class DashboardActivity extends AppCompatActivity {
         fragmentContener();
     }
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(mAppSession.getData("notifictaionmove").equalsIgnoreCase("1")){
+            Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
+            mAppSession.saveData("notifictaionmove","0");
+        }
+    }
+    @Override
     protected void onStart() {
         super.onStart();
         Log.e("copsopsstart", "loginvalid==" + mAppSession.getData("Login") + "==userType==" + mAppSession.getData("userType"));
-
         String loginvalid = mAppSession.getData("Login");
         String userType = mAppSession.getData("userType");
         if (loginvalid.equals("1") && userType.equals("Cops")) {
@@ -220,24 +164,17 @@ public class DashboardActivity extends AppCompatActivity {
         } else if (loginvalid.equals("1") && userType.equals("citizen")) {
             stopService(new Intent(DashboardActivity.this, ShortcutViewService_Citizen.class));
         }
-
     }
-
-
-
     @Override
     protected void onPause() {
         super.onPause();
         mAppSession.saveData("screenShow","abc");
         Log.e("helll", "ranjan");
-
-
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-
         String loginvalid = mAppSession.getData("Login");
         String userType = mAppSession.getData("userType");
         if (loginvalid.equals("1") && userType.equals("Cops")) {
@@ -245,16 +182,26 @@ public class DashboardActivity extends AppCompatActivity {
         } else if (loginvalid.equals("1") && userType.equals("citizen")) {
             stopService(new Intent(DashboardActivity.this, ShortcutViewService_Citizen.class));
         }
-
     }
-
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
         Intent intent_o = getIntent();
+        Log.e("hhh",""+intent_o);
+        if(mAppSession.getData("chat_noti").equalsIgnoreCase("1")) {
+            if(mAppSession.getData("id").equalsIgnoreCase((mAppSession.getData("reciverid")))){
+                Utils.fragmentCall(new ChatConversionFragment(mAppSession.getData("senderId"),mAppSession.getData("user"),mAppSession.getData("reciverid")), getSupportFragmentManager());
+                mAppSession.saveData("chat_noti", "");
+            }else{
+                Utils.fragmentCall(new ChatConversionFragment(mAppSession.getData("reciverid"),mAppSession.getData("user"),mAppSession.getData("senderId")), getSupportFragmentManager());
+                mAppSession.saveData("chat_noti", "");
+            }
+        }
     }
-
+/*
+for use load frragment
+ */
     private void fragmentContener() {
         Log.e("shortcutscreentype==", mAppSession.getData("shortcutscreentype"));
 
@@ -270,51 +217,42 @@ public class DashboardActivity extends AppCompatActivity {
             Utils.fragmentCall(new IncidentFragment(mAppSession.getData("id")), getSupportFragmentManager());
             mAppSession.saveData("operatorScreenBack", "1");
             mAppSession.saveData("handrail", "dasd");
-        } else
+        } else if (mAppSession.getData("shortcutscreentype").equals("chat")) {
+            Utils.fragmentCall(new ChatRecentFragment(), getSupportFragmentManager());
+        }
+        else
             {
-
-
                 String intent = getIntent().getStringExtra("notification");
-
-                // String notification = mAppSession.getData("notification");
-                if (intent == null) {
+                String msg = getIntent().getStringExtra("remMsg");
+                Log.e("jsondata",""+msg);
+                if (intent == null || msg==null ) {
                     Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
-                } else {
-
+                } else if(intent.equalsIgnoreCase("chat")) {
+                    try {
+                        JSONObject  jsonObject = new JSONObject(msg);
+                        if(mAppSession.getData("id").equalsIgnoreCase((jsonObject.getString("receiver_id")))){
+                            Utils.fragmentCall(new ChatConversionFragment(jsonObject.getString("sender_id"),jsonObject.getString("user"),jsonObject.getString("receiver_id")), getSupportFragmentManager());
+                        }else{
+                            Utils.fragmentCall(new ChatConversionFragment(jsonObject.getString("receiver_id"),jsonObject.getString("user"),jsonObject.getString("sender_id")), getSupportFragmentManager());
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                    else{
                     if (mAppSession.getData("copsuser").equalsIgnoreCase("citizen")) {
                         Utils.fragmentCall(new CitizenFragment(), getSupportFragmentManager());
                     } else {
-                        Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
+                        Intent intents = new Intent(this, AssigenedIntervation.class);
+                        intents.putExtra("remMsg",msg);
+                        startActivity(intents);
                     }
-
-                    //  Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
                 }
-
-
-                /*if (getIntent().getExtras()!=null)
-                {
-                    if (mAppSession.getData("copsuser").equalsIgnoreCase("citizen"))
-                    {
-                        Utils.fragmentCall(new CitizenFragment(), getSupportFragmentManager());
-                    }
-                    else {
-                        //startActivity(new Intent(getApplicationContext(),AssigenedIntervation.class));
-
-                        Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
-                        }
-                }else
-                {
-                       Utils.fragmentCall(new SpleshFragment(), getSupportFragmentManager());
-
-                }
-*/
         }
-
-
     }
-
     @Override
     public void onBackPressed() {
+
 
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.content_frame);
         if (f instanceof CitizenFragment) {//the fragment on which you want to handle your back press
@@ -357,18 +295,18 @@ public class DashboardActivity extends AppCompatActivity {
             }
 //            if(mAppSession.getData("screen")=="1"){
 //
-//              //  getFragmentManager().popBackStack(  getFragmentManager().getBackStackEntryAt(  getFragmentManager().getBackStackEntryCount()-2).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//                //   getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//                Utils.fragmentCall(new GPSPublicFragment(), getSupportFragmentManager());
-//
-//            }else{
-//                if (getFragmentManager().getBackStackEntryCount() > 0) {
-//                    getFragmentManager().popBackStackImmediate();
-//                }
-//            }
-            //   getFragmentManager().popBackStack(  getFragmentManager().getBackStackEntryAt( getFragmentManager().getBackStackEntryCount()-2).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            //   getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            // Utils.fragmentCall(new GPSPublicFragment(), getSupportFragmentManager());
+//              //  getFragmentManager().p).popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+////                Utils.fragmentCall(new GPSPublicFragment(), getSupportFragmentManager());
+////
+////            }else{
+////                if (getFragmentManager().getBackStackEntryCount() > 0) {
+////                    getFragmentManager().popBackStackImmediate();
+////                }
+////            }
+//            //   getFragmentManager().popBackStack(  getFragmentManager().getBackStackEntryAt( getFragmentManager().getBackStackEntryCount()-2).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//            //   getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//            // Utils.fragmentCall(new GPSPublicFragment(), getSupportFragmentManager());opBackStack(  getFragmentManager().getBackStackEntryAt(  getFragmentManager().getBackStackEntryCount()-2).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//                //   getFragmentManager(
         } else if (f instanceof AssignmentTableFragmentShortcut) {//the fragment on which you want to handle your back press
             Utils.fragmentCall(new OperatorFragment(), getSupportFragmentManager());
         } else if (f instanceof PositionOfInteervebtionsFragmentShortcut) {//the fragment on which you want to handle your back press
@@ -391,11 +329,6 @@ public class DashboardActivity extends AppCompatActivity {
         }
 
     }
-
-
-
-
-
     protected void onStop() {
         super.onStop();
         Log.e("copsopsstop", "loginvalid==" + mAppSession.getData("Login") + "==userType==" + mAppSession.getData("userType"));
@@ -417,27 +350,15 @@ public class DashboardActivity extends AppCompatActivity {
             }
         }
     }
-
-
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-      /*  String loginvalid = mAppSession.getData("Login");
-        String userType = mAppSession.getData("userType");
-        Log.e("copsopsdestroy", "loginvalid==" + mAppSession.getData("Login") + "==userType==" + mAppSession.getData("userType"));
-        if (loginvalid.equals("1") && userType.equals("Cops")) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                startService(new Intent(DashboardActivity.this, ShortcutViewService_old.class));
-            } else if (Settings.canDrawOverlays(DashboardActivity.this)) {
-                startService(new Intent(DashboardActivity.this, ShortcutViewService_old.class));
-            }
-        }*/
-
     }
 
+    /*
+    for user premission
+     */
     private void askPermission() {
         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 Uri.parse("package:" + getPackageName()));
@@ -445,48 +366,9 @@ public class DashboardActivity extends AppCompatActivity {
         handler.postDelayed(checkOverlaySetting, 1000);
     }
 
-    public static void deleteCache(Context context) {
-        try {
-            File dir = context.getCacheDir();
-            deleteDir(dir);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static boolean deleteDir(File dir) {
-        if (dir != null && dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-                if (!success) {
-                    return false;
-                }
-            }
-            return dir.delete();
-        } else if (dir != null && dir.isFile()) {
-            return dir.delete();
-        } else {
-            return false;
-        }
-    }
-
-
-    private void displayFirebaseRegId() {
-        SharedPreferences pref = getApplicationContext().getSharedPreferences(Konstant.SHARED_PREF, 0);
-        String regId = pref.getString("regId", null);
-
-        Log.e("Dashboard", "Firebase reg id: " + regId);
-
-        if (!TextUtils.isEmpty(regId))
-
-            Log.e("Dashboard tag", "Firebase reg id: " + regId);
-        else
-
-
-            Log.e("Dashboard tag", "Firebase Reg Id is not received yet!");
-    }
-
+   /*
+   FOR USE NOTIFCATION
+    */
 
     public void goToNotificationSettings(String channel, Context context) {
         Intent intent = new Intent();

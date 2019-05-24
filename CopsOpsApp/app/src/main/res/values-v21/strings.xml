@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_attachment">Add Attachment</string>
+    <string name="choose_from_gallery">Choose from Gallery</string>
+
+    <string name="record_video">Record Video</string>
+</resources>

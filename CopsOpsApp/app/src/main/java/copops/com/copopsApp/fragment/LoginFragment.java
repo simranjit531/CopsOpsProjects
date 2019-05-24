@@ -21,11 +21,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
-
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 
 import androidx.fragment.app.Fragment;
+
+import java.util.concurrent.Executor;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
@@ -108,16 +111,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             latitude = gps.getLatitude();
             longitude = gps.getLongitude();
         }
-
-
         mAppSession.saveData("latitude", String.valueOf(latitude));
         mAppSession.saveData("longitude", String.valueOf(longitude));
         progressDialog = new ProgressDialog(mContext);
         progressDialog.setMessage("loading...");
-
         String sdadsa = mAppSession.getData("freez");
-
-
         if (userType.equalsIgnoreCase("citizen")) {
             userTypeRegistation = "Citizen";
             mAppSession.saveData("type", userTypeRegistation);
@@ -125,7 +123,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         } else {
             userTypeRegistation = "Cops";
             mAppSession.saveData("type", userTypeRegistation);
+            Log.d("FCMToken", "token "+ FirebaseInstanceId.getInstance().getToken());
+            mAppSession.saveData("fcm_token",FirebaseInstanceId.getInstance().getToken());
         }
+
+
+
+
 //
 //        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 //        if (checkPermission() && gpsEnabled()) {
@@ -173,7 +177,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
             try {
                 Utils.hideKeyboard(getActivity());
-
                 LoginPojoSetData loginPojoSetData = new LoginPojoSetData();
                 loginPojoSetData.setEmail_id(etEmail.getText().toString().trim());
                 loginPojoSetData.setUser_password(etPassword.getText().toString());
@@ -182,7 +185,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 loginPojoSetData.setIncident_lat(mAppSession.getData("latitude"));
                 loginPojoSetData.setIncident_lng(mAppSession.getData("longitude"));
                 loginPojoSetData.setdevice_language(mAppSession.getData("devicelanguage"));
-
                 loginPojoSetData.setFcm_token(mAppSession.getData("fcm_token"));
                 Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(loginPojoSetData)));
                 RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(loginPojoSetData)));
@@ -191,19 +193,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 fileUpload.enqueue(new Callback<RegistationPojo>() {
                     @Override
                     public void onResponse(Call<RegistationPojo> call, Response<RegistationPojo> response)
-
                     {
                         try {
                             if (response.body() != null) {
                                 RegistationPojo registrationResponse = response.body();
                                 if (registrationResponse.getStatus().equals("false")) {
                                     Utils.showAlert(registrationResponse.getMessage(), mContext);
-
                                 } else {
-
                                     if (userType.equalsIgnoreCase("Citizen")) {
                                         if (registrationResponse.getVerified().equals("0")) {
-
                                             Utils.fragmentCall(new AuthenticateCodeFragment(userType, registrationResponse), getFragmentManager());
                                         } else {
                                             mAppSession.saveData("Login", "1");
@@ -215,7 +213,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                             mAppSession.saveData("profile_qrcode", registrationResponse.getProfile_qrcode());
                                             mAppSession.saveData("grade", registrationResponse.getGrade());
                                             Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
-
                                             mAppSession.saveData("freez", "1");
 //                                            if (userType.equalsIgnoreCase("Citizen")) {
 //                                                Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
@@ -234,11 +231,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                         mAppSession.saveData("image_url", registrationResponse.getProfile_url());
                                         mAppSession.saveData("profile_qrcode", registrationResponse.getProfile_qrcode());
                                         mAppSession.saveData("grade", registrationResponse.getGrade());
-
-
                                         getActivity().startService(new Intent(getActivity(), TrackingServices.class));
-
-
 //                                        Intent alarm = new Intent(getActivity(), BackgroundBroadCast.class);
 //                                        getActivity().sendBroadcast(alarm);
                                       //  buildUsersList();

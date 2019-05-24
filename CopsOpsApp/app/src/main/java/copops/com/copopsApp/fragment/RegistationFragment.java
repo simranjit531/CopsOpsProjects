@@ -474,8 +474,17 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                                         mAppSession.saveData("profile_qrcode", registrationResponse.getProfile_qrcode());
 
                                         if (mAppSession.getData("userType").equalsIgnoreCase("Citizen")) {
+
+                                            if (getFragmentManager().getBackStackEntryCount() > 0) {
+                                                getFragmentManager().popBackStackImmediate();
+                                            }
                                             Utils.fragmentCall(new AuthenticateCodeFragment(userType, registrationResponse), getFragmentManager());
                                         } else {
+
+                                            if (getFragmentManager().getBackStackEntryCount() > 0) {
+                                                getFragmentManager().popBackStackImmediate();
+                                            }
+
                                             Utils.fragmentCall(new LoginFragment(mAppSession.getData("userType")), getFragmentManager());
                                         }
 
@@ -819,8 +828,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                 if (IDCARD_1 == 1) {
                 //    idCardUri_1 = Utils.getImageUri(mContext, thumbnail);
 
-                    idCardUri_1 = FileProvider.getUriForFile(mContext,
-                            Utils.FILE_PROVIDER_AUTHORITY, photoFile);
+                    idCardUri_1 = FileProvider.getUriForFile(mContext, Utils.FILE_PROVIDER_AUTHORITY, photoFile);
 
                     Log.d("LOG_TAG", "Log1: " + String.valueOf(idCardUri_1));
 

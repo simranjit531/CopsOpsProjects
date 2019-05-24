@@ -1,5 +1,8 @@
 package copops.com.copopsApp.activity;
 
+import android.annotation.SuppressLint;
+import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,21 +13,40 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import copops.com.copopsApp.R;
 
+import copops.com.copopsApp.fragment.AssignmentTableFragment;
 import copops.com.copopsApp.pojo.AssignmentListPojo;
 
+import copops.com.copopsApp.pojo.CommanStatusPojo;
+import copops.com.copopsApp.pojo.IncdentSetPojo;
+import copops.com.copopsApp.services.ApiUtils;
+import copops.com.copopsApp.services.Service;
 import copops.com.copopsApp.shortcut.ShortcutViewService;
 import copops.com.copopsApp.shortcut.ShortcutViewService_Citizen;
+import copops.com.copopsApp.utils.AppSession;
+import copops.com.copopsApp.utils.EncryptUtils;
+import copops.com.copopsApp.utils.Utils;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
-public class AssigenedIntervation extends AppCompatActivity {
+public class AssigenedIntervation extends AppCompatActivity implements  Utils.clossPassInterFace {
     private Context mContext;
     int pos;
     AssignmentListPojo assignmentListPojo;
@@ -65,14 +87,22 @@ public class AssigenedIntervation extends AppCompatActivity {
     private String intervationOthDescp="";
     private String intervationStatus="";
     private String intervationRef="";
+
+    ProgressDialog progressDialog;
     private static Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+    Utils.clossPassInterFace mClossPassInterFace;
+    AppSession mAppSession;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assigned_intervation);
         mContext=AssigenedIntervation.this;
         ButterKnife.bind(this);
-
+        mAppSession=mAppSession.getInstance(mContext);
+        NotificationManager notificationManager = (NotificationManager) this.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+        progressDialog = new ProgressDialog(mContext);
+        progressDialog.setMessage(getString(R.string.loading));
         mainThreadHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -84,6 +114,39 @@ public class AssigenedIntervation extends AppCompatActivity {
         Intent intent=getIntent();
         String value=intent.getStringExtra("remMsg");
         setReomteMsg(value);
+
+        mClossPassInterFace=this;
+
+        if(mAppSession.getData("copstatus").equalsIgnoreCase("0")){
+            Rlintervenue.setVisibility(View.VISIBLE);
+            tvid.setText(getString(R.string.close));
+
+        }
+        Rlintervenue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               if (tvid.getText().toString().equalsIgnoreCase(getString(R.string.Intervene))) {
+
+                    if (Utils.checkConnection(mContext)) {
+                        IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                        incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                        incdentSetPojo.setComment(descId.getText().toString().trim());
+                        incdentSetPojo.setIncident_id(intervationId);
+                        incdentSetPojo.setDevice_id(Utils.getDeviceId(mContext));
+                        incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+                        Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                        RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                        getAssignIntervation(mFile);
+                    } else {
+                        Utils.showAlert(mContext.getString(R.string.internet_conection), mContext);
+                    }
+                } else {
+                   finish();
+
+                   mAppSession.saveData("notifictaionmove","1");
+                }
+            }
+        });
     }
     protected void setReomteMsg(String value)
     {
@@ -93,15 +156,17 @@ public class AssigenedIntervation extends AppCompatActivity {
 try
 {
        JSONObject jsonObject=new JSONObject(value);
-       // JSONArray jsonArray=jsonObject.getJSONArray("incidentDetails");
-       intervationId      =jsonObject.getString("id");
-       intervationDateTime=jsonObject.getString("created_at");
-       intervationAddress =jsonObject.getString("address");
-       intervationObject  =jsonObject.getString("sub_category_name");
-       intervationDescp   =jsonObject.getString("incident_description");
-       intervationOthDescp =jsonObject.getString("other_description");
-       intervationStatus=jsonObject.getString("status");
-       intervationRef=jsonObject.getString("reference");
+      String str_incident=jsonObject.getString("incident");
+      JSONObject jsonObject1=new JSONObject(str_incident);
+       // JSONArray jsonArray=jsonObject.getJSONArray("incident");
+       intervationId      =jsonObject1.getString("id");
+       intervationDateTime=jsonObject1.getString("created_at");
+       intervationAddress =jsonObject1.getString("address");
+       intervationObject  =jsonObject1.getString("sub_category_name");
+       intervationDescp   =jsonObject1.getString("incident_description");
+       intervationOthDescp =jsonObject1.getString("other_description");
+       intervationStatus=jsonObject1.getString("status");
+       intervationRef=jsonObject1.getString("reference");
 
 
 
@@ -147,4 +212,62 @@ try
         finish();
     }
 
+
+
+
+    private void getAssignIntervation(RequestBody Data) {
+        progressDialog.show();
+        Service acceptInterven = ApiUtils.getAPIService();
+        Call<CommanStatusPojo> acceptIntervenpCall = acceptInterven.acceptInterven(Data);
+        acceptIntervenpCall.enqueue(new Callback<CommanStatusPojo>() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onResponse(Call<CommanStatusPojo> call, Response<CommanStatusPojo> response)
+
+            {
+                try {
+                    if (response.body() != null) {
+                        CommanStatusPojo commanStatusPojo = response.body();
+                        if (commanStatusPojo.getStatus().equals("false")) {
+                            //   Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
+                            Utils.opendialogcustomdialogClose(mContext, commanStatusPojo.getMessage(), mClossPassInterFace);
+                        } else {
+
+                            if(commanStatusPojo.getMessage().equalsIgnoreCase(getString(R.string.youcan))) {
+                                Utils.showAlert(commanStatusPojo.getMessage(),mContext);
+                            }else {
+                                Utils.opendialogcustomdialogClose(mContext, commanStatusPojo.getMessage(), mClossPassInterFace);
+                            }
+
+                            // Utils.showAlertAndClick(commanStatusPojo.getMessage(), getContext(), mResetPassInterFace);
+
+                        }
+                        progressDialog.dismiss();
+
+                    } else {
+                        Utils.showAlert(getString(R.string.Notfound), mContext);
+                    }
+
+                } catch (Exception e) {
+                    progressDialog.dismiss();
+                    e.getMessage();
+                    Utils.showAlert(e.getMessage(), mContext);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CommanStatusPojo> call, Throwable t) {
+                Log.d("TAG", "Error " + t.getMessage());
+                progressDialog.dismiss();
+                Utils.showAlert(t.getMessage(), mContext);
+            }
+        });
+    }
+
+    @Override
+    public void onClick() {
+finish();
+
+mAppSession.saveData("notifictaionmove","1");
+    }
 }

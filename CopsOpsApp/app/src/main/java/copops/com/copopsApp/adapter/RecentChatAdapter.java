@@ -10,19 +10,31 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
+
 import androidx.recyclerview.widget.RecyclerView;
 import copops.com.copopsApp.R;
+import copops.com.copopsApp.fragment.ChatRecentFragment;
 import copops.com.copopsApp.interfaceview.IncedentInterface;
 import copops.com.copopsApp.pojo.IncidentSubPojo;
+import copops.com.copopsApp.pojo.RecentChatHolder;
+import copops.com.copopsApp.utils.Utils;
 
 public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.ViewHolder> {
     private IncidentSubPojo mIncidentSubPojo;
     private Context context;
-    IncedentInterface mIncedentInterface;
+ ChatItmeInterface mChatItmeInterface;
+    ArrayList<RecentChatHolder> recentChatHolders;
 
-    public RecentChatAdapter(Context context) {
+ public interface ChatItmeInterface{
+     public void clickPosition(int pos);
+ }
+
+    public RecentChatAdapter(Context context, ChatItmeInterface mChatItmeInterfac, ArrayList<RecentChatHolder> recentChatHolders) {
 
         this.context = context;
+        this.mChatItmeInterface = mChatItmeInterfac;
+        this.recentChatHolders = recentChatHolders;
 
     }
 
@@ -34,6 +46,35 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
 
     @Override
     public void onBindViewHolder(RecentChatAdapter.ViewHolder viewHolder, final int i) {
+
+        viewHolder.nameIdTv.setText(recentChatHolders.get(i).getUser());
+
+        if(recentChatHolders.get(i).getUnread().equalsIgnoreCase("0")){
+            viewHolder.messageCount.setVisibility(View.GONE);
+        }else{
+            viewHolder.messageCount.setVisibility(View.VISIBLE);
+            viewHolder.messageCount.setText(recentChatHolders.get(i).getUnread());
+        }
+
+
+
+        if(recentChatHolders.get(i).getMessage_type().equalsIgnoreCase("TEXT")){
+            viewHolder.messageId.setText(recentChatHolders.get(i).getMessage());
+        }else if(recentChatHolders.get(i).getMessage_type().equalsIgnoreCase("VIDEO")){
+            viewHolder.messageId.setText("Video Attachment");
+        }else if(recentChatHolders.get(i).getMessage_type().equalsIgnoreCase("IMAGE")){
+            viewHolder.messageId.setText("Image Attachment");
+        }else{
+            viewHolder.messageId.setText(recentChatHolders.get(i).getMessage());
+            viewHolder.messageId.setText("Pdf Attachment");
+        }
+
+        viewHolder.clickId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mChatItmeInterface.clickPosition(i);
+            }
+        });
 
        // viewHolder.icident_cat_name.setText(mIncidentSubPojo.getData().get(i).getIncident_name());
 //        if(mIncidentSubPojo.getData().get(i).getIncident_img_url()!=null){
@@ -64,17 +105,21 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return 25;
+        return recentChatHolders.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView icident_cat_name;
-        private ImageView icident_cat_img;
+        private TextView nameIdTv,messageId,messageCount;
+       // private ImageView icident_cat_img;
+        LinearLayout clickId;
         LinearLayout llviolence;
         public ViewHolder(View view) {
             super(view);
+            clickId = (LinearLayout) view.findViewById(R.id.clickId);
 
-//            icident_cat_name = (TextView)view.findViewById(R.id.icident_cat_name);
+            nameIdTv = (TextView) view.findViewById(R.id.nameIdTv);
+            messageId = (TextView) view.findViewById(R.id.messageId);
+            messageCount = (TextView) view.findViewById(R.id.messageCount);
 //
 //            icident_cat_img = (ImageView) view.findViewById(R.id.icident_cat_img);
 //            llviolence = (LinearLayout) view.findViewById(R.id.llviolence);

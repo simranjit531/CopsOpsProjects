@@ -12,6 +12,7 @@
     <string name="Settings">Settings</string>
     <string name="no_internet">No internet Access, Check your internet connection.</string>
     <string name="default_notification_channel_id">copops.com.copopsApp.ANDROID</string>
+    <string name="me">ME</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -27,12 +28,14 @@
     <string name="des">Please add description</string>
     <string name="other_des">Please add other description</string>
     <string name="password">Please enter password</string>
+    <string name="old_password">Please enter old password</string>
+    <string name="medical">Please Your Medical Condition</string>
     <string name="path">Please capture at least video or image</string>
     <string name="objecttext">Please enter the subject of the handrail reports</string>
     <string name="objecttextdes">Please enter the Description.  </string>
     <string name="incidentdes">Please enter the Description.  </string>
     <string name="validation_signature">Please Create Your Signature.</string>
-
+    <string name="new_password">Please enter new password</string>
     <string name="con_password">Please enter confirm password</string>
     <string name="valid_email_errer">Not valid email</string>
     <string name="card1">Card 1 is required !</string>
@@ -138,7 +141,7 @@
     <string name="chat_sticker">Sticker</string>
     <string name="groopMsg">No Group channel to show</string>
     <string name="chat_send">Send</string>
-    <string name="chat_edit_text_hint">Type a message..dssfsfsfdsfd.</string>
+    <string name="chat_edit_text_hint">Type a message...</string>
     <string name="chat_me">Me</string>
     <string name="chat_friend">Friend</string>
     <string name="chat_join_error">Error join group chat</string>
@@ -264,6 +267,7 @@ the code sent to </string>
     <string name="finished">Finished</string>
     <string name="Assigned">Assigned</string>
     <string name="loading">loading...</string>
+    <string name="faq">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
     <string name="NoAssigned"> No Assigned Intervention Found  so We can’t have access to the assigning an intervention</string>
     <string name="pleaseenterotp">Please enter otp</string>
     <string name="chooseanOption"> Choose an Option</string>
@@ -453,6 +457,12 @@ the code sent to </string>
     <string name="title_activity_conversation">ConversationActivity</string>
 
     <string name="setting">Setting</string>
+    <string name="add_attachment">Add Attachment</string>
+    <string name="choose_from_gallery">Choose from Gallery</string>
+
+    <string name="record_video">Record Video</string>
+    <string name="save">Save</string>
+
     <string-array name="dropdown_channel">
         <item>Open</item>
         <item>Group</item>

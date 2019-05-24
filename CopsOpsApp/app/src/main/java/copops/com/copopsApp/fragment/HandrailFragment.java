@@ -124,16 +124,7 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
                         10, mLocationListener);
             }
         }
-//        LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-//        if (lm.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null) {
-//            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//            longitude = location.getLongitude();
-//            latitude = location.getLatitude();
-//        } else {
-//            Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//            longitude = location.getLongitude();
-//            latitude = location.getLatitude();
-//        }
+
         return view;
     }
 
@@ -175,9 +166,6 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.Rltoolbar:
-               /* if (getFragmentManager().getBackStackEntryCount() > 0) {
-                    getFragmentManager().popBackStackImmediate();
-                }*/
                 getFragmentManager().popBackStackImmediate();
                 Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
 
@@ -192,9 +180,7 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
             Utils.showAlert(getActivity().getString(R.string.objecttext), getActivity());
         } else if (ETotherinfoincident.getText().toString().trim().equalsIgnoreCase("")) {
             Utils.showAlert(getActivity().getString(R.string.objecttextdes), getActivity());
-        }/*else if (filePathImage == null && filePathVideo == null) {
-            Utils.showAlert(getActivity().getString(R.string.path), getActivity());
-        }*/ else {
+        } else {
             try {
 
                 Utils.hideKeyboard(getActivity());
@@ -229,31 +215,6 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
                     Log.e("aaaa", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mIncdentSetPojo)));
                     RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mIncdentSetPojo)));
 
-//                    if (mCurrentPhotoPath != null) {
-//
-//                        File fdelete = new File(mCurrentPhotoPath);
-//                        if (fdelete.exists()) {
-//                            if (fdelete.delete()) {
-//
-//                                Log.e("current file Deleted :", "current file Deleted");
-//                            } else {
-//
-//                                Log.e("currentf not Deleted :", "currentf not Deleted");
-//                            }
-//                        }
-//                    }
-//                    if (mCurrentVideoPath != null) {
-//                        File fdeletevideo = new File(mCurrentVideoPath);
-//                        if (fdeletevideo.exists()) {
-//                            if (fdeletevideo.delete()) {
-//                                Log.e("current file Deleted :", "current file Deleted");
-//
-//                            } else {
-//                                Log.e("currentf not Deleted :", "currentf not Deleted");
-//
-//                            }
-//                        }
-//                    }
 
                     Utils.fragmentCall(new HandrailSignatureFragment(incedint_image, incedint_video, mFile, filePathImage, filePathVideo), getFragmentManager());
                 } else {
@@ -294,7 +255,9 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
 
     }
 
-
+    /**
+     *
+     */
     private void dispatchTakePictureIntent() {
         /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");*/
@@ -332,7 +295,12 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-
+    /**
+     *
+     * @param type
+     * @return
+     * @throws IOException
+     */
     private File createMediaFile(int type) throws IOException {
 
         // Create an image file name
@@ -363,33 +331,9 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
         return file;
     }
 
-//    private File createMediaFile(int type) throws IOException {
-//
-//        // Create an image file name
-//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-//        String fileName = (type == Utils.TYPE_IMAGE) ? "JPEG_" + timeStamp + "_" : "VID_" + timeStamp + "_";
-//        File storageDir = Environment.getExternalStoragePublicDirectory(
-//                type == Utils.TYPE_IMAGE ? Environment.DIRECTORY_PICTURES : Environment.DIRECTORY_MOVIES);
-//        File file = File.createTempFile(
-//                fileName,  /* prefix */
-//                type == Utils.TYPE_IMAGE ? ".jpg" : ".mp4",         /* suffix */
-//                storageDir      /* directory */
-//        );
-//
-//        // Get the path of the file created
-//        mCurrentPhotoPath = file.getAbsolutePath();
-//
-//        if (mCurrentPhotoPath.contains(".jpg")) {
-//            mCurrentPhotoPath = file.getAbsolutePath();
-//            Log.d("LOG_TAG", "mCurrentPhotoPath: " + mCurrentPhotoPath);
-//
-//        } else {
-//            mCurrentVideoPath = file.getAbsolutePath();
-//            Log.d("LOG_TAG", "mCurrentVideoPath: " + mCurrentVideoPath);
-//        }
-//
-//        return file;
-//    }
+    /**
+     *
+     */
 
     private void dispatchTakeVideoIntent() {
         Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
@@ -415,6 +359,9 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    /**
+     *
+     */
     class VideoCompressAsyncTask extends AsyncTask<String, String, String> {
         Context mContext;
 
@@ -496,6 +443,10 @@ public class HandrailFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     *
+     * @param msg
+     */
     public void initDialog(String msg) {
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(msg);

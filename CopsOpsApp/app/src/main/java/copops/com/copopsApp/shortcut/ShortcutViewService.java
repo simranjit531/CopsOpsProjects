@@ -190,10 +190,10 @@ public class ShortcutViewService extends Service implements View.OnClickListener
 
             case R.id.btnchat:
                 //switching views
-              /*  mSession.saveData("shortcutscreentype", "chat");
-                Intent ic = new Intent(getApplicationContext(), DialogsActivity.class);
+                mSession.saveData("shortcutscreentype", "chat");
+                Intent ic = new Intent(getApplicationContext(), DashboardActivity.class);
                 ic.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(ic);*/
+                startActivity(ic);
                 collapsedView.setVisibility(View.VISIBLE);
                 expandedView.setVisibility(View.GONE);
                 break;

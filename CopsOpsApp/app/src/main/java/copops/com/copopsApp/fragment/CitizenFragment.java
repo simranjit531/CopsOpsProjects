@@ -131,8 +131,12 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
         ButterKnife.bind(this, view);
         mAppSession = mAppSession.getInstance(getActivity());
         getActivity().stopService(new Intent(getActivity(), ShortcutViewService.class));
-        initView();
 
+
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.loading));
+        initView();
+        mAppSession.saveData("Chat","0");
         RLreportanincident.setOnClickListener(this);
         RLhandrail.setOnClickListener(this);
         RLnavigation.setOnClickListener(this);
@@ -153,6 +157,8 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
                         10, mLocationListener);
             }
         }
+
+
         return view;
     }
 
@@ -168,8 +174,7 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
         } else {
             IVprofilephoto.setImageResource(R.mipmap.img_white_dot);
         }
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.loading));
+
 
 
         if (Utils.checkConnection(getActivity())) {
@@ -334,7 +339,7 @@ public class CitizenFragment extends Fragment implements View.OnClickListener {
                         progressDialog.dismiss();
 
                     } else {
-                       // Utils.showAlert(getString(R.string.Notfound), getActivity());
+                        // Utils.showAlert(getString(R.string.Notfound), getActivity());
                         Utils.showAlert(getString(R.string.Notfound), getActivity());
                     }
 

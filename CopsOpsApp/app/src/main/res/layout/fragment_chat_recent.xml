@@ -41,10 +41,10 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:hint="@string/search"
-            android:drawableLeft="@drawable/places_ic_search"
+            android:drawableLeft="@drawable/background_reportincidents"
             android:padding="8dp"
             android:layout_margin="10dp"
-            android:background="@drawable/bg_search"/>
+            android:background="@drawable/rounded_white_baground"/>
 
     </RelativeLayout>
 

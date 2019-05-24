@@ -123,17 +123,24 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
                     //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
                     Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                     RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                    getAssigmentList(mFile);
+                    getAssigmentListFirst(mFile);
                 } else {
                     Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
                 }
+
+                //mAdapter.notifyDataSetChanged();
+                swipeContainer.setRefreshing(false);
             }
+
+
         });
+
+        swipeContainer.setRefreshing(false);
         // Configure the refreshing colors
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+//        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+//                android.R.color.holo_green_light,
+//                android.R.color.holo_orange_light,
+//                android.R.color.holo_red_light);
 
         return view;
     }
@@ -200,7 +207,7 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
     }
 
     private void getAssigmentList(RequestBody Data) {
-
+        assignmentListPojo.getData().clear();
 //        progressDialog.show();
         Service login = ApiUtils.getAPIService();
         Call<AssignmentListPojo> getallLatLong = login.getAssignmentList(Data);
@@ -211,15 +218,17 @@ public class AssignmentTableFragment extends Fragment implements View.OnClickLis
             {
                 try {
                     if (response.body() != null) {
+
                         assignmentListPojo = response.body();
 //                        progressDialog.dismiss();
                         swipeContainer.setRefreshing(false);
-                        mAdapter.notifyDataSetChanged();
+
 
                     } else {
                         Utils.showAlert(getString(R.string.Notfound), getActivity());
                     }
 
+                    mAdapter.notifyDataSetChanged();
                 } catch (Exception e) {
                     swipeContainer.setRefreshing(false);
 //                    progressDialog.dismiss();

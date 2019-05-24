@@ -8,6 +8,52 @@ public class LoginPojoSetData implements Serializable {
     String email_id;
     String otp;
     String user_id;
+    String old_password;
+    String password;
+
+    public String getMedical_file() {
+        return medical_file;
+    }
+
+    public void setMedical_file(String medical_file) {
+        this.medical_file = medical_file;
+    }
+
+    String medical_file;
+
+    public String getOld_password() {
+        return old_password;
+    }
+
+    public void setOld_password(String old_password) {
+        this.old_password = old_password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword_confirmation() {
+        return password_confirmation;
+    }
+
+    public void setPassword_confirmation(String password_confirmation) {
+        this.password_confirmation = password_confirmation;
+    }
+
+    public String getDevice_language() {
+        return device_language;
+    }
+
+    public void setDevice_language(String device_language) {
+        this.device_language = device_language;
+    }
+
+    String password_confirmation;
 
     public String getUser_id() {
         return user_id;

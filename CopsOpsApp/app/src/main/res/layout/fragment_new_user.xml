@@ -10,6 +10,7 @@
 
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
+        android:id="@+id/toolbarId"
         android:layout_margin="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,7 +42,7 @@
             android:drawableLeft="@drawable/places_ic_search"
             android:padding="8dp"
             android:layout_margin="10dp"
-            android:background="@drawable/bg_search"/>
+            android:background="@drawable/rounded_white_baground"/>
 
     </RelativeLayout>
     <TextView

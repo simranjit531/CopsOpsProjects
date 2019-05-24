@@ -2,9 +2,16 @@ package copops.com.copopsApp.utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.Ringtone;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -13,7 +20,10 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+
+import copops.com.copopsApp.R;
 import copops.com.copopsApp.activity.DashboardActivity;
 import copops.com.copopsApp.pojo.CommanStatusPojo;
 import copops.com.copopsApp.pojo.LoginPojoSetData;
@@ -39,11 +49,14 @@ public class TrackingServices extends Service {
     int count = 0;  //number of times service is display
     private Handler mHandler = new Handler();   //run on another Thread to avoid crash
     private Timer mTimer = null;    //timer handling
-
+    private static NotificationChannel mChannel;
+    private static NotificationManager notifManager;
     @Override
     public IBinder onBind(Intent intent) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
+
+
 
     @Override
     public void onCreate() {

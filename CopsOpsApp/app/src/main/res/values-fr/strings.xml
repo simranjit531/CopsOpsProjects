@@ -10,6 +10,7 @@
     <string name="GPS_is_not_enabled">Le GPS n\' est pas activé. Voulez-vous aller au menu des paramètres?</string>
     <string name="Cancel">Annuler</string>
     <string name="Settings">Réglages</string>
+    <string name="me">Moi</string>
     <string name="no_internet">Pas d\'accès Internet, vérifiez votre connexion Internet.</string>
     <string name="default_notification_channel_id">copops.com.copopsApp.ANDROID</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -137,7 +138,7 @@
     <string name="chat_sticker">Autocollant</string>
     <string name="chat_send">Envoyer</string>
     <string name="groopMsg">Nous ne trouvons pas votre recherche... </string>
-    <string name="chat_edit_text_hint">Tapez un message ...</string>
+    <string name="chat_edit_text_hint">Saisissez votre message..</string>
     <string name="chat_me">Moi</string>
     <string name="chat_friend">Ami</string>
     <string name="chat_join_error">Erreur rejoindre le chat en groupe</string>
@@ -271,8 +272,11 @@ le code envoyé à</string>
     <string name="completedinterventions"> interventions terminées</string>
     <string name="Notfound"> Pas trouvé</string>
     <string name="youcan">L\'interevention Vous a été assigner</string>
-
+    <string name="save">ENREGISTRER</string>
     <!-- Incident screen -->
+    <string name="medical">S\'il vous plaît votre condition médicale</string>
+    <string name="old_password">Veuillez entrer votre ancien mot de passe</string>
+    <string name="new_password">Veuillez entrer un nouveau mot de passe</string>
     <string name="reason">Motif</string>
     <string name="other_hint">Autres informations (Victimes, description de lieu .....</string>
     <string name="other_headerr">Autres informations</string>
@@ -450,6 +454,10 @@ le code envoyé à</string>
     <string name="action_sign_in">Start Chat</string>
     <string name="setting">Setting</string>
     <string name="title_activity_conversation">ConversationActivity</string>
+    <string name="add_attachment">Add Attachment</string>
+    <string name="choose_from_gallery">Choose from Gallery</string>
+
+    <string name="record_video">Record Video</string>
 
     <string-array name="dropdown_channel">
         <item>Open</item>
