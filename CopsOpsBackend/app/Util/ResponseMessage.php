@@ -51,6 +51,15 @@ class ResponseMessage
     const _STATUS_INTERVENTION_CLOSE_ERROR = 60016;
     
     const _STATUS_NOTHING_TO_UPLOAD = 70001;
+    const _STATUS_NEW_INTERVENTION_ASSIGNED = 70002;
+    const _STATUS_NEW_MESSAGE_RECEIVED = 70003;
+
+    const _STATUS_PROFILE_UPDATE_SUCCESS = 80001;
+    const _STATUS_PROFILE_UPDATE_FAILURE = 80002;
+    const _STATUS_PASSWORD_CHANGE_SUCCESS = 80003;
+    const _STATUS_PASSWORD_CHANGE_FAILURE = 80004;
+    const _STATUS_MEDICAL_DATA_SUCCESS = 80005;
+    const _STATUS_MEDICAL_DATA_FAILURE = 80006;
     
     public static $lang = 'en';
 
@@ -103,6 +112,15 @@ class ResponseMessage
         '6016' => 'Rejected Failed',
         
         '70001' => 'Nothing to upload, please try again later',
+        '70002' => 'A new intervention has been assigned to you',
+        '70003' => 'You have received a new message',
+
+        '80001' => 'Your profile is updated successfully',
+        '80002' => 'Something went wrong, unable to update your profile',
+        '80003' => 'Your password has been changed successfully',
+        '80004' => 'Something went wrong, unable to change your password',
+        '80005' => 'Your medical information is updated successfully',
+        '80006' => 'Something went wrong, we are unable to update your medical information.',
     ];
     
     public static $responseFrench = [
@@ -153,7 +171,16 @@ class ResponseMessage
         '6015' => 'Rejeter avec succé',
         '6016' => 'Echeque de rejet',
         
-        '70001' => 'Rien � t�l�charger, veuillez r�essayer plus tard',
+        '70001' => 'Rien � t�l�charger, veuillez r�essayer plus tard',
+        '70002' => 'Une nouvelle intervention vous a été assignée',
+        '70003' => 'Vous avez reçu un nouveau message',
+        
+        '80001' => 'Votre profil est mis à jour avec succès',
+        '80002' => 'Quelque chose s\'est mal passé, impossible de mettre à jour votre profil',
+        '80003' => 'Votre mot de passe a été changé avec succès',
+        '80004' => 'Quelque chose s\'est mal passé, impossible de changer votre mot de passe',
+        '80005' => 'Vos informations médicales sont mises à jour avec succès',
+        '80006' => 'Quelque chose s\'est mal passé, nous ne pouvons pas mettre à jour vos informations médicales.',
     ];
 
     public static function statusResponses($responseKey, $lang=null)

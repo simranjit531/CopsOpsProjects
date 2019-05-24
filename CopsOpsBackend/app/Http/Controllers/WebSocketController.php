@@ -8,6 +8,7 @@ use App\User;
 use App\UserType;
 use Carbon\Carbon;
 use App\UserDeviceMapping;
+use App\Util\ResponseMessage;
 
 class WebSocketController implements MessageComponentInterface
 {
@@ -61,7 +62,7 @@ class WebSocketController implements MessageComponentInterface
      * 
      */
     public function onMessage(ConnectionInterface $conn, $msg)
-    {
+    {        
         file_put_contents(public_path('uploads/text.txt'), $msg);
         $data = json_decode($msg);
         if (isset($data->type)) 
@@ -78,28 +79,63 @@ class WebSocketController implements MessageComponentInterface
                         'message_type' => isset($data->message_type) ? $data->message_type : "TEXT"
                     ]);
                     
-                    $data->to_username = User::find($data->user->id)->first_name.' '.User::find($data->user->id)->last_name;
+                    $from_userdata = User::where('id', $data->user->id)->get();
+                    
+                    $data->to_username = "";
+                    if(!$from_userdata->isEmpty())
+                    {
+                        $data->to_username = $from_userdata[0]->first_name.' '.$from_userdata[0]->last_name;
+                    }
+                    
                     $msg = json_encode($data);
+
+                    $sender_id = $data->user->id;
+                    $receiver_id = $data->to_user;
+                    
+                    $username = "";
+                    $to_userdata = User::where('id', $data->to_user)->get();
+                    
+                    if(!empty($to_userdata))
+                    {
+                        $username = $to_userdata[0]->first_name.' '.$to_userdata[0]->last_name;
+                    }
                     
                     # Validate if to user is cop
-                    $userData = User::find($data->to_user);
+                    $userData = User::where('id', $data->to_user)->get();
                     if(!$userData->isEmpty())
                     {
-                        if($userData->ref_user_type_id == UserType::_TYPE_OPERATOR) 
+                        if($userData[0]->ref_user_type_id == UserType::_TYPE_OPERATOR) 
                         {
                             $tokenData = UserDeviceMapping::select('device_token')->where('ref_user_id', $data->to_user)->get();
                             
                             if(!$tokenData->isEmpty())
                             {
                                 $push = new \Edujugon\PushNotification\PushNotification('fcm');
+                                
+                                /*
                                 $push->setMessage([
                                     'notification' => [
                                         'title'=>'You have received a new message',
-                                        'body'=>'You have received a new message',
+                                        'body'=>"{'message':'You have received a new message', 'sender_id':'$sender_id', 'receiver_id':'$receiver_id', 'user':'$username', 'type':'chat'}",
                                         'sound' => 'default'
-                                    ]
+                                    ] 
+                                ]); 
+                                */
+
+                                $msg = ResponseMessage::statusResponses(ResponseMessage::_STATUS_NEW_MESSAGE_RECEIVED,strtolower($userData[0]->device_lang));
+
+                                $message = array(
+                                    'message'=>$msg, 
+                                    'sender_id'=>$sender_id, 
+                                    'receiver_id'=>$receiver_id, 
+                                    'user'=>$username, 
+                                    'type'=>'chat'
+                                );
+
+                                $push->setMessage([
+                                    'data'=>$message
                                 ]);
-                                
+                                    
                                 $push->setDevicesToken($tokenData[0]->device_token);
                                 $push->send();
                                 $push->getFeedback();
@@ -232,10 +268,10 @@ class WebSocketController implements MessageComponentInterface
                             {
                                 /* Get unread message count */
                                 $unreadCount = Chat::where(function($query) use ($c, $data){
-                                    $query->where(['sender_id'=>$c->sender_id, 'receiver_id'=>$data->user->id]);
-                                })
-                                ->orWhere(function($query) use ($c, $data){
-                                    $query->where(['sender_id'=>$c->receiver_id, 'receiver_id'=>$data->user->id]);
+                                    $sender =  $c->sender_id;
+                                    if($c->sender_id == $data->user->id) $sender = $c->receiver_id;
+                                    $query->where(['sender_id'=>$sender, 'receiver_id'=>$data->user->id]);
+                                    //$query->orWhere(['sender_id'=>$c->receiver_id, 'receiver_id'=>$data->user->id]);
                                 })
                                 ->where('is_read', 0)
                                 ->get();
@@ -282,24 +318,34 @@ class WebSocketController implements MessageComponentInterface
                     
                     if(isset($data->user->id))
                     {
+                        $limit = 6;
+                        $offset = ($data->page * $limit);
+                        $page = $data->page;
+
+                        \DB::enableQueryLog();
                         $chat = Chat::where(function($query) use ($data){
-                            $query->where(['sender_id'=>$data->user->id, 'receiver_id'=>$data->to_user]);
+                            $query->where(['sender_id'=>$data->user->id, 'receiver_id'=>$data->to_user]);                            
                         })
                         ->orWhere(function($query) use ($data){
-                            $query->where(['sender_id'=>$data->to_user, 'receiver_id'=>$data->user->id]);
+                            $query->Where(['sender_id'=>$data->to_user, 'receiver_id'=>$data->user->id]);
                         })
-                        ->orderBy('created_at', 'desc')
-//                         ->limit(10)
-                        ->get();
+                        ->orderBy('id', 'desc')
+                        ->take($limit)
+                        ->skip($offset)
+                        ->get();              
+
+                        file_put_contents(public_path('uploads/t.txt'), json_encode(\DB::getQueryLog()));
+                        
                         
                         $chatArray = array();
                         if(!$chat->isEmpty())
                         {
-                            foreach($chat as $c)
+                            foreach($chat->reverse() as $c)
                             {
                                 $output = array();
                                 $output['message_id'] = $c->id;
-                                $output['message'] = $c->message;
+                                $output['message'] = $c->message_type !="TEXT" ? asset('uploads/messages').'/'.$c->message : $c->message;
+                                $output['thumb'] = $c->message_type !="TEXT" ? asset('uploads/messages/thumb').'/'.$c->message : '';
                                 $output['message_type'] = $c->message_type;
                                 
                                 if($c->sender_id == $data->user->id)
@@ -314,6 +360,8 @@ class WebSocketController implements MessageComponentInterface
                                 
                                 array_push($chatArray, $output);
                             }
+                            
+                            $page = ($data->page+1); 
                         }
                         
                         # Get Unread message count
@@ -325,11 +373,24 @@ class WebSocketController implements MessageComponentInterface
                         ->where('is_read', 0)
                         ->get();
                         
+                        /* Get unread message count */
+                        $unreadCount = Chat::where(function($query) use ($data){
+                            $query->where(['sender_id'=>$data->to_user, 'receiver_id'=>$data->user->id]);
+                            $query->orWhere(['sender_id'=>$data->user->id, 'receiver_id'=>$data->to_user]);
+                        })
+                        ->where('is_read', 0)
+                        ->get(); 
+                        
+                        
+
                         $new_package = [
-                            'message' => array_reverse($chatArray),
+                            'message' => $chatArray,
                             'type' => 'chathistory',
-                            'totalMessageCount' => count($totalMessageCount)
+                            'totalMessageCount' => count($totalMessageCount),
+                            'unread' => count($unreadCount),
+                            'page' => $page
                         ];
+
                         $new_package = json_encode($new_package);
                         
                         $conn->send($new_package);                        
@@ -348,10 +409,12 @@ class WebSocketController implements MessageComponentInterface
                         */
                         
                         $chat = Chat::where(['sender_id'=>$data->to_user, 'receiver_id' => $data->user->id]);                        
+                        /*
                         if(isset($data->seen))
                         {
                             $chat = $chat->whereIn('id', [$data->seen]);
                         }
+                        */
                         $chat->update(['is_read'=>1]);
                         
                         # Get Unread message count
@@ -363,9 +426,20 @@ class WebSocketController implements MessageComponentInterface
                         ->where('is_read', 0)
                         ->get();
                         
+                        /* Get unread message count */
+                        $unreadCount = Chat::where(function($query) use ($data){
+                            $query->where(['sender_id'=>$data->to_user, 'receiver_id'=>$data->user->id]);
+                        })
+                        ->orWhere(function($query) use ($data){
+                            $query->where(['sender_id'=>$data->user->id, 'receiver_id'=>$data->to_user]);
+                        })
+                        ->where('is_read', 0)
+                        ->get();
+                        
                         $new_package = [
                             'type' => 'seencount',
-                            'totalMessageCount' => count($totalMessageCount)
+                            'totalMessageCount' => count($totalMessageCount),
+                            'unread' => count($unreadCount)
                         ];
                         $new_package = json_encode($new_package);
                         

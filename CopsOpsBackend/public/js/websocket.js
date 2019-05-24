@@ -1,5 +1,5 @@
 const RECONNECT_IN_SEC = 10
-let socket_host = '192.168.121.27';
+let socket_host = '93.90.201.167';
 let socket_port = '8080';
 
 let ws = {

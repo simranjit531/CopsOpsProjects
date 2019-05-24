@@ -194,6 +194,7 @@
 							<thead>
 								<tr>
 									<th>{{ trans('pages.datatime')}}</th>
+									<th>{{ trans('pages.datatime')}}</th>
 									<th>{{ trans('pages.usermgnt.address')}}</th>
 									<th>{{ trans('pages.Reporter')}}</th>
 									<th>{{ trans('pages.usermgnt.tables.firstname')}} / {{
@@ -719,8 +720,17 @@ function _incidents_list()
 	          },
 	          dataFilter: function(response){
 	              // this to see what exactly is being sent back
-	              console.log(response);
+	              //console.log(response);
 	              var result = JSON.parse(response);
+					
+					if((result.data).length > 0)
+					{
+						$(result.data).each(function(k,v){							
+							v.created_date = 'new Date';
+						})
+					}
+					
+					console.log(result.data);
 
 				  var markerArray = [], latLngArray = [];		
 	              $(result.data).each(function(k,v){
@@ -744,9 +754,15 @@ function _incidents_list()
 	              return response;
 	          },
 	      },
-	      
+		  "columnDefs": [            
+            {
+                "targets": [ 1 ],
+                "visible": false
+            }
+        ],
 	      	columns: [
-	          { data: 'date', name: 'date'},
+			  { data: 'created_date', name: 'created_date'},
+			  { data: 'created_at', name: 'created_at'},
 	          { data: 'address', name: 'address' },
 	          { data: 'reporter', name: 'reporter' },
 	          { data: 'first_name', name: 'first_name' },
@@ -755,7 +771,7 @@ function _incidents_list()
 	          { data: 'other_description', name: 'other_description' },
 	          { data: 'status', name: 'status' },
 	      ],
-     	order: [[0, "desc"]]
+     	order: [[1, "desc"]]
 	});	
 }
 /* Incident list table generate */

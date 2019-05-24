@@ -21,7 +21,7 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\Authent
             'user_id', 'ref_user_type_id', 'user_password', 'first_name', 'last_name', 'date_of_birth', 'place_of_birth',
             'gender',  'phone_number', 'email_id', 'id_card1', 'id_card2', 'business_card1', 'business_card2',
             'latitude', 'longitude', 'otp', 'verified', 'approved', 'cops_grade', 'available', 'is_deleted',
-            'profile_image', 'profile_qrcode'
+            'profile_image', 'profile_qrcode', 'medical_file'
     ];
 
     /**

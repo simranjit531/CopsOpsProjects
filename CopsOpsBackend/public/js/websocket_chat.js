@@ -95,12 +95,14 @@ function process_response(response)
     }
     else if (response.type === 'chathistory') 
     {
-    	populate_chat_history(response.message);
+    	populate_chat_history(response);
     }
     else if (response.type === 'recentchats') 
     {
     	populate_recent_chat(response.recentchat);
     }
+    
+    $('.loading').hide();
 }
 
 function message(message)
@@ -108,13 +110,14 @@ function message(message)
 	let _sender_id = $('input[type="hidden"][name="hidden_id"]').val();
 	let _receiver_id = $('input[type="hidden"][name="_receiver_id"]').val();
 	let _receiver_name = $('input[type="hidden"][name="_receiver_name"]').val();
+	let frenchme = $('input[type="hidden"][name="frenchme"]').val();
 	
 	let html = '';
 //	console.log(message);
 //	console.log(_receiver_id);
 	if(message.from_user == "ME")
 	{
-		html +='<div class="admin-chat"><h3>ME</h3><div class="chat-text-sec">';
+		html +='<div class="admin-chat"><h3>'+frenchme+'</h3><div class="chat-text-sec">';
 		if(message.message_type == 'IMAGE')
 		{
 			html +='<a href="'+v.message+'" data-lightbox="messages"><img class="uploaded-image" src="'+message.message+'"/></a>';
@@ -164,8 +167,9 @@ function message(message)
 		html +='</div></div>';
 	}
 	
-	if(_sender_id == message.to_user) $('.chatBox').append(html);
-	
+	if(_receiver_id == message.user.id) $('.chatBox').append(html);
+	//$('.nav-tabs a[data-type="recentchats"]').trigger('click');
+		
 	$('.uploaded-image').click(function(){
 	    lightbox.start($(this));
 	    return false;
@@ -195,7 +199,7 @@ function populate_users(response)
 
 function populate_recent_chat(chat)
 {
-//	console.log(chat);
+	//console.log(chat);
 	if(chat.length > 0)
 	{
 		var html = '';
@@ -218,16 +222,17 @@ function populate_recent_chat(chat)
 
 
 function populate_chat_history(history)
-{
-	console.log(history);
-	if(history.length > 0)
+{	
+	//console.log(history);
+	let frenchme = $('input[type="hidden"][name="frenchme"]').val();
+	if((history.message).length > 0)
 	{
 		var html = '';
 		
-		$(history).each(function(k,v){
+		$(history.message).each(function(k,v){
 			if(v.sender == "ME")
 			{
-				html += '<div class="admin-chat" data-message-id="'+v.message_id+'"><h3>Me</h3><div class="chat-text-sec">';
+				html += '<div class="admin-chat" data-message-id="'+v.message_id+'"><h3>'+frenchme+'</h3><div class="chat-text-sec">';
 				if(v.message_type == 'IMAGE')
 				{
 					html +='<a href="'+v.message+'" data-lightbox="messages"><img class="uploaded-image" src="'+v.message+'"></a>';
@@ -279,12 +284,22 @@ function populate_chat_history(history)
 				html +='</div></div>';
 			}
 		});
-				
-		$('.chatBox').html(html);
+		console.log($(".chatBox .client-chat").length);
+		if ($(".client-chat").length > 0)
+		{ 			
+			$(".chatBox").prepend(html);
+		}
+		else
+		{
+				$('.chatBox').html(html);
+		}
 		
 		$('.chatBox').scrollTop($('.chatBox')[0].scrollHeight);
 		
 		update_seen_status();	
+		
+		$('.nav-tabs a[data-type="recentchats"]').trigger('click');
+		$('input[type="hidden"][name="page_length"]').val(history.page);	
 	}
 	
 	$('.uploaded-image').click(function(){
@@ -330,9 +345,11 @@ function send_message ()
 		'type': 'message',
 		'message_type':'TEXT'
 	}
+
+	let frenchme = $('input[type="hidden"][name="frenchme"]').val()
 	//console.log(pkg);
 	if (pkg.to_user.length > 0) {
-		html = '<div class="admin-chat"><h3>Me</h3><div class="chat-text-sec"><p>'+pkg.message+'</p></div></div>';
+		html = '<div class="admin-chat"><h3>'+frenchme+'</h3><div class="chat-text-sec"><p>'+pkg.message+'</p></div></div>';
 	    $('.chatBox').append(html);
 	    
 	    $('.chatBox').scrollTop($('.chatBox')[0].scrollHeight);
@@ -375,48 +392,30 @@ $('.nav-tabs a').click(function(){
 
 
 $(document).on('click', '.users-listing li, .recent-listing li', function(){
-	$('.chatBox').html('');
-	$('.users-listing li').removeClass('active');
-	$('.recent-listing li').removeClass('active');
-	
+
 	var _receiver_id = $(this).data('userId');
 	var _receiver_username = $(this).data('username');
+	console.log(_receiver_id);
+	/*
+	 * Check receiver id
+	 */
+	let receiver_id = $('input[type="hidden"][name="_receiver_id"]').val();
+	console.log(receiver_id);
+	if(_receiver_id != receiver_id){
+		$('input[type="hidden"][name="page_length"]').val(0)
+		$('.chatBox').html('');
+	}
 	
-	$('.chat-heading').html(_receiver_username);
-	$('input[type="text"][name="_text_message"]').prop('disabled', false);
-	$('input[type="file"][name="upload_document"]').prop('disabled', false);
 	
 	$('input[type="hidden"][name="_receiver_id"]').val(_receiver_id);
 	$('input[type="hidden"][name="_receiver_name"]').val(_receiver_username);
+	$('.chat-heading').html(_receiver_username);
 	
+	$('.users-listing li').removeClass('active');
+	$('.recent-listing li').removeClass('active');
 	$(this).addClass('active');
 	
-	let chat_user = {
-		'username':$('input[type="hidden"][name="hidden_user_full_name"]').val(),
-		'id': $('input[type="hidden"][name="hidden_id"]').val()
-	}
-	
-	let to_user = $('input[type="hidden"][name="_receiver_id"]').val();
-	
-	/**
-	 * Create a package to send to the
-	 * server.
-	 **/
-	let pkg = {
-		'user': chat_user,		
-		'to_user': to_user,
-		'type': 'chathistory',
-	}
-		
-	let pkg_object = pkg
-	pkg = JSON.stringify(pkg)
-
-	/**
-	 * Send the package to the server
-	 **/
-	if (ws.conn && ws.conn.readyState === WebSocket.OPEN) {
-		ws.conn.send(pkg)
-	}
+	request_paginated_chat_history();
 });
 
 
@@ -447,7 +446,7 @@ $("input[type='file'][name='upload_document']").on("change", function(){
             	// Image is uploaded successfully, let's send message
             	let to_user = $('input[type="hidden"][name="_receiver_id"]').val();
             	
-				var file = (data.message);
+				var file = (data.fileName);
 							
 				let extension = file.substr( (file.lastIndexOf('.') +1) );
 							            	
@@ -458,10 +457,11 @@ $("input[type='file'][name='upload_document']").on("change", function(){
             	
             	let pkg = {
             		'user': chat_user,
-            		'message': data.message,
+            		'message': data.fileName,
             		'to_user': to_user,
             		'type': 'message',
-            		'message_type': message_type
+					'message_type': message_type,
+					'actual':data.actual
             	}
             	
             	send_uploaded_document_message (pkg);
@@ -494,22 +494,23 @@ $('.btn-send.chat_btn').on('click', function () {
 
 function send_uploaded_document_message (message) 
 {	
+	//console.log(message);
 	if (message.to_user.length > 0) {
 		html = '<div class="admin-chat"><h3>Me</h3>';
 		html +='<div class="chat-text-sec">';
 		if(message.message_type == 'IMAGE')
 		{
-			html +='<a href="'+message.message+'" data-lightbox="messages"><img class="uploaded-image" src="'+message.message+'"/></a>';
+			html +='<a href="'+message.actual+'" data-lightbox="messages"><img class="uploaded-image" src="'+message.actual+'"/></a>';
 		}
 		else if(message.message_type == 'VIDEO')
 		{
-			html +="<a href='"+message.message+"' data-lightbox='messages'><video id='my-video' class='uploaded-image video-js' controls preload='auto' width='250px' height='150' data-setup='{}'>";
-			html +="<source src='"+message.message+"' type='video/mp4'>";						    
+			html +="<a href='"+message.actual+"' data-lightbox='messages'><video id='my-video' class='uploaded-image video-js' controls preload='auto' width='250px' height='150' data-setup='{}'>";
+			html +="<source src='"+message.actual+"' type='video/mp4'>";						    
 			html +="</video></a>";
 		}
 		else if(message.message_type == 'PDF')
 		{
-			html +="<a href='"+message.message+"'  target='_blank'>";
+			html +="<a href='"+message.actual+"'  target='_blank'>";
 			html +='<i class="fa fa-file-pdf-o fa-4x"></i>';					    
 			html +="</video></a>";
 		}
@@ -582,9 +583,27 @@ $('input[type="text"][name="_search_term"]').on("keyup", function(){
 	
 });
 
+/*
+$(".chatBox").scroll(function() {
+		if($(this).scrollTop() + $(this).innerHeight() <= $(this)[0].scrollHeight) {
+				console.log("To Reached");
+				//request_paginated_chat_history();
+		} 
+});
+*/
+
+$('.chatBox').on("scroll", function() {
+    var scrollPos = $('.chatBox').scrollTop();
+    if (scrollPos <= 0) {
+    	request_paginated_chat_history();
+    } 
+});
+
+
 
 $('.chatBox').scroll(function() {
 	update_seen_status();
+	//
 	/*
 	let result = '';
 	$('.chatBox div').each(function()
@@ -647,6 +666,49 @@ function inViewport(element, detectPartial)
        return ((elementBottomArea <= vpBottom) && (elementTopArea >= vpTop)) && ((elementRightArea <= vpRight) && (elementLeftArea >= vpLeft));
 }
 
+function request_paginated_chat_history()
+{
+		$('.loading').hide();
+		
+		//$('.chatBox').html('');
+			
+		
+		$('input[type="text"][name="_text_message"]').prop('disabled', false);
+		$('input[type="file"][name="upload_document"]').prop('disabled', false);
+				
+		$
+		
+		let chat_user = {
+			'username':$('input[type="hidden"][name="hidden_user_full_name"]').val(),
+			'id': $('input[type="hidden"][name="hidden_id"]').val()
+		}
+		
+		let to_user = $('input[type="hidden"][name="_receiver_id"]').val();
+		let page = parseInt($('input[type="hidden"][name="page_length"]').val());
+		
+		/**
+		 * Create a package to send to the
+		 * server.
+		 **/
+		let pkg = {
+			'user': chat_user,		
+			'to_user': to_user,
+			'type': 'chathistory',
+			'page' : page,
+		}
+			
+		let pkg_object = pkg
+		pkg = JSON.stringify(pkg)
+
+		/**
+		 * Send the package to the server
+		 **/
+		if (ws.conn && ws.conn.readyState === WebSocket.OPEN) {
+			ws.conn.send(pkg)
+		}
+}
+
+
 
 function update_seen_status()
 {
@@ -669,6 +731,8 @@ function update_seen_status()
 			'seen': seenId,
 			'to_user':to_user
     }
+
+    $('.nav-tabs a[data-type="recentchats"]').trigger('click');
 
     /**
      * We need a object copy of package

@@ -34,9 +34,13 @@ use function GuzzleHttp\json_encode;
 use App\CopUserLocation;
 use Session;
 use Lang; 
+use Intervention\Image\Facades\Image;
 
 class BackendController extends Controller
 {
+	private $mimes = array('image/jpeg','image/jpg', 'image/png');
+	private $extensions = array("jpeg","jpg","png","JPEG","JPG","PNG");
+	
     public function __construct()
     {
         $this->middleware('auth');
@@ -49,7 +53,7 @@ class BackendController extends Controller
 
     public function usermanagement()
     {
-        $operators = User::where(['ref_user_type_id' => UserType::_TYPE_OPERATOR, 'approved'=>1])->get(); //'available'=>1,'status'=>1
+        $operators = User::where(['ref_user_type_id' => UserType::_TYPE_OPERATOR, 'approved'=>1, 'available'=>1])->get(); //'available'=>1,'status'=>1
 
         $incidents = DB::table('cop_incident_details')->select('cop_incident_details.id', 'ref_incident_subcategory.sub_category_name',
             'cop_incident_details.incident_description')
@@ -646,6 +650,8 @@ class BackendController extends Controller
 	public function listofincidents(Request $request)
 	{
 	    try {
+			
+			\DB::enableQueryLog();
 	        $incidents = DB::table('cop_incident_details')->select('ref_incident_subcategory.sub_category_name',
 	            'ref_user.first_name', 'ref_user.last_name', 'cop_incident_details.incident_description',
 	            'cop_incident_details.other_description', 'cop_incident_details.reference', 'cop_incident_details.created_by',
@@ -654,12 +660,16 @@ class BackendController extends Controller
 	            ->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
 	            ->join('ref_user', 'ref_user.id', '=', 'cop_incident_details.created_by')
 	            ->orderBy('cop_incident_details.updated_at', 'DESC')->get();
+			//dd(\DB::getQueryLog());
+			
+				//$query = "select ref_incident_subcategory.sub_category_name, ref_user.first_name, ref_user.last_name, cop_incident_details.incident_description, cop_incident_details.other_description, cop_incident_details.reference, cop_incident_details.created_by, cop_incident_details.qr_code, cop_incident_details.latitude, cop_incident_details.longitude, cop_incident_details.address, ref_user.ref_user_type_id, cop_incident_details.city, DATE_FORMAT(cop_incident_details.created_at, '%d/%m/%y %H:%i') as created_at, cop_incident_details.id, ref_user.ref_user_type_id from cop_incident_details inner join ref_incident_subcategory on ref_incident_subcategory.id = cop_incident_details.ref_incident_subcategory_id inner join ref_user on ref_user.id = cop_incident_details.created_by order by cop_incident_details.updated_at desc";
+				//$incidents = DB::select($query);
 
 	            if($request->input('lat') && $request->input('lng'))
 	            {
 	                $lat = $request->input('lat');
 	                $lng = $request->input('lng');
-	              $query = "SELECT ref_incident_subcategory.sub_category_name,
+	              	$query = "SELECT ref_incident_subcategory.sub_category_name,
               	             ref_user.first_name,ref_user.last_name, cop_incident_details.incident_description,
              	             cop_incident_details.other_description, cop_incident_details.reference, cop_incident_details.created_by,
             	             cop_incident_details.qr_code, cop_incident_details.latitude, cop_incident_details.longitude,
@@ -679,9 +689,15 @@ class BackendController extends Controller
 
 	                $users = User::where('id', $v->created_by)->get();
 	                $reporter = UserType::where('id', $users[0]->ref_user_type_id)->get()[0]->user_type;
-	                
+					
+					/*
+					$dateTime = new \DateTime(trim($v->created_at));
+					$dateTime = $dateTime->format('Y-m-d H:i');
+					*/
+
 	                $incidents[$k]->reporter = Lang::get("pages.$reporter");
-	                $incidents[$k]->date = Carbon::parse($v->created_at)->format('d/m/y H:i');
+					$incidents[$k]->created_date = Carbon::parse($v->created_at)->format('d/m/Y H:i');
+					// $incidents[$k]->created_date = $v->created_at;
 	                $incidents[$k]->status = '<span class="text-danger">'.Lang::get("pages.Onwait").'</span>';
 	                $incidents[$k]->state = Lang::get("pages.Onwait");
 	                
@@ -705,10 +721,10 @@ class BackendController extends Controller
 	                $incidents[$k]->state = $incidents[$k]->state;
 					
 	            }
-	            
-	            return Datatables::of($incidents)->editColumn('status', function($incidents){
-	                return $incidents->status.'<a href="javascript:void(0)" class="view-incident" data-state="'.$incidents->state.'" data-incident-id="'.$incidents->id.'" data-toggle="modal" data-target="#myModal"><i class="fa fa-angle-right" aria-hidden="true"></i></a>';
-	            })
+	            //dd($incidents);
+	            return Datatables::of($incidents)->editColumn('status', function($i){
+	                return $i->status.'<a href="javascript:void(0)" class="view-incident" data-state="'.$i->state.'" data-incident-id="'.$i->id.'" data-toggle="modal" data-target="#myModal"><i class="fa fa-angle-right" aria-hidden="true"></i></a>';
+				})
 	            ->rawColumns(['status'])->make(true);
 	            
 	    } catch (Exception $e) 
@@ -811,44 +827,46 @@ class BackendController extends Controller
 	               'ref_user_created_by' => $userId,
 	               'ref_incident_status_id' => 1
 	           ]);
-			   
-			   #user user status change
-			  // User::where('id',$o)->update(['available' => 0]); //pp
-			   
-			   #add entry in COP Mapping PP
-			  /* $inm = CopUserIncidentMapping::create([
-	               'ref_user_id' => $o, 
-	               'cop_incident_details_id' => $request->input('objectId'), 
-	               'created_by' => $userId,
-	               'status' => 2
-	           ]);*/
-			   
-			   
+			   			   
 			   $incidentDetails= DB::table('cop_incident_details')->select('cop_incident_details.id', 'ref_incident_subcategory.sub_category_name','cop_incident_details.other_description','cop_incident_details.reference','cop_incident_details.address','cop_incident_details.created_at',
-            'cop_incident_details.incident_description','cop_incident_details.status')
-            ->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
-            ->where('cop_incident_details.id', $request->input('objectId'))
-            ->get();
-			  
-			   
+				'cop_incident_details.incident_description','cop_incident_details.status')
+				->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
+				->where('cop_incident_details.id', $request->input('objectId'))
+				->get();
+			  			   
 	           # Once intervention is assigned, send push notification
 	           $push = new \Edujugon\PushNotification\PushNotification('fcm');
-	           /*
+			   
+			   $incidents = json_encode((array)$incidentDetails[0]);			   
+
+				$userData = User::where('id', $o)->get();
+
+				$lang = $userData->isEmpty() ? 'En' : $userData[0]->device_lang;
+			   	$msg = ResponseMessage::statusResponses(ResponseMessage::_STATUS_NEW_INTERVENTION_ASSIGNED, strtolower($lang));
+
+				$message = array(
+					'message'=> $msg, 
+					'incident'=>$incidents, 
+					'type'=>'incident'
+				);
+
+
+
 	           $push->setMessage([
-	               'notification' => [
-	                   'title'=>'A new intervention has been assigned to you',
-	                   'body'=>'A new intervention has been assigned to you',
-	                   'sound' => 'default',	                   
-	               ],
-	               'data' => [
-					   'data'=> $incidentDetails[0],
-	               ]
+	            //    'notification' => [
+	            //        'title'=>'A new intervention has been assigned to you',
+	            //        'body'=>"{'message' : 'A new intervention has been assigned to you', 'incident': $incidents, 'type':'incident'}",
+	            //        'sound' => 'default',	                   
+				//    ],
+				   'data' => $message
 	           ]);
-	           */
 	           
+			   
+			   /*
 	           $data = array(
 					$incidentDetails->toArray()[0]
 	           );
+			   */
 
 	           /*
 	           if(!$incidentDetails->isEmpty())
@@ -860,17 +878,20 @@ class BackendController extends Controller
 				*/
 
 	          # print_r(json_encode($data)); die;
-
-	           $push->setMessage([
+			   
+			  /*
+			  	$push->setMessage([
 	           		'data'=>$incidentDetails[0]
-	           ]);
-
-
-	           # Get device token of the user
-	           $tokenData = UserDeviceMapping::where('ref_user_id', $o)->get();	           
-	           $push->setDevicesToken($tokenData[0]->device_token);
-	           $push->send();
-	           $push->getFeedback();
+	           	]);
+				*/
+				$tokenData = UserDeviceMapping::where('ref_user_id', $o)->get();	           					
+				# Get device token of the user
+			   if(!$tokenData->isEmpty())
+			   {
+					$push->setDevicesToken($tokenData[0]->device_token);
+					$push->send();
+					$push->getFeedback(); 
+			   }	           
 	        }
 	        
 	        if($rs)
@@ -1087,8 +1108,31 @@ class BackendController extends Controller
 	    
 	    if($result['status'] == true)
 	    {
+			$fileExtension = pathinfo($result['fileName'], PATHINFO_EXTENSION);
+            
+            if(in_array($fileExtension, $this->extensions))
+            {
+                $fileName = 'uploads/messages/thumb/'.$result['fileName'];
+                Image::make(asset('uploads/messages').'/'.$result['fileName'])
+                ->orientate()
+                ->resize(null, 100, function($constraint){ 
+                    $constraint->upsize();
+                    $constraint->aspectRatio();
+                })
+                // ->resize(100, 100)
+                ->save($fileName, 90);
+                
+                $result['thumb'] = asset('uploads/messages/thumb').'/'.$result['fileName'];
+            }
+
+            unset($result['message']);
+            $result['message'] = $result['fileName'];
+			$result['actual'] = asset('uploads/messages').'/'.$result['fileName'];
+			
+			/*
 	        unset($result['message']);
-	        $result['message'] = asset('uploads/messages').'/'.$result['fileName'];
+			$result['message'] = asset('uploads/messages').'/'.$result['fileName'];
+			*/
 	    }
 	    
 	    return $this->sendResponseMessage($result, 200);

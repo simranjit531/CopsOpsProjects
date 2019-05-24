@@ -144,5 +144,8 @@ return [
 	/*master*/
 	'browsernotsuppory' => 'Your browser does not support the audio element',
 	
-
+	'research' => 'Research',
+	'writemessage'=>'Write Message',
+	'chatheader' => 'Discussion',
+	'frenchme' => 'Me'
 ];

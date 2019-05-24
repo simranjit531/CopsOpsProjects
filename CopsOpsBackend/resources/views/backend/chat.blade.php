@@ -17,6 +17,7 @@
 }
 .recent-listing li {
     display: flex;
+    margin-left: 30px;
     flex-wrap: nowrap;
     justify-content: space-between;
     margin-bottom: 5px;
@@ -43,7 +44,10 @@
     color: #fff;
 }
 .uploaded-image{
-    width:250px !important;
+    /*width:250px !important;*/
+	width: 50px !important;
+    height: 50px !important;
+    border-radius: 50%;
 }
 
 #chatCount, #chatCountUser{
@@ -57,14 +61,26 @@
 #chatCountUser{ display:none; }
 .recentUnreadCount{
     position: absolute;
-    right: 100px;
+    right: 312px;
     border: 1px solid red;
     background: red;
     padding: 0 2px;
     border-radius: 50%;
     width: 25px;
     color: #fff;
+    text-align: center;
+    height: 25px;
 }
+.recentchats > .fa-circle{
+	font-size:8px;
+}
+.userlist > .fa-circle{
+	font-size:8px;
+}
+.search-sec p{ 
+	margin-bottom:0px; 
+}
+
 </style>
 <div class="content-header">
 	<div class="container-fluid">
@@ -105,7 +121,11 @@
 										href="#chat-user-list" role="tab"> <img
 										src="images/clipboard.png" alt="user" /></a>
 									<div class="search-sec">
-										<input type="text" name="_search_term" placeholder="Search..">
+										<p class="text-center">
+											<span class="userlist"><i class="fa fa-dot-circle-o" aria-hidden="true"></i></span>
+											<span class="recentchats"><i class="fa fa-circle" aria-hidden="true"></i></span>
+										</p>
+										<input type="text" name="_search_term" placeholder="{{ trans('pages.research') }}..">
 									</div>
 									<a class="nav-item nav-link " data-type="recentchats" data-toggle="tab"
 										href="#chat-list" role="tab"> <img src="images/chat.png"
@@ -130,9 +150,11 @@
 						<div class="write-msg">
 							<img class="upload" id="upload_document" src="images/upload-arrow.png" alt="upload-arrow" />
 							<input type="file" name="upload_document" style="display: none;" disabled data-attr="{{ route('ajax.upload.document') }}"/> 
-							<input type="text" class="client_chat" name="_text_message" placeholder="Write Message" disabled/>
+							<input type="text" class="client_chat" name="_text_message" placeholder="{{ trans('pages.writemessage') }}" disabled/>
 							<input type="hidden" name="_receiver_id"/>
 							<input type="hidden" name="_receiver_name"/>
+							<input type="hidden" name="page_length" value="0"/>
+							<input type="hidden" name="frenchme" value="{{ trans('pages.frenchme') }}"/>							
 							@csrf()
 							<div class="sublit-chat"><input class="btn-send chat_btn" type="submit" value="." /></div>
 							
@@ -159,4 +181,15 @@
 
 <script src='https://vjs.zencdn.net/7.4.1/video.js'></script>
 
+<script>
+$('.nav-item').on("click", function(){
+	let $this = $(this);
+	
+	let className = $this.attr('data-type');
+	$('span.userlist i').toggleClass('fa-dot-circle-o fa-circle');
+	$('span.recentchats i').toggleClass('fa-dot-circle-o fa-circle');
+
+});
+
+</script>
 	@endsection

@@ -30,6 +30,7 @@ use Edujugon\PushNotification\Facades\PushNotification;
 use App\Notification;
 use App\CopUserLocation;
 use App\ApplicationWaitNotification;
+use Intervention\Image\Facades\Image;
 
 class ApiController extends Controller
 {
@@ -44,17 +45,22 @@ class ApiController extends Controller
 
     private $mimes = array('image/jpeg','image/jpg', 'image/png');
     private $extensions = array("jpeg","jpg","png","JPEG","JPG","PNG");
-
+    
+    
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function register(Request $request)
     {
         $payload = $this->get_payload($request);
-		// print_r($payload); die;
+		
         if(isset($payload['status']) && $payload['status'] === false)
         {
             return $this->sendResponseMessage(['status'=>false, 'message'=> $payload['message']],200);
         }
 
-        $rules  = [
+$rules  = [
             'gender'=>'required',
             'first_name'=>'required',
             'last_name'=>'required',
@@ -68,17 +74,11 @@ class ApiController extends Controller
         $result = $this->validate_request($payload, $rules);
         if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
 
-        /* Validation for keys in payload request */
-//        $result = has_keys(array('gender', 'first_name', 'last_name', 'date_of_birth', 'phone_number',
-//            'email_id', 'user_password', 'ref_user_type_id'), $payload);
-//        if(!empty($result)) return $this->sendResponseMessage(array('status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND)), 200);
-
-
         /* Validation passed now store user */
-
         $userId = uniqid();
         # Generate random otp
         $otp = rand(100000, 999999);
+        
         $data = array(
             'gender'=> isset($payload['gender']) ? $payload['gender'] : '',
             'user_id' => $userId,
@@ -96,7 +96,8 @@ class ApiController extends Controller
             'latitude'=> isset($payload['reg_latitude']) ? $payload['reg_latitude'] : 1,
             'longitude'=>  isset($payload['reg_longitude']) ? $payload['reg_longitude'] : 1,
             'profile_qrcode'=>$userId.'.png',
-            'cops_grade' => 'Grade I'
+            'cops_grade' => 'Grade I',
+            'device_lang' => $payload['device_language']
         );
 		
         $rules = ['profile_image' => 'required'];
@@ -105,17 +106,6 @@ class ApiController extends Controller
 
         if($payload['ref_user_type_id'] == "Cops")
         {
-            /*
-            $rules  = [ 
-                'id_card1'=>'required', 
-                'id_card2'=>'required',
-                'business_card1'=>'required',
-                'business_card2'=>'required'
-            ];
-
-            $result = $this->validate_upload_request($request, $rules);
-            if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
-            */
             $cardFront = $this->uploadFile($request, 'uploads/id_cards', 'id_card_front');
             if($cardFront['status'] == true)
             {
@@ -140,10 +130,7 @@ class ApiController extends Controller
                 $data['business_card2'] = $businessBack['fileName'];
             }
         }
-        /*
-        if(!$request->file('profile_image')) return $this->sendResponseMessage(['message'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_PROFILE_IMAGE_REQUIRED), 'status'=>true], 200);
-        */
-
+        
         $profileImage = $this->uploadFile($request, 'uploads/profile', 'profile_image');
 
         if($profileImage['status'] == true)
@@ -166,14 +153,19 @@ class ApiController extends Controller
 					'device_token'=>$payload['fcm_token'],
                     'created_on'=>Carbon::now()
                 );
-                try{
+                /*
+                try
+                {
                     UserDeviceMapping::create($data);
-                }catch (QueryException $e){
+                }
+                catch (QueryException $e)
+                {
                     return $this->sendResponseMessage([
                         'status' => false,
                         'message'=> $e->getMessage()], 200);
                 }
-
+                */
+                
                 $data = array(
                     'email' => $user->email_id,
                     'name' => $user->first_name.' '.$user->last_name,
@@ -195,41 +187,6 @@ class ApiController extends Controller
                 
                 $attributes = $this->get_user_profile_attributes($user->id, $lat, $lng);
 				
-				
-                if($payload['ref_user_type_id'] == "Cops") {
-					
-                    /*
-                    $resp = _quickblox_create_session();
-                    
-                    if($resp['flag'] == 1)
-                    {
-                        $data = array(
-                            'username'=>$user->user_id,
-                            'password'=>'12345678',
-                            'fullname'=> $user->first_name.' '.$user->last_name,
-                            'email'=>$user->email_id,
-                            'tag_list'=>'copops',
-                            'token' => $resp['result']->session->token
-                        );                        
-                        _quickblox_create_user($data);
-                    } 
-                    */ 
-
-                    $url = "https://api.chatcamp.io//api/1.0/users.create";
-                    $data = array(
-                        'id' => $user->user_id,
-                        'first_name' => $user->first_name,
-                        'last_name' => $user->last_name,
-                        'email' => $user->email_id,
-                        'display_name' => $user->first_name,                                                 
-                    );
-                    //print_r($data);
-                    _chat_execute_url($url, $data);
-
-
-
-                }
-                
                 # New user registration notification
                 Notification::create([
                     'table_id' =>$user->id,
@@ -237,6 +194,7 @@ class ApiController extends Controller
                     'message' => $user->first_name.' '.$user->last_name. 'registered to copops'                    
                 ]);
                 
+                /* Create response to send back */
                 return $this->sendResponseMessage([
                     'status' => true,
                     'id' => $user->id,
@@ -274,6 +232,10 @@ class ApiController extends Controller
     }
 
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function validate_otp(Request $request)
     {
         $payload = $this->get_payload($request);
@@ -348,8 +310,17 @@ class ApiController extends Controller
         
         $attributes = $this->get_user_profile_attributes($auth[0]->id, $lat, $lng);
         
-        UserDeviceMapping::where('ref_user_id', $auth[0]->id)->update(['device_token'=>$payload['fcm_token']]);
+        #UserDeviceMapping::where('ref_user_id', $auth[0]->id)->update(['device_token'=>$payload['fcm_token']]);
+        $data = array(
+            'ref_user_id'=>$auth[0]->id,
+            'device_id'=>$payload['device_id'],
+            'device_token'=>$payload['fcm_token'],
+            'created_on'=>Carbon::now()
+        );
         
+        UserDeviceMapping::create($data);
+        User::where('id', $auth[0]->id)->update(['device_lang' => $payload['device_language']]);
+
         return $this->sendResponseMessage(array(
             'status'=>'true',
             'id' => $auth[0]->id,
@@ -596,17 +567,28 @@ class ApiController extends Controller
                     'table' => 'cop_incident_details',
                     'message' => 'New Report by '.$userData->first_name.' '.$userData->last_name . ' - '.$incidentData->sub_category_name
                 ]);
+                
+                $incidentDetails= DB::table('cop_incident_details')->select('cop_incident_details.id', 'ref_incident_subcategory.sub_category_name','cop_incident_details.other_description','cop_incident_details.reference','cop_incident_details.address','cop_incident_details.created_at',
+                'cop_incident_details.incident_description','cop_incident_details.status')
+                ->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
+                ->where('cop_incident_details.id', $rs->id)
+                ->get();
 
+                $incidents = json_encode((array)$incidentDetails[0]);    
+
+                //$mmm = ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS,strtolower($payload['device_language']));
                 # Once new incident is registered, send push notification
-                $push = new \Edujugon\PushNotification\PushNotification('fcm');
+                
+                /*
                 $push->setMessage([
                     'notification' => [
                         'title'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS,strtolower($payload['device_language'])),
-                        'body'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS,strtolower($payload['device_language'])),
+                        'body'=>"{'message' : '$mmm', 'incident': $incidents, 'type':'incident'}",
                         'sound' => 'default'
                     ]
                 ]);
-
+                */
+                
                 $lat = $payload['incident_lat'];
                 $lng = $payload['incident_lng'];
 
@@ -657,17 +639,33 @@ class ApiController extends Controller
                     $tokenData = UserDeviceMapping::whereIn('ref_user_id', $finalOperators)->get()->chunk(100);
                     #print_r($tokenData->toArray()); die;
                     if(!$tokenData->isEmpty()){
+                        $push = new \Edujugon\PushNotification\PushNotification('fcm');
+
                         foreach ($tokenData as $tokens) {
                             foreach ($tokens as $t)
                             {
                                 if(empty($t->device_token)) continue;
-                                // if(in_array($t->user_id, $operatorsIn5KmArray))
-                                // {                                    
-                                    
-                                // } 
+                                
+                                /* Get device language */        
+                                $userData = User::where('id', $t->ref_user_id)->get();
+                                $userLang = $userData->isEmpty() ? 'En' : $userData[0]->device_lang;
+ 
+                                /* Get device language */
+
+                                $message = array(
+                                    'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS,strtolower($userLang)),
+                                    'incident'=> $incidents,
+                                    'type'=>'incident'
+                                );
+
+                                $push->setMessage([
+                                    'data'=>$message
+                                ]);
+    
+
                                 $push->setDevicesToken($t->device_token);
-                                    $push->send();
-                                    $push->getFeedback();                                
+                                $push->send();
+                                $push->getFeedback();                                
                             }
                         }
                     }
@@ -1057,27 +1055,43 @@ class ApiController extends Controller
         {
             return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
         }
-
+        
         $userId = $payload['user_id'];
         $lat = $payload['incident_lat'];
         $lng = $payload['incident_lng'];
         
+        if(isset($payload['fcm_token']) && $payload['fcm_token'] != ""){
+            UserDeviceMapping::where('ref_user_id', $userId)->update(['device_token'=>$payload['fcm_token']]);
+        }
+                
         $attributes = $this->get_user_profile_attributes($userId, $lat, $lng);
+
+        $totalMessageCount = Chat::select('id')
+                        ->where(function($query) use ($userId){                             
+                            $query->where(['receiver_id'=>$userId]);
+                        })
+                        ->where('is_read', 0)
+                        ->get();
 
         try{
             $user = User::where('id', $userId)->get();
 
             if($user->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))],200);
+            
+            User::where('id', $user[0]->id)->update(['device_lang' => $payload['device_language']]);
+            
             return $this->sendResponseMessage([
                 'status'=>true,
                 'grade'=>str_replace('Grade', '', $user[0]->cops_grade),
                 'available'=>$user[0]->available,
+                'medical_file'=>$user[0]->medical_file,
                 'level'=>$attributes['level'],
                 'report'=>$attributes['report'],
                 'profile_percent'=>$attributes['profile_percent'],
                 'total_reports'=>$attributes['total_reports'],
                 'completed_reports'=>$attributes['completed_reports'],
-                'new_reports'=>$attributes['new_reports']
+                'new_reports'=>$attributes['new_reports'],
+                'totalMessageCount'=>count($totalMessageCount)
             ],200);
 
         }catch (QueryException $e){
@@ -1142,6 +1156,17 @@ class ApiController extends Controller
             
             # Once intervention is assigned, send push notification
             $push = new \Edujugon\PushNotification\PushNotification('fcm');
+            
+            $incidentDetails= DB::table('cop_incident_details')->select('cop_incident_details.id', 'ref_incident_subcategory.sub_category_name','cop_incident_details.other_description','cop_incident_details.reference','cop_incident_details.address','cop_incident_details.created_at',
+            'cop_incident_details.incident_description','cop_incident_details.status')
+            ->join('ref_incident_subcategory', 'ref_incident_subcategory.id', '=', 'cop_incident_details.ref_incident_subcategory_id')
+            ->where('cop_incident_details.id', $incidentId)
+            ->get();
+
+            $incidents = json_encode((array)$incidentDetails[0]);        
+
+
+            /*
             $push->setMessage([
                 'notification' => [
                     'title'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_SUCCESS,strtolower($payload['device_language'])),
@@ -1152,7 +1177,9 @@ class ApiController extends Controller
                 'incidentId' => $incidentId,
 				]
             ]);
+            */
             
+            $incidents = 
             # Get device token of the user
             $tokenData = UserDeviceMapping::all()->chunk(100);
             
@@ -1160,7 +1187,27 @@ class ApiController extends Controller
                 foreach ($tokenData as $tokens) {
                     foreach ($tokens as $t)
                     {
-                        if(empty($t->device_token) && ($t->ref_user_id != $userId)){                            
+                        if(empty($t->device_token) && ($t->ref_user_id != $userId))
+                        {    
+                            
+                            /* Get device language */        
+                            $userData = User::where('id', $t->ref_user_id)->get();
+                            $userLang = $userData->isEmpty() ? 'En' : $userData[0]->device_lang;
+
+                            /* Get device language */
+
+                            $message = array(
+                                'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_INTERVENTION_ASSIGNED_SUCCESS,strtolower($userLang)),
+                                'incident'=> $incidents,
+                                'type'=>'incident'
+                            );
+
+                            $push->setMessage([
+                                'data'=>$message
+                            ]);
+
+
+
                             $push->setDevicesToken($t->device_token);
                             $push->send();
                             $push->getFeedback(); 
@@ -1531,8 +1578,26 @@ class ApiController extends Controller
         
         if($result['status'] == true)
         {
+            $fileExtension = pathinfo($result['fileName'], PATHINFO_EXTENSION);
+            
+            if(in_array($fileExtension, $this->extensions))
+            {
+                $fileName = 'uploads/messages/thumb/'.$result['fileName'];
+                Image::make(asset('uploads/messages').'/'.$result['fileName'])
+                ->orientate()
+                ->resize(null, 100, function($constraint){ 
+                    $constraint->upsize();
+                    $constraint->aspectRatio();
+                })
+                // ->resize(100, 100)
+                ->save($fileName, 90);
+                
+                $result['thumb'] = asset('uploads/messages/thumb').'/'.$result['fileName'];
+            }
+
             unset($result['message']);
-            $result['message'] = asset('uploads/messages').'/'.$result['fileName'];    
+            $result['message'] = $result['fileName'];
+            $result['actual'] = asset('uploads/messages').'/'.$result['fileName'];
         }
         
         return $this->sendResponseMessage($result, 200);
@@ -1547,7 +1612,7 @@ class ApiController extends Controller
             return $this->sendResponseMessage(['status'=>false, 'message'=> $payload['message']],200);
         }
         */
-        
+        /*
         $rules  = [
             'sender_id'=>'required',
             'receiver_id' => 'required'
@@ -1555,20 +1620,223 @@ class ApiController extends Controller
         
         $result = $this->validate_request($request, $rules);
         if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
+        */
+          
+        $data = json_decode($request->all());
         
+        $sender_id = $data->sender_id;
+        $receiver_id = $data->receiver_id;
         
-        
-        $chat = Chat::where(function($query) use ($request){
-            $query->where(['sender_id'=>$request->input('sender_id'), 'receiver_id'=>$request->input('receiver_id')]);
+        $chat = Chat::where(function($query) use ($sender_id, $receiver_id){
+            $query->where(['sender_id'=>$sender_id, 'receiver_id'=>$receiver_id]);
         })
-        ->orWhere(function($query) use ($request){
-            $query->where(['sender_id'=>$request->input('receiver_id'), 'receiver_id'=>$request->input('sender_id')]);
+        ->orWhere(function($query) use ($sender_id, $receiver_id){
+            $query->where(['sender_id'=>$receiver_id, 'receiver_id'=>$sender_id]);
         })
-        ->orderBy('created_at', 'desc')
-        //                         ->limit(10)
+        ->orderBy('created_at', 'desc')        
         ->get();
+              
         
-        $this->sendResponseMessage(['message'=>count($chat), 'status'=>true]);
+        return $this->sendResponseMessage(['message'=>count($chat), 'status'=>true],200);
+    }
+    
+    public function userList(Request $request)
+    {        
+        $payload = json_decode($request->input('data'), true);        
+        $userId = $payload['user_id'];
+        
+        
+        $userList = User::select('id', 'user_id', 'first_name', 'last_name')->where('id', '<>', $userId)
+        ->whereIn('ref_user_type_id', [UserType::_TYPE_BACKOFFICE, UserType::_TYPE_OPERATOR])->get();        
+        if($userList->isEmpty()){
+            return response()->json(['status'=>'false', 'response'=>'No User Exists']);
+        }
+        
+        return $this->sendResponseMessage([
+            'status'=>true,
+            'response'=>$userList->toArray()
+        ], 200);
+    }
+
+    public function profile(Request $request) 
+    {
+        $payload = $this->get_payload($request);
+		
+        if(isset($payload['status']) && $payload['status'] === false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> $payload['message']],200);
+        }
+        
+        try {
+            $userId = $payload['user_id'];
+            $userData = User::where('id', $userId)->get();
+
+            if($userData->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=>ResponseMessage::statusResponses(ResponseMessage::_STATUS_DATA_NOT_FOUND,strtolower($payload['device_language']))]);
+            
+            $userData = $userData->first();
+
+            unset($userData->created_at);
+            unset($userData->updated_at);
+            unset($userData->id_card1);
+            unset($userData->id_card2);
+            unset($userData->business_card1);
+            unset($userData->business_card2);
+            unset($userData->otp);
+            unset($userData->latitude);
+            unset($userData->longitude);
+            unset($userData->verified);
+            unset($userData->approved);
+            unset($userData->level);
+            unset($userData->cops_grade);
+            unset($userData->available);
+            unset($userData->is_deleted);
+            
+            $userData->profile_image = empty($userData->profile_image) ? '' : asset('uploads/profile').'/'.$userData->profile_image;
+            
+            return $this->sendResponseMessage(['status'=>true, 'message'=>$userData], 200);
+        } catch (\Exception $e) 
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=>$e->getMessage()], 200);
+        }
+        
+    }
+
+    public function update_profile(Request $request)
+    {
+        $payload = $this->get_payload($request);
+		
+        if(isset($payload['status']) && $payload['status'] === false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> $payload['message']],200);
+        }
+
+        $userId = $payload['user_id'];
+        
+        $rules  = [
+            'first_name'=>'required',
+            'last_name'=>'required',
+            'date_of_birth'=>'required'
+        ];
+        
+        $result = $this->validate_request($payload, $rules);
+        if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
+
+        try 
+        {
+            
+            $data = array(                
+                'first_name'=> isset($payload['first_name']) ? $payload['first_name'] : '',
+                'last_name'=> isset($payload['last_name']) ? $payload['last_name'] : '',
+                'date_of_birth'=> isset($payload['date_of_birth']) ? $payload['date_of_birth'] : '',                
+                'device_lang' => $payload['device_language']
+            );
+            
+            /*
+            $rules = ['profile_image' => 'required'];
+            $result = $this->validate_upload_request($request, $rules);
+            if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
+            */
+
+            $profileImage = $this->uploadFile($request, 'uploads/profile', 'profile_image');
+
+            if($profileImage['status'] == true) $data['profile_image'] = $profileImage['fileName'];
+
+            $rs = User::where('id', $userId)->update($data);
+
+            if($rs) 
+            {
+                $auth = User::where('id', $userId)->get();
+                
+                return $this->sendResponseMessage(array(
+                    'status'=>true,                         
+                    'id' => $auth[0]->id,
+                    'userid' => $auth[0]->user_id,
+                    'username' => $auth[0]->first_name.' '.$auth[0]->last_name,
+                    'email_id' => $auth[0]->email_id,
+                    'otp' => $auth[0]->otp,
+                    'profile_url' => empty($auth[0]->profile_image) ? '' : asset('uploads/profile').'/'.$auth[0]->profile_image,
+                    'verified' => $auth[0]->verified,
+                    'grade'=>str_replace('Grade', '', $auth[0]->cops_grade),
+                    'available'=>$auth[0]->available,
+                    'level'=>1,                    
+                    'profile_qrcode'=>asset('uploads/profile/qrcodes').'/'.$auth[0]->profile_qrcode,                    
+                    'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_PROFILE_UPDATE_SUCCESS,strtolower($payload['device_language']))), 200);
+            }
+            return $this->sendResponseMessage(array('status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_PROFILE_UPDATE_FAILURE,strtolower($payload['device_language']))), 200);
+        } 
+        catch (\Exception $e) 
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=>$e->getMessage()], 200);
+        }
+    }
+
+    public function change_password(Request $request)
+    {
+        $payload = $this->get_payload($request);
+		
+        if(isset($payload['status']) && $payload['status'] === false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> $payload['message']],200);
+        }
+
+        $rules  = [
+            'old_password'=>'required',
+            'password'=>['required', 'confirmed']
+        ];
+
+        //password, password_confirmation
+
+        $result = $this->validate_request($payload, $rules);
+        if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
+        
+        $userId = $payload['user_id'];
+
+        $oldPass = $payload['old_password'];
+        $userData = User::where(['id'=>$userId, 'user_password'=>$oldPass])->get();
+        // _STATUS_USER_NOT_FOUND
+        // ResponseMessage::statusResponses(ResponseMessage::_STATUS_USER_NOT_FOUND,strtolower($payload['device_language']))), 200);
+        if($userData->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_USER_NOT_FOUND,strtolower($payload['device_language']))], 200);
+        
+        $rs = User::where('id', $userId)->update(['user_password'=>$payload['password']]);
+
+        if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_PASSWORD_CHANGE_SUCCESS,strtolower($payload['device_language']))], 200);
+        return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_PASSWORD_CHANGE_FAILURE,strtolower($payload['device_language']))], 200);
+    }
+
+    public function update_medical_file(Request $request)
+    {
+        $payload = $this->get_payload($request);
+		
+        if(isset($payload['status']) && $payload['status'] === false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> $payload['message']],200);
+        }
+
+        $userId = $payload['user_id'];
+
+        $rs = User::where('id', $userId)->update(['medical_file'=>$payload['medical_file']]);
+
+        if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_MEDICAL_DATA_SUCCESS,strtolower($payload['device_language']))], 200);
+        return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_MEDICAL_DATA_FAILURE,strtolower($payload['device_language']))], 200);
+    }
+
+    public function userLogout(Request $request)
+    {
+        $payload = $this->get_payload($request);
+		
+        if(isset($payload['status']) && $payload['status'] === false)
+        {
+            return $this->sendResponseMessage(['status'=>false, 'message'=> $payload['message']],200);
+        }
+        // $payload = json_decode($request->input('data'), true);        
+        $userId = $payload['user_id'];
+
+        UserDeviceMapping::where('ref_user_id', $userId)->update(['device_token'=>'']);
+
+        return $this->sendResponseMessage([
+            'status'=>true,
+            'response'=>'Logout Success !!!'
+        ], 200);
     }
     
 

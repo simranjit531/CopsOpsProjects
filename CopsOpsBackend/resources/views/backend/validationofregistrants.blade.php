@@ -369,8 +369,8 @@ var oTable = '';
 
 
 	   $('#btn-validate-user').on('click', function(){
-			var userId = $(this).data('user');
-						
+			var userId = $(this).attr('data-user');
+				
 			$.ajax({
 				url: "{{ route('backoffice.account.approve') }}",
 				data : { 'user-id': userId },

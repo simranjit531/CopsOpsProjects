@@ -840,6 +840,8 @@ $('.assigner-btn').on('click', function(){
 				toastr.success(d.message, {timeOut: 10000});
 				$('#myModal').modal('hide');
 				$(".loactions-out-inner").toggle();
+
+				location.reload();
 			}
 			else{
 				toastr.error("Invalid request", {timeOut: 10000});

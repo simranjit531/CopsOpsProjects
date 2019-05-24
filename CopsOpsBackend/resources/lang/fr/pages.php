@@ -142,4 +142,8 @@ return [
 	/*master*/
 	'browsernotsuppory' => 'Votre navigateur ne supporte pas l’élément audio',
 	
+	'research' => 'Recherche',
+	'writemessage'=>'Écrire un message',
+	'chatheader' => 'Messagerie',
+	'frenchme' => 'Moi'
 ];

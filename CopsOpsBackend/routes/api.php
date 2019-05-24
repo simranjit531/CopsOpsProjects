@@ -55,6 +55,16 @@ Route::group(['prefix' => 'auth'], function () {
     
     Route::post('/upload/document','API\ApiController@uploadMessageFile');
     Route::post('/get/message','API\ApiController@getMyMessages');
+
+    Route::post('/users', 'API\ApiController@userList');
+ 
+    # Get Profile In
+    Route::post('/user/profile', 'API\ApiController@profile');
+    Route::post('/user/update/profile', 'API\ApiController@update_profile');
+    Route::post('/user/change/password', 'API\ApiController@change_password');
+    Route::post('/user/update/medical', 'API\ApiController@update_medical_file');
+
+    Route::post('/user/logout', 'API\ApiController@userLogout');
 });
 
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
