@@ -59,7 +59,91 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 .notification-sec{padding-top: 7px;float:right;position:relative;
     margin: 0 10px;}
 </style>
+<style>
+.users-listing, .recent-listing{
+    height:425px;
+    overflow-y:auto;
+}
+
+.chatBox {
+    width:100%;
+    height: 370px;
+    overflow-y: auto;
+}
+
+.users-listing li{
+    cursor:pointer;
+}
+.recent-listing li {
+    display: flex;
+    margin-left: 30px;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    padding: 3px 0;
+    border-bottom: 1px solid #ccc;
+    cursor:pointer;
+}
+.recent-listing li p {
+    font-size: 13px;
+    margin: 0;
+    font-weight: bold;
+}
+.recent-listing li p span {
+    font-size: 12px;
+    display: inline-block;
+    width: 100%;
+    font-weight: normal;
+}
+.users-listing, .recent-listing{
+    padding:6px 12px;
+}
+.users-listing li.active, .recent-listing li.active{
+    background: #4148ba;
+    color: #fff;
+}
+.uploaded-image{
+    /*width:250px !important;*/
+	width: 50px !important;
+    height: 50px !important;
+    border-radius: 50%;
+}
+
+#chatCount, #chatCountUser{
+    margin-left: 100px;
+    border: 1px solid red;
+    padding: 0 4px;
+    background: red;
+    color:#fff;
+    font-size:10px;
+}
+#chatCountUser{ display:none; }
+.recentUnreadCount{
+    position: absolute;
+    right: 312px;
+    border: 1px solid red;
+    background: red;
+    padding: 0 2px;
+    border-radius: 50%;
+    width: 25px;
+    color: #fff;
+    text-align: center;
+    height: 25px;
+}
+.recentchats > .fa-circle{
+	font-size:8px;
+}
+.userlist > .fa-circle{
+	font-size:8px;
+}
+.search-sec p{ 
+	margin-bottom:0px; 
+}
+
+</style>
 <body class="hold-transition sidebar-mini">
+	<input type="hidden" name="_hidden_language" value="{{ Config::get('app.locale') }}"/>
+	<input type="hidden" name="hidden_id" value="{{ Auth::user()->id }}"/>
 	<audio id="myAudio">      
       <source src="{{ asset('glass_ping.mp3') }}" type="audio/mp3">
 		  {{ trans('pages.browsernotsuppory')}}
@@ -158,7 +242,7 @@ Html::style('css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')
 						
 						<li class="nav-item"><a href="{{ url('/chat') }}" class="nav-link {{ (\Request::route()->getName() == 'chat') ? 'active' : '' }}">
 								<i class="nav-icon fa fa-comments-o"></i>
-								<p>{{ trans('pages.discussion') }} <span id="chatCount">1</span></p> <!--Discussion-->
+								<p>{{ trans('pages.discussion') }} <span id="chatCount">0</span></p> <!--Discussion-->
 						</a></li>
 
 

@@ -60,6 +60,8 @@ class ResponseMessage
     const _STATUS_PASSWORD_CHANGE_FAILURE = 80004;
     const _STATUS_MEDICAL_DATA_SUCCESS = 80005;
     const _STATUS_MEDICAL_DATA_FAILURE = 80006;
+
+    const _STATUS_OLD_PASSWORD_NOT_MATCH = 80007;
     
     public static $lang = 'en';
 
@@ -121,6 +123,7 @@ class ResponseMessage
         '80004' => 'Something went wrong, unable to change your password',
         '80005' => 'Your medical information is updated successfully',
         '80006' => 'Something went wrong, we are unable to update your medical information.',
+        '80007' => 'Old password does not match, please check and try again.'
     ];
     
     public static $responseFrench = [
@@ -181,6 +184,8 @@ class ResponseMessage
         '80004' => 'Quelque chose s\'est mal passé, impossible de changer votre mot de passe',
         '80005' => 'Vos informations médicales sont mises à jour avec succès',
         '80006' => 'Quelque chose s\'est mal passé, nous ne pouvons pas mettre à jour vos informations médicales.',
+
+        '80007' => 'Ancien mot de passe ne correspond pas, veuillez vérifier et réessayer.'
     ];
 
     public static function statusResponses($responseKey, $lang=null)

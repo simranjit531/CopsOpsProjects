@@ -18,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
         
+        /*
         if(env('APP_DEBUG')) {
             DB::listen(function($query) {
                 File::append(
@@ -26,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
                     );
             });
         }
+        */
     }
 
     /**

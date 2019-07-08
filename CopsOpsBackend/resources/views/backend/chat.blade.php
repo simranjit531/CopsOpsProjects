@@ -1,87 +1,21 @@
 @extends('backend.layouts.backendapp') @section('content')
 <!-- Content Header (Page header) -->
+
 <style>
-.users-listing, .recent-listing{
-    height:425px;
-    overflow-y:auto;
+video {
+	height:300px !important;
 }
-
-.chatBox {
-    width:100%;
-    height: 370px;
-    overflow-y: auto;
+.modal-content {
+    box-shadow: none !important;
+	background-color: transparent !important;
+    border: none !important;
 }
-
-.users-listing li{
-    cursor:pointer;
-}
-.recent-listing li {
-    display: flex;
-    margin-left: 30px;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    margin-bottom: 5px;
-    padding: 3px 0;
-    border-bottom: 1px solid #ccc;
-    cursor:pointer;
-}
-.recent-listing li p {
-    font-size: 13px;
-    margin: 0;
-    font-weight: bold;
-}
-.recent-listing li p span {
-    font-size: 12px;
-    display: inline-block;
-    width: 100%;
-    font-weight: normal;
-}
-.users-listing, .recent-listing{
-    padding:6px 12px;
-}
-.users-listing li.active, .recent-listing li.active{
-    background: #4148ba;
-    color: #fff;
-}
-.uploaded-image{
-    /*width:250px !important;*/
-	width: 50px !important;
-    height: 50px !important;
-    border-radius: 50%;
-}
-
-#chatCount, #chatCountUser{
-    margin-left: 100px;
-    border: 1px solid red;
-    padding: 0 4px;
-    background: red;
-    color:#fff;
-    font-size:10px;
-}
-#chatCountUser{ display:none; }
-.recentUnreadCount{
-    position: absolute;
-    right: 312px;
-    border: 1px solid red;
-    background: red;
-    padding: 0 2px;
-    border-radius: 50%;
-    width: 25px;
-    color: #fff;
-    text-align: center;
-    height: 25px;
-}
-.recentchats > .fa-circle{
-	font-size:8px;
-}
-.userlist > .fa-circle{
-	font-size:8px;
-}
-.search-sec p{ 
-	margin-bottom:0px; 
-}
-
+.modal-dialog {    
+    margin: 6.75rem auto !important;
+}	
+.chat-text-sec a img{ height : 100px; }
 </style>
+<script>BASE_URL = "{{ asset('') }}"</script>
 <div class="content-header">
 	<div class="container-fluid">
 		<div class="row mb-2">
@@ -117,17 +51,17 @@
 						<div class="chat-userlist-inner">
 							<nav class="chat-nav">
 								<div class="nav nav-tabs" id="nav-tab" role="tablist">
-									<a class="nav-item nav-link active" data-type="userlist" data-toggle="tab"
+									<a class="nav-item nav-link " data-type="userlist" data-toggle="tab"
 										href="#chat-user-list" role="tab"> <img
 										src="images/clipboard.png" alt="user" /></a>
 									<div class="search-sec">
-										<p class="text-center">
-											<span class="userlist"><i class="fa fa-dot-circle-o" aria-hidden="true"></i></span>
-											<span class="recentchats"><i class="fa fa-circle" aria-hidden="true"></i></span>
-										</p>
+										<!-- <p class="text-center">
+											<span class="userlist"><i class="fa fa-circle" aria-hidden="true"></i></span>
+											<span class="recentchats"><i class="fa fa-dot-circle-o" aria-hidden="true"></i></span>
+										</p> -->
 										<input type="text" name="_search_term" placeholder="{{ trans('pages.research') }}..">
 									</div>
-									<a class="nav-item nav-link " data-type="recentchats" data-toggle="tab"
+									<a class="nav-item nav-link active" data-type="recentchats" data-toggle="tab"
 										href="#chat-list" role="tab"> <img src="images/chat.png"
 										alt="chat" />
 									</a>
@@ -135,10 +69,10 @@
 							</nav>
 						</div>
 						<div class="tab-content" id="nav-tabContent">
-							<div class="tab-pane   active" id="chat-user-list" role="tabpanel">
+							<div class="tab-pane fade" id="chat-user-list" role="tabpanel">
 								<ul class="users-listing"></ul>
 							</div>
-							<div class="tab-pane fade" id="chat-list" role="tabpanel">
+							<div class="tab-pane active" id="chat-list" role="tabpanel">
 								<ul class="recent-listing"></ul>
 							</div>
 						</div>
@@ -168,6 +102,7 @@
 
 
 <div class="loading">Loading&#8230;</div>
+<div class="loading1">Loading&#8230;</div>
 @endsection @section('after-scripts')
 
 <!-- Lightbox -->
@@ -180,6 +115,9 @@
 <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
 
 <script src='https://vjs.zencdn.net/7.4.1/video.js'></script>
+
+<link href="{{ asset('css/videopopup.css') }}" rel="stylesheet">
+<script src="{{ asset('js/videopopup.js') }}"></script>
 
 <script>
 $('.nav-item').on("click", function(){

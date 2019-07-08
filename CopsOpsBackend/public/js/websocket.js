@@ -60,13 +60,15 @@ let connect = function ()
 		 * list of chat clients to list on the side.
 		 */
 	    
-	    register_client()
+	    register_client();
 
 	    /**
 		 * Request the user list from the server. If the server replies the user
 		 * list will be populated.
 		 */
-	    request_userlist()
+	    request_userlist();
+
+	    request_recent_chat();
 	}
 
 	/**

@@ -373,7 +373,7 @@
 										style="resize: none; width: 100%;" id="other_description"></textarea>
 								</div>
 								<div
-									class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 pl-0">
+									id="attachmentDiv" class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-2 pl-0">
 									<label class="w-100">{{ trans('pages.Attachement')}}</label>
 									<div class="row">
 									<p id="attachmentinc" class="col-md-6 attachmentinc"></p>
@@ -1154,22 +1154,22 @@ $(document).on('click','.view-incident',function(e){
 				$('.citizen ').removeClass('hide');	
 			if(typeof d[0]['report_police'] !== 'undefined')
 			{
-				$('#report_police').html("<h2>{{ trans('pages.archive.report')}} <br>Police<span >"+d[0]['report_police']+"</span></h2>");
+				$('#report_police').html("<h2>{{ trans('pages.archive.report')}} Police<span class='pl-3'>"+d[0]['report_police']+"</span></h2>");
 			}
 			
 			if(typeof d[0]['report_fire'] !== 'undefined')
 			{
-			$('#report_fireman_medical').html("<h2>{{ trans('pages.archive.report')}} <br> {{ trans('pages.Fireman')}}/medical<span >"+d[0]['report_fire']+"</span></h2>");
+			$('#report_fireman_medical').html("<h2>{{ trans('pages.archive.report')}}  {{ trans('pages.Fireman')}}/medical<span class='pl-3'>"+d[0]['report_fire']+"</span></h2>");
 			}
 
 			if(typeof d[0]['report_city'] !== 'undefined')
 			{
-			$('#report_city').html("<h2>{{ trans('pages.archive.report')}} <br>{{ trans('pages.City')}}<span >"+d[0]['report_city']+"</span></h2>");
+			$('#report_city').html("<h2>{{ trans('pages.archive.report')}} {{ trans('pages.City')}}<span class='pl-3'>"+d[0]['report_city']+"</span></h2>");
 			}
 			
 			if(typeof d[0]['report_handrail'] !== 'undefined')
 			{
-			$('#report_handrail').html("<h2>{{ trans('pages.handrail')}}<span >"+d[0]['report_handrail']+"</span></h2>");
+			$('#report_handrail').html("<h2>{{ trans('pages.handrail')}}<span class='pl-3'>"+d[0]['report_handrail']+"</span></h2>");
 			}
 		}
 		else if(d[0]['ref_user_type_id'] == '{{ App\UserType::_TYPE_OPERATOR }}') {
@@ -1177,12 +1177,12 @@ $(document).on('click','.view-incident',function(e){
 				$('.citizen ').addClass('hide');	
 			if(typeof d[0]['assigned_incidents'] !== 'undefined')
 			{
-			$('#assigned_incidents').html("<h2>{{ trans('pages.Assigned')}}<br><span >"+d[0]['assigned_incidents']+"</span></h2>");
+			$('#assigned_incidents').html("<h2>{{ trans('pages.Assigned')}}<span class='pl-3'>"+d[0]['assigned_incidents']+"</span></h2>");
 			}
 
 			if(typeof d[0]['completed_incidents'] !== 'undefined')
 			{
-			$('#completed_incidents').html("<h2>{{ trans('pages.Completed')}}<br><span >"+d[0]['completed_incidents']+"</span></h2>");
+			$('#completed_incidents').html("<h2>{{ trans('pages.Completed')}}<span class='pl-3'>"+d[0]['completed_incidents']+"</span></h2>");
 			}
 		}
 			$('#incidents_address').val(d[0]['address']);
@@ -1213,6 +1213,12 @@ $(document).on('click','.view-incident',function(e){
 			else{
 				$('#attachmentvideoinc').html('');
 			}
+
+			if(d[0]['video'] == null && d[0]['photo'] == null){
+				$("#attachmentDiv").hide();
+			}
+			
+
 
 			if(d[0]['business_card1'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#business_card1').attr('href', d[0]['business_card1']).attr('target','_blank');
 			if(d[0]['business_card2'] !="")$('.modal .modal-dialog .modal-content .modal-body').find('#business_card2').attr('href', d[0]['business_card2']).attr('target','_blank');

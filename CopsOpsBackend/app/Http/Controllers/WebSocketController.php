@@ -9,6 +9,8 @@ use App\UserType;
 use Carbon\Carbon;
 use App\UserDeviceMapping;
 use App\Util\ResponseMessage;
+use Session;
+use Config;
 
 class WebSocketController implements MessageComponentInterface
 {
@@ -26,6 +28,8 @@ class WebSocketController implements MessageComponentInterface
         $this->subscriptions = [];
         $this->users = [];
         $this->userresources = [];
+
+        
     }
 
     /**
@@ -41,6 +45,8 @@ class WebSocketController implements MessageComponentInterface
     {
         $this->clients->attach($conn);
         $this->users[$conn->resourceId] = $conn;
+
+        
     }
 
     /**
@@ -62,7 +68,9 @@ class WebSocketController implements MessageComponentInterface
      * 
      */
     public function onMessage(ConnectionInterface $conn, $msg)
-    {        
+    {       
+        Config::set('app.timezone', 'Europe/Paris');
+
         file_put_contents(public_path('uploads/text.txt'), $msg);
         $data = json_decode($msg);
         if (isset($data->type)) 
@@ -71,7 +79,10 @@ class WebSocketController implements MessageComponentInterface
             {
                 case "message":
                     
+                try {
                     # Store chat here
+                    Config::set('app.timezone', 'Europe/Paris'); 
+
                     Chat::create([
                         'sender_id' => $data->user->id, 
                         'receiver_id' => $data->to_user, 
@@ -93,7 +104,8 @@ class WebSocketController implements MessageComponentInterface
                     $receiver_id = $data->to_user;
                     
                     $username = "";
-                    $to_userdata = User::where('id', $data->to_user)->get();
+                    // $to_userdata = User::where('id', $data->to_user)->get();
+                    $to_userdata = User::where('id', $data->user->id)->get();
                     
                     if(!empty($to_userdata))
                     {
@@ -122,10 +134,10 @@ class WebSocketController implements MessageComponentInterface
                                 ]); 
                                 */
 
-                                $msg = ResponseMessage::statusResponses(ResponseMessage::_STATUS_NEW_MESSAGE_RECEIVED,strtolower($userData[0]->device_lang));
+                                $msg1 = ResponseMessage::statusResponses(ResponseMessage::_STATUS_NEW_MESSAGE_RECEIVED,strtolower($userData[0]->device_lang));
 
-                                $message = array(
-                                    'message'=>$msg, 
+                                $message1 = array(
+                                    'message'=>$msg1, 
                                     'sender_id'=>$sender_id, 
                                     'receiver_id'=>$receiver_id, 
                                     'user'=>$username, 
@@ -133,7 +145,7 @@ class WebSocketController implements MessageComponentInterface
                                 );
 
                                 $push->setMessage([
-                                    'data'=>$message
+                                    'data'=>$message1
                                 ]);
                                     
                                 $push->setDevicesToken($tokenData[0]->device_token);
@@ -166,6 +178,10 @@ class WebSocketController implements MessageComponentInterface
                             }
                         }
                     }
+                } catch (Exception $e) {
+                    \Log::error($e->getMessage());
+                }
+                    
                     break;
                     
                 case "register":
@@ -207,6 +223,7 @@ class WebSocketController implements MessageComponentInterface
                     if(isset($data->user->id))
                     {
                         $userList = User::where('id', '<>', $data->user->id)->
+                        where('approved', 1)->
                         whereIn('ref_user_type_id', [UserType::_TYPE_BACKOFFICE, UserType::_TYPE_OPERATOR]);
                         if(isset($data->term) && !empty($data->term))
                         {
@@ -251,6 +268,7 @@ class WebSocketController implements MessageComponentInterface
                     
                     if(isset($data->user->id))
                     {
+                        Config::set('app.timezone', 'Europe/Paris');
                         $query = "SELECT t1.* FROM copops_chat AS t1
                                     INNER JOIN
                                     (
@@ -287,10 +305,11 @@ class WebSocketController implements MessageComponentInterface
                                     $c->user = User::find($c->sender_id)->first_name.' '.User::find($c->sender_id)->last_name;
                                 }
                                 
-                                $c->time = Carbon::parse($c->created_at)->diffForHumans();
+                                Carbon::setLocale(strtolower($data->lang)); 
+                                $c->time = Carbon::parse($c->created_on)->diffForHumans();
                                 $c->unread = count($unreadCount);
                             }
-                        }
+                        } 
                         
                         # Get Unread message count
                         $totalMessageCount = Chat::select('id')
@@ -306,7 +325,7 @@ class WebSocketController implements MessageComponentInterface
                             'type' => 'recentchats',
                             'totalMessageCount' => count($totalMessageCount)
                         ];
-                        
+                        \Log::info("Re", [$package]);
                         $conn->send(json_encode($package));
                         
                     }                    
@@ -318,7 +337,7 @@ class WebSocketController implements MessageComponentInterface
                     
                     if(isset($data->user->id))
                     {
-                        $limit = 6;
+                        $limit = 10;
                         $offset = ($data->page * $limit);
                         $page = $data->page;
 
@@ -334,6 +353,7 @@ class WebSocketController implements MessageComponentInterface
                         ->skip($offset)
                         ->get();              
 
+                        \Log::info("User {$data->user->id} sends $limit");
                         file_put_contents(public_path('uploads/t.txt'), json_encode(\DB::getQueryLog()));
                         
                         
@@ -407,7 +427,7 @@ class WebSocketController implements MessageComponentInterface
                         $chat = Chat::whereIn('id', [$data->seen])
                         ->update(['is_read'=>1]);
                         */
-                        
+                        Config::set('app.timezone', 'Europe/Paris');
                         $chat = Chat::where(['sender_id'=>$data->to_user, 'receiver_id' => $data->user->id]);                        
                         /*
                         if(isset($data->seen))
@@ -456,6 +476,7 @@ class WebSocketController implements MessageComponentInterface
     {
         $this->clients->detach($conn);
         echo "Connection {$conn->resourceId} has disconnected\n";
+        \Log::info("Connection {$conn->resourceId} has disconnected\n");
         unset($this->users[$conn->resourceId]);
         unset($this->subscriptions[$conn->resourceId]);
         foreach ($this->userresources as &$userId) {
@@ -470,6 +491,7 @@ class WebSocketController implements MessageComponentInterface
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
         echo "An error has occurred: {$e->getMessage()}\n";
+        \Log::error($e->getMessage());
         $conn->close();
     }
     

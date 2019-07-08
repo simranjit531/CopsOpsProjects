@@ -141,7 +141,7 @@ $rules  = [
         try
         {
             $user = User::create($data);
-            QrCode::format('png')->size(250)->generate($userId, public_path('uploads/profile/qrcodes/'.$userId.'.png'), 'image/png');
+            QrCode::format('png')->size(250)->generate(route('profile.data', [$userId]), public_path('uploads/profile/qrcodes/'.$userId.'.png'), 'image/png');
             if($user)
             {
                 /*
@@ -282,6 +282,7 @@ $rules  = [
         $rules  = [
             'email_id'=>'required',
             'user_password'=>'required',
+            'device_language'=>'required'
         ];
 
         $result = $this->validate_request($payload, $rules);
@@ -318,7 +319,22 @@ $rules  = [
             'created_on'=>Carbon::now()
         );
         
-        UserDeviceMapping::create($data);
+        /* Check if device mapping exists */
+        $userMappingData = UserDeviceMapping::where('ref_user_id', $auth[0]->id)->get();
+        if(!$userMappingData->isEmpty())
+        {
+            $data = array(
+                'device_id'=>$payload['device_id'],
+                'device_token'=>$payload['fcm_token'],
+                'created_on'=>Carbon::now()
+            );
+            UserDeviceMapping::where('ref_user_id', $auth[0]->id)->update($data);
+        }
+        else
+        {
+            UserDeviceMapping::create($data);    
+        }
+        // UserDeviceMapping::create($data);
         User::where('id', $auth[0]->id)->update(['device_lang' => $payload['device_language']]);
 
         return $this->sendResponseMessage(array(
@@ -644,34 +660,46 @@ $rules  = [
                         foreach ($tokenData as $tokens) {
                             foreach ($tokens as $t)
                             {
-                                if(empty($t->device_token)) continue;
-                                
-                                /* Get device language */        
-                                $userData = User::where('id', $t->ref_user_id)->get();
-                                $userLang = $userData->isEmpty() ? 'En' : $userData[0]->device_lang;
- 
-                                /* Get device language */
+                                if($t->device_token !== "" && $t->device_token !== NULL)
+                                {                                
+                                    /* Get device language */        
+                                    $userData = User::where('id', $t->ref_user_id)->get();
+                                    $userLang = $userData->isEmpty() ? 'En' : $userData[0]->device_lang;
 
-                                $message = array(
-                                    'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS,strtolower($userLang)),
-                                    'incident'=> $incidents,
-                                    'type'=>'incident'
-                                );
+                                    /* Get device language */
 
-                                $push->setMessage([
-                                    'data'=>$message
-                                ]);
-    
+                                    $message = array(
+                                        'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS,strtolower($userLang)),
+                                        'incident'=> $incidents,
+                                        'type'=>'incident'
+                                    );
 
-                                $push->setDevicesToken($t->device_token);
-                                $push->send();
-                                $push->getFeedback();                                
+                                    $push->setMessage([
+                                        'data'=>$message
+                                    ]);
+
+
+                                    $push->setDevicesToken($t->device_token);    
+                                    
+                                    \Log::info("Setting Push Token for user {$t->ref_user_id} with Token {$t->device_token}");
+                                }
                             }
                         }
+                        try {
+                            $push->send();
+                        } catch (Exception $e) {
+                            \Log::info("ttt", [$e]);                                
+                            \Log::info("ttt", [$push->getFeedback()]);                                
+                        }
+                        
+
+
                     }
                 }
                 catch (\Exception $e){
-                    file_put_contents('uploads/test.txt', $e->getMessage());                    
+                    
+                    \Log::error("Error ", [$e->getMessage()]); 
+                    // file_put_contents('uploads/test.txt', $e->getMessage());                    
                 }
 
                 if($rs) return $this->sendResponseMessage(['status'=>true, 'message'=>  ResponseMessage::statusResponses(ResponseMessage::_STATUS_INCIDENT_ADD_SUCCESS,strtolower($payload['device_language'])), 'reference'=>$rs->reference, 'qrcode_url'=>asset('uploads/qrcodes').'/'.$referenceNo.'.png', 'helpline_number'=>$helplineNumber],200);
@@ -679,6 +707,7 @@ $rules  = [
             }
             catch(QueryException $e)
             {
+                \Log::error("Error ", [$e->getMessage()]); 
                 return $this->sendResponseMessage(['status'=>false, 'message'=>  $e->getMessage()],200);
             }
 //        }
@@ -1348,8 +1377,8 @@ $rules  = [
         $newReport = 0;
         $quotient = 1;
         
-        /*
-        if($userType == 1)
+        
+        if($userType == 3)
         {
             $incidentData = CopUserIncidentMapping::select('cop_incident_details_id')->where(['ref_user_id'=>$userId])->get();
             $closedIncidentData = CopUserIncidentClosed::where('created_by', $userId)->get();
@@ -1381,18 +1410,18 @@ $rules  = [
 
             $quotient = ceil(count($incidentData)/4); 
         }
-        */
         
-        $incidentData = IncidentDetail::where('created_by', $userId)->get();
-        $pending = count($incidentData) % 4;
-        if($pending == 0 && count($incidentData) != 0) $pending = 4;
-        elseif ($pending == 0 && count($incidentData) == 0) $pending = 0;
         
-        $closedIncidentData = $incidentData;
-        $closedIncidentDataCount = count($closedIncidentData);
+        //$incidentData = IncidentDetail::where('created_by', $userId)->get();
+        //$pending = count($incidentData) % 4;
+        // if($pending == 0 && count($incidentData) != 0) $pending = 4;
+        // elseif ($pending == 0 && count($incidentData) == 0) $pending = 0;
         
-        $report = $pending.'/4';        
-        $quotient = ceil(count($incidentData)/4); 
+        // $closedIncidentData = $incidentData;
+        // $closedIncidentDataCount = count($closedIncidentData);
+        
+        // $report = $pending.'/4';        
+        // $quotient = ceil(count($incidentData)/4); 
 //         $newReport = count(CopUserIncidentMapping::where(['ref_user_id'=>$userId, 'status'=>2])->orderBy('created_at', 'desc')->first());
         
         /*
@@ -1497,8 +1526,34 @@ $rules  = [
             'latitude' => $payload['latitude'], 
             'longitude' => $payload['longitude']
         ]);
+            
+        $userMappingData = UserDeviceMapping::where('ref_user_id', $payload['user_id'])->get();        
+        if($userMappingData->isEmpty())
+        {
+            $data = array(
+                'device_id'=>$payload['device_id'],
+                'device_token'=>$payload['fcm_token'],
+                'created_on'=>Carbon::now()
+            );
+            UserDeviceMapping::create($data);
+        }
+        else 
+        {
+            if($userMappingData[0]->fcm_token != $payload['fcm_token'])
+            {
+                $data = array(
+                    'device_id'=>$payload['device_id'],
+                    'device_token'=>$payload['fcm_token'],
+                    'created_on'=>Carbon::now()
+                );
+                
+                UserDeviceMapping::where('id', $payload['user_id'])->update($data);
+            }
+        }
         
-	
+
+
+
         if($rs) return $this->sendResponseMessage(['status'=>true, 'isfreeze'=>$status , 'message' => ResponseMessage::statusResponses(ResponseMessage::_STATUS_ACCOUNT_APPROVAL_FREEZED)], 200);
 		
 		
@@ -1570,7 +1625,7 @@ $rules  = [
     {
         $lang = $request->input('lang');
         
-        $rules = ['upload_document' => 'required'];
+        $rules = ['upload_document' => 'required|max:10000'];
         $result = $this->validate_upload_request($request, $rules);
         if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
         
@@ -1715,7 +1770,8 @@ $rules  = [
         $rules  = [
             'first_name'=>'required',
             'last_name'=>'required',
-            'date_of_birth'=>'required'
+            'date_of_birth'=>'required',
+            'phone_number'=>'required'
         ];
         
         $result = $this->validate_request($payload, $rules);
@@ -1728,7 +1784,9 @@ $rules  = [
                 'first_name'=> isset($payload['first_name']) ? $payload['first_name'] : '',
                 'last_name'=> isset($payload['last_name']) ? $payload['last_name'] : '',
                 'date_of_birth'=> isset($payload['date_of_birth']) ? $payload['date_of_birth'] : '',                
-                'device_lang' => $payload['device_language']
+                'device_lang' => $payload['device_language'],
+                'phone_number' => $payload['phone_number'],
+                'gender' => $payload['gender']
             );
             
             /*
@@ -1748,6 +1806,7 @@ $rules  = [
                 $auth = User::where('id', $userId)->get();
                 
                 return $this->sendResponseMessage(array(
+                    'date_of_birth'=>$auth[0]->date_of_birth,
                     'status'=>true,                         
                     'id' => $auth[0]->id,
                     'userid' => $auth[0]->user_id,
@@ -1795,7 +1854,7 @@ $rules  = [
         $userData = User::where(['id'=>$userId, 'user_password'=>$oldPass])->get();
         // _STATUS_USER_NOT_FOUND
         // ResponseMessage::statusResponses(ResponseMessage::_STATUS_USER_NOT_FOUND,strtolower($payload['device_language']))), 200);
-        if($userData->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_USER_NOT_FOUND,strtolower($payload['device_language']))], 200);
+        if($userData->isEmpty()) return $this->sendResponseMessage(['status'=>false, 'message'=> ResponseMessage::statusResponses(ResponseMessage::_STATUS_OLD_PASSWORD_NOT_MATCH,strtolower($payload['device_language']))], 200);
         
         $rs = User::where('id', $userId)->update(['user_password'=>$payload['password']]);
 
@@ -1831,7 +1890,8 @@ $rules  = [
         // $payload = json_decode($request->input('data'), true);        
         $userId = $payload['user_id'];
 
-        UserDeviceMapping::where('ref_user_id', $userId)->update(['device_token'=>'']);
+        #UserDeviceMapping::where('ref_user_id', $userId)->update(['device_token'=>'']);
+        UserDeviceMapping::where('ref_user_id', $userId)->delete();
 
         return $this->sendResponseMessage([
             'status'=>true,

@@ -11,4 +11,7 @@ class Chat extends Model
     protected $fillable = [
         'sender_id', 'receiver_id', 'message', 'message_type', 'is_read', 'is_deleted'
     ];
+
+    const CREATED_AT = 'created_on';
+    const UPDATED_AT = 'updated_on';
 }

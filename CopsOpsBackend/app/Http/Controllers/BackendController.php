@@ -446,6 +446,7 @@ class BackendController extends Controller
 			    foreach ($users as $k=>$u)
 			    {
 			        $users[$k]->date = Carbon::parse($u->created_at)->format('d/m/y H:i');
+			        // $users[$k]->date = Carbon::parse($u->created_at)->format('Y-m-d H:i');
 			    }
 			}
 			 return Datatables::of($users) ->addColumn('firstlast', function($row){
@@ -926,7 +927,7 @@ class BackendController extends Controller
 	            ->leftJoin('cop_incident_attachment','cop_incident_details.id','=','cop_incident_attachment.cop_incident_details_id')
 				->where('cop_incident_details.id', $incidentid)
 				->get(); 
-           
+			
             if($incidents->isEmpty()) return response()->json(['status'=>false, 'message'=>Lang::get("pages.somethingwentwrong")], 200);
             
             foreach ($incidents as $k => $v) 
@@ -1051,9 +1052,8 @@ class BackendController extends Controller
 	}
 	
 	public function pushServerSentEvents()
-	{
-	    
-	    
+	{    
+		/*
 	    $response =  new StreamedResponse();
 	    $response->headers->set('Content-Type', 'text/event-stream');
 	    $response->headers->set('Cache-Control', 'no-cache');
@@ -1066,14 +1066,29 @@ class BackendController extends Controller
 	            }
 	            
 	            $res['count'] = count($notifications->toArray());
-	            $res['data'] = $notifications->toArray();
-	            echo "retry: 100\n\n"; // no retry would default to 3 seconds.
+	            $res['data'] = $notifications->toArray();				
 	            echo "data: ".json_encode($res)."\n\n";
 	            ob_flush();
 	            flush();
-	            sleep(10);
+	            sleep(3);
 	        });
-	    return $response->send();
+		return $response->send();
+		*/
+		
+		header('Content-Type: text/event-stream');
+		header('Cache-Control: no-cache');
+		
+		do 
+		{
+			$notifications = Notification::where('status', 0)->orderBy('created_at', 'desc')->get();
+			$count = count($notifications->toArray());		            
+
+            echo "data: {\"notification\" : {$notifications}, \"count\" : {$count}}\n\n";
+            sleep(2);
+            @ob_flush();
+            flush();
+
+		}while(true);
 	}
 	
 	public function updateNotificationStatus(Request $request)
@@ -1100,7 +1115,7 @@ class BackendController extends Controller
 	{
 	    $lang = $request->input('lang');
 	    
-	    $rules = ['upload_document' => 'required'];
+	    $rules = ['upload_document' => 'required|max:10000'];
 	    $result = $this->validate_upload_request($request, $rules);
 	    if($result) return $this->sendResponseMessage(array('status'=>false, 'message'=> $result), 200);
 	    

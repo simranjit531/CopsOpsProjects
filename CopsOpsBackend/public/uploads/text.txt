@@ -1,1 +1,1 @@
-{"type":"recentchats","user":{"username":"simranjit citizens","id":"14"}}
+{"user":{"username":"Backoffice User 1","id":"11"},"type":"userlist","term":""}

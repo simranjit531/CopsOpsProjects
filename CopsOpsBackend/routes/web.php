@@ -85,3 +85,7 @@ Route::get('/live/location', 'BackendController@userLiveLocation')->name('backof
 
 
 Route::post('/upload/document','BackendController@uploadMessageFile')->name('ajax.upload.document');
+
+
+
+Route::get('/view/profile/{userId}', 'LoginController@viewProfileData')->name('profile.data');

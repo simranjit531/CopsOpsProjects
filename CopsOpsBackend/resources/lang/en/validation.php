@@ -132,6 +132,12 @@ return [
         ],
     ],
 
+    'custom' => [
+        'upload_document' => [
+            'max' => 'File size should be less than 10MB',
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes

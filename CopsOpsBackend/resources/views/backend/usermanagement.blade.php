@@ -298,22 +298,25 @@
 						<div class="inention-div operator hide">
 							<div class="row">
 								<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-									<div class="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
+									<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 										<h2>
 											{{ trans('pages.reporting')}} <br> {{
 											trans('pages.usermgnt.attributed')}}
+
+											
 										</h2>
 									</div>
-									<div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-										<span id="operator_assigned_report">12</span>
+									<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+										<div class="text-center" id="operator_assigned_report">12</div>
 									</div>
 								</div>
 								<div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-									<div class="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
+									<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 										<h2>{{ trans('pages.usermgnt.totelinterventionfenced')}}</h2>
+										
 									</div>
-									<div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-										<span  id="operator_completed_report">18</span>
+									<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+										<div  class="text-center" id="operator_completed_report">18</div>
 									</div>
 
 								</div>
@@ -323,48 +326,48 @@
 						<div class="inention-div citizen hide">
 							<div class="row">
 								<div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-									<div class="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
+									<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 										<h2>
 											{{ trans('pages.reporting')}} <br> police
 										</h2>
 									</div>
-									<div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-										<span id="citizen_police_report">12</span>
+									<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+										<div class="text-center" id="citizen_police_report">12</div>
 									</div>
 								</div>
 								
 								<div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-									<div class="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
+									<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 										<h2>
 											{{ trans('pages.reporting')}} <br> {{
 											trans('pages.Fireman')}}/Medical
 										</h2>
 									</div>
-									<div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-										<span id="citizen_fire_report">12</span>
+									<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+										<div class="text-center" id="citizen_fire_report">12</div>
 									</div>
 								</div>
 								
 								<div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-									<div class="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
+									<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 										<h2>
 											{{ trans('pages.reporting')}} <br> {{
 											trans('pages.City')}}
 										</h2>
 									</div>
-									<div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-										<span id="citizen_city_report">12</span>
+									<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+										<div class="text-center" id="citizen_city_report">12</div>
 									</div>
 								</div>
 								
 								<div class="col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-									<div class="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
+									<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 										<h2>
 											{{ trans('pages.handrail')}} 
 										</h2>
 									</div>
-									<div class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-										<span id="citizen_handrail_report">12</span>
+									<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+										<div class="text-center" id="citizen_handrail_report">12</div>
 									</div>
 								</div>
 							</div>
@@ -685,10 +688,10 @@ $(document).on('click','#viewCops',function(e){
 				$('.citizen ').removeClass('hide');	
 
 				
-				$('.modal .modal-dialog .modal-content .modal-body .citizen').find('span#citizen_police_report').text(d[0]['report_police']);						
-				$('.modal .modal-dialog .modal-content .modal-body .citizen').find('span#citizen_fire_report').text(d[0]['report_fire']);
-				$('.modal .modal-dialog .modal-content .modal-body .citizen').find('span#citizen_city_report').text(d[0]['report_city']);
-				$('.modal .modal-dialog .modal-content .modal-body .citizen').find('span#citizen_handrail_report').text(d[0]['report_handrail']);
+				$('.modal .modal-dialog .modal-content .modal-body .citizen').find('div#citizen_police_report').text(d[0]['report_police']);						
+				$('.modal .modal-dialog .modal-content .modal-body .citizen').find('div#citizen_fire_report').text(d[0]['report_fire']);
+				$('.modal .modal-dialog .modal-content .modal-body .citizen').find('div#citizen_city_report').text(d[0]['report_city']);
+				$('.modal .modal-dialog .modal-content .modal-body .citizen').find('div#citizen_handrail_report').text(d[0]['report_handrail']);
 // 				  	lat = d[0]['latitude'];
 // 					lng = d[0]['longitude'];
 // 					var position = new google.maps.LatLng(lat, lng);
@@ -707,8 +710,8 @@ $(document).on('click','#viewCops',function(e){
 // 		        	});
 			}
 			else if(d[0]['ref_user_type_id'] == '{{ App\UserType::_TYPE_OPERATOR }}') {
-				$('.modal .modal-dialog .modal-content .modal-body .operator').find('span#operator_assigned_report').text(d[0]['assigned_incidents']);						
-				$('.modal .modal-dialog .modal-content .modal-body .operator').find('span#operator_completed_report').text(d[0]['completed_incidents']);	
+				$('.modal .modal-dialog .modal-content .modal-body .operator').find('div#operator_assigned_report').text(d[0]['assigned_incidents']);						
+				$('.modal .modal-dialog .modal-content .modal-body .operator').find('div#operator_completed_report').text(d[0]['completed_incidents']);	
 // 			    lat = d[0]['latitude'];
 // 				lng = d[0]['longitude'];
 // 				console.log(d[0]['latitude']+""+d[0]['longitude'])

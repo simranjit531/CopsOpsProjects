@@ -98,7 +98,7 @@
                         <li><span>{{ trans('pages.usermgnt.object') }}</span><input type="text" value="" class="form-control objectinc" readonly="readonly"></li>
                         <li><span>Description</span> <textarea class="form-control descriptioninc" readonly="readonly"></textarea></li>
                         <li><span>{{ trans('pages.Reference') }}</span><input type="text" value="" class="form-control refrence-input refrence-input-info" readonly="readonly"></li>
-                         <li><span>{{ trans('pages.Attachement') }}</span> <p id="attachmentinc"></p><p id="attachmentvideoinc"></p></li>
+                         <li id="attachmentLI"><span>{{ trans('pages.Attachement') }}</span> <p id="attachmentinc"></p><p id="attachmentvideoinc"></p></li>
 <!--                          <li><span>Signature</span> <p id="signature"></p></li> -->
                         
 <!--                         <li><span>Signature</span><div id="reportsignature"></div></li> -->
@@ -250,7 +250,14 @@
 			})
 
 			
-		}
+    }
+    
+    if(d.data[0]['video'] == null && d.data[0]['photo'] == null)
+    {
+        $("#attachmentLI").hide();
+    }
+
+
 		if(d.data[0]['video'] != null)
 		{
 		var video= "{{ url('/uploads/incident_video') }}/"+d.data[0]['video'];

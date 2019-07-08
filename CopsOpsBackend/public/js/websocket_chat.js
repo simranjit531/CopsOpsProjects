@@ -52,18 +52,20 @@ function request_userlist()
 		     * @type {{user, message: any}}
 		     **/
 		     pkg = JSON.stringify(pkg)
-		     //console.log(pkg);
+		     
 		     if (ws.conn && ws.conn.readyState === WebSocket.OPEN) 
 		     {
 		        ws.conn.send(pkg)
 		     }
 	    }
-	}, 2000)
+	}, 1000)
 }
 
 function request_recent_chat()
 {
-	let pkg = { 'user': chat_user, 'type': 'recentchats'}
+	var lang =  $('input[type="hidden"][name="_hidden_language"]').val();
+	
+	let pkg = { 'user': chat_user, 'type': 'recentchats', 'lang':lang}
 
 	pkg = JSON.stringify(pkg)
 		  
@@ -86,8 +88,10 @@ function process_request(request)
 function process_response(response)
 {	
     if (response.type === 'message') 
-    {
+    {    	
+		console.log(response); 
     	message(response);
+    	refreshLastMessage(response);
     } 
     else if (response.type === 'userlist') 
     {
@@ -99,6 +103,7 @@ function process_response(response)
     }
     else if (response.type === 'recentchats') 
     {
+		console.log(response.recentchat);
     	populate_recent_chat(response.recentchat);
     }
     
@@ -124,15 +129,28 @@ function message(message)
 		}
 		else if(v.message_type == 'VIDEO')
 		{
-			html +="<a href='"+v.message+"' data-lightbox='messages'><video id='my-video' class='uploaded-image video-js' controls preload='auto' width='250px' height='150' data-setup='{}'>";
-			html +="<source src='"+v.message+"' type='video/mp4'>";						    
-			html +="</video></a>";
+			html +="<a href='"+v.message+"' data-toggle='modal' data-target='#myModal_"+k+"'>";
+			// html +='<i class="fa fa-film fa-4x" aria-hidden="true"></i>';	
+			html +='<img src="'+BASE_URL+'/images/play.jpg">';						    
+			html +="</a>";					
+			html +=`<div id="myModal_`+k+`" class="modal fade" role="dialog">
+						<div class="modal-dialog">				  					  
+							<div class="modal-content">
+								<div class="modal-body">
+									<video autoplay id="v_`+k+`"  controls>
+										<source src="`+v.message+`" type="video/mp4">
+										<source src="`+v.message+`" type="video/ogg">
+									</video>
+								</div>
+							</div>
+						</div>
+					</div>`;
 		}
 		else if(v.message_type == 'PDF')
 		{
 			html +="<a href='"+v.message+"' >";
 			html +='<i class="fa fa-file-pdf-o fa-4x"></i>';					    
-			html +="</video></a>";
+			html +="</a>";
 		}
 		else
 		{
@@ -150,15 +168,30 @@ function message(message)
 		}
 		else if(message.message_type == 'VIDEO')
 		{
-			html +="<a href='"+message.message+"' data-lightbox='messages'><video id='my-video' class='uploaded-image video-js' controls preload='auto' width='250px' height='150' data-setup='{}'>";
-			html +="<source src='"+message.message+"' type='video/mp4'>";						    
-			html +="</video></a>";
+			var k = $.now();
+			html +="<a href='"+message.message+"' data-toggle='modal' data-target='#myModal_"+k+"'>";
+			// html +='<i class="fa fa-film fa-4x" aria-hidden="true"></i>';
+			html +='<img src="'+BASE_URL+'/images/play.jpg">';						    
+			html +="</a>";					
+			html +=`<div id="myModal_`+k+`" class="modal fade" role="dialog">
+						<div class="modal-dialog">				  					  
+							<div class="modal-content">
+								<div class="modal-body">
+									<video autoplay id="v_`+k+`"  controls>
+										<source src="`+message.message+`" type="video/mp4">
+										<source src="`+message.message+`" type="video/ogg">
+									</video>
+								</div>
+							</div>
+						</div>
+					</div>`;
+
 		}
 		else if(message.message_type == 'PDF')
 		{
 			html +="<a href='"+message.message+"' >";
 			html +='<i class="fa fa-file-pdf-o fa-4x"></i>';					    
-			html +="</video></a>";
+			html +="</a>";
 		}
 		else
 		{
@@ -175,19 +208,23 @@ function message(message)
 	    return false;
 	});
 	
-	$('.chatBox').scrollTop($('.chatBox')[0].scrollHeight);
+	if($('.chatBox').length > 0) $('.chatBox').scrollTop($('.chatBox')[0].scrollHeight);
 }
 
 
 function populate_users(response)
 {	
+	//console.log("Populate user");
 	if(response.users.length > 0)
 	{
 		var html = '';
 		var _receiver_id = $('input[type="hidden"][name="_receiver_id"]').val();
+		//console.log(_receiver_id);
 		$(response.users).each(function(k,v){			
 			let aClass= '';
-			if(_receiver_id.length > 0 && (_receiver_id == v.id)) aClass = 'active';
+			if(typeof _receiver_id !="undefined"){
+				if(_receiver_id.length > 0 && (_receiver_id == v.id)) aClass = 'active';
+			} 
 			html += '<li data-username="'+v.username+'" data-user-id="'+v.id+'" class="'+aClass+'"><p>'+v.username+'</p> <span id="chatCountUser">1</span></li>'
 		});
 		$('.users-listing').html(html);
@@ -199,7 +236,7 @@ function populate_users(response)
 
 function populate_recent_chat(chat)
 {
-	//console.log(chat);
+	console.log(chat);
 	if(chat.length > 0)
 	{
 		var html = '';
@@ -235,20 +272,38 @@ function populate_chat_history(history)
 				html += '<div class="admin-chat" data-message-id="'+v.message_id+'"><h3>'+frenchme+'</h3><div class="chat-text-sec">';
 				if(v.message_type == 'IMAGE')
 				{
-					html +='<a href="'+v.message+'" data-lightbox="messages"><img class="uploaded-image" src="'+v.message+'"></a>';
+					html +='<a href="'+v.message+'" data-lightbox="messages">';
+					html +='<i class="fa fa-picture-o fa-4x" aria-hidden="true"></i>';					
+					html +='</a>';
 						
 				}
 				else if(v.message_type == 'VIDEO')
 				{
-					html +="<a href='"+v.message+"' data-lightbox='messages'><video id='my-video' class='uploaded-image video-js' controls preload='auto' width='250px' height='150' data-setup='{}'>";
-					html +="<source src='"+v.message+"' type='video/mp4'>";						    
-					html +="</video></a>";
+					html +="<a href='"+v.message+"' data-toggle='modal' data-target='#myModal_"+k+"'>";
+					// html +='<i class="fa fa-film fa-4x" aria-hidden="true"></i>';	
+					html +='<img src="'+BASE_URL+'/images/play.jpg">';					    
+					html +="</a>";					
+					html +=`<div id="myModal_`+k+`" class="modal fade" role="dialog">
+								<div class="modal-dialog">				  					  
+					  				<div class="modal-content">
+										<div class="modal-body">
+											<video autoplay id="v_`+k+`"  controls>
+												<source src="`+v.message+`" type="video/mp4">
+												<source src="`+v.message+`" type="video/ogg">
+											</video>
+										</div>
+					  				</div>
+								</div>
+							</div>`;
+
+
+
 				}
 				else if(v.message_type == 'PDF')
 				{
 					html +="<a href='"+v.message+"'  target='_blank'>";
 					html +='<i class="fa fa-file-pdf-o fa-4x"></i>';					    
-					html +="</video></a>";
+					html +="</a>";
 				}
 				else
 				{
@@ -262,19 +317,35 @@ function populate_chat_history(history)
 				
 				if(v.message_type == 'IMAGE')
 				{
-					html +='<a href="'+v.message+'" data-lightbox="messages"><img class="uploaded-image" src="'+v.message+'"/></a>';
+					html +='<a href="'+v.message+'" data-lightbox="messages">';
+					html +='<i class="fa fa-picture-o fa-4x" aria-hidden="true"></i>';					
+					html +='</a>';
 				}
 				else if(v.message_type == 'VIDEO')
 				{
-					html +="<a href='"+v.message+"' data-lightbox='messages'><video id='my-video' class='uploaded-image video-js' controls preload='auto' width='250px' height='150' data-setup='{}'>";
-					html +="<source src='"+v.message+"' type='video/mp4'>";						    
-					html +="</video></a>";
+					html +="<a href='"+v.message+"' data-toggle='modal' data-target='#myModal_"+k+"'>";
+					// html +='<i class="fa fa-film fa-4x" aria-hidden="true"></i>';		
+					html +='<img src="'+BASE_URL+'/images/play.jpg">';				    
+					html +="</a>";
+
+					html +=`<div id="myModal_`+k+`" class="modal fade" role="dialog">
+								<div class="modal-dialog">				  					  
+					  				<div class="modal-content">
+										<div class="modal-body">
+											<video autoplay id="v_`+k+`"  controls>
+												<source src="`+v.message+`" type="video/mp4">
+												<source src="`+v.message+`" type="video/ogg">
+											</video>
+										</div>
+					  				</div>
+								</div>
+							</div>`;
 				}
 				else if(v.message_type == 'PDF')
 				{
 					html +="<a href='"+v.message+"' target='_blank'>";
 					html +='<i class="fa fa-file-pdf-o fa-4x"></i>';					    
-					html +="</video></a>";
+					html +="</a>";
 				}
 				else
 				{
@@ -284,8 +355,8 @@ function populate_chat_history(history)
 				html +='</div></div>';
 			}
 		});
-		console.log($(".chatBox .client-chat").length);
-		if ($(".client-chat").length > 0)
+		//console.log($(".chatBox .client-chat").length);
+		if ($(".client-chat").length > 0 || $(".admin-chat").length > 0 )
 		{ 			
 			$(".chatBox").prepend(html);
 		}
@@ -294,12 +365,14 @@ function populate_chat_history(history)
 				$('.chatBox').html(html);
 		}
 		
-		$('.chatBox').scrollTop($('.chatBox')[0].scrollHeight);
+		if($('.chatBox').length > 0) $('.chatBox').scrollTop($('.chatBox')[0].scrollHeight);
 		
 		update_seen_status();	
 		
 		$('.nav-tabs a[data-type="recentchats"]').trigger('click');
 		$('input[type="hidden"][name="page_length"]').val(history.page);	
+
+		
 	}
 	
 	$('.uploaded-image').click(function(){
@@ -307,6 +380,24 @@ function populate_chat_history(history)
 	    return false;
 	});
 }
+
+function refreshLastMessage(message)
+{
+	var recentCount = $('.recent-listing li[data-user-id='+message.user.id+']').find('.recentUnreadCount').html();
+
+	recentCount = (parseInt(recentCount) + 1);
+
+	$('.recent-listing li[data-user-id='+message.user.id+']').find('.recentUnreadCount').html(recentCount);
+	
+	var msg = message.message
+	console.log(msg);
+	if(message.message_type != "TEXT") msg = "Attachment";
+	$('.recent-listing li[data-user-id='+message.user.id+']').children('p').children('span').html(msg);
+}
+
+
+
+
 
 /**
  * Send a chat message to the server
@@ -352,7 +443,7 @@ function send_message ()
 		html = '<div class="admin-chat"><h3>'+frenchme+'</h3><div class="chat-text-sec"><p>'+pkg.message+'</p></div></div>';
 	    $('.chatBox').append(html);
 	    
-	    $('.chatBox').scrollTop($('.chatBox')[0].scrollHeight);
+	    if($('.chatBox').length > 0) $('.chatBox').scrollTop($('.chatBox')[0].scrollHeight);
 	} 
 	
 	let pkg_object = pkg
@@ -395,12 +486,12 @@ $(document).on('click', '.users-listing li, .recent-listing li', function(){
 
 	var _receiver_id = $(this).data('userId');
 	var _receiver_username = $(this).data('username');
-	console.log(_receiver_id);
+	//console.log(_receiver_id);
 	/*
 	 * Check receiver id
 	 */
 	let receiver_id = $('input[type="hidden"][name="_receiver_id"]').val();
-	console.log(receiver_id);
+	//console.log(receiver_id);
 	if(_receiver_id != receiver_id){
 		$('input[type="hidden"][name="page_length"]').val(0)
 		$('.chatBox').html('');
@@ -419,16 +510,17 @@ $(document).on('click', '.users-listing li, .recent-listing li', function(){
 });
 
 
-$("#upload_document").on("click", function(){
+$("#upload_document").on("click", function(){	
 	$("input[type='file'][name='upload_document']").trigger("click");
 });
 
 $("input[type='file'][name='upload_document']").on("change", function(){
 	
-	var $this = $(this);
+	$('.loading1').show();
 	
-	$('.loading').show();
-//	console.log($(this)[0]['files']);
+	var $this = $(this);
+	//	console.log($(this)[0]['files']);
+	if(($this[0].files[0].size/1000000) > 10){ alert("Files less than 10 MB are only allowed"); $('.loading1').hide(); return false; }
 	var formData = new FormData();
 	formData.append('_token', $('input[type="hidden"][name="_token"]').val());
 	formData.append('upload_document', $(this)[0]['files'][0]);
@@ -439,10 +531,17 @@ $("input[type='file'][name='upload_document']").on("change", function(){
         data:formData,
         cache:false,
         contentType: false,
-        processData: false,
+		processData: false,
+		// async:false,
+		beforeSend: function() {
+			$('.loading1').show();
+		},
         success:function(data){
+			
             if(data.status == true)
             {
+				console.log(data);
+
             	// Image is uploaded successfully, let's send message
             	let to_user = $('input[type="hidden"][name="_receiver_id"]').val();
             	
@@ -451,9 +550,9 @@ $("input[type='file'][name='upload_document']").on("change", function(){
 				let extension = file.substr( (file.lastIndexOf('.') +1) );
 							            	
             	let message_type = 'TEXT';
-            	if(extension == 'png' || extension == 'jpeg' || extension == 'jpg' || extension == 'bmp') message_type = 'IMAGE';
+            	if(extension == 'png' || extension == 'jpeg' || extension == 'jpg' || extension == 'bmp' || extension == 'JPEG') message_type = 'IMAGE';
             	else if(extension == 'pdf') message_type = 'PDF';
-            	else if(extension == 'mp4' || extension == 'mp3') message_type = 'VIDEO';
+            	else if(extension == 'mp4' || extension == 'mp3' || extension == 'webm') message_type = 'VIDEO';
             	
             	let pkg = {
             		'user': chat_user,
@@ -463,15 +562,16 @@ $("input[type='file'][name='upload_document']").on("change", function(){
 					'message_type': message_type,
 					'actual':data.actual
             	}
-            	
-            	send_uploaded_document_message (pkg);
+				send_uploaded_document_message (pkg);
             }            
+			
+			
             
-            $('.loading').hide();
         },
         error: function(data){
-//            console.log("error");
-//            console.log(data);
+		   alert("File size should be less than 10 MB");
+		   $('.loading1').hide();
+		   return false;
         }
     });
     $this.val('');
@@ -494,25 +594,40 @@ $('.btn-send.chat_btn').on('click', function () {
 
 function send_uploaded_document_message (message) 
 {	
-	//console.log(message);
 	if (message.to_user.length > 0) {
 		html = '<div class="admin-chat"><h3>Me</h3>';
 		html +='<div class="chat-text-sec">';
 		if(message.message_type == 'IMAGE')
 		{
-			html +='<a href="'+message.actual+'" data-lightbox="messages"><img class="uploaded-image" src="'+message.actual+'"/></a>';
+			html +='<a href="'+message.actual+'" data-lightbox="messages">';
+			html +='<i class="fa fa-picture-o fa-4x" aria-hidden="true"></i>';
+			html +='</a>';
 		}
 		else if(message.message_type == 'VIDEO')
 		{
-			html +="<a href='"+message.actual+"' data-lightbox='messages'><video id='my-video' class='uploaded-image video-js' controls preload='auto' width='250px' height='150' data-setup='{}'>";
-			html +="<source src='"+message.actual+"' type='video/mp4'>";						    
-			html +="</video></a>";
+			var k = $.now();
+			html +="<a href='"+message.actual+"' data-toggle='modal' data-target='#myModal_"+k+"'>";
+			// html +='<i class="fa fa-film fa-4x" aria-hidden="true"></i>';	
+			html +='<img src="'+BASE_URL+'/images/play.jpg">';					    
+			html +="</a>";
+			html +=`<div id="myModal_`+k+`" class="modal fade" role="dialog">
+								<div class="modal-dialog">				  					  
+					  				<div class="modal-content">
+										<div class="modal-body">
+											<video autoplay id="v_`+k+`"  controls>
+												<source src="`+message.actual+`" type="video/mp4">
+												<source src="`+message.actual+`" type="video/ogg">
+											</video>
+										</div>
+					  				</div>
+								</div>
+							</div>`;
 		}
 		else if(message.message_type == 'PDF')
 		{
 			html +="<a href='"+message.actual+"'  target='_blank'>";
 			html +='<i class="fa fa-file-pdf-o fa-4x"></i>';					    
-			html +="</video></a>";
+			html +="</a>";
 		}
 		else if(message.message_type == 'TEXT')
 		{
@@ -521,12 +636,14 @@ function send_uploaded_document_message (message)
 		html +='</div></div>';
 	    $('.chatBox').append(html);
 	    
-	    $('.uploaded-image').click(function(){
-		    lightbox.start($(this));
-		    return false;
-		});
+	    // $('.uploaded-image').click(function(){
+		//     lightbox.start($(this));
+		//     return false;
+		// });
 	    
-	    $('.chatBox').scrollTop($('.chatBox')[0].scrollHeight);
+		$('.chatBox').scrollTop($('.chatBox')[0].scrollHeight);
+		$('.loading1').hide();
+		// setTimeout(function(){  }, 10000);
 	} 
 	
 	let pkg = message
@@ -675,8 +792,6 @@ function request_paginated_chat_history()
 		
 		$('input[type="text"][name="_text_message"]').prop('disabled', false);
 		$('input[type="file"][name="upload_document"]').prop('disabled', false);
-				
-		$
 		
 		let chat_user = {
 			'username':$('input[type="hidden"][name="hidden_user_full_name"]').val(),
@@ -685,7 +800,7 @@ function request_paginated_chat_history()
 		
 		let to_user = $('input[type="hidden"][name="_receiver_id"]').val();
 		let page = parseInt($('input[type="hidden"][name="page_length"]').val());
-		
+		//console.log(page);
 		/**
 		 * Create a package to send to the
 		 * server.

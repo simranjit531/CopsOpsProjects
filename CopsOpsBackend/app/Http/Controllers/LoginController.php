@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\User;
 use Exception;
 
 class LoginController extends Controller
@@ -52,5 +53,13 @@ class LoginController extends Controller
         
         
         return redirect()->route('login');
+    }
+
+    public function viewProfileData(Request $request, $userId)
+    {
+        \DB::enableQueryLog();
+        $userData = User::where('user_id', $userId)->get();
+        if(!$userData->isEmpty()) $userData = $userData->first();       
+        return view('profile_view')->with(['userData'=>$userData]);
     }
 }
