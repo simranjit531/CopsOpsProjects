@@ -20,11 +20,9 @@
     <permission
         android:name="copops.com.copopsApp.C2D_MESSAGE"
         android:protectionLevel="signature" />
-
     <uses-permission android:name="copops.com.copopsApp.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -34,18 +32,16 @@
     <uses-feature
         android:name="android.hardware.camera.flash"
         android:required="false" />
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-
+        android:name=".utils.App"
         android:usesCleartextTraffic="true"
         android:allowBackup="false"
         tools:replace="android:allowBackup"
         android:icon="@mipmap/logo_launcher"
         android:label="@string/app_name"
-
         android:roundIcon="@mipmap/logo_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppThemenoactionbar">
@@ -56,11 +52,9 @@
             android:windowSoftInputMode="adjustResize|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBrxD_Azxlj-PY4MUR1RYzwIFuLFt0GnOM" />
@@ -138,51 +132,6 @@
             android:value="9a662926d6c2eed4a4bd5ad88520ea6ee0ad0329" />
 
 
-
-
-
-        <!--chat camp-->
-        <activity
-            android:name=".chat.MainActivity"
-
-            android:theme="@style/AppThemenoactionbar">
-        </activity>
-        <activity
-            android:name=".chat.RecentChatActivity"
-
-            android:theme="@style/AppThemenoactionbar">
-        </activity>
-        <activity
-            android:name=".chat.SelectContactActivity"
-
-            android:theme="@style/AppThemenoactionbar">
-        </activity>
-        <activity
-            android:name=".chat.ListActivity"
-
-            android:label="@string/title_activity_list" />
-        <activity
-            android:name=".chat.CreateGroupChannelActivity"
-            android:label="@string/title_activity_channel_create"
-            android:parentActivityName=".chat.ListActivity"
-            android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".chat.ListActivity" />
-        </activity>
-        <activity
-            android:name=".chat.ConversationActivity"
-            android:label="@string/title_activity_conversation"
-            android:parentActivityName=".chat.ListActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".chat.ListActivity" />
-        </activity>
-
-
-
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/logo_launcher" />
@@ -194,10 +143,6 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
 
-        <activity
-            android:name=".chat.TestConversationActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".chat.CreateOpenChannelActivity"></activity>
     </application>
 
 </manifest>
