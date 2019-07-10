@@ -1,5 +1,7 @@
 package copops.com.copopsApp.services;
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class ApiUtils {
 
     private ApiUtils() {}
@@ -13,7 +15,7 @@ public class ApiUtils {
 //Live Copops
  //   private static final String BASE_URL = "http://82.165.253.201/";
 
-
+//Get API URL
     public static Service getAPIService() {
 
         return WebServiceCall.getClient(BASE_URL).create(Service.class);

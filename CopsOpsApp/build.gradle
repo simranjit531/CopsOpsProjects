@@ -33,6 +33,7 @@ allprojects {
             url "https://maven.google.com"
         }
         maven { url 'https://jitpack.io' }
+        maven { url "https://jitpack.io" }
     }
 }
 
@@ -55,10 +56,10 @@ ext {
 
     butterKnifeVersion = '8.0.1'
 
-    versionCode = 381
-    versionName = '3.9.0'
+    versionCode = 1
+    versionName = '1.0'
 
-    testRunnerVersion = "1.0.2"
+    testRunnerVersion = "1.0"
 
     // Dependency versions
     playServicesVersion = '16.0.0'

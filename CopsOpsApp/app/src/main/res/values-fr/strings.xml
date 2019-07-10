@@ -11,9 +11,10 @@
     <string name="Cancel">Annuler</string>
     <string name="Settings">Réglages</string>
     <string name="me">Moi</string>
+    <string name="enter_location">S\'il vous plaît entrer le nom de la ville</string>
+    <string name="checkmb">La taille du fichier doit être inférieure à 10 Mo</string>
     <string name="no_internet">Pas d\'accès Internet, vérifiez votre connexion Internet.</string>
     <string name="default_notification_channel_id">copops.com.copopsApp.ANDROID</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Bonjour fragment vierge</string>
     <string name="last_name">Veuillez entrer votre nom de naissance</string>
     <string name="first_name">Veuillez entrer votre prénom de naissance </string>

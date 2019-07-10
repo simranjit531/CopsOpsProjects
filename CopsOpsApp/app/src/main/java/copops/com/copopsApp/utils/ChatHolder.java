@@ -1,17 +1,13 @@
 package copops.com.copopsApp.utils;
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class ChatHolder {
     private String message;
     String thumb;
     private String sender;
     private String receiver;
     private String message_type;
-
-
-
-
-
-
 
 
 public ChatHolder(String message, String sender, String receiver, String message_type, String thumb){

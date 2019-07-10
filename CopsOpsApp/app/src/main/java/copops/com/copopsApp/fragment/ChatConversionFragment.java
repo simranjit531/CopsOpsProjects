@@ -6,6 +6,8 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +27,7 @@ import androidx.fragment.app.Fragment;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
 import android.util.Log;
@@ -43,10 +46,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
+import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.gson.Gson;
 import com.iceteck.silicompressorr.SiliCompressor;
+import com.vincent.filepicker.Constant;
+import com.vincent.filepicker.activity.NormalFilePickActivity;
+import com.vincent.filepicker.filter.entity.NormalFile;
 
 
 import org.java_websocket.client.WebSocketClient;
@@ -63,6 +74,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -85,6 +97,7 @@ import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.ChatHolder;
 import copops.com.copopsApp.utils.EncryptUtils;
 import copops.com.copopsApp.utils.Utils;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -97,13 +110,17 @@ import okio.ByteString;
 import pub.devrel.easypermissions.EasyPermissions;
 import retrofit2.Call;
 import retrofit2.Callback;
+
 import static android.app.Activity.RESULT_OK;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Ranjan Gupta
  */
 @SuppressLint("ValidFragment")
 public class ChatConversionFragment extends Fragment implements View.OnClickListener {
+
+
+    private FFmpeg ffmpeg;
 
     WebSocketClient mWebSocketClient;
     @BindView(R.id.list_chat_messages)
@@ -156,15 +173,17 @@ public class ChatConversionFragment extends Fragment implements View.OnClickList
     String page = "0";
     int pastVisiblesItems, visibleItemCount, totalItemCount;
 
-    boolean isCheck=false;
+    boolean isCheck = false;
     private int overallXScroll = 0;
     int firstItemPos;
+    private String filePath;
     /// private WebSocketConnection mConnection = new WebSocketConnection();
 
     Uri capturedUri = null;
     private ArrayList<ChatHolder> mChatHolders = new ArrayList<>();
     private ArrayList<ChatHolder> mChatHoldersStore = new ArrayList<>();
-  int scroll=0;
+    int scroll = 0;
+
     @SuppressLint("ValidFragment")
     public ChatConversionFragment(String id, String userName, String toUserId) {
         this.id = id;
@@ -172,8 +191,6 @@ public class ChatConversionFragment extends Fragment implements View.OnClickList
         this.toUserId = toUserId;
         // Required empty public constructor
     }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -197,8 +214,6 @@ public class ChatConversionFragment extends Fragment implements View.OnClickList
         notificationManager.cancelAll();
         list_chat_messages.setAdapter(mRecentChatAdapter);
         firstItemPos = mLayoutManager.findFirstCompletelyVisibleItemPosition();
-        ;
-
         mAppSession = mAppSession.getInstance(getActivity());
         LinearLayout cameraIdLL = (LinearLayout) sheetView.findViewById(R.id.cameraIdLL);
         LinearLayout galleryid = (LinearLayout) sheetView.findViewById(R.id.galleryid);
@@ -206,13 +221,13 @@ public class ChatConversionFragment extends Fragment implements View.OnClickList
         LinearLayout fileiconId = (LinearLayout) sheetView.findViewById(R.id.fileiconId);
         TextView tv_btn_remove_photo = (TextView) sheetView.findViewById(R.id.tv_btn_remove_photo);
         button_chat_attachment.setOnClickListener(this);
+
+      //  loadFFMpegBinary();
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new
                     StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-
-
         cameraIdLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -220,8 +235,6 @@ public class ChatConversionFragment extends Fragment implements View.OnClickList
                 mBottomSheetDialog.dismiss();
             }
         });
-
-
         galleryid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -230,8 +243,6 @@ public class ChatConversionFragment extends Fragment implements View.OnClickList
                 mBottomSheetDialog.dismiss();
             }
         });
-
-
         recordingid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -243,10 +254,14 @@ public class ChatConversionFragment extends Fragment implements View.OnClickList
         fileiconId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("application/pdf");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Pdf"), 4);
+
+
+
+                Intent intent4 = new Intent(getContext(), NormalFilePickActivity.class);
+                intent4.putExtra(Constant.MAX_NUMBER, 1);
+              //  intent4.putExtra(NormalFilePickActivity.SUFFIX, new String[] {"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
+                intent4.putExtra(NormalFilePickActivity.SUFFIX, new String[] {"pdf"});
+                startActivityForResult(intent4, 4);
                 mBottomSheetDialog.dismiss();
             }
         });
@@ -254,24 +269,18 @@ public class ChatConversionFragment extends Fragment implements View.OnClickList
         tv_btn_remove_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // sheetView.d
                 mBottomSheetDialog.dismiss();
             }
         });
-
-
-
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 scroll = 1;
-
                 mAppSession.saveData("comeChatnoti", "0");
                 scrollSocketData();
                 pullToRefresh.setRefreshing(false);
             }
         });
-
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setMessage(getString(R.string.loading));
         button_chat_send.setOnClickListener(this);
@@ -280,13 +289,9 @@ public class ChatConversionFragment extends Fragment implements View.OnClickList
         Request request = new Request.Builder().url(Utils.CHAT_BASE_URL).build();
         EchoWebSocketListener listener = new EchoWebSocketListener();
         okHttpClient = new OkHttpClient();
-
         webSocket = okHttpClient.newWebSocket(request, listener);
         mAppSession.saveData("Chat", "1");
-
         seenUnSeen();
-        // sendMessageToServerFirst();
-
         mProgressDialog.show();
 
         pingRunnable = new Runnable() {
@@ -294,37 +299,30 @@ public class ChatConversionFragment extends Fragment implements View.OnClickList
             public void run() {
 
 
-
-                if(webSocket==null){
+                if (webSocket == null) {
                     Request request = new Request.Builder().url(Utils.CHAT_BASE_URL).build();
                     EchoWebSocketListener listener = new EchoWebSocketListener();
                     okHttpClient = new OkHttpClient();
-
                     webSocket = okHttpClient.newWebSocket(request, listener);
-
                     okHttpClient.dispatcher().executorService().shutdown();
                 }
-                //sendMessageToServerFirst();
-                pingHandler.postDelayed(this, 1000);
-//                if(size.size()>mChatHolders.size()) {
+                pingHandler.postDelayed(this, 4000);
 
                 String aa = mAppSession.getData("comeChatnoti");
                 Log.e("aaa", "" + aa);
 
                 if (mAppSession.getData("comeChatnoti").equalsIgnoreCase("1")) {
-                    //  seenUnSeen();
-                    page="0";
-                    scroll=0;
+                    page = "0";
+                    scroll = 0;
+                    mAppSession.saveData("comeChatnoti", "0");
                     sendMessageToServerFirst();
                     Log.e("show1", "sucesss");
-                //    mAppSession.saveData("comeChatnoti", "0");
                 } else {
                     Log.e("show1", "fail");
                 }
-//
             }
         };
-        pingHandler.postDelayed(pingRunnable, 1000);
+        pingHandler.postDelayed(pingRunnable, 4000);
 
 
         return view;
@@ -338,14 +336,10 @@ public class ChatConversionFragment extends Fragment implements View.OnClickList
                 if (webSocket != null) {
 
                     if (edit_chat_message.getText().toString().trim().equalsIgnoreCase("")) {
-                        //chatType="TEXT";
                     } else {
                         chatType = "TEXT";
-
                         JSONObject jsonObj = new JSONObject();
                         JSONObject jsonObj_1 = new JSONObject();
-
-
                         try {
                             jsonObj.put("message", edit_chat_message.getText().toString().trim());
                             jsonObj.put("to_user", id);
@@ -367,48 +361,43 @@ public class ChatConversionFragment extends Fragment implements View.OnClickList
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                         String jsonStr = jsonObj.toString();
 
                         Log.e("Register", "" + jsonStr);
-
-
                         webSocket.send(jsonStr);
                         edit_chat_message.setText("");
                         page = "0";
-                        scroll=0;
-                        // seenUnSeen();
+                        scroll = 0;
                         sendMessageToServerFirst();
                     }
 
-                    // pingHandler.postDelayed(this, 1000);
                 }
 
                 break;
 
             case R.id.button_chat_attachment:
-                //selectImage();
-
-
                 mBottomSheetDialog.show();
-
-
                 break;
 
             case R.id.Rltoolbar:
-
-//                pingHandler.post(pingRunnable);
-//                Utils.fragmentCall(new ChatRecentFragment(), getFragmentManager());
-                if (getFragmentManager().getBackStackEntryCount() > 0) {
-                    getFragmentManager().popBackStackImmediate();
+                if (getFragmentManager().getBackStackEntryCount() == 1) {
+                    Utils.fragmentCall(new ChatRecentFragment(), getFragmentManager());
                     mAppSession.saveData("Chat", "0");
                     pingHandler.post(pingRunnable);
-                    //    Utils.fragmentCall(new ChatRecentFragment(), getFragmentManager());
+                }else{
+                    Utils.fragmentCall(new ChatRecentFragment(), getFragmentManager());
+                  //  getFragmentManager().popBackStackImmediate();
+                    mAppSession.saveData("Chat", "0");
+                    pingHandler.post(pingRunnable);
                 }
-                break;
-            // webSocket.close(1010, "");
 
-            //   break;
+//                if (getFragmentManager().getBackStackEntryCount() > 0) {
+//                    getFragmentManager().popBackStackImmediate();
+//
+//                    mAppSession.saveData("Chat", "0");
+//                    pingHandler.post(pingRunnable);
+//                }
+                break;
         }
 
     }
@@ -417,34 +406,8 @@ public class ChatConversionFragment extends Fragment implements View.OnClickList
     // WebSocket
     private final class EchoWebSocketListener extends WebSocketListener {
 
-
-//        private void run() {
-//            OkHttpClient client = new OkHttpClient.Builder()
-//                    .readTimeout(0,  TimeUnit.MILLISECONDS)
-//                    .build();
-//
-//            Request request = new Request.Builder()
-//                    .url("ws://82.165.253.201:8080")
-//                    .build();
-//            client.newWebSocket(request, this);
-//
-//            // Trigger shutdown of the dispatcher's executor so this process can exit cleanly.
-//            client.dispatcher().executorService().shutdown();
-//        }
-
         @Override
         public void onOpen(WebSocket webSocket, Response response) {
-//            webSocket.send("Hello, it's SSaurel !");
-//            webSocket.send("What's up ?");
-//            webSocket.send(ByteString.decodeHex("deadbeef"));
-
-            //   webSocket=webSocket;
-            //  webSocket.close(NORMAL_CLOSURE_STATUS, "Goodbye !");
-            Log.e("first", "" + 1);
-
-
-            Log.i("Websocket", "Opened");
-
 
             JSONObject jsonObj = new JSONObject();
             JSONObject jsonObj_1 = new JSONObject();
@@ -456,8 +419,6 @@ public class ChatConversionFragment extends Fragment implements View.OnClickList
                 e.printStackTrace();
 
             }
-
-
             try {
                 jsonObj_1.put("username", userName);
                 jsonObj_1.put("id", toUserId);
@@ -473,33 +434,18 @@ public class ChatConversionFragment extends Fragment implements View.OnClickList
 
             String jsonStr = jsonObj.toString();
             webSocket.send(jsonStr);
-            // seenUnSeen();
-            //   sendMessageToServerFirst();
-
-
         }
 
         @Override
         public void onMessage(WebSocket webSocket, String text) {
-            //  output("Rx: " + text);
             Log.e("first", "" + 2);
 
             Log.d("firsttext", "" + text);
-
-
-if(scroll==1){
-    outputScroll(text,"1");
-
-
-}else{
-    output(text, "1");
-}
-
-
-                //isCheck=true;
-
-
-
+            if (scroll == 1) {
+                outputScroll(text, "1");
+            } else {
+                output(text, "1");
+            }
         }
 
         @Override
@@ -511,7 +457,6 @@ if(scroll==1){
         @Override
         public void onClosing(WebSocket webSocket, int code, String reason) {
             webSocket.close(NORMAL_CLOSURE_STATUS, null);
-
             output("Closed: " + code + " / " + reason, "3");
             Log.e("first", "" + 4);
         }
@@ -530,35 +475,21 @@ if(scroll==1){
                 public void run() {
                     Log.d("websocketchat", txt);
                     if (no.equalsIgnoreCase("1")) {
-                       // mChatHolders.clear();
                         msg(txt);
-
-
                         if (mChatHolders.size() > 0) {
-
                             mRecentChatAdapter.notifyDataSetChanged();
-                          //  mLayoutManager.setStackFromEnd(true);
-
-
                             list_chat_messages.smoothScrollToPosition(mRecentChatAdapter.getItemCount() - 1);
-
-                           // if(chatType.equalsIgnoreCase("VIDEO"))
-
-
                         }
-
-                     //
                     }
                     mProgressDialog.dismiss();
+                    mProgressBar.setVisibility(View.GONE);
 
                 }
             });
         }
     }
-
-
     private void sendMessageToServerFirst() {
-
+        Log.e("chathistory","123");
         JSONObject jsonObj = new JSONObject();
         JSONObject jsonObj_1 = new JSONObject();
         try {
@@ -567,17 +498,13 @@ if(scroll==1){
             jsonObj.put("page", page);
         } catch (JSONException e) {
             e.printStackTrace();
-
         }
-
-
         try {
             jsonObj_1.put("username", userName);
             jsonObj_1.put("id", toUserId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         try {
             jsonObj.put("user", jsonObj_1);
         } catch (JSONException e) {
@@ -586,15 +513,11 @@ if(scroll==1){
 
         String jsonStr = jsonObj.toString();
         webSocket.send(jsonStr);
-      //
         seenUnSeen();
-        //  pingHandler.postDelayed(this, 10000);
         Log.e("First Time", "" + jsonStr);
 
     }
-
     private void sendMessageToServerFirstVideo() {
-
         JSONObject jsonObj = new JSONObject();
         JSONObject jsonObj_1 = new JSONObject();
         try {
@@ -605,8 +528,6 @@ if(scroll==1){
             e.printStackTrace();
 
         }
-
-
         try {
             jsonObj_1.put("username", userName);
             jsonObj_1.put("id", toUserId);
@@ -619,21 +540,13 @@ if(scroll==1){
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         String jsonStr = jsonObj.toString();
         webSocket.send(jsonStr);
-        //
         seenUnSeen();
-        mProgressBar.setVisibility(View.GONE);
-        //  pingHandler.postDelayed(this, 10000);
-        Log.e("First Time", "" + jsonStr);
+
 
     }
-
-
-
     private void seenUnSeen() {
-
         JSONObject jsonObj = new JSONObject();
         JSONObject jsonObj_1 = new JSONObject();
         try {
@@ -641,40 +554,30 @@ if(scroll==1){
             jsonObj.put("type", "seencount");
         } catch (JSONException e) {
             e.printStackTrace();
-
         }
-
-
         try {
             jsonObj_1.put("username", userName);
             jsonObj_1.put("id", toUserId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         try {
             jsonObj.put("user", jsonObj_1);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         String jsonStr = jsonObj.toString();
         webSocket.send(jsonStr);
-        //  pingHandler.postDelayed(this, 10000);
         Log.e("seen", "" + jsonStr);
 
     }
-
-
     private void msg(String msg) {
         try {
             JSONObject jObj = new JSONObject(msg);
             String type = jObj.getString("type");
-            page = jObj.getString("page");
-
-            Log.e("page", "" + page);
 
             if (type.equals("chathistory")) {
+                page = jObj.getString("page");
                 JSONArray jsonArray = jObj.getJSONArray("message");
                 Log.e("CHAT DATA", jsonArray.toString());
                 mChatHolders.clear();
@@ -684,87 +587,16 @@ if(scroll==1){
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         mChatHolders.add(new ChatHolder(jsonObject.getString("message"), jsonObject.getString("sender"), jsonObject.getString("receiver"), jsonObject.getString("message_type"), jsonObject.getString("thumb")));
                     }
-
-
-               //     mChatHoldersStore.addAll(mChatHolders);
-
-
-                    //   size=mChatHolders;
-
                     mProgressDialog.dismiss();
                 }
                 mProgressDialog.dismiss();
 
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
             mProgressDialog.dismiss();
         }
     }
-
-
-    private void selectImage() {
-        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Record Video", "File", "Cancel"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Add Photo!");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (options[item].equals("Take Photo")) {
-
-                    dispatchTakePictureIntent();
-
-                } else if (options[item].equals("Choose from Gallery")) {
-                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(intent, 2);
-                } else if (options[item].equals("Record Video")) {
-                    dispatchTakeVideoIntent();
-                } else if (options[item].equals("File")) {
-
-                    Intent intent = new Intent();
-                    intent.setType("application/pdf");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Select Pdf"), 4);
-
-
-                } else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        builder.show();
-    }
-
-
-    private String saveFileFromUri(Uri pdfUri) {
-        try {
-            InputStream is =
-                    getContext().getContentResolver().openInputStream(pdfUri);
-            byte[] bytesArray = new byte[is.available()];
-            int read = is.read(bytesArray);
-            //write to sdcard
-
-            File dir = new File(Environment.getExternalStorageDirectory(), "/CopopsPdf");
-            boolean mkdirs = dir.mkdirs();
-            File myPdf = new
-                    File(Environment.getExternalStorageDirectory(), "/CopopsPdf/myPdf.pdf");
-            if (read == -1 && mkdirs) {
-
-            }
-            FileOutputStream fos = new FileOutputStream(myPdf.getPath());
-            fos.write(bytesArray);
-            fos.close();
-            //            System.out.println(fileString);
-            return myPdf.getPath();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     @SuppressLint("LongLogTag")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -773,15 +605,14 @@ if(scroll==1){
             if (requestCode == 1) {
                 uploadDoucment = mCurrentPhotoPath;
                 chatType = "IMAGE";
-
                 try {
                     Bitmap mImageBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), Uri.parse(mCurrentPhotoPath));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-                uloadeDoc();
-
+                File file = new File(uploadDoucment);
+                int file_size = Integer.parseInt(String.valueOf(file.length()/1024));
+                uloadeDoc(file_size);
             } else if (requestCode == 2) {
                 Uri selectedImage = data.getData();
                 String[] filePath = {MediaStore.Images.Media.DATA};
@@ -791,55 +622,74 @@ if(scroll==1){
                 String picturePath = c.getString(columnIndex);
                 uploadDoucment = picturePath;
                 chatType = "IMAGE";
-                uloadeDoc();
+                File file = new File(uploadDoucment);
+                int file_size = Integer.parseInt(String.valueOf(file.length()/1024));
+                uloadeDoc(file_size);
                 c.close();
                 Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
                 Log.w("path of image from gallery......******************.........", picturePath + "");
-                // viewImage.setImageBitmap(thumbnail);
             } else if (requestCode == 3) {
-                //  Uri uri=data.getData();
-
                 chatType = "VIDEO";
-
-
                 File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES) + "/CopOps/videos");
-                if (f.mkdirs() || f.isDirectory())
+                if (f.mkdirs() || f.isDirectory()) {
 
+                  //  executeCompressCommand(mCurrentVideoPath);
                     new VideoCompressAsyncTask(getActivity()).execute(mCurrentVideoPath, f.getPath());
 
-            } else if (requestCode == 4) {
+//                    File file = new File(mCurrentVideoPath);
+//                    int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
+//
+//                    if(file_size<10240) {
+//
+//                        new VideoCompressAsyncTask(getActivity()).execute(mCurrentVideoPath, f.getPath());
+//                    }else{
+//                        Utils.showAlert(getString(R.string.checkmb), getContext());
+//                    }
+                }else{
 
 
+              //      executeCompressCommand(mCurrentVideoPath);
+                    new VideoCompressAsyncTask(getActivity()).execute(mCurrentVideoPath, f.getPath());
+//                    File file = new File(mCurrentVideoPath);
+//                    int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
+//
+//                    if(file_size<10240) {
+//
+//                        new VideoCompressAsyncTask(getActivity()).execute(mCurrentVideoPath, f.getPath());
+//                    }else{
+//                        Utils.showAlert(getString(R.string.checkmb), getContext());
+//                    }
+                }
+            }
+            else if (requestCode == 4) {
                 chatType = "PDF";
+               // Uri filePath = data.getData();
+                String path = null;
 
-                Uri filePath = data.getData();
+                ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
+                StringBuilder builder = new StringBuilder();
 
-
-                uploadDoucment = saveFileFromUri(filePath);
-
-
-                uloadeDoc();
-
-
+                for (NormalFile file : list) {
+                     path = file.getPath();
+                    builder.append(path + "\n");
+                }
+                uploadDoucment = path;
+                 File file = new File(path);
+                int file_size = Integer.parseInt(String.valueOf(file.length()/1024));
+                uloadeDoc(file_size);
+                mBottomSheetDialog.dismiss();
             }
         }
     }
-
-    public void uloadeDoc() {
+    public void uloadeDoc(int file_size) {
+        if(file_size<10240) {
         try {
             if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
                 File uploadFile;
-
                 MultipartBody.Part doucmentToUploadProfile = null;
-
-
                 if (uploadDoucment != null) {
-
-
                     RequestBody mFile;
                     uploadFile = new File(uploadDoucment);
-
                     if (uploadFile.getAbsolutePath().contains(".jpg")) {
                         mProgressBar.setVisibility(View.VISIBLE);
                         mFile = RequestBody.create(MediaType.parse("image/*"), uploadFile);
@@ -847,18 +697,14 @@ if(scroll==1){
                     } else if (uploadFile.getAbsolutePath().contains(".png")) {
                         mProgressBar.setVisibility(View.VISIBLE);
                         mFile = RequestBody.create(MediaType.parse("image/*"), uploadFile);
-
                     } else if (uploadFile.getAbsolutePath().contains(".pdf")) {
                         mProgressBar.setVisibility(View.VISIBLE);
                         mFile = RequestBody.create(MediaType.parse("pdf/*"), uploadFile);
                     } else {
                         mFile = RequestBody.create(MediaType.parse("video/*"), uploadFile);
                     }
-
                     doucmentToUploadProfile = MultipartBody.Part.createFormData("upload_document", uploadFile.getName(), mFile);
                 }
-                // RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(registationPjoSetData)));
-                //  Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(registationPjoSetData)));
                 Service uploadImage = ApiUtils.getAPIService();
                 Call<CommanStatusPojo> fileUpload = uploadImage.uploadData(doucmentToUploadProfile);
                 fileUpload.enqueue(new Callback<CommanStatusPojo>() {
@@ -869,16 +715,12 @@ if(scroll==1){
                                 CommanStatusPojo registrationResponse = response.body();
                                 if (registrationResponse.getStatus().equals("false")) {
                                     mProgressBar.setVisibility(View.GONE);
-
+                                    Utils.showAlert(registrationResponse.getMessage(), getContext());
                                 } else {
-
                                     if (webSocket != null) {
-
                                         uploadDoucment = null;
-
                                         JSONObject jsonObj = new JSONObject();
                                         JSONObject jsonObj_1 = new JSONObject();
-
                                         try {
                                             jsonObj.put("message", registrationResponse.getMessage());
                                             jsonObj.put("to_user", id);
@@ -886,47 +728,31 @@ if(scroll==1){
                                             jsonObj.put("message_type", chatType);
                                         } catch (JSONException e) {
                                             e.printStackTrace();
-
                                         }
-
-
                                         try {
                                             jsonObj_1.put("username", userName);
                                             jsonObj_1.put("id", toUserId);
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-
                                         try {
                                             jsonObj.put("user", jsonObj_1);
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-
                                         String jsonStr = jsonObj.toString();
-
                                         Log.e("Register", "" + jsonStr);
-
-                                              scroll=0;
-                                             page="0";
+                                        scroll = 0;
+                                        page = "0";
                                         webSocket.send(jsonStr);
                                         sendMessageToServerFirstVideo();
-
-                                        //     edit_chat_message.setText("");
-
-                                        //  getActivity().startService(new Intent(getActivity(), TrackingServices.class));
-
                                     }
                                 }
-                                //   progressDialog.dismiss();
-
                             } else {
-                                //   progressDialog.dismiss();
                                 mProgressBar.setVisibility(View.GONE);
                                 Utils.showAlert(response.message(), getContext());
                             }
                         } catch (Exception e) {
-                            //  progressDialog.dismiss();
                             e.getMessage();
                             mProgressBar.setVisibility(View.GONE);
                             Utils.showAlert(e.getMessage(), getContext());
@@ -935,11 +761,7 @@ if(scroll==1){
 
                     @Override
                     public void onFailure(Call<CommanStatusPojo> call, Throwable t) {
-                        //   Log.d(TAG, "Error " + t.getMessage());
-                        //  progressDialog.dismiss();
-
                         mProgressBar.setVisibility(View.GONE);
-                        //    Utils.showAlert(t.getMessage(), getContext());
                     }
                 });
             } else {
@@ -949,7 +771,10 @@ if(scroll==1){
         } catch (Exception e) {
             e.printStackTrace();
             e.getMessage();
-         //   Utils.showAlert(e.getMessage(), getContext());
+        } }else{
+         //   uploadDoucment=null;
+            mProgressBar.setVisibility(View.INVISIBLE);
+            Utils.showAlert(getString(R.string.checkmb), getContext());
         }
     }
 
@@ -959,27 +784,18 @@ if(scroll==1){
         takeVideoIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             try {
-
-                takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 1800);
+                takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 90);
                 takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-                capturedUri = FileProvider.getUriForFile(getActivity(),
-                        Utils.FILE_PROVIDER_AUTHORITY, createMediaFile(Utils.TYPE_VIDEO));
-
+                capturedUri = FileProvider.getUriForFile(getActivity(), Utils.FILE_PROVIDER_AUTHORITY, createMediaFile(Utils.TYPE_VIDEO));
                 takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, capturedUri);
                 Log.d("LOG_TAG", "VideoUri: " + capturedUri.toString());
                 startActivityForResult(takeVideoIntent, 3);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
-
-
     }
-
     private void dispatchTakePictureIntent() {
-        /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");*/
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             // Create the File where the photo should go
@@ -1035,6 +851,181 @@ if(scroll==1){
     }
 
 
+
+    /**
+     * Command for compressing video
+     */
+    private void executeCompressCommand(String path) {
+
+
+        mProgressBar.setVisibility(View.VISIBLE);
+        File moviesDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_MOVIES
+        );
+
+        String filePrefix = "compress_video";
+        String fileExtn = ".mp4";
+     //   String yourRealPath = getPath(getActivity(), selectedVideoUri);
+        String yourRealPath = path;
+
+
+        File dest = new File(moviesDir, filePrefix + fileExtn);
+        int fileNo = 0;
+        while (dest.exists()) {
+            fileNo++;
+            dest = new File(moviesDir, filePrefix + fileNo + fileExtn);
+        }
+
+        Log.d("TAG", "startTrim: src: " +path );
+        Log.d("TAG", "startTrim: dest: " + dest.getAbsolutePath());
+        filePath = dest.getAbsolutePath();
+        String[] complexCommand = {"-y", "-i", yourRealPath, "-s", "480x320", "-r", "25", "-vcodec", "mpeg4", "-b:v", "150k", "-b:a", "48000", "-ac", "2", "-ar", "22050", filePath};
+        execFFmpegBinary(complexCommand);
+
+    }
+
+    /**
+     * Executing ffmpeg binary
+     */
+    private void execFFmpegBinary(final String[] command) {
+        try {
+            ffmpeg.execute(command, new ExecuteBinaryResponseHandler() {
+                @Override
+                public void onFailure(String s) {
+                    Log.d("TAG", "FAILED with output : " + s);
+
+
+
+
+                }
+
+                @Override
+                public void onSuccess(String s) {
+
+                    Log.d("TAG", "SUCCESS with output : " + s);
+                    uploadDoucment = filePath;
+                    File file = new File(uploadDoucment);
+                    int file_size = Integer.parseInt(String.valueOf(file.length()/1024));
+                    uloadeDoc(file_size);
+
+
+                }
+
+                @Override
+                public void onProgress(String s) {
+                    Log.d("TAG", "Started command : ffmpeg " + command);
+
+                }
+
+                @Override
+                public void onStart() {
+                    Log.d("TAG", "Started command : ffmpeg " + command);
+
+                }
+
+                @Override
+                public void onFinish() {
+                    Log.d("TAG", "Finished command : ffmpeg " + command);
+
+
+                }
+            });
+        } catch (FFmpegCommandAlreadyRunningException e) {
+            // do nothing for now
+        }
+    }
+
+    private String getPath(final Context context, final Uri uri) {
+
+        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+
+        // DocumentProvider
+        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
+
+                // TODO handle non-primary volumes
+            }
+            // DownloadsProvider
+            else if (isDownloadsDocument(uri)) {
+
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+
+                return getDataColumn(context, contentUri, null, null);
+            }
+            // MediaProvider
+            else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[]{
+                        split[1]
+                };
+
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
+        }
+        // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the value of the data column for this Uri.
+     */
+    private String getDataColumn(Context context, Uri uri, String selection,
+                                 String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int column_index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(column_index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+    private boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
     class VideoCompressAsyncTask extends AsyncTask<String, String, String> {
         Context mContext;
 
@@ -1057,11 +1048,10 @@ if(scroll==1){
             try {
 
                 filePathVideo = SiliCompressor.with(mContext).compressVideo(paths[0], paths[1]);
-
                 uploadDoucment = filePathVideo;
-
-                uloadeDoc();
-
+                File file = new File(uploadDoucment);
+                int file_size = Integer.parseInt(String.valueOf(file.length()/1024));
+                uloadeDoc(file_size);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
@@ -1071,6 +1061,7 @@ if(scroll==1){
 
         @Override
         protected void onPostExecute(String s) {
+
             super.onPostExecute(s);
 
         }
@@ -1191,7 +1182,7 @@ if(scroll==1){
         }
         super.onDestroyView();
     }
-
+//Get Chat Histry
     public void scrollSocketData() {
         JSONObject jsonObj = new JSONObject();
         JSONObject jsonObj_1 = new JSONObject();
@@ -1222,7 +1213,7 @@ if(scroll==1){
         webSocket.send(jsonStr);
         Log.e("First Time", "" + jsonStr);
     }
-
+//for USE Page nation
     void scrollMsg(String txt) {
 
         try {
@@ -1235,42 +1226,31 @@ if(scroll==1){
 
             if (type.equals("chathistory")) {
                 JSONArray jsonArray = jObj.getJSONArray("message");
-                Log.e("old",""+ mChatHolders.size());
+                Log.e("old", "" + mChatHolders.size());
 
-               // mChatHoldersStore.addAll(mChatHolders);
+                // mChatHoldersStore.addAll(mChatHolders);
 
-             //   mChatHolders.clear();
+                //   mChatHolders.clear();
 
 
                 if (jsonArray.length() > 0) {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        mChatHolders.add(i,new ChatHolder(jsonObject.getString("message"), jsonObject.getString("sender"), jsonObject.getString("receiver"), jsonObject.getString("message_type"), jsonObject.getString("thumb")));
-                       // mRecentChatAdapter.notifyItemInserted(i);
+                        mChatHolders.add(i, new ChatHolder(jsonObject.getString("message"), jsonObject.getString("sender"), jsonObject.getString("receiver"), jsonObject.getString("message_type"), jsonObject.getString("thumb")));
+                        // mRecentChatAdapter.notifyItemInserted(i);
                     }
-
-                      mRecentChatAdapter.notifyDataSetChanged();
+                    mRecentChatAdapter.notifyDataSetChanged();
 
                     mProgressDialog.dismiss();
                 }
-//                else{
-//                    mAppSession.saveData("comeChatnoti", "1");
-//                }
-
-              //  list_chat_messages.setItemAnimator(null);
                 mProgressDialog.dismiss();
 
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
             mProgressDialog.dismiss();
         }
-
     }
-
-
-
     private void outputScroll(final String txt, String no) {
         if (getActivity() != null) {
             getActivity().runOnUiThread(new Runnable() {
@@ -1288,11 +1268,65 @@ if(scroll==1){
         }
     }
 
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is ExternalStorageProvider.
+     */
+    private boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
 
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    private boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
 
+    /**
+     * Load FFmpeg binary
+     */
+    private void loadFFMpegBinary() {
+        try {
+            if (ffmpeg == null) {
+                Log.d("TAG", "ffmpeg : era nulo");
+                ffmpeg = FFmpeg.getInstance(getActivity());
+            }
+            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
+                @Override
+                public void onFailure() {
+                    showUnsupportedExceptionDialog();
+                }
 
+                @Override
+                public void onSuccess() {
+                    Log.d("TAG", "ffmpeg : correct Loaded");
+                }
+            });
+        } catch (FFmpegNotSupportedException e) {
+            showUnsupportedExceptionDialog();
+        } catch (Exception e) {
+            Log.d("TAG", "EXception no controlada : " + e);
+        }
+    }
 
+    private void showUnsupportedExceptionDialog() {
+        new AlertDialog.Builder(getActivity())
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Not Supported")
+                .setMessage("Device Not Supported")
+                .setCancelable(false)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                       // MainActivity.this.finish();
+                    }
+                })
+                .create()
+                .show();
 
+    }
 }
 
 

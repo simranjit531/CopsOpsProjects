@@ -34,7 +34,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
+/**
+ * Created by Ranjan Gupta
+ */
 @SuppressLint("ValidFragment")
 public class HandrailSignatureFragment extends Fragment implements View.OnClickListener {
 
@@ -137,6 +139,8 @@ public class HandrailSignatureFragment extends Fragment implements View.OnClickL
                 break;
         }
     }
+
+    //Send signature on Server
     public void siginatureApi() {
 
         try {
@@ -178,9 +182,8 @@ public class HandrailSignatureFragment extends Fragment implements View.OnClickL
                                         File fdelete = new File(filePathImage);
                                         if (fdelete.exists()) {
                                             if (fdelete.delete()) {
-                                                //  System.out.println("file Deleted :" + filePathImage);
                                             } else {
-                                                //   System.out.println("file not Deleted :" + filePathImage);
+
                                             }
                                         }
                                     }
@@ -188,13 +191,12 @@ public class HandrailSignatureFragment extends Fragment implements View.OnClickL
                                         File fdeletevideo = new File(filePathVideo);
                                         if (fdeletevideo.exists()) {
                                             if (fdeletevideo.delete()) {
-                                                //   System.out.println("file Deleted :" + filePathImage);
+
                                             } else {
-                                                //  System.out.println("file not Deleted :" + filePathImage);
+
                                             }
                                         }
                                     }
-                                    //  Utils.fragmentCall(new AuthenticateCodeFragment(userType,registrationResponse), getFragmentManager());
                                 }
                                 progressDialog.dismiss();
 

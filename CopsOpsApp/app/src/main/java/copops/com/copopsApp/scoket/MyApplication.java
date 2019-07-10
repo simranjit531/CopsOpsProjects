@@ -7,7 +7,9 @@ import java.net.URISyntaxException;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class MyApplication extends Application {
 
     private io.socket.client.Socket mSocket;

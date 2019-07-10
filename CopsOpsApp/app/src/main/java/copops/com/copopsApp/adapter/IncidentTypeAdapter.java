@@ -18,7 +18,9 @@ import copops.com.copopsApp.R;
 import copops.com.copopsApp.interfaceview.IncedentInterface;
 import copops.com.copopsApp.pojo.IncidentTypePojo;
 
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class IncidentTypeAdapter extends RecyclerView.Adapter<IncidentTypeAdapter.ViewHolder> {
     private ArrayList<IncidentTypePojo.Data> incidentType;
     private Context context;

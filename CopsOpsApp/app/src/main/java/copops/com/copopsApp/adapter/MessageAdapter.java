@@ -49,7 +49,9 @@ import hb.xvideoplayer.MxVideoPlayer;
 import hb.xvideoplayer.MxVideoPlayerWidget;
 
 import static android.media.ThumbnailUtils.createVideoThumbnail;
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
     Context context;

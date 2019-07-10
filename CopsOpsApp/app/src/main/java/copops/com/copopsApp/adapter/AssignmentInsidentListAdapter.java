@@ -17,7 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.interfaceview.IncedentInterface;
 import copops.com.copopsApp.pojo.AssignmentListPojo;
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class AssignmentInsidentListAdapter extends RecyclerView.Adapter<AssignmentInsidentListAdapter.ViewHolder> {
     //   private ArrayList<IncidentTypePojo.Data> incidentType;
 
@@ -74,15 +76,6 @@ public class AssignmentInsidentListAdapter extends RecyclerView.Adapter<Assignme
         }else{
             viewHolder.changeColor.setBackgroundColor(Color.parseColor("#73D7CB"));
         }
-
-
-      /*  viewHolder.stateId.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mIncedentInterface.clickPosition(i);
-            }
-        });*/
-
         viewHolder.Ivarrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

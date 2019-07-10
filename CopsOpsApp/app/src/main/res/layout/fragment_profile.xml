@@ -184,6 +184,8 @@
                     android:background="@drawable/edittext_lower_background"
                     android:hint="@string/last_name_hint"
                     android:imeOptions="actionNext"
+                    android:enabled="false"
+                    android:clickable="false"
                     android:inputType="text"
                     android:textColor="@color/black"
                     android:textColorHint="@color/aluminiumcolor"
@@ -200,6 +202,8 @@
                     android:hint="@string/first_name_hint"
                     android:imeOptions="actionNext"
                     android:inputType="text"
+                    android:enabled="false"
+                    android:clickable="false"
                     android:textColor="@color/black"
                     android:textColorHint="@color/aluminiumcolor"
                     android:textSize="@dimen/textsize_16sp" />
@@ -245,8 +249,6 @@
                     android:background="@drawable/edittext_lower_background"
                     android:hint="@string/phone_no_hint"
                     android:maxLength="15"
-                    android:enabled="false"
-                    android:clickable="false"
                     android:imeOptions="actionNext"
                     android:inputType="number"
                     android:textColor="@color/black"
@@ -517,7 +519,6 @@
                         android:layout_marginRight="20dp"
                         android:layout_toLeftOf="@+id/IV_businesscardcamera"
                         android:src="@mipmap/img_cloud" />
-
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -525,23 +526,17 @@
                         android:layout_marginTop="5dp"
                         android:scaleType="fitXY"
                         android:src="@mipmap/img_bar" />
-
-
                 </RelativeLayout>
-
-
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".50">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_marginLeft="20dp"
                         android:text="@string/back_text_Verso" />
-
                     <ImageView
                         android:id="@+id/IV_businesscardvideocamera"
                         android:layout_width="20dp"
@@ -549,7 +544,6 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="5dp"
                         android:src="@mipmap/img_cameraicon_blue" />
-
                     <ImageView
                         android:id="@+id/IV_businesscardvideocoud"
                         android:layout_width="20dp"
@@ -557,7 +551,6 @@
                         android:layout_marginRight="22dp"
                         android:layout_toLeftOf="@+id/IV_businesscardvideocamera"
                         android:src="@mipmap/img_cloud" />
-
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -566,11 +559,7 @@
                         android:layout_marginTop="5dp"
                         android:scaleType="fitXY"
                         android:src="@mipmap/img_bar" />
-
-
                 </RelativeLayout>
-
-
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/rlllll"
@@ -596,35 +585,15 @@
                     android:textColor="@color/black"
                     android:textColorHint="@color/aluminiumcolor"
                     android:textSize="@dimen/textsize_16sp" />
-
-
-
             </LinearLayout>
-            <TextView
-                android:id="@+id/chagepassword"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_below="@+id/rlllll"
-                android:gravity="center_vertical|center_horizontal"
-                android:text="Change Password"
-                android:textColor="@color/dodgerblue"
-                android:textSize="@dimen/textsize_16sp" />
-
             <RelativeLayout
                 android:id="@+id/RLnext"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_below="@+id/chagepassword"
-                android:layout_marginBottom="40dp"
+                android:layout_below="@+id/rlllll"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-
-                android:layout_marginTop="30dp"
-
                 android:background="@mipmap/btn_blue_background">
-
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -647,7 +616,40 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/changePassword"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_below="@+id/RLnext"
 
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+
+
+                android:background="@mipmap/btn_blue_background">
+
+                <!--<ImageView-->
+                <!--android:layout_width="20dp"-->
+                <!--android:layout_height="20dp"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:layout_toLeftOf="@+id/TVnext"-->
+                <!--android:src="@mipmap/img_next" />-->
+
+                <TextView
+                    android:id="@+id/chagepassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="Change Password"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textsize_16sp" />
+
+
+            </RelativeLayout>
         </RelativeLayout>
 
 

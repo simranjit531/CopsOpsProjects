@@ -20,7 +20,7 @@ import retrofit2.http.Part;
 
 
 /**
- * Created by  Ranjan on 30/11/17.
+ * Created by  Ranjan  Gupta
  */
 
 public interface Service {
@@ -148,11 +148,11 @@ public interface Service {
 
 
 
- //   http://93.90.201.167/api/auth/user/update/medical
-
-  //  parameter
-
-//[user_id, medical_file]
+    /**
+     *  FOR USE CITIZEN AND OPERATOR INSIDENT CREATE AND SHOW LIST
+     * @param data
+     * @return
+     */
 
     @Multipart
     //@POST("copops/public/api/auth/incident/list")

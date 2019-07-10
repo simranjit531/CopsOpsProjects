@@ -46,6 +46,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -72,7 +73,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Ranjan Gupta
  */
 @SuppressLint("ValidFragment")
 public class PositionOfInteervebtionsFragment extends Fragment implements OnMapReadyCallback, IncedentInterface, View.OnClickListener {
@@ -117,16 +118,10 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
     LatLng toLatLng;
     AppSession mAppSession;
     public SupportPlaceAutocompleteFragment places = null;
-
     public PositionOfInteervebtionsFragment(Double latitude, Double longitude ) {
-
         this.latitude=latitude;
         this.longitude=longitude;
-
-        // Required empty public constructor
     }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -137,24 +132,14 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         RLsearch.setOnClickListener(this);
         Rltoolbar.setOnClickListener(this);
         IVimagesgps.setOnClickListener(this);
-
         mAppSession= mAppSession.getInstance(getActivity());
-
-
         places = (SupportPlaceAutocompleteFragment)getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment_2);
-       // LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
         ImageView searchIcon = (ImageView) ((LinearLayout) places.getView()).getChildAt(0);
         searchIcon.setVisibility(View.GONE);
-       // places.setHint("  Search");
-
-
         places.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
                 toLatLng = place.getLatLng();
-                //   Toast.makeText(getActivity(), place.getName() + "Lat Long" + place.getLatLng(), Toast.LENGTH_SHORT).show();
-
             }
 
             @Override
@@ -164,27 +149,6 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
 
             }
         });
-
-
-//        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-//        if (checkPermission() && gpsEnabled()) {
-//            if (isNetworkEnabled) {
-//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
-//                        10, mLocationListener);
-//            } else {
-//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-//                        10, mLocationListener);
-//            }
-//        }
-//        if (lm.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null) {
-//            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//            longitude = location.getLongitude();
-//            latitude = location.getLatitude();
-//        } else {
-//            Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//            longitude = location.getLongitude();
-//            latitude = location.getLatitude();
-//        }
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.loading));
         mIncedentInterface = this;
@@ -193,65 +157,16 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         mapFragment.getMapAsync(this);
 
         mapView = mapFragment.getView();
-//        EtcitySearchId.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//                // TODO Auto-generated method stub
-//            }
-//
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//                //   cityList.setVisibility(View.GONE);
-//                // TODO Auto-generated method stub
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//
-//                try {
-//
-//                    if (EtcitySearchId.getText().toString().equalsIgnoreCase("")) {
-//                        cityList.setVisibility(View.GONE);
-//                        //Utils.showAlert(getActivity().getString(R.string.no_find), getActivity());
-//                    } else {
-//                        //  if(cityName.contains(EtcitySearchId.getText().toString())){
-//
-//                        cityList.setVisibility(View.VISIBLE);
-//                        filter(s.toString());
-//                        Editable etext = EtcitySearchId.getText();
-//                        int position = etext.length();
-//                        Selection.setSelection(etext, position);
-//
-//
-//                        // filter(s.toString());
-//                        // Utils.showAlert(getActivity().getString(R.string.no_find), getActivity());
-////                       }else{
-////                           cityList.setVisibility(View.GONE);
-////                       }
-//
-//
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//
-//
-//            }
-//        });
         return view;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void initSetCityList() {
-
         IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
         incdentSetPojo.setIncident_lat(String.valueOf(latitude));
         incdentSetPojo.setIncident_lng(String.valueOf(longitude));
         incdentSetPojo.setUser_id(mAppSession.getData("id"));
         incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
-
-
-        Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
         RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
 
         try {
@@ -264,7 +179,7 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
             e.printStackTrace();
         }
     }
-
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -279,21 +194,12 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         map.setMyLocationEnabled(true);
         map.getUiSettings().setMyLocationButtonEnabled(false);
         View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
-
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
-        // position on right bottom
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.setMargins(0, 0, 30, 100);
-
-
-
-
-       initSetCityList();
-
-
+        initSetCityList();
     }
-
     @SuppressLint("MissingPermission")
     void getCurrentLocation() {
         latlong.clear();
@@ -304,40 +210,23 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
             map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(allLocationAndCityPojo.getData().get(i).getLatitude()), Double.parseDouble(allLocationAndCityPojo.getData().get(i).getLongitude())))
                     .title(allLocationAndCityPojo.getData().get(i).getAddress() + "\n" + allLocationAndCityPojo.getData().get(i).getSub_category_name()).snippet(allLocationAndCityPojo.getData().get(i).getCreated_at()).icon(icon));
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(allLocationAndCityPojo.getData().get(i).getLatitude()), Double.parseDouble(allLocationAndCityPojo.getData().get(i).getLongitude())), 10));
-
-
             latlong.add(allLocationAndCityPojo.getData().get(i).getLatitude() + "," + allLocationAndCityPojo.getData().get(i).getLongitude());
-
         }
-
-
         View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
-        // position on right bottom
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.setMargins(0, 0, 30, 100);
-
         map.setMyLocationEnabled(true);
-
-
-
-
-
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 marker.showInfoWindow();
-//marker.getId();
-
-
                 return false;
             }
         });
 
         map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-
-            // Use default InfoWindow frame
             @Override
             public View getInfoWindow(Marker marker) {
                 return null;
@@ -354,8 +243,6 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
                 for (int i = 0; i < latlong.size(); i++) {
 
                     if (latlong.get(i).equalsIgnoreCase(compare)) {
-
-                        // Getting view from the layout file info_window_layout
                         v = getLayoutInflater().inflate(R.layout.windowlayout, null);
 
                         TextView tvLat = (TextView) v.findViewById(R.id.tv_lat);
@@ -391,22 +278,15 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
 
         }
         map.setMyLocationEnabled(true);
-
         View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
-        // position on right bottom
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.setMargins(0, 0, 30, 100);
-
-
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 marker.showInfoWindow();
-//marker.getId();
-
-
                 return false;
             }
         });
@@ -422,18 +302,13 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
             // Defines the contents of the InfoWindow
             @Override
             public View getInfoContents(Marker marker) {
-
                 LatLng latLng = marker.getPosition();
                 View v = null;
                 String compare = latLng.latitude + "," + latLng.longitude;
-
                 for (int i = 0; i < latlong.size(); i++) {
-
                     if (latlong.get(i).equalsIgnoreCase(compare)) {
-
                         // Getting view from the layout file info_window_layout
                         v = getLayoutInflater().inflate(R.layout.windowlayout, null);
-
                         TextView tvLat = (TextView) v.findViewById(R.id.tv_lat);
                         TextView tv_lng = (TextView) v.findViewById(R.id.tv_lng);
                         TextView dateId = (TextView) v.findViewById(R.id.dateId);
@@ -449,10 +324,7 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
     }
 
     private void filter(String text) {
-        //new array list that will hold the filtered data
         filterdNames = new ArrayList<>();
-
-
         //looping through existing elements
         for (String s : cityName) {
             //if the existing elements contains the search input
@@ -462,16 +334,12 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
             }
 
         }
-
         if(filterdNames.size()>0){
             mAdapter.filterList(filterdNames);
         }else{
             cityList.setVisibility(View.GONE);
         }
-        //calling a method of the adapter class and passing the filtered list
-
     }
-
     @Override
     public void clickPosition(int pos) {
         filtercityId.clear();
@@ -486,25 +354,18 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         Utils.hideKeyboard(getActivity());
         cityList.setVisibility(View.GONE);
     }
-
-
     private void getMapList(RequestBody Data) {
-
         try {
-            //   progressDialog.show();
             Service login = ApiUtils.getAPIService();
             Call<AllLocationAndCityPojo> getallLatLong = login.getMapList(Data);
             getallLatLong.enqueue(new Callback<AllLocationAndCityPojo>() {
                 @Override
                 public void onResponse(Call<AllLocationAndCityPojo> call, Response<AllLocationAndCityPojo> response)
-
                 {
                     try {
                         if (response.body() != null) {
                             allLocationAndCityPojo = response.body();
                             if (allLocationAndCityPojo.getStatus().equals("false")) {
-                                 // Utils.showAlert(allLocationAndCityPojo.getMessage(), getActivity());
-
                             } else {
                                 getCurrentLocation();
                                 for (int i = 0; i < allLocationAndCityPojo.getCities().size(); i++) {
@@ -518,7 +379,6 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
                                 cityList.setAdapter(mAdapter);
                             }
                             progressDialog.dismiss();
-
                         } else {
                             Utils.showAlert(getString(R.string.Notfound), getActivity());
                         }
@@ -542,40 +402,36 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("MissingPermission")
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.RLsearch:
-
+                if(toLatLng!=null) {
                     CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(toLatLng, 11);
                     map.moveCamera(CameraUpdateFactory.newLatLng(toLatLng));
                     map.animateCamera(yourLocation);
                     map.setMyLocationEnabled(true);
                     map.getUiSettings().setMyLocationButtonEnabled(false);
                     View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
-
                     RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
-                    // position on right bottom
                     rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
                     rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
                     rlp.setMargins(0, 0, 30, 100);
-
-
-
-                IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
-                incdentSetPojo.setIncident_lat(String.valueOf(toLatLng.latitude));
-                incdentSetPojo.setIncident_lng(String.valueOf(toLatLng.longitude));
-                incdentSetPojo.setUser_id(mAppSession.getData("id"));
-                incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
-
+                    IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                    incdentSetPojo.setIncident_lat(String.valueOf(toLatLng.latitude));
+                    incdentSetPojo.setIncident_lng(String.valueOf(toLatLng.longitude));
+                    incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                    incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
                     RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                     if (Utils.checkConnection(getActivity()))
                         getMapList(mFile);
                     else
                         Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
-
-              //  }
+                }else{
+                    Utils.showAlert(getActivity().getString(R.string.enter_location), getActivity());
+                }
                 break;
 
             case R.id.Rltoolbar:
@@ -643,58 +499,6 @@ public class PositionOfInteervebtionsFragment extends Fragment implements OnMapR
             e.printStackTrace();
         }
     }
-
-
-//    private final android.location.LocationListener mLocationListener = new android.location.LocationListener() {
-//
-//        @SuppressLint("MissingPermission")
-//        @Override
-//        public void onLocationChanged(final Location location) {
-//            if (location != null) {
-//                // mCurrentLocation = location;
-//                latitude = location.getLatitude();
-//                longitude = location.getLongitude();
-//
-//                LatLng coordinate = new LatLng(latitude, longitude);
-//                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 11);
-//                map.moveCamera(CameraUpdateFactory.newLatLng(coordinate));
-//                map.animateCamera(yourLocation);
-//                map.setMyLocationEnabled(true);
-//
-//                View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
-//                RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
-//                // position on right bottom
-//                rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
-//                rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-//                rlp.setMargins(0, 0, 30, 100);
-//
-//                map.getUiSettings().setMapToolbarEnabled(false);
-//              //  map.getUiSettings().setZoomControlsEnabled( true );
-//
-              //  initSetCityList();
-//                //  initMapFragment();
-//            } else {
-//                Toast.makeText(getActivity(), "Location is not available now", Toast.LENGTH_LONG).show();
-//            }
-//        }
-//
-//        @Override
-//        public void onStatusChanged(String provider, int status, Bundle extras) {
-//
-//        }
-//
-//        @Override
-//        public void onProviderEnabled(String provider) {
-//
-//        }
-//
-//        @Override
-//        public void onProviderDisabled(String provider) {
-//
-//        }
-//    };
-
-
 
     private boolean checkPermission() {
         boolean check = ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&

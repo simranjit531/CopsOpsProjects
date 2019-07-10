@@ -5,7 +5,9 @@ import android.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class EncryptUtils {
         private static String CIPHER_NAME = "AES/CBC/PKCS5PADDING";
 

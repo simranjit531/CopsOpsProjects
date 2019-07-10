@@ -1,7 +1,9 @@
 package copops.com.copopsApp.pojo;
 
 import java.io.Serializable;
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class IncdentSetPojo implements Serializable {
 
     String ref_incident_category_id;

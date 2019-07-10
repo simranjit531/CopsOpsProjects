@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 
 
@@ -25,6 +26,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import java.util.concurrent.Executor;
@@ -50,6 +52,7 @@ import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Ranjan Gupta
  */
 @SuppressLint("ValidFragment")
 public class LoginFragment extends Fragment implements View.OnClickListener {
@@ -126,38 +129,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             Log.d("FCMToken", "token "+ FirebaseInstanceId.getInstance().getToken());
             mAppSession.saveData("fcm_token",FirebaseInstanceId.getInstance().getToken());
         }
-
-
-
-
-//
-//        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-//        if (checkPermission() && gpsEnabled()) {
-//            if (isNetworkEnabled) {
-//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
-//                        10, mLocationListener);
-//            } else {
-//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-//                        10, mLocationListener);
-//            }
-//        }
-        //    progressDialog.show();
-//        String SDSADSAD= mAppSession.getData("fcm_token");
-//        if (mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
-//            Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
-//
-//            mAppSession.saveData("fcm_token", FirebaseInstanceId.getInstance().getToken());
-//        }
         return view;
     }
-
+//For Use Click in for action
     private void onClick() {
         Rltoolbar.setOnClickListener(this);
         rLlogin.setOnClickListener(this);
         Tvregister.setOnClickListener(this);
         tvFargatPass.setOnClickListener(this);
-        //   etEmail.setCursorVisible(false);
-
         etEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,6 +145,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    //Field Validation
     public void validation() {
         if (etEmail.getText().toString().equals("")) {
             Utils.showAlert(getActivity().getString(R.string.email), mContext);
@@ -174,7 +154,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         } else if (!Utils.isValidMail(etEmail.getText().toString())) {
             Utils.showAlert(getActivity().getString(R.string.valid_email_errer), mContext);
         } else {
-
             try {
                 Utils.hideKeyboard(getActivity());
                 LoginPojoSetData loginPojoSetData = new LoginPojoSetData();
@@ -214,11 +193,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                             mAppSession.saveData("grade", registrationResponse.getGrade());
                                             Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
                                             mAppSession.saveData("freez", "1");
-//                                            if (userType.equalsIgnoreCase("Citizen")) {
-//                                                Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
-//                                            } else {
-//                                                Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
-//                                            }
                                         }
                                         getActivity().startService(new Intent(getActivity(), TrackingServices.class));
                                     } else {
@@ -267,6 +241,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     /////All click listners
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onClick(View v) {
 
         switch (v.getId()) {
@@ -274,6 +249,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 if (getFragmentManager().getBackStackEntryCount() > 0) {
                     getFragmentManager().popBackStackImmediate();
                 }
+                Utils.fragmentCall(new HomeFragment(), getFragmentManager());
                 break;
 
             case R.id.RLlogin:
@@ -290,23 +266,4 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

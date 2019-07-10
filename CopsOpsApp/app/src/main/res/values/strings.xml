@@ -46,6 +46,9 @@
     <string name="internet_conection">Please check your internet connectivity !!! .</string>
     <string name="intervin">You have already one report to complete, please complete it first .</string>
     <string name="password_not_same">Password and Confirm password must be equal.</string>
+    <string name="enter_location">Please Enter  City Name</string>
+
+    <string name="checkmb">File size should be less than 10MB</string>
 
     <string name="cityName">Please Enter City Name</string>
     <string name="no_find">No Record found</string>

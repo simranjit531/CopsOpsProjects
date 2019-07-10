@@ -18,7 +18,9 @@ import copops.com.copopsApp.R;
 import copops.com.copopsApp.interfaceview.IncedentInterface;
 import copops.com.copopsApp.pojo.IncidentSubPojo;
 import copops.com.copopsApp.pojo.UserListPojo;
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class NewUserListAdapter extends RecyclerView.Adapter<NewUserListAdapter.ViewHolder> {
 
     private Context context;

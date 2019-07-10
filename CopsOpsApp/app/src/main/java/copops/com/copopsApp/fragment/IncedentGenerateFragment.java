@@ -67,6 +67,7 @@ import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Ranjan Gupta
  */
 @SuppressLint("ValidFragment")
 public class IncedentGenerateFragment extends Fragment implements View.OnClickListener {
@@ -236,7 +237,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
                 break;
         }
     }
-
+//Field Validation
     public void validation() {
         gpsTracker = new GPSTracker(getActivity());
         latitude = gpsTracker.getLatitude();
@@ -277,16 +278,13 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
                     RequestBody mFile = RequestBody.create(MediaType.parse("image/*"), incedint_image_file);
                     incedint_image = MultipartBody.Part.createFormData("incident_image", incedint_image_file.getName(), mFile);
                 }
-
                 if (filePathVideo != null) {
                     incedint_video_file = new File(filePathVideo);
                     RequestBody mFile = RequestBody.create(MediaType.parse("video/*"), incedint_video_file);
                     incedint_video = MultipartBody.Part.createFormData("incident_video", incedint_video_file.getName(), mFile);
                 }
-
                 Log.e("nmnd", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mIncdentSetPojo)));
                 RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mIncdentSetPojo)));
-
                 Service uploadIncedentGenerate = ApiUtils.getAPIService();
                 Call<IncedentAcceptResponse> fileUpload = uploadIncedentGenerate.generateIncedent(incedint_image, incedint_video, mFile);
                 fileUpload.enqueue(new Callback<IncedentAcceptResponse>() {
@@ -374,7 +372,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
         }
 
     }
-
+//Click Picture From Camera
     private void dispatchTakePictureIntent() {
         /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");*/
@@ -444,7 +442,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
         }
 
     }
-
+//Record Video From Camera
     private void dispatchTakeVideoIntent() {
         Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         takeVideoIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -498,7 +496,7 @@ public class IncedentGenerateFragment extends Fragment implements View.OnClickLi
 
         return file;
     }
-
+// For use Compress Video
     class VideoCompressAsyncTask extends AsyncTask<String, String, String> {
         Context mContext;
 

@@ -15,30 +15,30 @@
         android:background="@color/blue"
         />
 
-    <com.chatcamp.uikit.messages.MessagesList
-        android:id="@+id/messagesList"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        app:incomingBubblePaddingBottom="4dp"
-        app:incomingBubblePaddingTop="4dp"
-        app:incomingTextSize="14sp"
-        app:outcomingBubblePaddingBottom="4dp"
-        app:outcomingBubblePaddingTop="4dp"
-        app:outcomingTextSize="14sp"
-        app:textAutoLink="all" />
+    <!--<com.chatcamp.uikit.messages.MessagesList-->
+        <!--android:id="@+id/messagesList"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1"-->
+        <!--app:incomingBubblePaddingBottom="4dp"-->
+        <!--app:incomingBubblePaddingTop="4dp"-->
+        <!--app:incomingTextSize="14sp"-->
+        <!--app:outcomingBubblePaddingBottom="4dp"-->
+        <!--app:outcomingBubblePaddingTop="4dp"-->
+        <!--app:outcomingTextSize="14sp"-->
+        <!--app:textAutoLink="all" />-->
 
-    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
-        android:id="@+id/progress_bar"
-        style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="false"
-        android:progress="0"
-        android:visibility="gone"
-        app:mpb_progressBackgroundTint="@color/green_light"
-        app:mpb_progressStyle="horizontal"
-        app:mpb_progressTint="@color/green" />
+    <!--<me.zhanghai.android.materialprogressbar.MaterialProgressBar-->
+        <!--android:id="@+id/progress_bar"-->
+        <!--style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:indeterminate="false"-->
+        <!--android:progress="0"-->
+        <!--android:visibility="gone"-->
+        <!--app:mpb_progressBackgroundTint="@color/green_light"-->
+        <!--app:mpb_progressStyle="horizontal"-->
+        <!--app:mpb_progressTint="@color/green" />-->
 
     <View
         android:id="@+id/divider"
@@ -50,24 +50,24 @@
         android:layout_marginBottom="4dp"
         android:background="@color/gray_light" />
 
-    <com.chatcamp.uikit.messages.MessageInput
-        android:id="@+id/edit_conversation_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="8dp"
-        android:paddingTop="1dp"
-        android:paddingRight="8dp"
-        android:paddingBottom="1dp"
-        app:attachmentButtonBackground="@drawable/ic_menu_camera"
-        app:attachmentButtonDefaultBgColor="@color/blue"
-        app:attachmentButtonHeight="30dp"
-        app:attachmentButtonWidth="30dp"
-        app:inputButtonBackground="@color/transparent"
-        app:inputButtonDefaultIconColor="@color/blue"
-        app:inputButtonIcon="@drawable/ic_send"
-        app:inputHint="@string/chat_edit_text_hint"
-        app:inputTextSize="14sp"
-        app:showAttachmentButton="true" />
+    <!--<com.chatcamp.uikit.messages.MessageInput-->
+        <!--android:id="@+id/edit_conversation_input"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:paddingLeft="8dp"-->
+        <!--android:paddingTop="1dp"-->
+        <!--android:paddingRight="8dp"-->
+        <!--android:paddingBottom="1dp"-->
+        <!--app:attachmentButtonBackground="@drawable/ic_menu_camera"-->
+        <!--app:attachmentButtonDefaultBgColor="@color/blue"-->
+        <!--app:attachmentButtonHeight="30dp"-->
+        <!--app:attachmentButtonWidth="30dp"-->
+        <!--app:inputButtonBackground="@color/transparent"-->
+        <!--app:inputButtonDefaultIconColor="@color/blue"-->
+        <!--app:inputButtonIcon="@drawable/ic_send"-->
+        <!--app:inputHint="@string/chat_edit_text_hint"-->
+        <!--app:inputTextSize="14sp"-->
+        <!--app:showAttachmentButton="true" />-->
 
 
     <TextView

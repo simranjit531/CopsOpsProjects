@@ -19,7 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import copops.com.copopsApp.R;
 import copops.com.copopsApp.interfaceview.IncedentInterface;
 import copops.com.copopsApp.pojo.IncidentSubPojo;
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class IncidentSubTypeAdapter extends RecyclerView.Adapter<IncidentSubTypeAdapter.ViewHolder> {
     private IncidentSubPojo mIncidentSubPojo;
     private Context context;

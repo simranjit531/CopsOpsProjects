@@ -45,7 +45,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Ranjan Gupta
  */
 public class NewUserFragment extends Fragment implements NewUserListAdapter.UserListInterFace, View.OnClickListener {
 

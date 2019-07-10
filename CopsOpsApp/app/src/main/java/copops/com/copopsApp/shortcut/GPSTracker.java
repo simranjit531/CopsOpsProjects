@@ -23,7 +23,9 @@ import java.util.ArrayList;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class GPSTracker extends Service implements LocationListener {
 
 private final  Context mContext;

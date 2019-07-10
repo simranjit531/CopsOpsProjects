@@ -39,7 +39,7 @@ import retrofit2.Response;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Ranjan Gupta
  */
 @SuppressLint("ValidFragment")
 public class AuthenticateCodeFragment extends Fragment implements View.OnClickListener, View.OnKeyListener, Utils.resetPassInterFace {
@@ -56,23 +56,18 @@ public class AuthenticateCodeFragment extends Fragment implements View.OnClickLi
     EditText etFifth;
     @BindView(R.id.ETsixth)
     EditText etSixth;
-
     @BindView(R.id.tv_id)
     TextView tv_id;
-
     @BindView(R.id.RLSend)
     RelativeLayout RLSend;
     private Context mContext;
     @BindView(R.id.Rltoolbar)
     RelativeLayout Rltoolbar;
-
     RegistationPojo mRegistationPojo;
     View view;
     String userType;
     AppSession mAppSession;
     String messageText = "123456";
-//    TextWatcher textWatcher;
-
     Utils.resetPassInterFace mResetPassInterFace;
     ProgressDialog progressDialog;
 
@@ -81,8 +76,6 @@ public class AuthenticateCodeFragment extends Fragment implements View.OnClickLi
         this.mRegistationPojo = mRegistationPojo;
         // Required empty public constructor
     }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -100,7 +93,6 @@ public class AuthenticateCodeFragment extends Fragment implements View.OnClickLi
         etFourth.addTextChangedListener(new GenericTextWatcher(etFourth));
         etFifth.addTextChangedListener(new GenericTextWatcher(etFifth));
         etSixth.addTextChangedListener(new GenericTextWatcher(etSixth));
-
         etFirst.setOnKeyListener(this);
         etSecond.setOnKeyListener(this);
         etThird.setOnKeyListener(this);
@@ -215,7 +207,7 @@ public class AuthenticateCodeFragment extends Fragment implements View.OnClickLi
         }
     }
 
-
+//For use OTP listion
     public class GenericTextWatcher implements TextWatcher {
         private View view;
 

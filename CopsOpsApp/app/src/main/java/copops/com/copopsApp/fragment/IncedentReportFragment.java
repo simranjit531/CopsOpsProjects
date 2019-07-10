@@ -37,6 +37,7 @@ import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Ranjan Gupta
  */
 @SuppressLint("ValidFragment")
 public class IncedentReportFragment extends Fragment implements View.OnClickListener{
@@ -55,8 +56,6 @@ public class IncedentReportFragment extends Fragment implements View.OnClickList
     String screentype="";
     String parentname="";
 
-//    @BindView(R.id.Rltoolbar)
-//    RelativeLayout Rltoolbar;
 
     AppSession mAppSession;
 
@@ -92,16 +91,10 @@ public class IncedentReportFragment extends Fragment implements View.OnClickList
             Glide.with(getActivity())
                     .load(incedentAcceptResponse.getQrcode_url()).override(250, 250)
                     .into(barId);
-//            Glide
-//                    .with(getActivity())
-//                    .load(incedentAcceptResponse.getQrcode_url())
-//                    .apply(new RequestOptions().override(250, 250))
-//                    .into(barId);
 
         }
 
         RLfinish.setOnClickListener(this);
-//        Rltoolbar.setOnClickListener(this);
     }
 
     @Override
@@ -134,35 +127,19 @@ public class IncedentReportFragment extends Fragment implements View.OnClickList
                             Utils.showAlert( getActivity().getString(R.string.internet_conection), getActivity());
                         }
                     }
-                 //   if(mAppSession.getData("userType").equalsIgnoreCase("userType")){
-                   // Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
                 }else{
                     Utils.fragmentCall(new Frag_Call_Number(incedentAcceptResponse.getHelpline_number(),parentname), getFragmentManager());
                 }
 
 
-//                if (screentype.equals("handrail")){
-//                    Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
-//                }else if (parentname.equals("city")){
-//                    Utils.fragmentCall(new CitizenFragment(), getFragmentManager());
-//                }else{
-//                    Utils.fragmentCall(new Frag_Call_Number(incedentAcceptResponse.getHelpline_number(),parentname), getFragmentManager());
-//                }
-
-
                 break;
 
-//            case R.id.Rltoolbar:
-//                if (getFragmentManager().getBackStackEntryCount() > 0) {
-//                    getFragmentManager().popBackStackImmediate();
-//                }
-//                break;
         }
 
 
     }
 
-
+//Get Copops Status
     private void getCopeStatus(RequestBody Data) {
 
         //   progressDialog.show();
@@ -179,15 +156,9 @@ public class IncedentReportFragment extends Fragment implements View.OnClickList
                         OperatorShowAlInfo operatorShowAlInfo = response.body();
 
                         if (operatorShowAlInfo.getStatus().equals("false")) {
-                            //  Utils.showAlert(registrationResponse.getMessage(), getActivity());
                         } else {
-
-
                             String new_reports =operatorShowAlInfo.getNew_reports();
                             mAppSession.saveData("new_reports",new_reports);
-
-
-
                         }
 
                     }} catch (Exception e) {
@@ -200,7 +171,6 @@ public class IncedentReportFragment extends Fragment implements View.OnClickList
             @Override
             public void onFailure(Call<OperatorShowAlInfo> call, Throwable t) {
                 Log.d("TAG", "Error " + t.getMessage());
-
 
             }
         });

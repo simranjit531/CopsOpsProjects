@@ -19,7 +19,9 @@ import copops.com.copopsApp.interfaceview.IncedentInterface;
 import copops.com.copopsApp.pojo.IncidentSubPojo;
 import copops.com.copopsApp.pojo.RecentChatHolder;
 import copops.com.copopsApp.utils.Utils;
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.ViewHolder> {
     private IncidentSubPojo mIncidentSubPojo;
     private Context context;

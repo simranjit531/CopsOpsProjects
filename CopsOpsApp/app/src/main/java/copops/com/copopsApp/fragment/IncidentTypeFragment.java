@@ -41,7 +41,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Ranjan Gupta
  */
 @SuppressLint("ValidFragment")
 public class IncidentTypeFragment extends Fragment implements View.OnClickListener, IncedentInterface {
@@ -92,7 +92,7 @@ public class IncidentTypeFragment extends Fragment implements View.OnClickListen
 
         return view;
     }
-
+//Click and show List of SubType
     private void onClick() {
         incedentTypeId = mIncidentTypeResponse.getData().get(pos).getIncident_id();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
@@ -104,7 +104,7 @@ public class IncidentTypeFragment extends Fragment implements View.OnClickListen
         else
             Utils.showAlert(getActivity().getString(R.string.internet_conection), mContext);
     }
-
+//Get Incident TyPE From Web Service
     public void getIncedentSubType() {
         try {
 

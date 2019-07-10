@@ -57,11 +57,11 @@
 
     </LinearLayout>
 
-    <com.chatcamp.uikit.customview.LoadingView
-        android:id="@+id/loading_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
+    <!--<com.chatcamp.uikit.customview.LoadingView-->
+        <!--android:id="@+id/loading_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:visibility="gone"/>-->
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -112,29 +112,29 @@
         android:layout_marginRight="16dp"
         android:background="@color/gray_light" />
 
-    <com.chatcamp.uikit.messages.MessageInput
-        android:id="@+id/edit_conversation_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="1dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingTop="1dp"
+    <!--<com.chatcamp.uikit.messages.MessageInput-->
+        <!--android:id="@+id/edit_conversation_input"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:paddingBottom="1dp"-->
+        <!--android:paddingLeft="8dp"-->
+        <!--android:paddingRight="8dp"-->
+        <!--android:paddingTop="1dp"-->
 
-        app:attachmentButtonBackground="@mipmap/img_camera"
-        app:attachmentButtonHeight="20dp"
-        app:attachmentButtonWidth="25dp"
+        <!--app:attachmentButtonBackground="@mipmap/img_camera"-->
+        <!--app:attachmentButtonHeight="20dp"-->
+        <!--app:attachmentButtonWidth="25dp"-->
 
-        app:inputButtonBackground="@color/transparent"
-        app:inputButtonIcon="@drawable/chat_send"
-         app:inputButtonMargin="@dimen/_10sdp"
+        <!--app:inputButtonBackground="@color/transparent"-->
+        <!--app:inputButtonIcon="@drawable/chat_send"-->
+         <!--app:inputButtonMargin="@dimen/_10sdp"-->
 
-      app:attachmentButtonDefaultIconColor="@color/transparent"
-        app:inputHint="@string/hint_enter_a_message"
-        app:inputTextSize="14sp"
-        app:showAttachmentButton="true"
-        app:showVoiceMessageButton="true"
-      />
+      <!--app:attachmentButtonDefaultIconColor="@color/transparent"-->
+        <!--app:inputHint="@string/hint_enter_a_message"-->
+        <!--app:inputTextSize="14sp"-->
+        <!--app:showAttachmentButton="true"-->
+        <!--app:showVoiceMessageButton="true"-->
+      <!--/>-->
 //add for micc
     <!--app:voiceMessageButtonIcon="@drawable/ic_mic"-->
     <!--app:voiceMessageButtonMuteIcon="@drawable/ic_mic_mute"-->

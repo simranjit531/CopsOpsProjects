@@ -1,6 +1,7 @@
 package copops.com.copopsApp.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -45,10 +47,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-public class AssigenedIntervation extends AppCompatActivity implements  Utils.clossPassInterFace {
+/**
+ * Created by Ranjan Gupta
+ */
+public class AssigenedIntervation extends AppCompatActivity implements Utils.clossPassInterFace {
     private Context mContext;
-    int pos;
+    private int pos;
     AssignmentListPojo assignmentListPojo;
     @BindView(R.id.Tvdate)
     TextView Tvdate;
@@ -79,26 +83,27 @@ public class AssigenedIntervation extends AppCompatActivity implements  Utils.cl
     @BindView(R.id.Rlintervenue)
     RelativeLayout Rlintervenue;
 
-    private String intervationId="";
-    private String intervationDateTime="";
-    private String intervationAddress="";
-    private String intervationObject="";
-    private String intervationDescp="";
-    private String intervationOthDescp="";
-    private String intervationStatus="";
-    private String intervationRef="";
+    private String intervationId = "";
+    private String intervationDateTime = "";
+    private String intervationAddress = "";
+    private String intervationObject = "";
+    private String intervationDescp = "";
+    private String intervationOthDescp = "";
+    private String intervationStatus = "";
+    private String intervationRef = "";
 
-    ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
     private static Handler mainThreadHandler = new Handler(Looper.getMainLooper());
-    Utils.clossPassInterFace mClossPassInterFace;
-    AppSession mAppSession;
+    private Utils.clossPassInterFace mClossPassInterFace;
+    private AppSession mAppSession;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assigned_intervation);
-        mContext=AssigenedIntervation.this;
+        mContext = AssigenedIntervation.this;
         ButterKnife.bind(this);
-        mAppSession=mAppSession.getInstance(mContext);
+        mAppSession = mAppSession.getInstance(getApplicationContext());
         NotificationManager notificationManager = (NotificationManager) this.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
         progressDialog = new ProgressDialog(mContext);
@@ -111,13 +116,12 @@ public class AssigenedIntervation extends AppCompatActivity implements  Utils.cl
                 stopService(new Intent(mContext, ShortcutViewService_Citizen.class));
             }
         }, 1000);
-        Intent intent=getIntent();
-        String value=intent.getStringExtra("remMsg");
+        Intent intent = getIntent();
+        String value = intent.getStringExtra("remMsg");
         setReomteMsg(value);
+        mClossPassInterFace = this;
 
-        mClossPassInterFace=this;
-
-        if(mAppSession.getData("copstatus").equalsIgnoreCase("0")){
+        if (mAppSession.getData("copstatus").equalsIgnoreCase("0")) {
             Rlintervenue.setVisibility(View.VISIBLE);
             tvid.setText(getString(R.string.close));
 
@@ -125,7 +129,7 @@ public class AssigenedIntervation extends AppCompatActivity implements  Utils.cl
         Rlintervenue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               if (tvid.getText().toString().equalsIgnoreCase(getString(R.string.Intervene))) {
+                if (tvid.getText().toString().equalsIgnoreCase(getString(R.string.Intervene))) {
 
                     if (Utils.checkConnection(mContext)) {
                         IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
@@ -141,79 +145,84 @@ public class AssigenedIntervation extends AppCompatActivity implements  Utils.cl
                         Utils.showAlert(mContext.getString(R.string.internet_conection), mContext);
                     }
                 } else {
-                   finish();
-
-                   mAppSession.saveData("notifictaionmove","1");
+                    try {
+                        mAppSession.saveData("notifictaionmove", "1");
+                        startActivity(new Intent(mContext, DashboardActivity.class));
+                        finish();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
     }
-    protected void setReomteMsg(String value)
-    {
+
+    protected void setReomteMsg(String value) {
 
 
-
-try
-{
-       JSONObject jsonObject=new JSONObject(value);
-      String str_incident=jsonObject.getString("incident");
-      JSONObject jsonObject1=new JSONObject(str_incident);
-       // JSONArray jsonArray=jsonObject.getJSONArray("incident");
-       intervationId      =jsonObject1.getString("id");
-       intervationDateTime=jsonObject1.getString("created_at");
-       intervationAddress =jsonObject1.getString("address");
-       intervationObject  =jsonObject1.getString("sub_category_name");
-       intervationDescp   =jsonObject1.getString("incident_description");
-       intervationOthDescp =jsonObject1.getString("other_description");
-       intervationStatus=jsonObject1.getString("status");
-       intervationRef=jsonObject1.getString("reference");
-
-
-
-    otherdescId.setText(""+intervationOthDescp);
-    TVreferencenumber.setText(""+intervationRef);
-    etAddressId.setText(""+intervationAddress);
-    objectId.setText(""+intervationObject);
-    descId.setText(""+intervationDescp);
-
-    String[] parts = intervationDateTime.split(" ");
-    String date = parts[0]; // 004
-    String time = parts[1]; // 034556
-    Tvdate.setText(""+date);
-    Tvtime.setText(""+time);
-
-    if (intervationStatus.equals("1")) {
-        Tvstate.setText(R.string.onwait);
-        Tvstate.setTextColor(getResources().getColor(R.color.orange));
+        try {
+            JSONObject jsonObject = new JSONObject(value);
+            String str_incident = jsonObject.getString("incident");
+            JSONObject jsonObject1 = new JSONObject(str_incident);
+            intervationId = jsonObject1.getString("id");
+            intervationDateTime = jsonObject1.getString("created_at");
+            intervationAddress = jsonObject1.getString("address");
+            intervationObject = jsonObject1.getString("sub_category_name");
+            intervationDescp = jsonObject1.getString("incident_description");
+            intervationOthDescp = jsonObject1.getString("other_description");
+            intervationStatus = jsonObject1.getString("status");
+            intervationRef = jsonObject1.getString("reference");
+            otherdescId.setText("" + intervationOthDescp);
+            TVreferencenumber.setText("" + intervationRef);
+            etAddressId.setText("" + intervationAddress);
+            objectId.setText("" + intervationObject);
+            descId.setText("" + intervationDescp);
+            if (Utils.checkConnection(this)) {
+                IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                incdentSetPojo.setIncident_id(intervationId);
+                incdentSetPojo.setDevice_id(Utils.getDeviceId(this));
+                incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+                Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                getUpdate(mFile);
+            } else {
+                Utils.showAlert(this.getString(R.string.internet_conection), this);
+            }
+            String[] parts = intervationDateTime.split(" ");
+            String date = parts[0]; // 004
+            String time = parts[1]; // 034556
+            Tvdate.setText("" + date);
+            Tvtime.setText("" + time);
+            if (intervationStatus.equals("1")) {
+                Tvstate.setText(R.string.onwait);
+                Tvstate.setTextColor(getResources().getColor(R.color.orange));
+            } else if (intervationStatus.equals("2")) {
+                Tvstate.setText(R.string.pending);
+                Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
+            } else if (intervationStatus.equals("3")) {
+                Tvstate.setText(R.string.Assigned);
+                Tvstate.setTextColor(getResources().getColor(R.color.black));
+            } else {
+                Tvstate.setText(R.string.finished);
+                Tvstate.setTextColor(getResources().getColor(R.color.green));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
-    else if (intervationStatus.equals("2")) {
-        Tvstate.setText(R.string.pending);
-        Tvstate.setTextColor(getResources().getColor(R.color.btntextcolort));
-    }else if (intervationStatus.equals("3")) {
-        Tvstate.setText(R.string.Assigned);
-        Tvstate.setTextColor(getResources().getColor(R.color.black));
-    }
-    else {
-        Tvstate.setText(R.string.finished);
-        //  Tvstate.setText("Finished");
-        Tvstate.setTextColor(getResources().getColor(R.color.green));
-        //  Rlintervenue.setVisibility(View.INVISIBLE);
-        //  Tvstate.setText("Pending");
-        //  Tvstate.setTextColor(getResources().getColor(R.color.black));
-    }
-}catch (JSONException e){
-    e.printStackTrace();
-}
-    }
-    public void clickBack(View v)
-    {
 
-        //startActivity(new Intent(mContext,DashboardActivity.class));
+    public void clickBack(View v) {
+        startActivity(new Intent(mContext, DashboardActivity.class));
         finish();
     }
 
-
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        stopService(new Intent(mContext, ShortcutViewService.class));
+        stopService(new Intent(mContext, ShortcutViewService_Citizen.class));
+    }
 
     private void getAssignIntervation(RequestBody Data) {
         progressDialog.show();
@@ -222,25 +231,19 @@ try
         acceptIntervenpCall.enqueue(new Callback<CommanStatusPojo>() {
             @SuppressLint("ResourceAsColor")
             @Override
-            public void onResponse(Call<CommanStatusPojo> call, Response<CommanStatusPojo> response)
-
-            {
+            public void onResponse(Call<CommanStatusPojo> call, Response<CommanStatusPojo> response) {
                 try {
                     if (response.body() != null) {
                         CommanStatusPojo commanStatusPojo = response.body();
                         if (commanStatusPojo.getStatus().equals("false")) {
-                            //   Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
                             Utils.opendialogcustomdialogClose(mContext, commanStatusPojo.getMessage(), mClossPassInterFace);
                         } else {
 
-                            if(commanStatusPojo.getMessage().equalsIgnoreCase(getString(R.string.youcan))) {
-                                Utils.showAlert(commanStatusPojo.getMessage(),mContext);
-                            }else {
+                            if (commanStatusPojo.getMessage().equalsIgnoreCase(getString(R.string.youcan))) {
+                                Utils.showAlert(commanStatusPojo.getMessage(), mContext);
+                            } else {
                                 Utils.opendialogcustomdialogClose(mContext, commanStatusPojo.getMessage(), mClossPassInterFace);
                             }
-
-                            // Utils.showAlertAndClick(commanStatusPojo.getMessage(), getContext(), mResetPassInterFace);
-
                         }
                         progressDialog.dismiss();
 
@@ -254,7 +257,6 @@ try
                     Utils.showAlert(e.getMessage(), mContext);
                 }
             }
-
             @Override
             public void onFailure(Call<CommanStatusPojo> call, Throwable t) {
                 Log.d("TAG", "Error " + t.getMessage());
@@ -263,11 +265,50 @@ try
             }
         });
     }
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(mContext, DashboardActivity.class));
+        finish();
+    }
     @Override
     public void onClick() {
-finish();
+        try {
+            mAppSession.saveData("notifictaionmove", "1");
+            startActivity(new Intent(mContext, DashboardActivity.class));
+            finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @SuppressLint("ResourceAsColor")
+    private void getUpdate(RequestBody Data) {
+        try {
+            Service operator = ApiUtils.getAPIService();
+            Call<CommanStatusPojo> getallLatLong = operator.getupdate(Data);
+            getallLatLong.enqueue(new Callback<CommanStatusPojo>() {
+                @Override
+                public void onResponse(Call<CommanStatusPojo> call, Response<CommanStatusPojo> response) {
+                    try {
+                        if (response.body() != null) {
+                            CommanStatusPojo commanStatusPojo = response.body();
+                            if (commanStatusPojo.getStatus().equals("false")) {
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.getMessage();
+                    }
+                }
 
-mAppSession.saveData("notifictaionmove","1");
+                @Override
+                public void onFailure(Call<CommanStatusPojo> call, Throwable t) {
+                    Log.d("TAG", "Error " + t.getMessage());
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

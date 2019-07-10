@@ -3,6 +3,7 @@ package copops.com.copopsApp.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -27,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -58,6 +61,7 @@ import copops.com.copopsApp.services.ApiUtils;
 import copops.com.copopsApp.services.Service;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
+import copops.com.copopsApp.utils.MyDatePickerFragment;
 import copops.com.copopsApp.utils.TrackingServices;
 import copops.com.copopsApp.utils.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -72,9 +76,9 @@ import retrofit2.Response;
 import static android.app.Activity.RESULT_OK;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Ranjan Gupta
  */
-public class ProfileFragment extends Fragment implements View.OnClickListener {
+public class ProfileFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
     @BindView(R.id.Rltoolbar)
     RelativeLayout Rltoolbar;
@@ -106,11 +110,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.Etemail)
     EditText Etemail;
 
-    @BindView(R.id.chagepassword)
-    TextView chagepassword;
+    @BindView(R.id.changePassword)
+    RelativeLayout changePassword;
 
     @BindView(R.id.Etpassword)
     EditText Etpassword;
+
+    private String stringDate;
+    DatePickerDialog.OnDateSetListener dateSetListener;
 
     @BindView(R.id.conforpassword)
     EditText conforpassword;
@@ -132,16 +139,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     @BindView(R.id.IVprofilephoto)
     CircleImageView IVprofilephoto;
-    ProgressDialog progressDialog;
-    AppSession mAppSession;
+    private ProgressDialog progressDialog;
+    private AppSession mAppSession;
     private int GALLERY = 1, CAMERA = 2;
     private String gender = "";
 
     private Uri profileUri;
     private String profilePicUri;
     String filePathprofilePic;
+
     public ProfileFragment() {
-        // Required empty public constructor
+
     }
 
 
@@ -158,12 +166,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initView() {
-        mAppSession=mAppSession.getInstance(getContext());
+        mAppSession = mAppSession.getInstance(getContext());
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.loading));
         Rltoolbar.setOnClickListener(this);
-        chagepassword.setOnClickListener(this);
+        changePassword.setOnClickListener(this);
         RLnext.setOnClickListener(this);
         newEtconfirmpassword.setVisibility(View.GONE);
         lll.setVisibility(View.GONE);
@@ -173,6 +181,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         femailId.setOnClickListener(this);
         mailIdTv.setOnClickListener(this);
+
+        Etdate.setOnClickListener(this);
+
+        dateSetListener = this;
 
         if (Utils.checkConnection(getActivity())) {
             IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
@@ -197,17 +209,22 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
 
-            case R.id.chagepassword:
-                opendialogcustomdialogPassword(getContext(),mAppSession,progressDialog,getFragmentManager());
+            case R.id.changePassword:
+                // opendialogcustomdialogPassword(getContext(),mAppSession,progressDialog,getFragmentManager());
 
 
+                Utils.fragmentCall(new ChangePasswordFragment(), getFragmentManager());
 
                 break;
-
+            case R.id.Etdate:
+                Utils.hideKeyboard(getActivity());
+                DialogFragment newFragment = new MyDatePickerFragment(dateSetListener);
+                newFragment.show(getActivity().getSupportFragmentManager(), "date picker");
+                break;
 
             case R.id.RLnext:
-               // newEtconfirmpassword.setVisibility(View.GONE);
-             //   lll.setVisibility(View.GONE);
+                // newEtconfirmpassword.setVisibility(View.GONE);
+                //   lll.setVisibility(View.GONE);
 
                 update();
                 break;
@@ -259,14 +276,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         final Dialog dialog = new Dialog(mContext, R.style.MyDialogTheme1);
         dialog.setContentView(R.layout.change_password_pop_up);
         dialog.setCancelable(false);
-     //   dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        //   dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         Window window = dialog.getWindow();
         window.setGravity(Gravity.CENTER);
 
         EditText Etpassword = (EditText) dialog.findViewById(R.id.Etpassword);
         EditText newpassword = (EditText) dialog.findViewById(R.id.newpassword);
         EditText conpassword = (EditText) dialog.findViewById(R.id.conpassword);
-        Button cancel=(Button)dialog.findViewById(R.id.cancel) ;
+        Button cancel = (Button) dialog.findViewById(R.id.cancel);
 
         RelativeLayout RLsave = (RelativeLayout) dialog.findViewById(R.id.RLsave);
 
@@ -280,15 +297,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
 
-                  if (Etpassword.getText().toString().equals("")) {
+                if (Etpassword.getText().toString().equals("")) {
                     Utils.showAlert(mContext.getString(R.string.old_password), mContext);
-                }else if(Etpassword.getText().toString().equals("")){
-                      Utils.showAlert(mContext.getString(R.string.new_password), mContext);
-                  }else if(!conpassword.getText().toString().equalsIgnoreCase(newpassword.getText().toString())){
-                      Utils.showAlert(mContext.getString(R.string.password_not_same), mContext);
+                } else if (Etpassword.getText().toString().equals("")) {
+                    Utils.showAlert(mContext.getString(R.string.new_password), mContext);
+                } else if (!conpassword.getText().toString().equalsIgnoreCase(newpassword.getText().toString())) {
+                    Utils.showAlert(mContext.getString(R.string.password_not_same), mContext);
 
-                  } else if (Utils.checkConnection(mContext)) {
-                    LoginPojoSetData mLoginPojoSetData= new LoginPojoSetData();
+                } else if (Utils.checkConnection(mContext)) {
+                    LoginPojoSetData mLoginPojoSetData = new LoginPojoSetData();
 
                     mLoginPojoSetData.setUser_id(mAppSession.getData("id"));
                     mLoginPojoSetData.setdevice_language(mAppSession.getData("devicelanguage"));
@@ -305,9 +322,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     getallLatLong.enqueue(new Callback<CommanStatusPojo>() {
                         @SuppressLint("ResourceAsColor")
                         @Override
-                        public void onResponse(Call<CommanStatusPojo> call, Response<CommanStatusPojo> response)
-
-                        {
+                        public void onResponse(Call<CommanStatusPojo> call, Response<CommanStatusPojo> response) {
                             try {
                                 if (response.body() != null) {
                                     CommanStatusPojo operatorShowAlInfo = response.body();
@@ -318,8 +333,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                         dialog.dismiss();
 
                                         if (manager.getBackStackEntryCount() > 0) {
-                                                                        manager.popBackStackImmediate();
-                                                                    }
+                                            manager.popBackStackImmediate();
+                                        }
                                         Utils.fragmentCall(new LoginFragment(mAppSession.getData("copsuser")), manager);
 
 
@@ -346,7 +361,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     });
 
 
-
                 } else {
                     Utils.showAlert(mContext.getString(R.string.internet_conection), mContext);
                 }
@@ -359,7 +373,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
 
-
     private void getProfileData(RequestBody Data) {
 
 
@@ -369,25 +382,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         getallLatLong.enqueue(new Callback<ProfilePojo>() {
             @SuppressLint("ResourceAsColor")
             @Override
-            public void onResponse(Call<ProfilePojo> call, Response<ProfilePojo> response)
-
-            {
+            public void onResponse(Call<ProfilePojo> call, Response<ProfilePojo> response) {
                 try {
                     if (response.body() != null) {
                         ProfilePojo operatorShowAlInfo = response.body();
                         if (operatorShowAlInfo.getStatus().equals("false")) {
-                         //   //  Utils.showAlert(registrationResponse.getMessage(), getActivity());
 
                         } else {
-   if(operatorShowAlInfo.getMessage().getGender().equalsIgnoreCase("Male")){
-       IVgreenmam.setImageResource(R.mipmap.img_green_dot);
-
-       gender=operatorShowAlInfo.getMessage().getGender();
-   }else{
-       IVgreenwoman.setImageResource(R.mipmap.img_green_dot);
-       gender=operatorShowAlInfo.getMessage().getGender();
-   }
-
+                            if (operatorShowAlInfo.getMessage().getGender().equalsIgnoreCase("Male")) {
+                                IVgreenmam.setImageResource(R.mipmap.img_green_dot);
+                                gender = operatorShowAlInfo.getMessage().getGender();
+                            } else {
+                                IVgreenwoman.setImageResource(R.mipmap.img_green_dot);
+                                gender = operatorShowAlInfo.getMessage().getGender();
+                            }
                             Etemail.setText(operatorShowAlInfo.getMessage().getEmail_id());
                             Etlastname.setText(operatorShowAlInfo.getMessage().getLast_name());
                             Etfirstname.setText(operatorShowAlInfo.getMessage().getFirst_name());
@@ -418,14 +426,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
+
     public void choosePhotoFromGallary() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
         startActivityForResult(galleryIntent, GALLERY);
     }
-
-
 
 
     private void dispatchTakePictureIntent() {
@@ -451,16 +458,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             if (photoFile != null) {
 
 
+                profileUri = FileProvider.getUriForFile(getContext(),
+                        Utils.FILE_PROVIDER_AUTHORITY,
+                        photoFile);
 
+                Log.d("LOG_TAG", "Log1: " + String.valueOf(profileUri));
 
-
-                    profileUri = FileProvider.getUriForFile(getContext(),
-                            Utils.FILE_PROVIDER_AUTHORITY,
-                            photoFile);
-
-                    Log.d("LOG_TAG", "Log1: " + String.valueOf(profileUri));
-
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, profileUri);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, profileUri);
 
 
                 // Get the content URI for the image file
@@ -471,6 +475,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             }
         }
     }
+
     private File createMediaFile(int type) throws IOException {
 
         // Create an image file name
@@ -478,31 +483,25 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         String fileName;
         File file = null;
         File storageDir;
-        if(type== Utils.TYPE_IMAGE) {
-            fileName ="JPEG_" + timeStamp + "_";
-        }else{
-            fileName ="VID_" + timeStamp + "_";
+        if (type == Utils.TYPE_IMAGE) {
+            fileName = "JPEG_" + timeStamp + "_";
+        } else {
+            fileName = "VID_" + timeStamp + "_";
         }
-        if(type==1) {
+        if (type == 1) {
 
 
+            storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            file = File.createTempFile(fileName, ".jpg", storageDir      /* directory */);
 
-                storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-                file = File.createTempFile(fileName,  ".jpg" ,storageDir      /* directory */);
-
-                profilePicUri = file.getAbsolutePath();
-
+            profilePicUri = file.getAbsolutePath();
 
 
         }
-
-
 
 
         return file;
     }
-
-
 
 
     @Override
@@ -513,48 +512,41 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         if (requestCode == CAMERA && resultCode == RESULT_OK) {
 
 
+            Bitmap bitmap = BitmapFactory.decodeFile(profilePicUri);
 
-                Bitmap bitmap = BitmapFactory.decodeFile(profilePicUri);
+            filePathprofilePic = profilePicUri;
+            //  mImageView.setImageBitmap(bitmap);
+            IVprofilephoto.setImageBitmap(bitmap);
+            //    profilePicUri = Utils.getRealPathFromURIPath(profileUri, getActivity());
+            //  filePathImage=mCurrentPhotoPath;
 
-                filePathprofilePic=profilePicUri;
-                //  mImageView.setImageBitmap(bitmap);
-                IVprofilephoto.setImageBitmap(bitmap);
-                //    profilePicUri = Utils.getRealPathFromURIPath(profileUri, getActivity());
-                //  filePathImage=mCurrentPhotoPath;
+            //     IVprofilephoto.setImageBitmap(thumbnail);
 
-                //     IVprofilephoto.setImageBitmap(thumbnail);
-
-                //  Bitmap b=scaleBitmap(thumbnail,400,800);
-                //   profileUri = Utils.getImageUri(getActivity(), b);
-                //   profilePicUri = Utils.getRealPathFromURIPath(profileUri, getActivity());
-
-
-
-
+            //  Bitmap b=scaleBitmap(thumbnail,400,800);
+            //   profileUri = Utils.getImageUri(getActivity(), b);
+            //   profilePicUri = Utils.getRealPathFromURIPath(profileUri, getActivity());
 
 
         } else if (requestCode == GALLERY && resultCode == RESULT_OK) {
-
 
 
             if (data != null) {
 
                 try {
 
-                        Uri contentURI = data.getData();
+                    Uri contentURI = data.getData();
 
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
-                        String profilePicUri1 = Utils.getRealPathFromURIPath(contentURI, getActivity());
-                        File file = new File(profilePicUri1);
-                        OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-                        os.close();
-                        profileUri = Utils.getImageUri(getActivity(), bitmap);
-                        //   profilePicUri = Utils.getRealPathFromURIPath(profileUri, getActivity());
-                        filePathprofilePic = Utils.getRealPathFromURIPath(contentURI, getActivity());
-                        // Toast.makeText(mContext, "Image Saved!", Toast.LENGTH_SHORT).show();
-                        IVprofilephoto.setImageBitmap(bitmap);
-
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
+                    String profilePicUri1 = Utils.getRealPathFromURIPath(contentURI, getActivity());
+                    File file = new File(profilePicUri1);
+                    OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                    os.close();
+                    profileUri = Utils.getImageUri(getActivity(), bitmap);
+                    //   profilePicUri = Utils.getRealPathFromURIPath(profileUri, getActivity());
+                    filePathprofilePic = Utils.getRealPathFromURIPath(contentURI, getActivity());
+                    // Toast.makeText(mContext, "Image Saved!", Toast.LENGTH_SHORT).show();
+                    IVprofilephoto.setImageBitmap(bitmap);
 
 
                 } catch (IOException e) {
@@ -573,117 +565,121 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
 
     }
+
     public void update() {
+        try {
+            RegistationPjoSetData registationPjoSetData = new RegistationPjoSetData();
+            registationPjoSetData.setFirst_name(Etfirstname.getText().toString().trim());
+            registationPjoSetData.setLast_name(Etlastname.getText().toString().trim());
+            registationPjoSetData.setDate_of_birth(Etdate.getText().toString());
+            registationPjoSetData.setUser_id(mAppSession.getData("id"));
+            registationPjoSetData.setGender(gender);
+            registationPjoSetData.setEmail_id(Etemail.getText().toString().trim());
+            registationPjoSetData.setPhone_number(Etphonenumber.getText().toString().trim());
+            registationPjoSetData.setdevice_language(mAppSession.getData("devicelanguage"));
+            registationPjoSetData.setDevice_id(Utils.getDeviceId(getContext()));
+            if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                progressDialog.show();
+                File filePrrofile;
+                File fileId_1;
+                File fileId_2;
+                File file_bus_1;
+                File file_bus_2;
 
-            try {
+                MultipartBody.Part fileToUploadProfile = null;
 
-                RegistationPjoSetData registationPjoSetData = new RegistationPjoSetData();
-                registationPjoSetData.setFirst_name(Etfirstname.getText().toString().trim());
-                registationPjoSetData.setLast_name(Etlastname.getText().toString().trim());
-                registationPjoSetData.setDate_of_birth(Etdate.getText().toString().trim());
-                registationPjoSetData.setUser_id(mAppSession.getData("id"));
-                registationPjoSetData.setGender(gender);
-                registationPjoSetData.setEmail_id(Etemail.getText().toString().trim());
-                registationPjoSetData.setPhone_number(Etphonenumber.getText().toString().trim());
+                if (filePathprofilePic != null) {
+                    filePrrofile = new File(filePathprofilePic);
+                    RequestBody mFile = RequestBody.create(MediaType.parse("image/*"), filePrrofile);
+                    fileToUploadProfile = MultipartBody.Part.createFormData("profile_image", filePrrofile.getName(), mFile);
+                }
 
-                registationPjoSetData.setdevice_language(mAppSession.getData("devicelanguage"));
-                //   registationPjoSetData.setReg_latitude(String.valueOf(latitude));
+                RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(registationPjoSetData)));
+                Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(registationPjoSetData)));
+                Service uploadImage = ApiUtils.getAPIService();
+                Call<RegistationPojo> fileUpload = uploadImage.updateProfile(fileToUploadProfile, mFile);
+                fileUpload.enqueue(new Callback<RegistationPojo>() {
+                    @Override
+                    public void onResponse(Call<RegistationPojo> call, Response<RegistationPojo> response) {
+                        try {
+                            if (response.body() != null) {
+                                RegistationPojo registrationResponse = response.body();
+                                if (registrationResponse.getStatus().equals("false")) {
 
+                                    Utils.showAlert(registrationResponse.getMessage(), getContext());
 
-                registationPjoSetData.setDevice_id(Utils.getDeviceId(getContext()));
+                                } else {
 
-                if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    progressDialog.show();
-                    File filePrrofile;
-                    File fileId_1;
-                    File fileId_2;
-                    File file_bus_1;
-                    File file_bus_2;
-
-                    MultipartBody.Part fileToUploadProfile = null;
-
-                    if (filePathprofilePic != null) {
-                        filePrrofile = new File(filePathprofilePic);
-                        RequestBody mFile = RequestBody.create(MediaType.parse("image/*"), filePrrofile);
-                        fileToUploadProfile = MultipartBody.Part.createFormData("profile_image", filePrrofile.getName(), mFile);
-                    }
-
-                    RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(registationPjoSetData)));
-                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(registationPjoSetData)));
-                    Service uploadImage = ApiUtils.getAPIService();
-                    Call<RegistationPojo> fileUpload = uploadImage.updateProfile(fileToUploadProfile, mFile);
-                    fileUpload.enqueue(new Callback<RegistationPojo>() {
-                        @Override
-                        public void onResponse(Call<RegistationPojo> call, Response<RegistationPojo> response) {
-                            try {
-                                if (response.body() != null) {
-                                    RegistationPojo registrationResponse = response.body();
-                                    if (registrationResponse.getStatus().equals("false")) {
-
-                                            Utils.showAlert(registrationResponse.getMessage(), getContext());
-
-                                    } else {
-
-                                     //   mAppSession.saveData("Login", "1");
-                                        mAppSession.saveData("id", registrationResponse.getId());
-                                        mAppSession.saveData("user_id", registrationResponse.getUserid());
-                                        mAppSession.saveData("name", registrationResponse.getUsername());
-                                        mAppSession.saveData("type", mAppSession.getData("tyep"));
-                                        mAppSession.saveData("image_url", registrationResponse.getProfile_url());
-                                        mAppSession.saveData("profile_qrcode", registrationResponse.getProfile_qrcode());
-                                        mAppSession.saveData("grade", registrationResponse.getGrade());
+                                    //   mAppSession.saveData("Login", "1");
+                                    mAppSession.saveData("id", registrationResponse.getId());
+                                    mAppSession.saveData("user_id", registrationResponse.getUserid());
+                                    mAppSession.saveData("name", registrationResponse.getUsername());
+                                    mAppSession.saveData("type", mAppSession.getData("tyep"));
+                                    mAppSession.saveData("image_url", registrationResponse.getProfile_url());
+                                    mAppSession.saveData("profile_qrcode", registrationResponse.getProfile_qrcode());
+                                    mAppSession.saveData("grade", registrationResponse.getGrade());
 
 
-                                        Glide.with(getActivity()).load(mAppSession.getData("image_url")).into(IVprofilephoto);
+                                    Glide.with(getActivity()).load(mAppSession.getData("image_url")).into(IVprofilephoto);
                                     //    mAppSession.saveData("freez", "1");
 
 
-                                        if (Utils.checkConnection(getActivity())) {
-                                            IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
-                                            incdentSetPojo.setUser_id(mAppSession.getData("id"));
-                                            incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
-                                            Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                                            RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-                                            getProfileData(mFile);
-                                        } else {
-                                            Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
-                                        }
-
+                                    if (Utils.checkConnection(getActivity())) {
+                                        IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
+                                        incdentSetPojo.setUser_id(mAppSession.getData("id"));
+                                        incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
+                                        Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                                        RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                                        getProfileData(mFile);
+                                    } else {
+                                        Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
                                     }
 
-                                    progressDialog.dismiss();
-
-                                } else {
-                                    progressDialog.dismiss();
-                                    Utils.showAlert(response.message(), getContext());
                                 }
-                            } catch (Exception e) {
+                                Utils.showAlert(registrationResponse.getMessage(), getContext());
                                 progressDialog.dismiss();
-                                e.getMessage();
-                                Utils.showAlert(e.getMessage(), getContext());
+
+                            } else {
+                                progressDialog.dismiss();
+                                Utils.showAlert(response.message(), getContext());
                             }
-                        }
-
-                        @Override
-                        public void onFailure(Call<RegistationPojo> call, Throwable t) {
-                         //   Log.d(TAG, "Error " + t.getMessage());
+                        } catch (Exception e) {
                             progressDialog.dismiss();
-                            Utils.showAlert(t.getMessage(), getContext());
+                            e.getMessage();
+                            Utils.showAlert(e.getMessage(), getContext());
                         }
-                    });
-                } else {
-                    EasyPermissions.requestPermissions(this, getString(R.string.read_file), Utils.READ_REQUEST_CODE, Manifest.permission.READ_EXTERNAL_STORAGE);
-                }
+                    }
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                e.getMessage();
-                Utils.showAlert(e.getMessage(), getContext());
+                    @Override
+                    public void onFailure(Call<RegistationPojo> call, Throwable t) {
+                        //   Log.d(TAG, "Error " + t.getMessage());
+                        progressDialog.dismiss();
+                        Utils.showAlert(t.getMessage(), getContext());
+                    }
+                });
+            } else {
+                EasyPermissions.requestPermissions(this, getString(R.string.read_file), Utils.READ_REQUEST_CODE, Manifest.permission.READ_EXTERNAL_STORAGE);
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            e.getMessage();
+            Utils.showAlert(e.getMessage(), getContext());
         }
+    }
 
 
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-
-
+        String mm = "" + (view.getMonth() + 1);
+        String dd = "" + view.getDayOfMonth();
+        if (mm.length() == 1) {
+            mm = "0" + (view.getMonth() + 1);
+        }
+        if (dd.length() == 1) {
+            dd = "0" + view.getDayOfMonth();
+        }
+        Etdate.setText(view.getYear() + "-" + mm + "-" + dd);
+    }
 }

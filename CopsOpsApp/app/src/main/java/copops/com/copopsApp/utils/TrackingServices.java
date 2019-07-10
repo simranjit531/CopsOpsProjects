@@ -15,6 +15,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import java.util.Locale;
 import java.util.Timer;
@@ -92,6 +94,7 @@ public class TrackingServices extends Service {
 
 
 
+                    mAppSession.saveData("fcm_token", FirebaseInstanceId.getInstance().getToken());
 
                     if(devicelanguage.equalsIgnoreCase("english")){
                         mAppSession.saveData("devicelanguage", "En");
@@ -100,20 +103,18 @@ public class TrackingServices extends Service {
                     }
                     latitude = gps.getLatitude();
                     longitude = gps.getLongitude();
-
-
                     LoginPojoSetData mLoginPojoSetData = new LoginPojoSetData();
-
                     Log.e("always", "tracking");
                     Log.e("latitude", " " + latitude);
                     Log.e("longitude", " " + longitude);
-
                     mLoginPojoSetData.setUser_id(mAppSession.getData("id"));
                     mLoginPojoSetData.setLatitude(String.valueOf(latitude));
                     mLoginPojoSetData.setLongitude(String.valueOf(longitude));
                     mLoginPojoSetData.setdevice_language(mAppSession.getData("devicelanguage"));
+                    mLoginPojoSetData.setDevice_id(Utils.getDeviceId(getApplicationContext()));
+                    mLoginPojoSetData.setFcm_token(mAppSession.getData("fcm_token"));
 
-
+                    Log.e("asdsa", new Gson().toJson(mLoginPojoSetData));
                     Log.e("taackingdata", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
                     RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
 

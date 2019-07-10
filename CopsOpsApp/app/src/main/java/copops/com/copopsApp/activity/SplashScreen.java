@@ -11,7 +11,7 @@ import copops.com.copopsApp.R;
 
 
 /**
- * Created by Lenovo on 07-11-2018.
+ * Created by Ranjan Gupta
  */
 
 public class SplashScreen extends AppCompatActivity {
@@ -25,7 +25,7 @@ public class SplashScreen extends AppCompatActivity {
         mContext=SplashScreen.this;
         refreshUI();
     }
-
+//UI Show After Splash Screen
     private void refreshUI() {
         new Handler().postDelayed(new Runnable() {
                                       @Override

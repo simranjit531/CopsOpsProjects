@@ -64,9 +64,8 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Ranjan Gupta
  */
 @SuppressLint("ValidFragment")
 public class PositionOfInteervebtionsFragmentShortcut extends Fragment implements OnMapReadyCallback, IncedentInterface, View.OnClickListener {

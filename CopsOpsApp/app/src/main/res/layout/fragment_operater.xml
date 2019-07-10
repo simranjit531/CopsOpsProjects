@@ -140,7 +140,7 @@
             android:inputType="textPassword"
             android:imeOptions="actionDone"
             android:textCursorDrawable="@color/black"
-
+            android:maxLength="10"
             android:background="@mipmap/img_edittext_background"
             android:textColorHint="@color/aluminiumcolor"
             android:paddingLeft="20dp"

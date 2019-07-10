@@ -39,7 +39,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Ranjan Gupta
  */
 @SuppressLint("ValidFragment")
 public class IncidentFragment extends Fragment implements View.OnClickListener, IncedentInterface {
@@ -87,7 +87,7 @@ public class IncidentFragment extends Fragment implements View.OnClickListener, 
     private void onClick() {
         Rltoolbar.setOnClickListener(this);
     }
-
+//Get Incident Type from web service
     public void getIncidentType() {
         try {
 
@@ -95,14 +95,10 @@ public class IncidentFragment extends Fragment implements View.OnClickListener, 
             progressDialog = new ProgressDialog(mContext);
             progressDialog.setMessage(getActivity().getString(R.string.loading_msg));
             progressDialog.show();
-
-
             mLoginPojoSetData.setDevice_id(Utils.getDeviceId(mContext));
             mLoginPojoSetData.setdevice_language(mAppSession.getData("devicelanguage"));
             Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
             Service incidentType = ApiUtils.getAPIService();
-
-            //  RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(Utils.getDeviceId(mContext))));
             RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
             Call<IncidentTypePojo> fileUpload = incidentType.incidentType(mFile);
             fileUpload.enqueue(new Callback<IncidentTypePojo>() {
@@ -163,13 +159,6 @@ public class IncidentFragment extends Fragment implements View.OnClickListener, 
 
         switch (v.getId()) {
             case R.id.Rltoolbar:
-              /*  if (getFragmentManager().getBackStackEntryCount() > 0) {
-                    getFragmentManager().popBackStackImmediate();
-                }*/
-
-                /*if (getFragmentManager().getBackStackEntryCount() > 0) {
-                    getFragmentManager().popBackStackImmediate();
-                }*/
                 String loginvalid = mAppSession.getData("Login");
                 String userType = mAppSession.getData("userType");
                 if (loginvalid.equals("1") && userType.equals("Cops")) {

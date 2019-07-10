@@ -6,16 +6,16 @@
     android:orientation="vertical"
 >
 
-    <EditText
-        android:id="@+id/et_search_user"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:hint="Search User"
-        android:padding="8dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/bg_search"/>
+    <!--<EditText-->
+        <!--android:id="@+id/et_search_user"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="4dp"-->
+        <!--android:layout_marginBottom="4dp"-->
+        <!--android:hint="Search User"-->
+        <!--android:padding="8dp"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:background="@drawable/bg_search"/>-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"

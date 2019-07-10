@@ -73,6 +73,7 @@ import copops.com.copopsApp.shortcut.GPSTracker;
 
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.EncryptUtils;
+import copops.com.copopsApp.utils.TrackingServices;
 import copops.com.copopsApp.utils.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -80,15 +81,14 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class OperatorFragment extends Fragment implements View.OnClickListener {
-
 
     @BindView(R.id.IVprofilephoto)
     CircleImageView IVprofilephoto;
-
-    String[] listItems;
+    private String[] listItems;
     @BindView(R.id.TVname)
     TextView TVname;
     @BindView(R.id.TVprogressbarnumber)
@@ -135,21 +135,17 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     LinearLayout llintervention;
     @BindView(R.id.RLpositionofincidents)
     RelativeLayout RLpositionofincidents;
-    LocationManager mLocationManager;
+    private LocationManager mLocationManager;
     private boolean isNetworkEnabled;
     private boolean isGpsEnabled;
-    String userType;
-    RegistationPojo mRegistationPojo;
-    ProgressDialog progressDialog;
-    AppSession mAppSession;
-    OperatorShowAlInfo operatorShowAlInfo;
-    AssignmentListPojo assignmentListPojo_close;
-    double longitude;
-    double latitude;
+    private ProgressDialog progressDialog;
+    private AppSession mAppSession;
+    private OperatorShowAlInfo operatorShowAlInfo;
+    private double longitude;
+    private double latitude;
 
     GPSTracker gps;
     public static final int notify = 2000;  //interval between two services(Here Service run every 5 seconds)
-    int count = 0;  //number of times service is display
     private Handler mHandler = new Handler();   //run on another Thread to avoid crash
     private Timer mTimer = null;    //timer handling
 
@@ -160,7 +156,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.oprator_home, container, false);
         ButterKnife.bind(this, view);
         mAppSession = mAppSession.getInstance(getActivity());
@@ -174,50 +169,14 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         Tvavaiable.setOnClickListener(this);
         Tvnotavaiable.setOnClickListener(this);
         rlchat.setOnClickListener(this);
-
         Utils.statusCheck(getActivity());
-     //   buildUsersList();
         gps = new GPSTracker(getActivity());
         latitude = gps.getLatitude();
         longitude = gps.getLongitude();
         mAppSession.saveData("latitude", String.valueOf(latitude));
         mAppSession.saveData("longitude", String.valueOf(longitude));
-
-
         mAppSession.saveData("Chat","0");
 
-
-
-
-
-//        if(mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
-//
-//            FirebaseApp.initializeApp(getContext());
-//            Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
-//
-//            mAppSession.saveData("fcm_token", FirebaseInstanceId.getInstance().getToken());
-//        }
-
-//        try {
-//            currentUser = ChatHelper.getCurrentUser();
-//            incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
-//            incomingMessagesManager.addDialogMessageListener(new OperatorFragment.AllDialogsMessageListener());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        //    mAppSession.getData("new_reports");
-//        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-//        if (checkPermission() && gpsEnabled()) {
-//            if (isNetworkEnabled) {
-//                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
-//                        10, mLocationListener);
-//                progressDialog.show();
-//            } else {
-//                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-//                        10, mLocationListener);
-//                progressDialog.show();
-//            }
-//        }
         if (mAppSession.getData("devicelanguage").equals("Fr")) {
             Tvchattext.setText("     " + getString(R.string.messaging));
         } else {
@@ -226,63 +185,20 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
+    //initialization  View
     private void initView() {
         IVlogout.setVisibility(View.VISIBLE);
         IVback.setVisibility(View.GONE);
-        //   String abb=mAppSession.getData("messagecount");
+        getActivity().startService(new Intent(getActivity(), TrackingServices.class));
         TVname.setText(mAppSession.getData("name"));
         if (mAppSession.getData("image_url") != null && !mAppSession.getData("image_url").equals("")) {
             Glide.with(getActivity()).load(mAppSession.getData("image_url")).into(IVprofilephoto);
-//            Glide.with(getActivity()).load(mAppSession.getData("image_url")).diskCacheStrategy(DiskCacheStrategy.ALL)
-//                    .listener(new RequestListener<String, GlideDrawable>() {
-//                        @Override
-//                        public boolean onException(Exception e, String model,
-//                                                   Target<GlideDrawable> target, boolean isFirstResource) {
-//                            e.printStackTrace();
-//                            //progressBar.setVisibility(View.GONE);
-//                            return false;
-//                        }
-//
-//                        @Override
-//                        public boolean onResourceReady(GlideDrawable resource, String model,
-//                                                       Target<GlideDrawable> target, boolean isFromMemoryCache,
-//                                                       boolean isFirstResource) {
-//                           // progressBar.setVisibility(View.GONE);
-//                            return false;
-//                        }
-//                    })
-//                    .error(R.drawable.ic_error_white)
-//                    .dontTransform()
-//                    .into(IVprofilephoto);
-
-            //   GlideApp.with(getActivity()).load(mAppSession.getData("image_url")).into(IVprofilephoto);
-//
-//            Glide.with(getActivity())
-//                    .load(mAppSession.getData("image_url"))
-//                    .apply(new RequestOptions().error(R.drawable.ic_error_white)).apply(new RequestOptions().override(Consts.PREFERRED_IMAGE_SIZE_FULL, Consts.PREFERRED_IMAGE_SIZE_FULL))
-//                    .into(IVprofilephoto);
-         /*   Glide.with(this).load(mAppSession.getData("image_url"))
-                    .error(R.mipmap.img_profile_photo).
-                    .into(IVprofilephoto);*/
         } else {
             IVprofilephoto.setImageResource(R.mipmap.img_white_dot);
         }
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.loading));
-//        if (Utils.checkConnection(getActivity())) {
-//            IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
-//            incdentSetPojo.setUser_id(mAppSession.getData("id"));
-//            incdentSetPojo.setIncident_lat(mAppSession.getData("latitude"));
-//            incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
-//            incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
-//            Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-//            RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-//            getCopeStatus(mFile);
-//        } else {
-//            Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
-//        }
     }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -294,12 +210,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
                         if (mTimer != null) // Cancel if already existed
                             mTimer.cancel();
-
-//                        if (mTimer != null) // Cancel if already existed
-//                            mTimer.cancel();
                     }
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -308,11 +219,8 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                 mAppSession.saveData("handrail", "dasd");
                 Utils.fragmentCall(new IncidentFragment(mAppSession.getData("id")), getFragmentManager());
                 mAppSession.saveData("operatorScreenBack", "1");
-
                 if (mTimer != null) // Cancel if already existed
                     mTimer.cancel();
-//                if (mTimer != null) // Cancel if already existed
-//                    mTimer.cancel();
                 break;
             case R.id.RLnavigation:
                 boolean isAppInstalledwaze = appInstalledOrNot("com.waze");
@@ -342,35 +250,15 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             startActivity(LaunchIntent);
                         }
                     }
-
-
                 });
                 AlertDialog mDialog = mBuilder.create();
                 mDialog.show();
-                //  Utils.fragmentCall(new GPSPublicFragment(), getFragmentManager());
                 break;
             case R.id.IVlogout:
                 opendialogcustomdialog();
                 break;
             case R.id.rlchat:
-
                Utils.fragmentCall(new ChatRecentFragment(), getFragmentManager());
-//                try
-//                {
-//
-//                //    Utils.fragmentCall(new ChatRecentFragment(), getFragmentManager());
-//
-//                    if (!TextUtils.isEmpty(LocalStorage.getInstance().getUserId()) && !TextUtils.isEmpty(LocalStorage.getInstance().getUsername())) {
-//                        connectToChatSdk(LocalStorage.getInstance().getUserId(), LocalStorage.getInstance().getUsername());
-//                        return;
-//                    }
-//
-//                }catch (Exception e){e.printStackTrace();}
-//               setUpView();
-               /* Intent mIntent = new Intent(getActivity(), MainActivity.class);
-                mAppSession.saveData("isActivityRunning","ChatView");
-                startActivity(mIntent);*/
-
                 break;
 
             case R.id.TVname:
@@ -408,21 +296,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.llintervention:
 
-//                if (operatorShowAlInfo.getAvailable().equalsIgnoreCase("0")) {
-//                    if (Utils.checkConnection(getActivity())) {
-//                        IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
-//
-//                        incdentSetPojo.setUser_id(mAppSession.getData("id"));
-//                        incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
-//                        Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-//                        RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
-//                        getAssignIntervationData(mFile);
-//                    } else {
-//                        Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
-//                    }
-//
-//
-//                } else {
                 if (Utils.checkConnection(getActivity())) {
                     IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
                     incdentSetPojo.setUser_id(mAppSession.getData("id"));
@@ -430,18 +303,17 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                     incdentSetPojo.setIncident_lng(mAppSession.getData("longitude"));
                     incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
                     //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
-                    Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
+                  //  Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                     RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                     getAssigmentList(mFile);
                 } else {
                     Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
                 }
-
                 mAppSession.saveData("Chat","0");
                 break;
         }
     }
-
+//Show Popup For Logout
     public void opendialogcustomdialog() {
         final Dialog dialog = new Dialog(getActivity(), R.style.DialogFragmentTheme);
         dialog.setContentView(R.layout.custom_dialog);
@@ -463,18 +335,12 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                     IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
                     incdentSetPojo.setUser_id(mAppSession.getData("id"));
                     incdentSetPojo.setdevice_language(mAppSession.getData("devicelanguage"));
-                    //  incdentSetPojo.setDevice_id(Utils.getDeviceId(getActivity()));
                     Log.e("@@@@", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                     RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(incdentSetPojo)));
                     logOutData(mFile);
                 } else {
                     Utils.showAlert(getActivity().getString(R.string.internet_conection), getActivity());
                 }
-              //  logOutData()
-
-
-
-               // userLogout();
                 if (mTimer != null) // Cancel if already existed
                     mTimer.cancel();
             }
@@ -502,17 +368,10 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                         operatorShowAlInfo = response.body();
 
                         if (operatorShowAlInfo.getStatus().equals("false")) {
-                            //  Utils.showAlert(registrationResponse.getMessage(), getActivity());
                         } else {
-
-
                             if (mAppSession.getData("new_reports").equalsIgnoreCase("")) {
-
                                 mAppSession.saveData("new_reports",operatorShowAlInfo.getNew_reports());
-
-
                             } else {
-
                                 mAppSession.saveData("new_reports",operatorShowAlInfo.getNew_reports());
                                 mTimer = new Timer();   //recreate new
                                 mTimer.scheduleAtFixedRate(new TimeDisplay(), 0, notify);   //Schedule task
@@ -567,12 +426,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             mAppSession.saveData("operatorlevel", operatorShowAlInfo.getLevel());
                         }
                         progressDialog.dismiss();
-
-
-
                     } else {
-                       // Utils.showAlert(getString(R.string.Notfound), getActivity());
-
                         Utils.showAlert(getString(R.string.Notfound), getActivity());
                         progressDialog.dismiss();
                     }
@@ -586,7 +440,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onFailure(Call<OperatorShowAlInfo> call, Throwable t) {
-                Log.d("TAG", "Error " + t.getMessage());
                 progressDialog.dismiss();
                 Utils.showAlert(t.getMessage(), getActivity());
             }
@@ -595,9 +448,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
 
     private void getCopsAvailabilityStatus(RequestBody Data) {
-
         try {
-            // progressDialog.show();
             Service operator = ApiUtils.getAPIService();
             Call<CommanStatusPojo> getallLatLong = operator.getAvailability(Data);
             getallLatLong.enqueue(new Callback<CommanStatusPojo>() {
@@ -609,7 +460,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             CommanStatusPojo commanStatusPojo = response.body();
                             if (commanStatusPojo.getStatus().equals("false")) {
                                 Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
-
                             } else {
 
                                 if (commanStatusPojo.getAvailable().equalsIgnoreCase("0")) {
@@ -627,7 +477,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                                     viewline2.setVisibility(View.INVISIBLE);
                                     viewlineId.setVisibility(View.VISIBLE);
                                     viewline2.setBackgroundResource(R.color.black);
-                                    // Tvavaiable.setTextColor(getResources().getColor(R.color.blue_shade));
                                     Utils.showAlert(commanStatusPojo.getMessage(), getActivity());
                                 }
 
@@ -635,7 +484,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             progressDialog.dismiss();
 
                         } else {
-                          //  Utils.showAlert(getString(R.string.Notfound), getActivity());
                             Utils.showAlert(getString(R.string.Notfound), getActivity());
                         }
 
@@ -661,7 +509,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
 
     private void getAssigmentList(RequestBody Data) {
-        //  progressDialog.show();
         Service login = ApiUtils.getAPIService();
         Call<AssignmentListPojo> getallLatLong = login.getAssignmentList(Data);
         getallLatLong.enqueue(new Callback<AssignmentListPojo>() {
@@ -699,6 +546,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onResume() {
         super.onResume();
@@ -711,9 +559,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
             chatCountId.setVisibility(View.VISIBLE);
             chatCountId.setText(mAppSession.getData("countNoti"));
         }
-
-        //loadUpdatedDialog(qbChatMessage1.getDialogId(),qbChatMessage1);
-
         if (Utils.checkConnection(getActivity())) {
             IncdentSetPojo incdentSetPojo = new IncdentSetPojo();
             incdentSetPojo.setUser_id(mAppSession.getData("id"));
@@ -732,33 +577,11 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    private boolean checkPermission() {
-        boolean check = ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-        if (!check) {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-            return false;
-        }
-        return true;
-//    }
-    }
-
-    private boolean gpsEnabled() {
-        isGpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-        if (!isGpsEnabled && !isNetworkEnabled) {
-            // displayLocationSettingsRequest(getActivity());
-//    if (!isGpsEnabled) {
-//            Toast.makeText(m_activity, "GPS is not enabled", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        return true;
-    }
 
 
-    ////Manish
+
+
+    ////For Use Location
     private final android.location.LocationListener mLocationListener = new android.location.LocationListener() {
 
         @Override
@@ -803,8 +626,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
      */
     private void logOutData(RequestBody Data) {
         try {
-
-
             progressDialog.show();
             Service acceptInterven = ApiUtils.getAPIService();
             Call<CommanStatusPojo> acceptIntervenpCall = acceptInterven.logout(Data);
@@ -818,21 +639,16 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                             if (logOutCommanStatusPojo.getStatus().equals("false")) {
                                 Utils.showAlert(logOutCommanStatusPojo.getMessage(), getActivity());
                             } else {
-
-
                                 SharedPreferences preferences = getActivity().getSharedPreferences("copops.com.copopsApp", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = preferences.edit();
                                 editor.clear();
                                 editor.commit();
                                 mAppSession.saveData("Login", "0");
-
                                 Utils.fragmentCall(new HomeFragment(), getFragmentManager());
-                                //  Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close), getFragmentManager());
                             }
                             progressDialog.dismiss();
 
                         } else {
-                            //  Utils.showAlert(getString(R.string.Notfound), getActivity());
                             Utils.showAlert(getString(R.string.Notfound), getActivity());
                         }
 
@@ -845,7 +661,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
                 @Override
                 public void onFailure(Call<CommanStatusPojo> call, Throwable t) {
-                    Log.d("TAG", "Error " + t.getMessage());
+                   // Log.d("TAG", "Error " + t.getMessage());
                     progressDialog.dismiss();
                     Utils.showAlert(t.getMessage(), getActivity());
                 }
@@ -854,65 +670,7 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
     }
-
-    private void getAssignIntervationData(RequestBody Data) {
-        try {
-
-
-            progressDialog.show();
-            Service acceptInterven = ApiUtils.getAPIService();
-            Call<AssignmentListPojo> acceptIntervenpCall = acceptInterven.assignedData(Data);
-            acceptIntervenpCall.enqueue(new Callback<AssignmentListPojo>() {
-                @SuppressLint("ResourceAsColor")
-                @Override
-                public void onResponse(Call<AssignmentListPojo> call, Response<AssignmentListPojo> response) {
-                    try {
-                        if (response.body() != null) {
-                            assignmentListPojo_close = response.body();
-                            if (assignmentListPojo_close.getStatus().equals("false")) {
-                                Utils.showAlert(assignmentListPojo_close.getMessage(), getActivity());
-                            } else {
-                                //  Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close), getFragmentManager());
-                            }
-                            progressDialog.dismiss();
-
-                        } else {
-                          //  Utils.showAlert(getString(R.string.Notfound), getActivity());
-                            Utils.showAlert(getString(R.string.Notfound), getActivity());
-                        }
-
-                    } catch (Exception e) {
-                        progressDialog.dismiss();
-                        e.getMessage();
-                        Utils.showAlert(e.getMessage(), getActivity());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<AssignmentListPojo> call, Throwable t) {
-                    Log.d("TAG", "Error " + t.getMessage());
-                    progressDialog.dismiss();
-                    Utils.showAlert(t.getMessage(), getActivity());
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//Check APP is install Or Not
     private boolean appInstalledOrNot(String uri) {
         PackageManager pm = getActivity().getPackageManager();
         try {
@@ -923,24 +681,9 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
 
         return false;
     }
-
+//Update Notification Come Or NOT
     public void update() {
 
-
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext());
-        Intent resultIntent = new Intent(getContext(), DashboardActivity.class);
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getContext());
-        stackBuilder.addParentStack(DashboardActivity.class);
-
-// Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(resultPendingIntent);
-
-
-
-        String aa = mAppSession.getData("notifica");
 
         if (mAppSession.getData("notifica").equals("") || mAppSession.getData("notifica").equals("0")) {
             chatCountId.setVisibility(View.GONE);
@@ -953,7 +696,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
             countId.setVisibility(View.INVISIBLE);
             picId.setVisibility(View.INVISIBLE);
         } else {
-
             if (operatorShowAlInfo.getAvailable().equalsIgnoreCase("1")) {
 
 
@@ -963,7 +705,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                     countId.setVisibility(View.VISIBLE);
                     countId.setText(mAppSession.getData("new_reports"));
 
-                    Log.e("saa",mAppSession.getData("new_reports"));
                 }
 
                 picId.setVisibility(View.INVISIBLE);
@@ -971,46 +712,14 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
                 if(mAppSession.getData("new_reports").equalsIgnoreCase("0")){
                     countId.setVisibility(View.INVISIBLE);
                 }else{
-
-                    Log.e("saa",mAppSession.getData("new_reports"));
                     countId.setVisibility(View.VISIBLE);
                     countId.setText(mAppSession.getData("new_reports"));
                 }
                 picId.setVisibility(View.VISIBLE);
             }
-
-
-//            if (operatorShowAlInfo.getAvailable().equalsIgnoreCase("1")) {
-//                if (mAppSession.getData("new_reports").equalsIgnoreCase("0")) {
-//                    countId.setVisibility(View.INVISIBLE);
-//                    picId.setVisibility(View.VISIBLE);
-//                   // countId.setText(mAppSession.getData("new_reports"));
-//                } else {
-//                    countId.setVisibility(View.VISIBLE);
-//                    picId.setVisibility(View.VISIBLE);
-//                   // countId.setText(operatorShowAlInfo.getNew_reports());
-//                    countId.setText(mAppSession.getData("new_reports"));
-//                }
-//            } else {
-//                if (mAppSession.getData("new_reports").equalsIgnoreCase("0")) {
-//                    countId.setVisibility(View.GONE);
-//                    mAppSession.saveData("assignedintervationcount", "0");
-//                } else {
-//                    countId.setVisibility(View.VISIBLE);
-//                    picId.setVisibility(View.VISIBLE);
-//                  //  countId.setText(operatorShowAlInfo.getNew_reports());
-//                    countId.setText(mAppSession.getData("new_reports"));
-//                }
         }
 
-//            if (mAppSession.getData("new_reports").equalsIgnoreCase("0")) {
-//
-//                if()
-//                countId.setVisibility(View.INVISIBLE);
-//                picId.setVisibility(View.INVISIBLE);
-//            } else {
-//                countId.setText(mAppSession.getData("new_reports"));
-//            }
+
     }
 
 
@@ -1022,8 +731,6 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-
-                    Log.e("rrr", "sdsad");
                     update();
 
                 }
@@ -1032,204 +739,5 @@ public class OperatorFragment extends Fragment implements View.OnClickListener {
         }
 
     }
-
-
-    protected Boolean isActivityRunning(Class activityClass)
-    {
-        ActivityManager activityManager = (ActivityManager) getActivity().getBaseContext().getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
-
-        for (ActivityManager.RunningTaskInfo task : tasks) {
-            if (activityClass.getCanonicalName().equalsIgnoreCase(task.baseActivity.getClassName()))
-                return true;
-        }
-
-        return false;
-    }
-//    public void connectToChatSdk(final String userId, final String displyName) {
-//        ChatCamp.init(getActivity(), Constant.APP_ID);
-//        ChatCamp.connect(userId, new ChatCamp.ConnectListener() {
-//            @Override
-//            public void onConnected(User user, ChatCampException e) {
-//                if (e != null) {
-//
-//                        LocalStorage.getInstance().setUserId("");
-//                        LocalStorage.getInstance().setUsername("");
-//                        setUpView();
-//
-//                        Snackbar.make(getView(), "Something went wrong", Snackbar.LENGTH_LONG).show();
-//
-//                } else {
-//                    try{
-//                        System.out.println("CONNECTED");
-//                        LocalStorage.getInstance().setUserId(user.getId());
-//                        LocalStorage.getInstance().setUsername(displyName);
-//                    }
-//                    catch (Exception e1)
-//                    {
-//                        e1.printStackTrace();
-//                    }
-//
-//                    ChatCamp.updateUserDisplayName(displyName, new ChatCamp.UserUpdateListener() {
-//                        //                            ChatCamp.updateUserProfileUrl("https://iflychat.com", new ChatCamp.UserUpdateListener() {
-//                        @Override
-//                        public void onUpdated(User user, ChatCampException e) {
-//                            System.out.println("UPDATE DISPLAY NAME" + user.getDisplayName());
-//
-//                            mAppSession.saveData("screenShow","recentchat");
-//
-//                            Intent intent = new Intent(getActivity(), RecentChatActivity.class);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                            startActivity(intent);
-//                          //  finish();
-//
-//
-//
-//                        }
-//                    });
-//
-//                    Map map = new HashMap();
-//                    map.put("key", "value");
-//                    ChatCamp.updateUserMetadata(map, new ChatCamp.UserUpdateListener() {
-//                        @Override
-//                        public void onUpdated(User user, ChatCampException e) {
-//                            Log.d("CHATCAMP_APP", "meta data updated");
-//                        }
-//                    });
-//                    if (FirebaseInstanceId.getInstance().getToken() != null) {
-//                        ChatCamp.updateUserPushToken(FirebaseInstanceId.getInstance().getToken(), new ChatCamp.UserPushTokenUpdateListener() {
-//                            @Override
-//                            public void onUpdated(User user, ChatCampException e) {
-//                                Log.d("CHATCAMP_APP", "PUSH TOKEN REGISTERED");
-//
-//                            }
-//                        });
-//                    }
-//                }
-//            }
-//        });
-//    }
-
-//    private void setUpView() {
-//
-//
-//        ChatCamp.init(getActivity(), "6512253349478264832");
-//        String userId=mAppSession.getData("user_id");
-//        String displyName=mAppSession.getData("name");
-//        connectToChatSdk(userId,displyName);
-//
-//    }
-
-//    private void getMsg(RequestBody Data) {
-//        try {
-//
-//
-//            // p.show();
-//            Service acceptInterven = ApiUtils.getAPIService();
-//            Call<String> msesg = acceptInterven.getMsgCount(Data);
-//
-//            msesg.enqueue(new Callback<String>() {
-//                @Override
-//                public void onResponse(Call<String> call, Response<String> response) {
-//
-//                    if(response!=null){
-//                        String assignmentListPojo_close = response.body();
-//                        Log.e("ddd",""+assignmentListPojo_close);
-//                    }
-//                    Log.e("ddd",""+response);
-//                }
-//
-//                @Override
-//                public void onFailure(Call<String> call, Throwable t) {
-//                    Utils.showAlert(t.getMessage(), getActivity());
-//                    Log.e("ddd",""+"failure");
-//                }
-//            });
-////            acceptInterasvenpCall.enqueue(new Callback<CommanStatusPojo>() {
-////                @SuppressLint("ResourceAsColor")
-////                @Override
-////                public void onResponse(Call<CommanStatusPojo> call,Response<CommanStatusPojo> response) {
-////                    try {
-////                        if (response.body() != null) {
-////                            CommanStatusPojo assignmentListPojo_close = response.body();
-////                            if (assignmentListPojo_close.getStatus().equals("false")) {
-////                                Utils.showAlert(assignmentListPojo_close.getMessage(), getActivity());
-////                            } else {
-////                                //  Utils.fragmentCall(new CloseIntervationReportFragment(assignmentListPojo_close), getFragmentManager());
-////                            }
-////                           // progressDialog.dismiss();
-////
-////                        } else {
-////                            //  Utils.showAlert(getString(R.string.Notfound), getActivity());
-////                            Utils.showAlert(getString(R.string.Notfound), getActivity());
-////                        }
-////
-////                    } catch (Exception e) {
-////                      //  progressDialog.dismiss();
-////                        e.getMessage();
-////                        Utils.showAlert(e.getMessage(), getActivity());
-////                    }
-////                }
-////
-////                @Override
-////                public void onFailure(Call<CommanStatusPojo> call, Throwable t) {
-////                    Log.d("TAG", "Error " + t.getMessage());
-////                   // progressDialog.dismiss();
-////                    Utils.showAlert(t.getMessage(), getActivity());
-////                }
-////            });
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-
-
-
-//    private void getMsgDATA(RequestBody Data) {
-//
-//        progressDialog.show();
-//        Service operator = ApiUtils.getAPIService();
-//        Call<CommanStatusPojo> getallLatLong = operator.getMsgCount(Data);
-//        getallLatLong.enqueue(new Callback<CommanStatusPojo>() {
-//            @SuppressLint("ResourceAsColor")
-//            @Override
-//            public void onResponse(Call<CommanStatusPojo> call, Response<CommanStatusPojo> response) {
-//                try {
-//                    if (response.body() != null) {
-//                        CommanStatusPojo operatorShowAlInfo = response.body();
-//
-//                        if (operatorShowAlInfo.getStatus().equals("false")) {
-//                            //  Utils.showAlert(registrationResponse.getMessage(), getActivity());
-//                        } else {
-//
-//
-//                        }
-//                        progressDialog.dismiss();
-//
-//                    } else {
-//                        // Utils.showAlert(getString(R.string.Notfound), getActivity());
-//
-//                        Utils.showAlert(getString(R.string.Notfound), getActivity());
-//                        progressDialog.dismiss();
-//                    }
-//
-//                } catch (Exception e) {
-//                    progressDialog.dismiss();
-//                    e.getMessage();
-//                    Utils.showAlert(e.getMessage(), getActivity());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<CommanStatusPojo> call, Throwable t) {
-//                Log.d("TAG", "Error " + t.getMessage());
-//                progressDialog.dismiss();
-//                Utils.showAlert(t.getMessage(), getActivity());
-//            }
-//        });
-//    }
-
 }
 

@@ -41,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -72,6 +73,7 @@ import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Ranjan Gupta
  */
 @SuppressLint("ValidFragment")
 public class RegistationFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener, EasyPermissions.PermissionCallbacks {
@@ -280,7 +282,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
         return view;
     }
 
-
+//initialization  view
     private void initView() {
 
         rlidcard.setVisibility(View.GONE);
@@ -658,137 +660,14 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                     //  Toast.makeText(mContext, "Failed!", Toast.LENGTH_SHORT).show();
                 }
             }
-            //    if (data.getData() != null) {
-            //create destination directory
-//            File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES) + "/CopOps/videos");
-//            if (f.mkdirs() || f.isDirectory())
-//                //compress and output new video specs
-//                new HandrailFragment.VideoCompressAsyncTask(mContext).execute(mCurrentVideoPath, f.getPath());
-
-            //   }
         }
 
     }
 
 
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == GALLERY) {
-//
-//            if (data != null) {
-//                Uri contentURI = data.getData();
-//                try {
-//
-//                    if (IDCARD_1 == 1) {
-//                        //idCardUri_1 = Utils.getImageUri(mContext, thumbnail);
-//
-//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
-//                        String profilePicUri1 = Utils.getRealPathFromURIPath(contentURI, getActivity());
-//                        File file = new File(profilePicUri1);
-//                        OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
-//                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-//                        os.close();
-//                        idCardUri_1 = Utils.getImageUri(getActivity(), bitmap);
-//                        //  profilePicUri = Utils.getRealPathFromURIPath(profileUri, getActivity());
-//                        IDCARD_1 = 0;
-//                    } else if (IDCARD_2 == 2) {
-//                        //  idCardUri_2 = Utils.getImageUri(mContext, thumbnail);
-//
-//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
-//                        String profilePicUri1 = Utils.getRealPathFromURIPath(contentURI, getActivity());
-//                        File file = new File(profilePicUri1);
-//                        OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
-//                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-//                        os.close();
-//                        idCardUri_2 = Utils.getImageUri(getActivity(), bitmap);
-//                        IDCARD_2 = 0;
-//
-//                    } else if (IDBUSINESSCARD_1 == 1) {
-//                        //   idBusinessCardUri_1 = Utils.getImageUri(mContext, thumbnail);
-//
-//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
-//                        String profilePicUri1 = Utils.getRealPathFromURIPath(contentURI, getActivity());
-//                        File file = new File(profilePicUri1);
-//                        OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
-//                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-//                        os.close();
-//                        idBusinessCardUri_1 = Utils.getImageUri(getActivity(), bitmap);
-//                        IDBUSINESSCARD_1 = 0;
-//                    } else if (IDBUSINESSCARD_2 == 2) {
-//                        //idBusinessCardUri_2 = Utils.getImageUri(mContext, thumbnail);
-//
-//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
-//                        String profilePicUri1 = Utils.getRealPathFromURIPath(contentURI, getActivity());
-//                        File file = new File(profilePicUri1);
-//                        OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
-//                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-//                        os.close();
-//                        idBusinessCardUri_2 = Utils.getImageUri(getActivity(), bitmap);
-//                        IDBUSINESSCARD_2 = 0;
-//                    } else {
-//
-//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
-//                        String profilePicUri1 = Utils.getRealPathFromURIPath(contentURI, getActivity());
-//                        File file = new File(profilePicUri1);
-//                        OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
-//                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-//                        os.close();
-//                        profileUri = Utils.getImageUri(getActivity(), bitmap);
-//                        profilePicUri = Utils.getRealPathFromURIPath(profileUri, getActivity());
-//                        // Toast.makeText(mContext, "Image Saved!", Toast.LENGTH_SHORT).show();
-//                        IVprofilephoto.setImageBitmap(bitmap);
-//
-//                    }
-//
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                    //  Toast.makeText(mContext, "Failed!", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//        } else if (requestCode == CAMERA) {
-//            try {
-//
-//
-//                Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-//
-//                if (thumbnail != null) {
-//
-//
-//
-//
-//                    if (IDCARD_1 == 1) {
-//                       // idCardUri_1 = Utils.getImageUri(mContext, thumbnail);
-//                       // IDCARD_1 = 0;
-//                    } else if (IDCARD_2 == 2) {
-//                      //  idCardUri_2 = Utils.getImageUri(mContext, thumbnail);
-//                      //  IDCARD_2 = 0;
-//
-//                    } else if (IDBUSINESSCARD_1 == 1) {
-//                    //    idBusinessCardUri_1 = Utils.getImageUri(mContext, thumbnail);
-//                     //   IDBUSINESSCARD_1 = 0;
-//                    } else if (IDBUSINESSCARD_2 == 2) {
-//                      //  idBusinessCardUri_2 = Utils.getImageUri(mContext, thumbnail);
-//                     //   IDBUSINESSCARD_2 = 0;
-//                    } else {
-//
-//                        IVprofilephoto.setImageBitmap(thumbnail);
-//
-//                      //  Bitmap b=scaleBitmap(thumbnail,400,800);
-//                     //   profileUri = Utils.getImageUri(getActivity(), b);
-//                     //   profilePicUri = Utils.getRealPathFromURIPath(profileUri, getActivity());
-//                    }
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 
 
+//Select Picture From Gallary
     public void choosePhotoFromGallary() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -798,7 +677,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
 
 
 
-
+    //Click Picture From Camera
     private void dispatchTakePictureIntent() {
         /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");*/
@@ -885,16 +764,6 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
         }
     }
 
-
-// Show only images, no videos or anything else
-
-
-    private void takePhotoFromCamera() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, CAMERA);
-    }
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -936,6 +805,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
     }
 
     /////All click listners
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onClick(View v) {
 
         switch (v.getId()) {
@@ -966,12 +836,7 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
                 break;
             case R.id.IVcamera:
                 if (Utils.checkPermission(mContext)) {
-                    //main logic or main code
-                   // takePhotoFromCamera();
-
                     dispatchTakePictureIntent();
-
-                    // . write your main code to execute, It will execute if the permission is already given.
 
                 } else {
                     Utils.requestPermission(getActivity());
@@ -1109,30 +974,12 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
     }
 
 
-    private boolean checkPermission() {
-        boolean check = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-        if (!check) {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-            return false;
-        }
-        return true;
-//    }
-    }
-
-    private boolean gpsEnabled() {
-        isGpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-        if (!isGpsEnabled && !isNetworkEnabled) {
-            return false;
-        }
-        return true;
-    }
 
 
-    ////Manish
+
+
+
+    ////Get Location
     private final android.location.LocationListener mLocationListener = new android.location.LocationListener() {
 
         @Override
@@ -1163,25 +1010,8 @@ public class RegistationFragment extends Fragment implements View.OnClickListene
         }
     };
 
-    public static Bitmap scaleBitmap(Bitmap bitmap, int newWidth, int newHeight) {
-        Bitmap scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
 
-        float scaleX = newWidth / (float) bitmap.getWidth();
-        float scaleY = newHeight / (float) bitmap.getHeight();
-        float pivotX = 0;
-        float pivotY = 0;
-
-        Matrix scaleMatrix = new Matrix();
-        scaleMatrix.setScale(scaleX, scaleY, pivotX, pivotY);
-
-        Canvas canvas = new Canvas(scaledBitmap);
-        canvas.setMatrix(scaleMatrix);
-        canvas.drawBitmap(bitmap, 0, 0, new Paint(Paint.FILTER_BITMAP_FLAG));
-
-        return scaledBitmap;
-    }
-
-
+//Create File location in Device
 
     private File createMediaFile(int type) throws IOException {
 

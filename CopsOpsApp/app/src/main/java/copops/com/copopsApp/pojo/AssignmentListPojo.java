@@ -2,7 +2,9 @@ package copops.com.copopsApp.pojo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class AssignmentListPojo implements Serializable {
     public String getStatus() {
         return status;

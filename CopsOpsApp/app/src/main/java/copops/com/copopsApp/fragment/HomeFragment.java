@@ -34,7 +34,7 @@ import retrofit2.Response;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Ranjan Gupta
  */
 public class HomeFragment extends Fragment implements View.OnClickListener{
 
@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
     AppSession mAppSession;
     public HomeFragment() {
-        // Required empty public constructor
+
     }
 
 
@@ -61,19 +61,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         View view=inflater.inflate(R.layout.fragment_home, container, false);
 
         ButterKnife.bind(this, view);
-
-
-      //  FirebaseApp.initializeApp(getContext());
         mAppSession=mAppSession.getInstance(getActivity());
         onClick();
 
-//        if(mAppSession.getData("fcm_token").equalsIgnoreCase("")) {
-//
-//            FirebaseApp.initializeApp(getContext());
-//            Log.d("Firebase", "token " + FirebaseInstanceId.getInstance().getToken());
-//
-//            mAppSession.saveData("fcm_token", FirebaseInstanceId.getInstance().getToken());
-//        }
+
 
         String devicelanguage = Locale.getDefault().getDisplayLanguage();
 
@@ -85,23 +76,25 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         }
 
         if(mAppSession.getData("user_id").equalsIgnoreCase("")){
+            Log.d("FCMToken", "token "+ FirebaseInstanceId.getInstance().getToken());
+            mAppSession.saveData("fcm_token",FirebaseInstanceId.getInstance().getToken());
 
         }else{
-
+            Log.d("FCMToken", "token "+ FirebaseInstanceId.getInstance().getToken());
+            mAppSession.saveData("fcm_token",FirebaseInstanceId.getInstance().getToken());
 
             LoginPojoSetData mLoginPojoSetData = new LoginPojoSetData();
             mLoginPojoSetData.setUser_id(mAppSession.getData("id"));
+
+
             mLoginPojoSetData.setdevice_language(mAppSession.getData("devicelanguage"));
             Log.e("taackingdata", EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
             RequestBody mFile = RequestBody.create(MediaType.parse("text/plain"), EncryptUtils.encrypt(Utils.key, Utils.iv, new Gson().toJson(mLoginPojoSetData)));
 
             freeze(mFile);
-            //freeze()
+
 
         }
-       // Log.d("Firebase", "token "+ FirebaseInstanceId.getInstance().getToken());
-
-    //    mAppSession.saveData("fcm_token",FirebaseInstanceId.getInstance().getToken());
         return view;
     }
 

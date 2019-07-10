@@ -25,7 +25,7 @@ import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.Utils;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Ranjan Gupta
  */
 @SuppressLint("ValidFragment")
 public class ReportFinishFragment extends Fragment implements View.OnClickListener {

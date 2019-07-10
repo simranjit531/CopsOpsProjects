@@ -21,7 +21,7 @@ import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.Utils;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Ranjan Gupta
  */
 public class SpleshFragment extends Fragment {
 
@@ -50,8 +50,6 @@ public class SpleshFragment extends Fragment {
                 String mToken = instanceIdResult.getToken();
                // Log.e("Token2",mToken);
                 Log.e("newToken2",mToken);
-
-
                 mAppSession.saveData("fcm_token",mToken);
             }
         });
@@ -86,7 +84,12 @@ public class SpleshFragment extends Fragment {
 
 
                                               }else{
-                                                  Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
+//                                                  if(mAppSession.getData("notifictaionmove").equalsIgnoreCase("1")){
+//                                                      Utils.fragmentCall(new AssignmentTableFragment(), getFragmentManager());
+//                                                      mAppSession.saveData("notifictaionmove","0");
+//                                                  }else {
+                                                      Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
+                                              //    }
 
                                               }
 

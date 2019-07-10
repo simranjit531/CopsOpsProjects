@@ -49,9 +49,8 @@ import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 import okio.ByteString;
-
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Ranjan Gupta
  */
 public class ChatRecentFragment extends Fragment implements View.OnClickListener, RecentChatAdapter.ChatItmeInterface {
 
@@ -88,7 +87,6 @@ public class ChatRecentFragment extends Fragment implements View.OnClickListener
         mChatItmeInterface=this;
         mAppSession=mAppSession.getInstance(getActivity());
         initView();
-     //   connectWebSocket();
         Request request = new Request.Builder().url(Utils.CHAT_BASE_URL).build();
         EchoWebSocketListener listener = new EchoWebSocketListener();
         OkHttpClient okHttpClient = new OkHttpClient();
@@ -104,40 +102,38 @@ public class ChatRecentFragment extends Fragment implements View.OnClickListener
         Runnable pingRunnable = new Runnable() {
             @Override public void run() {
 
-                sendMessageToServerFirst();
-                pingHandler.postDelayed(this, 3000);
+
+                if (mAppSession.getData("chat_noti").equalsIgnoreCase("1")) {
+                     mAppSession.saveData("chat_noti","0");
+                     sendMessageToServerFirst();
+                } else {
+
+                }
+
+
+                pingHandler.postDelayed(this, 1000);
             }
         };
-        pingHandler.postDelayed(pingRunnable, 3000);
+        pingHandler.postDelayed(pingRunnable, 1000);
         return view;
     }
-
-
-
-
     // WebSocket
     private final class EchoWebSocketListener extends WebSocketListener {
         @Override
         public void onOpen(WebSocket webSocket, Response response) {
-
             JSONObject jsonObj = new JSONObject();
             JSONObject jsonObj_1 = new JSONObject();
             try {
-                //  jsonObj.put("to_user", id);
                 jsonObj.put("type", "register");
             } catch (JSONException e) {
                 e.printStackTrace();
-
             }
-
-
             try {
                 jsonObj_1.put("username",mAppSession.getData("name") );
                 jsonObj_1.put("id", mAppSession.getData("id"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
             try {
                 jsonObj.put("user", jsonObj_1);
             } catch (JSONException e) {
@@ -193,11 +189,8 @@ public class ChatRecentFragment extends Fragment implements View.OnClickListener
             Utils.fragmentCall(new NewUserFragment(), getFragmentManager());
                break;
             case R.id.iv_recent_back:
-              //  if (getFragmentManager().getBackStackEntryCount() > 0) {
                     getFragmentManager().popBackStackImmediate();
-
-                Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
-             //   }
+                    Utils.fragmentCall(new OperatorFragment(), getFragmentManager());
 
                 break;
         }
@@ -209,14 +202,12 @@ public class ChatRecentFragment extends Fragment implements View.OnClickListener
         JSONObject jsonObj = new JSONObject();
         JSONObject jsonObj_1 = new JSONObject();
         try {
-          //  jsonObj.put("to_user", id);
             jsonObj.put("type", "recentchats");
+            jsonObj.put("lang", mAppSession.getData("devicelanguage"));
         } catch (JSONException e) {
             e.printStackTrace();
 
         }
-
-
         try {
             jsonObj_1.put("username", mAppSession.getData("name"));
             jsonObj_1.put("id", mAppSession.getData("id"));
@@ -247,24 +238,19 @@ public class ChatRecentFragment extends Fragment implements View.OnClickListener
                     Log.d("websocketchat", txt);
                     if (no.equalsIgnoreCase("1")) {
                         msg(txt);
-
                         mRecentChatAdapter.notifyDataSetChanged();
                         if (recentChatHolders.size() > 0) {
                             recent_recycler_view.smoothScrollToPosition(mRecentChatAdapter.getItemCount() - 1);
                         }
-
                     }
-
                     mProgressDialog.dismiss();
 
                 }
             });
         }
     }
-
-
-
     private void msg(String msg){
+      //  Log.e("kkk",""+msg);
         try {
             JSONObject jObj = new JSONObject(msg);
             String type=jObj.getString("type");
@@ -277,7 +263,7 @@ public class ChatRecentFragment extends Fragment implements View.OnClickListener
                 if(jsonArray.length()>0) {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        recentChatHolders.add(new RecentChatHolder(jsonObject.getString("id"), jsonObject.getString("sender_id"), jsonObject.getString("receiver_id"),jsonObject.getString("message"),jsonObject.getString("message_type"),jsonObject.getString("is_read"),jsonObject.getString("is_deleted"),jsonObject.getString("created_at"),jsonObject.getString("updated_at"),jsonObject.getString("user_id"),jsonObject.getString("user"),jsonObject.getString("time"),jsonObject.getString("unread")));
+                        recentChatHolders.add(new RecentChatHolder(jsonObject.getString("id"), jsonObject.getString("sender_id"), jsonObject.getString("receiver_id"),jsonObject.getString("message"),jsonObject.getString("message_type"),jsonObject.getString("is_read"),jsonObject.getString("is_deleted"),jsonObject.getString("created_on"),jsonObject.getString("updated_on"),jsonObject.getString("user_id"),jsonObject.getString("user"),jsonObject.getString("time"),jsonObject.getString("unread")));
                     }
                     //   size=mChatHolders;
 
@@ -325,14 +311,10 @@ public class ChatRecentFragment extends Fragment implements View.OnClickListener
                 JSONObject jsonObj = new JSONObject();
                 JSONObject jsonObj_1 = new JSONObject();
                 try {
-                  //  jsonObj.put("to_user", id);
                     jsonObj.put("type", "register");
                 } catch (JSONException e) {
                     e.printStackTrace();
-
                 }
-
-
                 try {
                     jsonObj_1.put("username",mAppSession.getData("name") );
                     jsonObj_1.put("id", mAppSession.getData("id"));

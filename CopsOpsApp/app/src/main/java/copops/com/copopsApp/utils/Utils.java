@@ -16,6 +16,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.media.MediaScannerConnection;
 import android.net.ConnectivityManager;
+import android.net.Network;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
@@ -39,6 +40,7 @@ import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -48,7 +50,9 @@ import copops.com.copopsApp.R;
 import copops.com.copopsApp.shortcut.ShortcutViewService;
 import copops.com.copopsApp.shortcut.ShortcutViewService_Citizen;
 
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class Utils {
    // public static final String CHAT_BASE_URL="ws://82.165.253.201:8080";
 
@@ -96,7 +100,7 @@ public class Utils {
 
         return urlString.substring(urlString.lastIndexOf('/') + 1).split("\\?")[0].split("#")[0];
     }
-
+//Show Popup For Mesage
     public static void showAlert(String mgs, Context context) {
         new AlertDialog.Builder(context, R.style.AlertDialogTheme)
                 .setTitle(R.string.Information)
@@ -110,9 +114,7 @@ public class Utils {
                 }).setIcon(R.drawable.information)
                 .show();
     }
-
-
-
+    //Show Popup For Mesage
     public static void showAlertInterFace(String mgs, Context context,clossPassInterFace mClossPassInterFace) {
         new AlertDialog.Builder(context, R.style.AlertDialogTheme)
                 .setTitle(R.string.Information)
@@ -127,7 +129,7 @@ public class Utils {
                 .show();
     }
 
-
+    //Show Popup For Mesage
     public static void showAlertfaq(String mgs, Context context) {
         new AlertDialog.Builder(context, R.style.AlertDialogTheme)
                 .setTitle(R.string.FAQ)
@@ -142,7 +144,7 @@ public class Utils {
                 .show();
     }
 
-
+    //Show Popup For Mesage
     public static void showAlertAndClick(String mgs, Context context, final resetPassInterFace mResetPassInterFace) {
         new AlertDialog.Builder(context, R.style.AlertDialogTheme)
                 .setTitle(R.string.Information)
@@ -156,7 +158,7 @@ public class Utils {
                 }).setIcon(R.drawable.information)
                 .show();
     }
-
+//Email Validation Check
     public static boolean isValidMail(String email) {
         boolean check;
         Pattern p;
@@ -173,6 +175,8 @@ public class Utils {
         return check;
     }
 
+
+//Check Permission for all like camera,storge,Location
     public static boolean checkPermission(Context mContext) {
         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -189,35 +193,7 @@ public class Utils {
                 PERMISSION_REQUEST_CODE);
     }
 
-
-    public static String saveImage(Bitmap myBitmap, String IMAGE_DIRECTORY, Context mContext) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-        File wallpaperDirectory = new File(
-                Environment.getExternalStorageDirectory() + IMAGE_DIRECTORY);
-        // have the object build the directory structure, if needed.
-        if (!wallpaperDirectory.exists()) {
-            wallpaperDirectory.mkdirs();
-        }
-        try {
-            File f = new File(wallpaperDirectory, Calendar.getInstance()
-                    .getTimeInMillis() + ".jpg");
-            f.createNewFile();
-            FileOutputStream fo = new FileOutputStream(f);
-            fo.write(bytes.toByteArray());
-            MediaScannerConnection.scanFile(mContext,
-                    new String[]{f.getPath()},
-                    new String[]{"image/jpeg"}, null);
-            fo.close();
-            Log.d("TAG", "File Saved::--->" + f.getAbsolutePath());
-
-            return f.getAbsolutePath();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        return "";
-    }
-
+    //Show Popup For Mesage
     public static void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener, Context mContext) {
         new AlertDialog.Builder(mContext, R.style.AlertDialogTheme)
                 .setMessage(message)
@@ -226,7 +202,7 @@ public class Utils {
                 .create()
                 .show();
     }
-
+//For return Uri Path For Bitmap/image
     public static Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         //  Bitmap OutImage = Bitmap.createScaledBitmap(inImage, 1000, 1000,true);
@@ -234,7 +210,7 @@ public class Utils {
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
-
+    //For return Device  Path For image,video
     public static String getRealPathFromURIPath(Uri contentURI, Activity activity) {
         Cursor cursor = activity.getContentResolver().query(contentURI, null, null, null, null);
         if (cursor == null) {
@@ -252,14 +228,37 @@ public class Utils {
         return Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
-    //Connection Check
-
+    //Internet Connection Check
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static boolean checkConnection(Context mContext) {
-        ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if (null == activeNetwork)
+
+        NetworkInfo networkInfo = null;
+
+        ConnectivityManager connMgr =
+                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        boolean isWifiConn = false;
+        boolean isMobileConn = false;
+        for (Network network : connMgr.getAllNetworks()) {
+             networkInfo = connMgr.getNetworkInfo(network);
+            if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                isWifiConn |= networkInfo.isConnected();
+            }
+            if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+                isMobileConn |= networkInfo.isConnected();
+            }
+        }
+
+
+        Log.e("network", "Wifi connected: " + isWifiConn);
+
+
+        Log.e("network", "Mobile connected: " + isMobileConn);
+        if(null==networkInfo) {
             return false;
-        return activeNetwork.isConnectedOrConnecting();
+        }else {
+            return networkInfo.isConnectedOrConnecting();
+        }
+
     }
 
     /////fragment call
@@ -290,11 +289,8 @@ public class Utils {
     }
 
 
-    public SharedPreferences getSharedPref(Context mContext) {
-        return mContext.getSharedPreferences(myPrefrence, Context.MODE_PRIVATE);
-    }
 
-
+//Hide Device Keyboard
     public static void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.
@@ -306,13 +302,13 @@ public class Utils {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-
+    //Save Data in SharedPreferences
     public static void saveData(String key, String value) {
         SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
         prefsEditor.putString(key, value);
         prefsEditor.commit();
     }
-
+    //Get Data in SharedPreferences
     public static String getData(String key) {
         if (sharedPreferences != null) {
             return sharedPreferences.getString(key, "");
@@ -320,7 +316,7 @@ public class Utils {
         return "";
     }
 
-
+    //Show Popup For Logout
     public static void opendialogcustomdialog(Context mContext, String text) {
 
         final Dialog dialog = new Dialog(mContext, R.style.DialogFragmentTheme);
@@ -355,7 +351,7 @@ public class Utils {
         dialog.show();
     }
 
-
+    //Show Popup For Exit APP
     public static void opendialogcustomdialogoperator(final Context mContext, String text, String loginstatus, String usertype) {
 
         final Dialog dialog = new Dialog(mContext, R.style.DialogFragmentTheme);
@@ -394,7 +390,7 @@ public class Utils {
         dialog.show();
     }
 
-
+    //Show Popup For Exit APP
     public static void opendialogcustomdialogcitizen(final Context mContext, String text, String loginstatus, String usertype) {
 
         final Dialog dialog = new Dialog(mContext, R.style.DialogFragmentTheme);
@@ -432,6 +428,8 @@ public class Utils {
 
         dialog.show();
     }
+
+    //Check Gps on Or Not
     public static void statusCheck(Context mContext) {
         final LocationManager manager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
 
@@ -440,7 +438,7 @@ public class Utils {
 
         }
     }
-
+    //Check Gps on Or Not
     public static void buildAlertMessageNoGps(Context mContext) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setMessage("To continue, turn on device location.?")
@@ -459,6 +457,8 @@ public class Utils {
         alert.show();
     }
 
+
+    //Show Popup For Exit APP
     public static void opendialogcustomdialogClose(Context mContext, String text, final clossPassInterFace mClossPassInterFace) {
 
         final Dialog dialog = new Dialog(mContext, R.style.DialogFragmentTheme);
@@ -481,26 +481,12 @@ public class Utils {
 
                 mClossPassInterFace.onClick();
 
-
-              //  android.os.Process.killProcess(android.os.Process.myPid());
-             //   System.exit(1);
             }
         });
 
-//        TVrefuse.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog.dismiss();
-//            }
-//        });
 
         dialog.show();
     }
 
-    public static String formatHoursAndMinutes(int totalMinutes) {
-        String minutes = Integer.toString(totalMinutes % 60);
-        minutes = minutes.length() == 1 ? "0" + minutes : minutes;
-        return (totalMinutes / 60) + ":" + minutes;
-    }
 
 }

@@ -1,7 +1,9 @@
 package copops.com.copopsApp.pojo;
 
 import java.io.Serializable;
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class RegistationPojo implements Serializable {
     String status;
     String userid;
@@ -14,6 +16,12 @@ public class RegistationPojo implements Serializable {
     String level;
     String profile_percent;
 
+    String id;
+    String profile_qrcode;
+    String total_reports;
+    String completed_reports;
+    String grade;
+
     public String getId() {
         return id;
     }
@@ -22,7 +30,6 @@ public class RegistationPojo implements Serializable {
         this.id = id;
     }
 
-    String id;
 
     public String getEmail_id() {
         return email_id;
@@ -42,7 +49,7 @@ public class RegistationPojo implements Serializable {
         this.profile_qrcode = profile_qrcode;
     }
 
-    String profile_qrcode;
+
 
     public String getLevel() {
         return level;
@@ -76,8 +83,7 @@ public class RegistationPojo implements Serializable {
         this.completed_reports = completed_reports;
     }
 
-    String total_reports;
-    String completed_reports;
+
 
     public String getGrade() {
         return grade;
@@ -87,7 +93,7 @@ public class RegistationPojo implements Serializable {
         this.grade = grade;
     }
 
-    String grade;
+
 
     public String getVerified() {
         return verified;

@@ -47,7 +47,9 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
+/**
+ * Created by Ranjan Gupta
+ */
 @SuppressLint("ValidFragment")
 public class Frag_Public_Profile_Shown extends Fragment implements View.OnClickListener, Utils.clossPassInterFace {
     Utils.clossPassInterFace mClossPassInterFace;
@@ -83,6 +85,7 @@ public class Frag_Public_Profile_Shown extends Fragment implements View.OnClickL
 
     @BindView(R.id.grade)
     TextView grade;
+
 
     @BindView(R.id.TVprogresspercentage)
     TextView TVprogresspercentage;
@@ -124,6 +127,7 @@ public class Frag_Public_Profile_Shown extends Fragment implements View.OnClickL
         TVname.setText(mAppSession.getData("name"));
         RLmedical.setOnClickListener(this);
         RLprofile.setOnClickListener(this);
+        TVname.setOnClickListener(this);
         TVprogressbarnumber.setText(operatorShowAlInfo.getReport());
 
         if (mAppSession.getData("userType").equalsIgnoreCase("citizen")) {
@@ -223,6 +227,9 @@ public class Frag_Public_Profile_Shown extends Fragment implements View.OnClickL
                 Utils.showAlertfaq(getString(R.string.faq), getActivity());
                 break;
             case R.id.RLprofile:
+                Utils.fragmentCall(new ProfileFragment(), getFragmentManager());
+                break;
+            case R.id.TVname:
                 Utils.fragmentCall(new ProfileFragment(), getFragmentManager());
                 break;
 

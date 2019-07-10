@@ -2,10 +2,8 @@ package copops.com.copopsApp.activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -13,26 +11,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.Log;
-
-import java.io.File;
 import java.util.Locale;
-
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-
-import com.google.gson.JsonObject;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import copops.com.copopsApp.R;
-
-
+import copops.com.copopsApp.fragment.AssignedInterventionFragment;
 import copops.com.copopsApp.fragment.AssignmentTableFragment;
 import copops.com.copopsApp.fragment.AuthenticateCodeFragment;
 import copops.com.copopsApp.fragment.ChatConversionFragment;
@@ -53,21 +42,16 @@ import copops.com.copopsApp.shortcut.ShortcutViewService_Citizen;
 import copops.com.copopsApp.utils.AppSession;
 import copops.com.copopsApp.utils.TrackingServices;
 import copops.com.copopsApp.utils.Utils;
-
+/**
+ * Created by Ranjan Gupta
+ */
 public class DashboardActivity extends AppCompatActivity {
-    public static final String TOPIC_GLOBAL = "global";
 
     private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2084;
     private Handler handler;
     private Runnable checkOverlaySetting;
     private Context mContext;
     AppSession mAppSession;
-
-
-
-
-
-
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -76,13 +60,14 @@ public class DashboardActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_dashboard);
             mContext=DashboardActivity.this;
+
+            mAppSession.saveData("intervantion_noti","0");
         } catch (Exception e) {
             e.printStackTrace();
         }
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread paramThread, Throwable paramThrowable) {
-
                 System.exit(2);
             }
         });
@@ -109,7 +94,6 @@ public class DashboardActivity extends AppCompatActivity {
             @TargetApi(23)
             public void run() {
                 if (Settings.canDrawOverlays(DashboardActivity.this)) {
-                    //You have the permission, re-launch MainActivity
                     handler.removeCallbacks(checkOverlaySetting);
                     Intent i = new Intent(DashboardActivity.this, DashboardActivity.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -148,10 +132,7 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(mAppSession.getData("notifictaionmove").equalsIgnoreCase("1")){
-            Utils.fragmentCall(new AssignmentTableFragment(), getSupportFragmentManager());
-            mAppSession.saveData("notifictaionmove","0");
-        }
+
     }
     @Override
     protected void onStart() {
@@ -189,13 +170,20 @@ public class DashboardActivity extends AppCompatActivity {
         setIntent(intent);
         Intent intent_o = getIntent();
         Log.e("hhh",""+intent_o);
-        if(mAppSession.getData("chat_noti").equalsIgnoreCase("1")) {
-            if(mAppSession.getData("id").equalsIgnoreCase((mAppSession.getData("reciverid")))){
-                Utils.fragmentCall(new ChatConversionFragment(mAppSession.getData("senderId"),mAppSession.getData("user"),mAppSession.getData("reciverid")), getSupportFragmentManager());
-                mAppSession.saveData("chat_noti", "");
-            }else{
-                Utils.fragmentCall(new ChatConversionFragment(mAppSession.getData("reciverid"),mAppSession.getData("user"),mAppSession.getData("senderId")), getSupportFragmentManager());
-                mAppSession.saveData("chat_noti", "");
+        String msg = getIntent().getStringExtra("remMsg");
+        if(mAppSession.getData("intervantion_noti").equalsIgnoreCase("1")){
+            Utils.fragmentCall(new AssignedInterventionFragment(msg), getSupportFragmentManager());
+
+            mAppSession.saveData("intervantion_noti", "");
+        }else {
+            if (mAppSession.getData("movechart").equalsIgnoreCase("1")) {
+                if (mAppSession.getData("id").equalsIgnoreCase((mAppSession.getData("reciverid")))) {
+                    Utils.fragmentCall(new ChatConversionFragment(mAppSession.getData("senderId"), mAppSession.getData("user"), mAppSession.getData("reciverid")), getSupportFragmentManager());
+                    mAppSession.saveData("movechart", "");
+                } else {
+                    Utils.fragmentCall(new ChatConversionFragment(mAppSession.getData("reciverid"), mAppSession.getData("user"), mAppSession.getData("senderId")), getSupportFragmentManager());
+                    mAppSession.saveData("movechart", "");
+                }
             }
         }
     }
@@ -243,9 +231,7 @@ for use load frragment
                     if (mAppSession.getData("copsuser").equalsIgnoreCase("citizen")) {
                         Utils.fragmentCall(new CitizenFragment(), getSupportFragmentManager());
                     } else {
-                        Intent intents = new Intent(this, AssigenedIntervation.class);
-                        intents.putExtra("remMsg",msg);
-                        startActivity(intents);
+                        Utils.fragmentCall(new AssignedInterventionFragment(msg), getSupportFragmentManager());
                     }
                 }
         }
@@ -256,12 +242,10 @@ for use load frragment
 
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.content_frame);
         if (f instanceof CitizenFragment) {//the fragment on which you want to handle your back press
-            //     Utils.opendialogcustomdialog(DashboardActivity.this, DashboardActivity.this.getString(R.string.exit_message));
             Utils.opendialogcustomdialogcitizen(DashboardActivity.this, DashboardActivity.this.getString(R.string.exit_message), mAppSession.getData("Login"), mAppSession.getData("userType"));
         } else if (f instanceof HomeFragment) {//the fragment on which you want to handle your back press
             Utils.opendialogcustomdialog(DashboardActivity.this, DashboardActivity.this.getString(R.string.exit_message));
         } else if (f instanceof OperatorFragment) {//the fragment on which you want to handle your back press
-            // Utils.opendialogcustomdialog(DashboardActivity.this, DashboardActivity.this.getString(R.string.exit_message));
             Utils.opendialogcustomdialogoperator(DashboardActivity.this, DashboardActivity.this.getString(R.string.exit_message), mAppSession.getData("Login"), mAppSession.getData("userType"));
 
         } else if (f instanceof IncedentReportFragment) {//the fragment on which you want to handle your back press
@@ -276,40 +260,28 @@ for use load frragment
             Utils.fragmentCall(new OperatorFragment(), getSupportFragmentManager());
         } else if (f instanceof Frag_Call_Number) {//the fragment on which you want to handle your back press
 
+        } else if (f instanceof AssignedInterventionFragment) {//the fragment on which you want to handle your back press
+            getFragmentManager().popBackStackImmediate();
+                Utils.fragmentCall(new OperatorFragment(), getSupportFragmentManager());
         } else if (f instanceof IncedentGenerateFragment) {
-
-            // FragmentManager fm = getFragmentManager();
             int count = getSupportFragmentManager().getBackStackEntryCount();
-            int count2 = getSupportFragmentManager().getBackStackEntryCount();
-
             if (count == 4) {
                 if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
                     getSupportFragmentManager().popBackStackImmediate();
                 }
-                //   Utils.fragmentCall(new GPSPublicFragment(), getSupportFragmentManager());
             } else {
                 if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
                     getSupportFragmentManager().popBackStackImmediate();
                 }
-
             }
-//            if(mAppSession.getData("screen")=="1"){
-//
-//              //  getFragmentManager().p).popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-////                Utils.fragmentCall(new GPSPublicFragment(), getSupportFragmentManager());
-////
-////            }else{
-////                if (getFragmentManager().getBackStackEntryCount() > 0) {
-////                    getFragmentManager().popBackStackImmediate();
-////                }
-////            }
-//            //   getFragmentManager().popBackStack(  getFragmentManager().getBackStackEntryAt( getFragmentManager().getBackStackEntryCount()-2).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//            //   getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//            // Utils.fragmentCall(new GPSPublicFragment(), getSupportFragmentManager());opBackStack(  getFragmentManager().getBackStackEntryAt(  getFragmentManager().getBackStackEntryCount()-2).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//                //   getFragmentManager(
         } else if (f instanceof AssignmentTableFragmentShortcut) {//the fragment on which you want to handle your back press
             Utils.fragmentCall(new OperatorFragment(), getSupportFragmentManager());
-        } else if (f instanceof PositionOfInteervebtionsFragmentShortcut) {//the fragment on which you want to handle your back press
+        }else if (f instanceof ChatConversionFragment) {//the fragment on which you want to handle your back press
+            Utils.fragmentCall(new ChatRecentFragment(), getSupportFragmentManager());
+        }else if (f instanceof ChatRecentFragment) {//the fragment on which you want to handle your back press
+            getSupportFragmentManager().popBackStackImmediate();
+            Utils.fragmentCall(new OperatorFragment(), getSupportFragmentManager());
+        }   else if (f instanceof PositionOfInteervebtionsFragmentShortcut) {//the fragment on which you want to handle your back press
             Utils.fragmentCall(new OperatorFragment(), getSupportFragmentManager());
         } else if (f instanceof IncidentFragment) {//the fragment on which you want to handle your back press
             String loginvalid = mAppSession.getData("Login");
@@ -331,8 +303,6 @@ for use load frragment
     }
     protected void onStop() {
         super.onStop();
-        Log.e("copsopsstop", "loginvalid==" + mAppSession.getData("Login") + "==userType==" + mAppSession.getData("userType"));
-
         String loginvalid = mAppSession.getData("Login");
         String userType = mAppSession.getData("userType");
 
